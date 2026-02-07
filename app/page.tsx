@@ -237,7 +237,7 @@ export default function Dashboard() {
         {/* Desktop Sidebar */}
         <aside className="hidden lg:flex w-64 border-r border-white/[0.08] fixed left-0 top-16 h-[calc(100vh-64px)] flex-col" style={{ backgroundColor: 'rgba(13, 13, 18, 0.5)' }}>
           <nav className="flex flex-col p-4 gap-2 overflow-y-auto flex-1">
-            <div className="px-4 py-3 mb-6">
+            <div className="px-4 py-2 mb-3">
               <h2 className="text-sm font-semibold text-[#B794F4] uppercase tracking-wider">
                 Navigation
               </h2>
@@ -245,21 +245,21 @@ export default function Dashboard() {
 
             <button
               onClick={() => setCurrentView('home')}
-              className="flex items-center gap-3 px-4 py-3 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
             >
               <Home size={18} className="text-[#FF1F8A] flex-shrink-0" />
               <span className="text-sm font-medium">Home</span>
             </button>
             <button
               onClick={() => setCurrentView('library')}
-              className="flex items-center gap-3 px-4 py-3 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
             >
               <Library size={18} className="text-[#B794F4] flex-shrink-0" />
               <span className="text-sm font-medium">Library</span>
             </button>
             <button
               onClick={() => setCurrentView('search')}
-              className="flex items-center gap-3 px-4 py-3 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
             >
               <Search size={18} className="text-[#B794F4] flex-shrink-0" />
               <span className="text-sm font-medium">Search</span>
@@ -267,26 +267,26 @@ export default function Dashboard() {
 
             {/* Creator Menu - Desktop */}
             <div className="border-t border-white/[0.08] mt-2 pt-2">
-              <div className="px-4 py-3 mb-2">
+              <div className="px-4 py-2 mb-1">
                 <h2 className="text-xs font-semibold text-[#B794F4] uppercase tracking-wider">Creator</h2>
               </div>
               <button
                 onClick={() => setCurrentView('upload')}
-                className="flex items-center gap-3 px-4 py-3 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+                className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
               >
                 <Music size={18} className="text-[#FF1F8A] flex-shrink-0" />
                 <span className="text-sm font-medium">Upload</span>
               </button>
               <button
                 onClick={() => setCurrentView('earnings')}
-                className="flex items-center gap-3 px-4 py-3 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+                className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
               >
                 <DollarSign size={18} className="text-[#B794F4] flex-shrink-0" />
                 <span className="text-sm font-medium">Earnings</span>
               </button>
               <button
                 onClick={() => setCurrentView('analytics')}
-                className="flex items-center gap-3 px-4 py-3 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+                className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
               >
                 <TrendingUp size={18} className="text-[#B794F4] flex-shrink-0" />
                 <span className="text-sm font-medium">Analytics</span>
@@ -295,7 +295,7 @@ export default function Dashboard() {
 
             <button
               onClick={() => setCurrentView('profile')}
-              className="flex items-center gap-3 px-4 py-3 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
             >
               <User size={18} className="text-[#B794F4] flex-shrink-0" />
               <span className="text-sm font-medium">Profile</span>
