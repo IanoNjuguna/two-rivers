@@ -1,6 +1,6 @@
 'use client'
 
-import { Play, Pause, SkipBack, SkipForward, Volume2 } from 'lucide-react'
+import { IconPlayerPlay as Play, IconPlayerPause as Pause, IconPlayerSkipBack as SkipBack, IconPlayerSkipForward as SkipForward, IconVolume2 } from '@tabler/icons-react'
 import { useEffect } from 'react'
 import type { useAudioPlayer } from '@/hooks/useAudioPlayer'
 

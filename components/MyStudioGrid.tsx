@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Eye } from 'lucide-react'
+import { IconEye } from '@tabler/icons-react'
 
 interface NFT {
   id: number
@@ -70,7 +70,7 @@ export default function MyStudioGrid({ nfts }: MyStudioGridProps) {
                   className="border-cyber-pink/40 text-cyber-pink hover:bg-cyber-pink/10 bg-transparent"
                   onClick={() => setSelectedNFT(nft)}
                 >
-                  <Eye size={16} />
+                  <IconEye size={16} />
                 </Button>
               </div>
             </div>

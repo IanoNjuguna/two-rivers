@@ -1,7 +1,7 @@
 'use client'
 
-import React from 'react'
-import { TrendingUp, Calendar, DollarSign } from 'lucide-react'
+import { Calendar } from "@/components/ui/calendar"
+import { IconTrendingUp, IconCalendar, IconCurrencyDollar as DollarSign } from '@tabler/icons-react'
 
 interface EarningsViewProps {
   isConnected: boolean
@@ -81,7 +81,7 @@ export default function EarningsView({ isConnected }: EarningsViewProps) {
         >
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-white/60 text-sm">Pending Payout</h3>
-            <TrendingUp size={16} className="text-[#B794F4]" />
+            <IconTrendingUp size={16} className="text-[#B794F4]" />
           </div>
           <p className="text-2xl font-bold">{pendingPayout}</p>
           <p className="text-white/40 text-xs mt-2">Ready to claim</p>

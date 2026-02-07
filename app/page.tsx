@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Menu, Home, Library, Search, DollarSign, TrendingUp, User, LogOut, Plus, Music, Copy } from 'lucide-react'
+import { IconMenu2 as Menu, IconHome as HomeIcon, IconBooks as Library, IconSearch as Search, IconCurrencyDollar as DollarSign, IconTrendingUp as TrendingUp, IconUser as User, IconLogout as LogOut, IconPlus, IconMusic as Music, IconCopy } from '@tabler/icons-react'
 import { Button } from '@/components/ui/button'
 import MarketplaceGrid from '@/components/MarketplaceGrid'
 import MyStudioGrid from '@/components/MyStudioGrid'
@@ -133,7 +133,7 @@ export default function Dashboard() {
               }}
               className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
             >
-              <Home size={18} className="text-[#FF1F8A] flex-shrink-0" />
+              <HomeIcon size={18} className="text-[#FF1F8A] flex-shrink-0" />
               <span className="text-sm font-medium">Home</span>
             </button>
             <button
@@ -241,7 +241,7 @@ export default function Dashboard() {
               onClick={() => setCurrentView('home')}
               className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
             >
-              <Home size={18} className="text-[#FF1F8A] flex-shrink-0" />
+              <HomeIcon size={18} className="text-[#FF1F8A] flex-shrink-0" />
               <span className="text-sm font-medium">Home</span>
             </button>
             <button
@@ -476,7 +476,7 @@ export default function Dashboard() {
                           className="p-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
                           title="Copy wallet address"
                         >
-                          <Copy size={16} />
+                          <IconCopy size={16} />
                         </button>
                       </div>
                     </div>

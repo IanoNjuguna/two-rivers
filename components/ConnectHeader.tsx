@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Button } from '@/components/ui/button'
-import { Wallet, Copy, LogOut } from 'lucide-react'
+import { IconWallet as Wallet, IconCopy as Copy, IconLogout } from '@tabler/icons-react'
 
 interface ConnectHeaderProps {
   isConnected: boolean

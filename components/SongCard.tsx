@@ -1,8 +1,9 @@
-'use client';
+'use client'
 
-import React from 'lucide-react'
-import { Play } from 'lucide-react'
+import React from 'react'
+import { IconPlayerPlay } from '@tabler/icons-react'
 import { Button } from '@/components/ui/button'
+import Play from '@tabler/icons-react/IconPlayerPlay' // Import Play component
 
 interface SongCardProps {
   id: number
@@ -47,7 +48,7 @@ export default function SongCard({
               className="p-3 rounded-full"
               style={{ backgroundColor: '#FF1F8A' }}
             >
-              <Play size={20} className="text-white fill-white" />
+              <IconPlayerPlay size={20} className="text-white fill-white" />
             </div>
           </button>
         )}
@@ -60,4 +61,3 @@ export default function SongCard({
     </div>
   )
 }
-
