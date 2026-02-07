@@ -118,7 +118,7 @@ export default function Dashboard() {
 
       {/* Mobile Menu */}
       {headerMenuOpen && (
-        <div className="lg:hidden fixed top-16 left-0 right-0 z-40 border-b border-white/[0.08]" style={{ backgroundColor: 'rgba(13, 13, 18, 0.95)' }}>
+        <div className="lg:hidden fixed top-16 left-0 right-0 z-40 border-b border-white/[0.08]" style={{ backgroundColor: '#0D0D12' }}>
           <nav className="flex flex-col p-4 space-y-2 max-h-[calc(100vh-64px)] overflow-y-auto">
             <div className="px-0 py-2">
               <h2 className="text-sm font-semibold text-[#B794F4] uppercase tracking-wider">
