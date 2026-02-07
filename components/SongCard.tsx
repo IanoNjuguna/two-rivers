@@ -61,23 +61,23 @@ export default function SongCard({
       </div>
 
       {/* Card Content */}
-      <div className="p-4 space-y-3">
+      <div className="p-3 space-y-2">
         <div>
-          <h3 className="font-bold text-base text-white line-clamp-1">{title}</h3>
-          <p className="text-xs text-white/60">{creator}</p>
+          <h3 className="font-bold text-sm text-white line-clamp-1">{title}</h3>
+          <p className="text-xs text-white/60 line-clamp-1">{creator}</p>
         </div>
 
         {/* Price & Action */}
-        <div className="flex items-center justify-between pt-2 border-t border-white/[0.08]">
+        <div className="flex items-center justify-between pt-1 border-t border-white/[0.08]">
           <div>
             <p className="text-xs text-white/60">Price</p>
-            <p className="font-mono text-sm font-semibold text-cyber-pink">
+            <p className="font-mono text-xs font-semibold text-cyber-pink">
               {price} ETH
             </p>
           </div>
           <Button
             size="sm"
-            className="bg-cyber-pink hover:bg-cyber-pink/90 text-white font-semibold shadow-lg shadow-cyber-pink/20"
+            className="bg-cyber-pink hover:bg-cyber-pink/90 text-white font-semibold shadow-lg shadow-cyber-pink/20 text-xs h-7 px-2"
           >
             Mint
           </Button>
