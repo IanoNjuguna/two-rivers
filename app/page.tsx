@@ -303,7 +303,7 @@ export default function Dashboard() {
             </button>
 
             {isConnected && (
-              <div className="mt-auto pt-4 border-t border-white/[0.08]">
+              <div className="mt-auto pt-4 border-t border-white/[0.08] space-y-4">
                 <Button
                   variant="outline"
                   size="sm"
@@ -313,6 +313,7 @@ export default function Dashboard() {
                   <LogOut size={16} className="mr-2" />
                   Disconnect
                 </Button>
+                <Footer />
               </div>
             )}
           </nav>
@@ -486,13 +487,12 @@ export default function Dashboard() {
             )}
           </div>
         </main>
-
-        {/* Footer */}
-        <Footer />
       </div>
 
       {/* Audio Player */}
       <AudioPlayer playerState={playerState} />
+      {/* Mobile Footer */}
+      <Footer />
     </div>
   )
 }
