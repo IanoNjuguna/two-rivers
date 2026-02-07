@@ -85,61 +85,75 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
       <audio ref={audioRef} crossOrigin="anonymous" />
 
       <div className="max-w-7xl mx-auto">
-        {/* Minimal Layout: Album Cover - Progress Bar - Controls */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-start gap-3">
           {/* Album Cover */}
           <div
-            className="w-12 h-12 rounded-lg flex-shrink-0"
+            className="w-12 h-12 rounded-lg flex-shrink-0 mt-1"
             style={{ backgroundColor: currentTrack.cover }}
           />
 
-          {/* Progress Bar - Centered */}
-          <div
-            className="flex-1 h-1 bg-white/[0.1] rounded-full cursor-pointer"
-            onClick={(e) => {
-              const rect = e.currentTarget.getBoundingClientRect()
-              const percent = (e.clientX - rect.left) / rect.width
-              seek(percent * duration)
-            }}
-          >
+          {/* Content Column: Title, Progress, Time, Controls */}
+          <div className="flex-1 flex flex-col gap-2">
+            {/* Song Title */}
+            <p className="text-sm font-semibold text-white truncate">
+              {currentTrack.title}
+            </p>
+
+            {/* Progress Bar */}
             <div
-              className="h-1 bg-gradient-to-r from-[#FF1F8A] to-[#B794F4] rounded-full"
-              style={{ width: `${progressPercent}%` }}
-            />
-          </div>
-
-          {/* Playback Controls */}
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <button
-              onClick={previous}
-              className="p-2 hover:bg-white/[0.05] rounded-lg transition-colors text-white/70 hover:text-white"
-            >
-              <SkipBack size={18} />
-            </button>
-
-            <button
-              onClick={togglePlayPause}
-              className="p-2 rounded-lg transition-colors"
-              style={{
-                backgroundColor: '#FF1F8A',
-                color: 'white',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#E01A73'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#FF1F8A'
+              className="flex-1 h-1 bg-white/[0.1] rounded-full cursor-pointer"
+              onClick={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect()
+                const percent = (e.clientX - rect.left) / rect.width
+                seek(percent * duration)
               }}
             >
-              {isPlaying ? <Pause size={18} /> : <Play size={18} />}
-            </button>
+              <div
+                className="h-1 bg-gradient-to-r from-[#FF1F8A] to-[#B794F4] rounded-full"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
 
-            <button
-              onClick={next}
-              className="p-2 hover:bg-white/[0.05] rounded-lg transition-colors text-white/70 hover:text-white"
-            >
-              <SkipForward size={18} />
-            </button>
+            {/* Time Display and Controls Row */}
+            <div className="flex items-center justify-between">
+              <div className="text-xs text-white/50">
+                {formatTime(currentTime)} / {formatTime(duration)}
+              </div>
+
+              {/* Playback Controls */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={previous}
+                  className="p-2 hover:bg-white/[0.05] rounded-lg transition-colors text-white/70 hover:text-white"
+                >
+                  <SkipBack size={18} />
+                </button>
+
+                <button
+                  onClick={togglePlayPause}
+                  className="p-2 rounded-lg transition-colors"
+                  style={{
+                    backgroundColor: '#FF1F8A',
+                    color: 'white',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#E01A73'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '#FF1F8A'
+                  }}
+                >
+                  {isPlaying ? <Pause size={18} /> : <Play size={18} />}
+                </button>
+
+                <button
+                  onClick={next}
+                  className="p-2 hover:bg-white/[0.05] rounded-lg transition-colors text-white/70 hover:text-white"
+                >
+                  <SkipForward size={18} />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
