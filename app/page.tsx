@@ -133,7 +133,7 @@ export default function Dashboard() {
             </button>
 
             {/* Creator Menu - Desktop */}
-            <div className="border-t border-white/[0.08] space-y-2 pt-2">
+            <div className="border-t border-white/[0.08] space-y-2">
               <div className="px-4 py-2">
                 <h2 className="text-xs font-semibold text-[#B794F4] uppercase tracking-wider">Creator</h2>
               </div>
