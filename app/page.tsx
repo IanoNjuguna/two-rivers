@@ -207,7 +207,7 @@ export default function Dashboard() {
 
             {isConnected && (
               <>
-            <div className="border-t border-white/[0.08] my-4" />
+            <div className="border-t border-white/[0.08]" />
                 <Button
                   variant="outline"
                   size="sm"
