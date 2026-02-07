@@ -104,7 +104,7 @@ export default function Dashboard() {
         {/* Desktop Sidebar */}
         <aside className="hidden lg:flex w-64 border-r border-white/[0.08] fixed left-0 top-16 h-[calc(100vh-64px)] flex-col" style={{ backgroundColor: 'rgba(13, 13, 18, 0.5)' }}>
           <nav className="flex flex-col p-4 overflow-y-auto flex-1 space-y-2">
-            <div className="px-4 py-2">
+            <div className="px-4 py-2 -mx-4">
               <h2 className="text-sm font-semibold text-[#B794F4] uppercase tracking-wider">
                 Navigation
               </h2>
@@ -132,33 +132,34 @@ export default function Dashboard() {
               <span className="text-sm font-medium">Search</span>
             </button>
 
-            {/* Creator Menu - Desktop */}
-            <div className="border-t border-white/[0.08] space-y-2">
-              <div className="px-4 py-2">
+            {/* Creator Section */}
+            <div className="border-t border-white/[0.08] pt-2 -mx-4 px-4">
+              <div className="px-0 py-2 -mx-4 mx-0">
                 <h2 className="text-xs font-semibold text-[#B794F4] uppercase tracking-wider">Creator</h2>
               </div>
-              <button
-                onClick={() => setCurrentView('upload')}
-                className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
-              >
-                <Music size={18} className="text-[#FF1F8A] flex-shrink-0" />
-                <span className="text-sm font-medium">Upload</span>
-              </button>
-              <button
-                onClick={() => setCurrentView('earnings')}
-                className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
-              >
-                <DollarSign size={18} className="text-[#B794F4] flex-shrink-0" />
-                <span className="text-sm font-medium">Earnings</span>
-              </button>
-              <button
-                onClick={() => setCurrentView('analytics')}
-                className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
-              >
-                <TrendingUp size={18} className="text-[#B794F4] flex-shrink-0" />
-                <span className="text-sm font-medium">Analytics</span>
-              </button>
             </div>
+
+            <button
+              onClick={() => setCurrentView('upload')}
+              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+            >
+              <Music size={18} className="text-[#FF1F8A] flex-shrink-0" />
+              <span className="text-sm font-medium">Upload</span>
+            </button>
+            <button
+              onClick={() => setCurrentView('earnings')}
+              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+            >
+              <DollarSign size={18} className="text-[#B794F4] flex-shrink-0" />
+              <span className="text-sm font-medium">Earnings</span>
+            </button>
+            <button
+              onClick={() => setCurrentView('analytics')}
+              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+            >
+              <TrendingUp size={18} className="text-[#B794F4] flex-shrink-0" />
+              <span className="text-sm font-medium">Analytics</span>
+            </button>
 
             <button
               onClick={() => setCurrentView('profile')}
