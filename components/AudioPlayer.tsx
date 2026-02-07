@@ -76,7 +76,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
 
   return (
     <div
-      className="fixed bottom-0 lg:bottom-16 left-0 right-0 z-40 border-t border-white/[0.08] p-4"
+      className="fixed bottom-0 lg:bottom-16 left-0 lg:left-64 right-0 z-40 border-t border-white/[0.08] p-4"
       style={{
         backgroundColor: 'rgba(24, 24, 28, 0.95)',
         backdropFilter: 'blur(16px)',
