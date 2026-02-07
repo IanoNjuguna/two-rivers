@@ -33,8 +33,8 @@ export default function ConnectHeader({
           className="bg-cyber-pink hover:bg-cyber-pink/90 text-white font-semibold"
         >
           <Wallet size={16} className="mr-2" />
-          <span className="hidden sm:inline">Connect Wallet</span>
-          <span className="sm:hidden">Connect</span>
+          <span className="hidden sm:inline">Login</span>
+          <span className="sm:hidden">Login</span>
         </Button>
       )}
     </div>
