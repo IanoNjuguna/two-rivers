@@ -149,6 +149,39 @@ export default function Dashboard() {
                 >
                   <button
                     onClick={() => {
+                      setCurrentView('home')
+                      setHeaderMenuOpen(false)
+                    }}
+                    className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
+                  >
+                    <Home size={16} className="text-[#FF1F8A] flex-shrink-0" />
+                    <span className="font-medium">Home</span>
+                  </button>
+                  <div className="border-t border-white/[0.05]" />
+                  <button
+                    onClick={() => {
+                      setCurrentView('library')
+                      setHeaderMenuOpen(false)
+                    }}
+                    className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
+                  >
+                    <Library size={16} className="text-[#B794F4] flex-shrink-0" />
+                    <span className="font-medium">Library</span>
+                  </button>
+                  <div className="border-t border-white/[0.05]" />
+                  <button
+                    onClick={() => {
+                      setCurrentView('search')
+                      setHeaderMenuOpen(false)
+                    }}
+                    className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
+                  >
+                    <Search size={16} className="text-[#B794F4] flex-shrink-0" />
+                    <span className="font-medium">Search</span>
+                  </button>
+                  <div className="border-t border-white/[0.05]" />
+                  <button
+                    onClick={() => {
                       setCurrentView('profile')
                       setHeaderMenuOpen(false)
                     }}
@@ -450,27 +483,6 @@ export default function Dashboard() {
 
       {/* Audio Player */}
       <AudioPlayer playerState={playerState} />
-
-      {/* Mobile Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 lg:hidden z-40 border-t border-white/[0.08]" style={{ backgroundColor: 'rgba(13, 13, 18, 0.95)' }}>
-        <div className="flex items-center justify-around h-16">
-          <NavItemMobile 
-            icon={<Home size={20} />} 
-            active={currentView === 'home'}
-            onClick={() => setCurrentView('home')}
-          />
-          <NavItemMobile 
-            icon={<Library size={20} />}
-            active={currentView === 'library'}
-            onClick={() => setCurrentView('library')}
-          />
-          <NavItemMobile 
-            icon={<Search size={20} />}
-            active={currentView === 'search'}
-            onClick={() => setCurrentView('search')}
-          />
-        </div>
-      </nav>
     </div>
   )
 }
