@@ -91,24 +91,26 @@ export default function Dashboard() {
 
           {/* Mobile Actions */}
           <div className="lg:hidden flex items-center gap-2">
-            {/* Mobile Connect Wallet Button */}
-            <button
-              onClick={() => setIsConnected(!isConnected)}
-              className="px-3 py-2 rounded-lg text-sm font-medium transition-colors"
-              style={{
-                backgroundColor: isConnected ? 'rgba(183, 148, 244, 0.1)' : 'rgba(255, 31, 138, 0.1)',
-                color: isConnected ? '#B794F4' : '#FF1F8A',
-                border: `1px solid ${isConnected ? 'rgba(183, 148, 244, 0.3)' : 'rgba(255, 31, 138, 0.3)'}`,
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = isConnected ? 'rgba(183, 148, 244, 0.2)' : 'rgba(255, 31, 138, 0.2)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = isConnected ? 'rgba(183, 148, 244, 0.1)' : 'rgba(255, 31, 138, 0.1)'
-              }}
-            >
-              {isConnected ? 'Connected' : 'Connect'}
-            </button>
+            {/* Mobile Connect Wallet Button - Only show when disconnected */}
+            {!isConnected && (
+              <button
+                onClick={() => setIsConnected(!isConnected)}
+                className="px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+                style={{
+                  backgroundColor: 'rgba(255, 31, 138, 0.1)',
+                  color: '#FF1F8A',
+                  border: '1px solid rgba(255, 31, 138, 0.3)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(255, 31, 138, 0.2)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(255, 31, 138, 0.1)'
+                }}
+              >
+                Connect
+              </button>
+            )}
 
             {/* Hamburger Menu */}
             <div className="relative">
