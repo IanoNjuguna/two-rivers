@@ -120,7 +120,7 @@ export default function Dashboard() {
 
       {/* Mobile Menu */}
       {headerMenuOpen && (
-        <div className="lg:hidden fixed inset-0 top-16 z-40" style={{ backgroundColor: '#0D0D12' }}>
+        <div className="lg:hidden fixed inset-0 top-16 z-40 animate-slide-in-down" style={{ backgroundColor: '#0D0D12' }}>
           <nav className="flex flex-col p-4 space-y-2 h-full overflow-y-auto">
             <div className="px-0 py-2">
               <h2 className="text-sm font-semibold text-[#B794F4] uppercase tracking-wider">
@@ -325,7 +325,7 @@ export default function Dashboard() {
         <main className="flex-1 overflow-y-auto pb-80 lg:pb-0">
           <div className="p-6 max-w-7xl mx-auto">
             {currentView === 'home' && (
-              <div className="space-y-6">
+              <div className="space-y-6 animate-fade-in">
                 <div>
                   <h2 className="text-2xl font-bold mb-2">Discover Music</h2>
                 </div>
