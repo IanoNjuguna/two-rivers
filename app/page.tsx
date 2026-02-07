@@ -126,106 +126,108 @@ export default function Dashboard() {
               </button>
             )}
 
-            {/* Hamburger Menu */}
-            <div className="relative">
-              <button
-                onClick={() => setHeaderMenuOpen(!headerMenuOpen)}
-                className="p-2 hover:bg-white/[0.05] rounded-lg transition-colors"
-                style={{ color: headerMenuOpen ? '#FF1F8A' : 'rgba(255, 255, 255, 0.7)' }}
-              >
-                <Menu size={20} />
-              </button>
-
-              {/* Hamburger Dropdown Menu */}
-              {headerMenuOpen && (
-                <div
-                  className="absolute top-full right-0 mt-2 w-56 rounded-lg overflow-hidden border border-white/10 z-50"
-                  style={{
-                    backgroundColor: 'rgba(24, 24, 28, 0.9)',
-                    backdropFilter: 'blur(16px)',
-                    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(255, 31, 138, 0.1)',
-                    animation: 'slideUpSpring 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                  }}
+            {/* Hamburger Menu - Only show when connected */}
+            {isConnected && (
+              <div className="relative">
+                <button
+                  onClick={() => setHeaderMenuOpen(!headerMenuOpen)}
+                  className="p-2 hover:bg-white/[0.05] rounded-lg transition-colors"
+                  style={{ color: headerMenuOpen ? '#FF1F8A' : 'rgba(255, 255, 255, 0.7)' }}
                 >
-                  <button
-                    onClick={() => {
-                      setCurrentView('home')
-                      setHeaderMenuOpen(false)
+                  <Menu size={20} />
+                </button>
+
+                {/* Hamburger Dropdown Menu */}
+                {headerMenuOpen && (
+                  <div
+                    className="absolute top-full right-0 mt-2 w-56 rounded-lg overflow-hidden border border-white/10 z-50"
+                    style={{
+                      backgroundColor: 'rgba(24, 24, 28, 0.9)',
+                      backdropFilter: 'blur(16px)',
+                      boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(255, 31, 138, 0.1)',
+                      animation: 'slideUpSpring 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
                     }}
-                    className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
                   >
-                    <Home size={16} className="text-[#FF1F8A] flex-shrink-0" />
-                    <span className="font-medium">Home</span>
-                  </button>
-                  <div className="border-t border-white/[0.05]" />
-                  <button
-                    onClick={() => {
-                      setCurrentView('library')
-                      setHeaderMenuOpen(false)
-                    }}
-                    className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
-                  >
-                    <Library size={16} className="text-[#B794F4] flex-shrink-0" />
-                    <span className="font-medium">Library</span>
-                  </button>
-                  <div className="border-t border-white/[0.05]" />
-                  <button
-                    onClick={() => {
-                      setCurrentView('search')
-                      setHeaderMenuOpen(false)
-                    }}
-                    className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
-                  >
-                    <Search size={16} className="text-[#B794F4] flex-shrink-0" />
-                    <span className="font-medium">Search</span>
-                  </button>
-                  <div className="border-t border-white/[0.05]" />
-                  <button
-                    onClick={() => {
-                      setCurrentView('profile')
-                      setHeaderMenuOpen(false)
-                    }}
-                    className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
-                  >
-                    <User size={16} className="text-[#B794F4] flex-shrink-0" />
-                    <span className="font-medium">Profile</span>
-                  </button>
-                  <div className="border-t border-white/[0.05]" />
-                  <button
-                    onClick={() => {
-                      setCurrentView('upload')
-                      setHeaderMenuOpen(false)
-                    }}
-                    className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
-                  >
-                    <Music size={16} className="text-[#FF1F8A] flex-shrink-0" />
-                    <span className="font-medium">Upload Track</span>
-                  </button>
-                  <div className="border-t border-white/[0.05]" />
-                  <button
-                    onClick={() => {
-                      setCurrentView('earnings')
-                      setHeaderMenuOpen(false)
-                    }}
-                    className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
-                  >
-                    <DollarSign size={16} className="text-[#B794F4] flex-shrink-0" />
-                    <span className="font-medium">View Earnings</span>
-                  </button>
-                  <div className="border-t border-white/[0.05]" />
-                  <button
-                    onClick={() => {
-                      setCurrentView('analytics')
-                      setHeaderMenuOpen(false)
-                    }}
-                    className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
-                  >
-                    <TrendingUp size={16} className="text-[#B794F4] flex-shrink-0" />
-                    <span className="font-medium">Analytics</span>
-                  </button>
-                </div>
-              )}
-            </div>
+                    <button
+                      onClick={() => {
+                        setCurrentView('home')
+                        setHeaderMenuOpen(false)
+                      }}
+                      className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
+                    >
+                      <Home size={16} className="text-[#FF1F8A] flex-shrink-0" />
+                      <span className="font-medium">Home</span>
+                    </button>
+                    <div className="border-t border-white/[0.05]" />
+                    <button
+                      onClick={() => {
+                        setCurrentView('library')
+                        setHeaderMenuOpen(false)
+                      }}
+                      className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
+                    >
+                      <Library size={16} className="text-[#B794F4] flex-shrink-0" />
+                      <span className="font-medium">Library</span>
+                    </button>
+                    <div className="border-t border-white/[0.05]" />
+                    <button
+                      onClick={() => {
+                        setCurrentView('search')
+                        setHeaderMenuOpen(false)
+                      }}
+                      className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
+                    >
+                      <Search size={16} className="text-[#B794F4] flex-shrink-0" />
+                      <span className="font-medium">Search</span>
+                    </button>
+                    <div className="border-t border-white/[0.05]" />
+                    <button
+                      onClick={() => {
+                        setCurrentView('profile')
+                        setHeaderMenuOpen(false)
+                      }}
+                      className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
+                    >
+                      <User size={16} className="text-[#B794F4] flex-shrink-0" />
+                      <span className="font-medium">Profile</span>
+                    </button>
+                    <div className="border-t border-white/[0.05]" />
+                    <button
+                      onClick={() => {
+                        setCurrentView('upload')
+                        setHeaderMenuOpen(false)
+                      }}
+                      className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
+                    >
+                      <Music size={16} className="text-[#FF1F8A] flex-shrink-0" />
+                      <span className="font-medium">Upload Track</span>
+                    </button>
+                    <div className="border-t border-white/[0.05]" />
+                    <button
+                      onClick={() => {
+                        setCurrentView('earnings')
+                        setHeaderMenuOpen(false)
+                      }}
+                      className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
+                    >
+                      <DollarSign size={16} className="text-[#B794F4] flex-shrink-0" />
+                      <span className="font-medium">View Earnings</span>
+                    </button>
+                    <div className="border-t border-white/[0.05]" />
+                    <button
+                      onClick={() => {
+                        setCurrentView('analytics')
+                        setHeaderMenuOpen(false)
+                      }}
+                      className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
+                    >
+                      <TrendingUp size={16} className="text-[#B794F4] flex-shrink-0" />
+                      <span className="font-medium">Analytics</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </header>
@@ -241,56 +243,63 @@ export default function Dashboard() {
               </h2>
             </div>
 
-            <NavItemDesktop 
-              icon={<Home size={18} />} 
-              label="Home" 
-              active={currentView === 'home'}
+            <button
               onClick={() => setCurrentView('home')}
-            />
-            <NavItemDesktop 
-              icon={<Library size={18} />} 
-              label="Library"
-              active={currentView === 'library'}
+              className="flex items-center gap-3 px-4 py-3 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+            >
+              <Home size={18} className="text-[#FF1F8A] flex-shrink-0" />
+              <span className="text-sm font-medium">Home</span>
+            </button>
+            <button
               onClick={() => setCurrentView('library')}
-            />
-            <NavItemDesktop 
-              icon={<Search size={18} />} 
-              label="Search"
-              active={currentView === 'search'}
+              className="flex items-center gap-3 px-4 py-3 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+            >
+              <Library size={18} className="text-[#B794F4] flex-shrink-0" />
+              <span className="text-sm font-medium">Library</span>
+            </button>
+            <button
               onClick={() => setCurrentView('search')}
-            />
+              className="flex items-center gap-3 px-4 py-3 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+            >
+              <Search size={18} className="text-[#B794F4] flex-shrink-0" />
+              <span className="text-sm font-medium">Search</span>
+            </button>
 
             {/* Creator Menu - Desktop */}
             <div className="border-t border-white/[0.08] mt-2 pt-2">
               <div className="px-4 py-3 mb-2">
                 <h2 className="text-xs font-semibold text-[#B794F4] uppercase tracking-wider">Creator</h2>
               </div>
-              <NavItemDesktop 
-                icon={<Music size={18} />} 
-                label="Upload"
-                active={currentView === 'upload'}
+              <button
                 onClick={() => setCurrentView('upload')}
-              />
-              <NavItemDesktop 
-                icon={<DollarSign size={18} />} 
-                label="Earnings"
-                active={currentView === 'earnings'}
+                className="flex items-center gap-3 px-4 py-3 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+              >
+                <Music size={18} className="text-[#FF1F8A] flex-shrink-0" />
+                <span className="text-sm font-medium">Upload</span>
+              </button>
+              <button
                 onClick={() => setCurrentView('earnings')}
-              />
-              <NavItemDesktop 
-                icon={<TrendingUp size={18} />} 
-                label="Analytics"
-                active={currentView === 'analytics'}
+                className="flex items-center gap-3 px-4 py-3 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+              >
+                <DollarSign size={18} className="text-[#B794F4] flex-shrink-0" />
+                <span className="text-sm font-medium">Earnings</span>
+              </button>
+              <button
                 onClick={() => setCurrentView('analytics')}
-              />
+                className="flex items-center gap-3 px-4 py-3 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+              >
+                <TrendingUp size={18} className="text-[#B794F4] flex-shrink-0" />
+                <span className="text-sm font-medium">Analytics</span>
+              </button>
             </div>
 
-            <NavItemDesktop 
-              icon={<User size={18} />} 
-              label="Profile"
-              active={currentView === 'profile'}
+            <button
               onClick={() => setCurrentView('profile')}
-            />
+              className="flex items-center gap-3 px-4 py-3 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+            >
+              <User size={18} className="text-[#B794F4] flex-shrink-0" />
+              <span className="text-sm font-medium">Profile</span>
+            </button>
 
             {isConnected && (
               <div className="mt-auto pt-4 border-t border-white/[0.08]">
@@ -481,55 +490,5 @@ export default function Dashboard() {
       {/* Audio Player */}
       <AudioPlayer playerState={playerState} />
     </div>
-  )
-}
-
-function NavItemDesktop({
-  icon,
-  label,
-  active,
-  onClick,
-}: {
-  icon: React.ReactNode
-  label: string
-  active?: boolean
-  onClick?: () => void
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition ${
-        active
-          ? 'text-[#FF1F8A] border border-[#FF1F8A]'
-          : 'text-white/70 hover:text-white hover:bg-white/[0.05]'
-      }`}
-      style={active ? { backgroundColor: 'rgba(255, 31, 138, 0.1)' } : {}}
-    >
-      {icon}
-      <span className="text-sm font-medium">{label}</span>
-    </button>
-  )
-}
-
-function NavItemMobile({
-  icon,
-  active,
-  onClick,
-}: {
-  icon: React.ReactNode
-  active?: boolean
-  onClick?: () => void
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={`flex items-center justify-center w-16 h-16 transition ${
-        active
-          ? 'text-[#FF1F8A]'
-          : 'text-white/50 hover:text-white'
-      }`}
-    >
-      {icon}
-    </button>
   )
 }
