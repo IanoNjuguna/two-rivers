@@ -101,13 +101,15 @@ export default function Dashboard() {
 
           {/* Mobile/Tablet Controls */}
           <div className="lg:hidden flex items-center gap-2">
-            {/* Hamburger Menu */}
-            <button
-              onClick={() => setHeaderMenuOpen(!headerMenuOpen)}
-              className="p-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
-            >
-              <Menu size={24} />
-            </button>
+            {/* Hamburger Menu - Only show when connected */}
+            {isConnected && (
+              <button
+                onClick={() => setHeaderMenuOpen(!headerMenuOpen)}
+                className="p-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+              >
+                <Menu size={24} />
+              </button>
+            )}
             {/* Mobile Connect Header */}
             <ConnectHeader isConnected={isConnected} onConnect={() => setIsConnected(true)} />
           </div>
