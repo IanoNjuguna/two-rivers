@@ -230,8 +230,8 @@ export default function Dashboard() {
       <div className="flex flex-col lg:flex-row flex-1 mt-16">
         {/* Sidebar */}
         <aside className="hidden lg:flex w-64 border-r border-white/[0.08] flex-col" style={{ backgroundColor: 'rgba(13, 13, 18, 0.5)' }}>
-          <nav className="flex flex-col p-4 overflow-y-auto flex-1 space-y-2">
-            <div className="px-0 py-2">
+          <nav className="flex flex-col p-4 overflow-y-auto flex-1 space-y-1">
+            <div className="px-0 py-3 mb-1">
               <h2 className="text-sm font-semibold text-[#B794F4] uppercase tracking-wider">
                 Navigation
               </h2>
@@ -259,9 +259,9 @@ export default function Dashboard() {
               <span className="text-sm font-medium">Search</span>
             </button>
 
-            <div className="border-t border-white/[0.08]" />
+            <div className="border-t border-white/[0.08] my-2" />
 
-            <div className="px-0 py-2">
+            <div className="px-0 py-3 mb-1">
               <h2 className="text-xs font-semibold text-[#B794F4] uppercase tracking-wider">Creator</h2>
             </div>
 
