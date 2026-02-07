@@ -8,6 +8,7 @@ import MyStudioGrid from '@/components/MyStudioGrid'
 import ConnectHeader from '@/components/ConnectHeader'
 import EarningsView from '@/components/EarningsView'
 import AudioPlayer from '@/components/AudioPlayer'
+import Footer from '@/components/Footer'
 import { useAudioPlayer } from '@/hooks/useAudioPlayer'
 
 const mockSongs = [
@@ -485,6 +486,9 @@ export default function Dashboard() {
             )}
           </div>
         </main>
+
+        {/* Footer */}
+        <Footer />
       </div>
 
       {/* Audio Player */}
