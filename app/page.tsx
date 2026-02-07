@@ -85,8 +85,22 @@ export default function Dashboard() {
 
   return (
     <div style={{ backgroundColor: '#0D0D12' }} className="min-h-screen text-white flex flex-col">
+      {/* Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-white/[0.08]" style={{ backgroundColor: 'rgba(13, 13, 18, 0.95)', backdropFilter: 'blur(16px)' }}>
+        <div className="h-full px-4 lg:px-6 flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg" style={{ backgroundColor: '#FF1F8A' }} />
+            <span className="font-bold text-lg">Music NFT</span>
+          </div>
+
+          {/* Connect Header on the right */}
+          <ConnectHeader isConnected={isConnected} onConnect={() => setIsConnected(true)} />
+        </div>
+      </header>
+
       {/* Main Layout */}
-      <div className="flex flex-1">
+      <div className="flex flex-1 mt-16">
         {/* Desktop Sidebar */}
         <aside className="hidden lg:flex w-64 border-r border-white/[0.08] fixed left-0 top-16 h-[calc(100vh-64px)] flex-col" style={{ backgroundColor: 'rgba(13, 13, 18, 0.5)' }}>
           <nav className="flex flex-col p-4 gap-2 overflow-y-auto flex-1">
