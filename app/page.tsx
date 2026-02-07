@@ -100,9 +100,9 @@ export default function Dashboard() {
       </header>
 
       {/* Main Layout */}
-      <div className="flex flex-1 mt-16">
+      <div className="flex flex-col lg:flex-row flex-1 mt-16">
         {/* Sidebar */}
-        <aside className="hidden lg:flex w-64 border-r border-white/[0.08] fixed left-0 top-16 h-[calc(100vh-64px)] flex-col" style={{ backgroundColor: 'rgba(13, 13, 18, 0.5)' }}>
+        <aside className="hidden lg:flex w-64 border-r border-white/[0.08] flex-col" style={{ backgroundColor: 'rgba(13, 13, 18, 0.5)' }}>
           <nav className="flex flex-col p-4 overflow-y-auto flex-1 space-y-2">
             <div className="px-0 py-2">
               <h2 className="text-sm font-semibold text-[#B794F4] uppercase tracking-wider">
@@ -193,7 +193,7 @@ export default function Dashboard() {
         </aside>
 
         {/* Content Area */}
-        <main className="flex-1 overflow-y-auto lg:ml-64 pb-48 lg:pb-0">
+        <main className="flex-1 overflow-y-auto pb-80 lg:pb-0">
           <div className="p-6 max-w-7xl mx-auto">
             {currentView === 'home' && (
               <div className="space-y-6">
