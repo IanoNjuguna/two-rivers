@@ -95,17 +95,17 @@ export default function Dashboard() {
             {!isConnected && (
               <button
                 onClick={() => setIsConnected(!isConnected)}
-                className="px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                 style={{
-                  backgroundColor: 'rgba(255, 31, 138, 0.1)',
-                  color: '#FF1F8A',
-                  border: '1px solid rgba(255, 31, 138, 0.3)',
+                  backgroundColor: '#FF1F8A',
+                  color: '#FFFFFF',
+                  border: 'none',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'rgba(255, 31, 138, 0.2)'
+                  e.currentTarget.style.backgroundColor = '#E01A73'
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'rgba(255, 31, 138, 0.1)'
+                  e.currentTarget.style.backgroundColor = '#FF1F8A'
                 }}
               >
                 Connect
