@@ -12,7 +12,7 @@ body {
   }
 
   .glass {
-    @apply bg-white/[0.02] backdrop-blur-md border border-white/[0.08] rounded-xl;
+    @apply bg-white/[0.02] backdrop-blur-md border border-white/[0.08];
   }
 
   .glass-hover {
@@ -65,7 +65,7 @@ body {
     --chart-3: 200 90% 50%;
     --chart-4: 280 85% 55%;
     --chart-5: 340 75% 55%;
-    --radius: 0.75rem;
+    --radius: 0;
     --sidebar-background: 0 0% 3.9%;
     --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 310 98% 51%;
