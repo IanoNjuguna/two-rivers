@@ -26,9 +26,6 @@ export default function ConnectHeader({
               <Copy size={14} className="text-white/60" />
             </button>
           </div>
-          <div className="text-xs bg-lavender/20 border border-lavender/40 px-3 py-2 rounded-lg text-lavender font-medium">
-            Base Sepolia
-          </div>
         </div>
       ) : (
         <Button
