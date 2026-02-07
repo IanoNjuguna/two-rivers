@@ -354,8 +354,6 @@ export default function Dashboard() {
 
       {/* Audio Player */}
       <AudioPlayer playerState={playerState} />
-      {/* Mobile Footer */}
-      <Footer />
     </div>
   )
 }
