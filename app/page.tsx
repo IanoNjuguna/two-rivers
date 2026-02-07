@@ -184,7 +184,7 @@ export default function Dashboard() {
       </header>
 
       {/* Main Layout */}
-      <div className="flex flex-1 pt-0 lg:pt-16">
+      <div className="flex flex-1 pt-16 lg:pt-16">
         {/* Desktop Sidebar */}
         <aside className="hidden lg:flex w-64 border-r border-white/[0.08] fixed left-0 top-16 h-[calc(100vh-64px)] flex-col" style={{ backgroundColor: 'rgba(13, 13, 18, 0.5)' }}>
           <nav className="flex flex-col p-4 gap-2 overflow-y-auto flex-1">
