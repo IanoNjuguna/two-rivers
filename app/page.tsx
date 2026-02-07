@@ -167,16 +167,6 @@ export default function Dashboard() {
               <User size={18} className="text-[#B794F4] flex-shrink-0" />
               <span className="text-sm font-medium">Profile</span>
             </button>
-
-            {isConnected && (
-              <button
-                className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
-                onClick={() => setIsConnected(false)}
-              >
-                <LogOut size={16} className="text-[#B794F4] flex-shrink-0" />
-                <span className="text-sm font-medium">Profile</span>
-              </button>
-            )}
           </nav>
 
           {/* Disconnect Button - Above scrollable nav */}
