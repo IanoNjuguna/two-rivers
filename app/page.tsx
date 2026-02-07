@@ -315,9 +315,6 @@ export default function Dashboard() {
               <div className="space-y-6">
                 <div>
                   <h2 className="text-2xl font-bold mb-2">Discover Music</h2>
-                  <p className="text-white/60">
-                    Explore the latest collaborative music NFTs on Base Sepolia
-                  </p>
                 </div>
                 <MarketplaceGrid songs={mockSongs} isConnected={isConnected} onPlay={handlePlayTrack} />
               </div>
