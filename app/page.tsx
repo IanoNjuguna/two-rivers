@@ -3,7 +3,6 @@
 import React, { useState } from 'react'
 import { Music, LogOut, Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import SongCard from '@/components/SongCard'
 import MarketplaceGrid from '@/components/MarketplaceGrid'
 import MyStudioGrid from '@/components/MyStudioGrid'
@@ -64,6 +63,7 @@ const mockOwnedNFTs = [
 export default function Dashboard() {
   const [isConnected, setIsConnected] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [currentView, setCurrentView] = useState<'marketplace' | 'studio'>('marketplace')
 
   return (
     <div className="min-h-screen bg-midnight text-white">
@@ -107,8 +107,24 @@ export default function Dashboard() {
               </h2>
             </div>
 
-            <NavItem icon={<Music size={18} />} label="Marketplace" active />
-            <NavItem icon={<Music size={18} />} label="My Studio" />
+            <NavItem 
+              icon={<Music size={18} />} 
+              label="Marketplace" 
+              active={currentView === 'marketplace'}
+              onClick={() => {
+                setCurrentView('marketplace')
+                setSidebarOpen(false)
+              }}
+            />
+            <NavItem 
+              icon={<Music size={18} />} 
+              label="My Studio"
+              active={currentView === 'studio'}
+              onClick={() => {
+                setCurrentView('studio')
+                setSidebarOpen(false)
+              }}
+            />
 
             {isConnected && (
               <div className="absolute bottom-4 left-4 right-4">
@@ -132,24 +148,8 @@ export default function Dashboard() {
           onClick={() => sidebarOpen && setSidebarOpen(false)}
         >
           <div className="p-6 max-w-7xl mx-auto">
-            <Tabs defaultValue="marketplace" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 bg-white/[0.05] border border-white/[0.08] mb-8">
-                <TabsTrigger
-                  value="marketplace"
-                  className="text-foreground data-[state=active]:bg-cyber-pink/20 data-[state=active]:text-cyber-pink"
-                >
-                  Music Marketplace
-                </TabsTrigger>
-                <TabsTrigger
-                  value="studio"
-                  className="text-foreground data-[state=active]:bg-cyber-pink/20 data-[state=active]:text-cyber-pink"
-                >
-                  My Studio
-                </TabsTrigger>
-              </TabsList>
-
-              {/* Marketplace Tab */}
-              <TabsContent value="marketplace" className="space-y-6">
+            {currentView === 'marketplace' ? (
+              <div className="space-y-6">
                 <div>
                   <h2 className="text-2xl font-bold mb-2">Music Marketplace</h2>
                   <p className="text-white/60">
@@ -157,10 +157,9 @@ export default function Dashboard() {
                   </p>
                 </div>
                 <MarketplaceGrid songs={mockSongs} isConnected={isConnected} />
-              </TabsContent>
-
-              {/* Studio Tab */}
-              <TabsContent value="studio" className="space-y-6">
+              </div>
+            ) : (
+              <div className="space-y-6">
                 <div>
                   <h2 className="text-2xl font-bold mb-2">My Studio</h2>
                   <p className="text-white/60">
@@ -180,8 +179,8 @@ export default function Dashboard() {
                     </p>
                   </div>
                 )}
-              </TabsContent>
-            </Tabs>
+              </div>
+            )}
           </div>
         </main>
       </div>
@@ -193,13 +192,16 @@ function NavItem({
   icon,
   label,
   active,
+  onClick,
 }: {
   icon: React.ReactNode
   label: string
   active?: boolean
+  onClick?: () => void
 }) {
   return (
     <button
+      onClick={onClick}
       className={`flex items-center gap-3 px-4 py-3 rounded-lg transition ${
         active
           ? 'bg-gradient-to-r from-cyber-pink/20 to-lavender/10 text-cyber-pink border border-cyber-pink/30'
