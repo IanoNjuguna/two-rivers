@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button'
 import MarketplaceGrid from '@/components/MarketplaceGrid'
 import MyStudioGrid from '@/components/MyStudioGrid'
 import ConnectHeader from '@/components/ConnectHeader'
-import NavItem from '@/components/NavItem' // Declare the NavItem variable
 
 const mockSongs = [
   {
@@ -65,15 +64,14 @@ type ViewType = 'home' | 'library' | 'search' | 'upload' | 'profile'
 export default function Dashboard() {
   const [isConnected, setIsConnected] = useState(false)
   const [currentView, setCurrentView] = useState<ViewType>('home')
-  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
-    <div className="min-h-screen bg-midnight text-white flex flex-col">
+    <div style={{ backgroundColor: '#0D0D12' }} className="min-h-screen text-white flex flex-col">
       {/* Header - Desktop Only */}
-      <header className="hidden lg:block fixed top-0 left-0 right-0 z-50 border-b border-white/[0.08] bg-midnight/80 backdrop-blur-md">
+      <header className="hidden lg:block fixed top-0 left-0 right-0 z-50 border-b border-white/[0.08] backdrop-blur-md" style={{ backgroundColor: 'rgba(13, 13, 18, 0.8)' }}>
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-cyber-pink to-lavender flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#FF1F8A] to-[#B794F4] flex items-center justify-center">
               <Music size={18} className="text-white" />
             </div>
             <h1 className="text-xl font-bold">Music NFT</h1>
@@ -89,39 +87,39 @@ export default function Dashboard() {
       {/* Main Layout */}
       <div className="flex flex-1 pt-0 lg:pt-16">
         {/* Desktop Sidebar */}
-        <aside className="hidden lg:flex w-64 border-r border-white/[0.08] bg-midnight/50 backdrop-blur-sm fixed left-0 top-16 h-[calc(100vh-64px)] flex-col">
+        <aside className="hidden lg:flex w-64 border-r border-white/[0.08] fixed left-0 top-16 h-[calc(100vh-64px)] flex-col" style={{ backgroundColor: 'rgba(13, 13, 18, 0.5)' }}>
           <nav className="flex flex-col p-4 gap-2 overflow-y-auto flex-1">
             <div className="px-4 py-3 mb-6">
-              <h2 className="text-sm font-semibold text-lavender uppercase tracking-wider">
+              <h2 className="text-sm font-semibold text-[#B794F4] uppercase tracking-wider">
                 Navigation
               </h2>
             </div>
 
-            <NavItem 
+            <NavItemDesktop 
               icon={<Home size={18} />} 
               label="Home" 
               active={currentView === 'home'}
               onClick={() => setCurrentView('home')}
             />
-            <NavItem 
+            <NavItemDesktop 
               icon={<Library size={18} />} 
               label="Library"
               active={currentView === 'library'}
               onClick={() => setCurrentView('library')}
             />
-            <NavItem 
+            <NavItemDesktop 
               icon={<Search size={18} />} 
               label="Search"
               active={currentView === 'search'}
               onClick={() => setCurrentView('search')}
             />
-            <NavItem 
+            <NavItemDesktop 
               icon={<Upload size={18} />} 
               label="Upload"
               active={currentView === 'upload'}
               onClick={() => setCurrentView('upload')}
             />
-            <NavItem 
+            <NavItemDesktop 
               icon={<User size={18} />} 
               label="Profile"
               active={currentView === 'profile'}
@@ -170,8 +168,8 @@ export default function Dashboard() {
                 {isConnected ? (
                   <MyStudioGrid nfts={mockOwnedNFTs} />
                 ) : (
-                  <div className="glass p-12 text-center rounded-xl">
-                    <Library className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
+                  <div className="p-12 text-center rounded-xl" style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                    <Library className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgba(183, 148, 244, 0.4)' }} />
                     <h3 className="text-xl font-semibold mb-2">
                       Connect Your Wallet
                     </h3>
@@ -191,8 +189,8 @@ export default function Dashboard() {
                     Find artists, tracks, and collections
                   </p>
                 </div>
-                <div className="glass p-12 text-center rounded-xl">
-                  <Search className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
+                <div className="p-12 text-center rounded-xl" style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                  <Search className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgba(183, 148, 244, 0.4)' }} />
                   <h3 className="text-xl font-semibold mb-2">
                     Search Coming Soon
                   </h3>
@@ -212,21 +210,21 @@ export default function Dashboard() {
                   </p>
                 </div>
                 {isConnected ? (
-                  <div className="glass p-12 text-center rounded-xl">
-                    <Upload className="w-12 h-12 mx-auto mb-4 text-cyber-pink/40" />
+                  <div className="p-12 text-center rounded-xl" style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                    <Upload className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgba(255, 31, 138, 0.4)' }} />
                     <h3 className="text-xl font-semibold mb-2">
                       Upload Your Track
                     </h3>
                     <p className="text-white/60 mb-6">
                       Drag and drop your audio file or click to browse
                     </p>
-                    <Button className="bg-cyber-pink hover:bg-cyber-pink/80">
+                    <Button style={{ backgroundColor: '#FF1F8A' }} className="hover:opacity-80">
                       Choose File
                     </Button>
                   </div>
                 ) : (
-                  <div className="glass p-12 text-center rounded-xl">
-                    <Upload className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
+                  <div className="p-12 text-center rounded-xl" style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                    <Upload className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgba(183, 148, 244, 0.4)' }} />
                     <h3 className="text-xl font-semibold mb-2">
                       Connect Your Wallet
                     </h3>
@@ -247,9 +245,9 @@ export default function Dashboard() {
                   </p>
                 </div>
                 {isConnected ? (
-                  <div className="glass p-8 rounded-xl">
+                  <div className="p-8 rounded-xl" style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
                     <div className="flex items-center gap-4 mb-6">
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-r from-cyber-pink to-lavender" />
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-r from-[#FF1F8A] to-[#B794F4]" />
                       <div>
                         <h3 className="text-lg font-semibold">Your Profile</h3>
                         <p className="text-white/60 text-sm">Connected wallet</p>
@@ -265,8 +263,8 @@ export default function Dashboard() {
                     </Button>
                   </div>
                 ) : (
-                  <div className="glass p-12 text-center rounded-xl">
-                    <User className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
+                  <div className="p-12 text-center rounded-xl" style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                    <User className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgba(183, 148, 244, 0.4)' }} />
                     <h3 className="text-xl font-semibold mb-2">
                       Connect Your Wallet
                     </h3>
@@ -282,29 +280,29 @@ export default function Dashboard() {
       </div>
 
       {/* Mobile Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 lg:hidden z-50 border-t border-white/[0.08] bg-midnight/95 backdrop-blur-md">
+      <nav className="fixed bottom-0 left-0 right-0 lg:hidden z-50 border-t border-white/[0.08]" style={{ backgroundColor: 'rgba(13, 13, 18, 0.95)' }}>
         <div className="flex items-center justify-around h-16">
-          <NavItem 
+          <NavItemMobile 
             icon={<Home size={20} />} 
             active={currentView === 'home'}
             onClick={() => setCurrentView('home')}
           />
-          <NavItem 
+          <NavItemMobile 
             icon={<Library size={20} />}
             active={currentView === 'library'}
             onClick={() => setCurrentView('library')}
           />
-          <NavItem 
+          <NavItemMobile 
             icon={<Search size={20} />}
             active={currentView === 'search'}
             onClick={() => setCurrentView('search')}
           />
-          <NavItem 
+          <NavItemMobile 
             icon={<Upload size={20} />}
             active={currentView === 'upload'}
             onClick={() => setCurrentView('upload')}
           />
-          <NavItem 
+          <NavItemMobile 
             icon={<User size={20} />}
             active={currentView === 'profile'}
             onClick={() => setCurrentView('profile')}
@@ -312,5 +310,55 @@ export default function Dashboard() {
         </div>
       </nav>
     </div>
+  )
+}
+
+function NavItemDesktop({
+  icon,
+  label,
+  active,
+  onClick,
+}: {
+  icon: React.ReactNode
+  label: string
+  active?: boolean
+  onClick?: () => void
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition ${
+        active
+          ? 'text-[#FF1F8A] border border-[#FF1F8A]'
+          : 'text-white/70 hover:text-white hover:bg-white/[0.05]'
+      }`}
+      style={active ? { backgroundColor: 'rgba(255, 31, 138, 0.1)' } : {}}
+    >
+      {icon}
+      <span className="text-sm font-medium">{label}</span>
+    </button>
+  )
+}
+
+function NavItemMobile({
+  icon,
+  active,
+  onClick,
+}: {
+  icon: React.ReactNode
+  active?: boolean
+  onClick?: () => void
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex items-center justify-center w-16 h-16 transition ${
+        active
+          ? 'text-[#FF1F8A]'
+          : 'text-white/50 hover:text-white'
+      }`}
+    >
+      {icon}
+    </button>
   )
 }
