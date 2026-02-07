@@ -276,7 +276,7 @@ export default function Dashboard() {
         </aside>
 
         {/* Content Area */}
-        <main className="flex-1 overflow-y-auto lg:ml-64 pb-20 lg:pb-0">
+        <main className="flex-1 overflow-y-auto lg:ml-64 pb-48 lg:pb-0">
           <div className="p-6 max-w-7xl mx-auto">
             {currentView === 'home' && (
               <div className="space-y-6">
