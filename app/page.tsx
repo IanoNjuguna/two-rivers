@@ -350,17 +350,17 @@ export default function Dashboard() {
             )}
           </div>
         </main>
-
-        {/* Footer for disconnected users */}
-        {!isConnected && (
-          <div className="px-6 py-8 border-t border-white/[0.08]">
-            <Footer />
-          </div>
-        )}
       </div>
 
       {/* Audio Player */}
       <AudioPlayer playerState={playerState} />
+
+      {/* Mobile-only Footer for disconnected users */}
+      {!isConnected && (
+        <footer className="lg:hidden border-t border-white/[0.08] px-4 py-6">
+          <Footer />
+        </footer>
+      )}
     </div>
   )
 }
