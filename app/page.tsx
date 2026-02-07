@@ -363,12 +363,10 @@ export default function Dashboard() {
       {/* Audio Player */}
       <AudioPlayer playerState={playerState} />
 
-      {/* Mobile-only Footer for disconnected users */}
-      {!isConnected && (
-        <footer className="lg:hidden border-t border-white/[0.08] px-4 py-6">
-          <Footer />
-        </footer>
-      )}
+      {/* Mobile-only Footer */}
+      <footer className="lg:hidden px-4 py-6">
+        <Footer />
+      </footer>
     </div>
   )
 }
