@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Music, Home, Library, Search, Plus, User, LogOut, X, Upload, DollarSign, TrendingUp } from 'lucide-react'
+import { Menu, Home, Library, Search, DollarSign, TrendingUp, User, LogOut, Plus, Music } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import MarketplaceGrid from '@/components/MarketplaceGrid'
 import MyStudioGrid from '@/components/MyStudioGrid'
@@ -66,23 +66,96 @@ export default function Dashboard() {
   const [isConnected, setIsConnected] = useState(false)
   const [currentView, setCurrentView] = useState<ViewType>('home')
   const [creatorMenuOpen, setCreatorMenuOpen] = useState(false)
+  const [headerMenuOpen, setHeaderMenuOpen] = useState(false)
 
   return (
     <div style={{ backgroundColor: '#0D0D12' }} className="min-h-screen text-white flex flex-col">
-      {/* Header - Desktop Only */}
-      <header className="hidden lg:block fixed top-0 left-0 right-0 z-50 border-b border-white/[0.08] backdrop-blur-md" style={{ backgroundColor: 'rgba(13, 13, 18, 0.8)' }}>
-        <div className="flex items-center justify-between px-6 py-4">
+      {/* Header - Visible on all sizes */}
+      <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/[0.08] backdrop-blur-md" style={{ backgroundColor: 'rgba(13, 13, 18, 0.8)' }}>
+        <div className="flex items-center justify-between px-4 lg:px-6 py-4">
+          {/* Logo */}
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#FF1F8A] to-[#B794F4] flex items-center justify-center">
               <Music size={18} className="text-white" />
             </div>
-            <h1 className="text-xl font-bold">Music NFT</h1>
+            <h1 className="text-lg lg:text-xl font-bold">Music NFT</h1>
           </div>
 
-          <ConnectHeader
-            isConnected={isConnected}
-            onConnect={() => setIsConnected(true)}
-          />
+          {/* Desktop Connect Button */}
+          <div className="hidden lg:block">
+            <ConnectHeader
+              isConnected={isConnected}
+              onConnect={() => setIsConnected(true)}
+            />
+          </div>
+
+          {/* Mobile Hamburger Menu */}
+          <div className="lg:hidden relative">
+            <button
+              onClick={() => setHeaderMenuOpen(!headerMenuOpen)}
+              className="p-2 hover:bg-white/[0.05] rounded-lg transition-colors"
+              style={{ color: headerMenuOpen ? '#FF1F8A' : 'rgba(255, 255, 255, 0.7)' }}
+            >
+              <Menu size={20} />
+            </button>
+
+            {/* Hamburger Dropdown Menu */}
+            {headerMenuOpen && (
+              <div
+                className="absolute top-full right-0 mt-2 w-56 rounded-lg overflow-hidden border border-white/10 z-50"
+                style={{
+                  backgroundColor: 'rgba(24, 24, 28, 0.9)',
+                  backdropFilter: 'blur(16px)',
+                  boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(255, 31, 138, 0.1)',
+                  animation: 'slideUpSpring 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                }}
+              >
+                <button
+                  onClick={() => {
+                    setCurrentView('profile')
+                    setHeaderMenuOpen(false)
+                  }}
+                  className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
+                >
+                  <User size={16} className="text-[#B794F4] flex-shrink-0" />
+                  <span className="font-medium">Profile</span>
+                </button>
+                <div className="border-t border-white/[0.05]" />
+                <button
+                  onClick={() => {
+                    setCurrentView('upload')
+                    setHeaderMenuOpen(false)
+                  }}
+                  className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
+                >
+                  <Music size={16} className="text-[#FF1F8A] flex-shrink-0" />
+                  <span className="font-medium">Upload Track</span>
+                </button>
+                <div className="border-t border-white/[0.05]" />
+                <button
+                  onClick={() => {
+                    setCurrentView('earnings')
+                    setHeaderMenuOpen(false)
+                  }}
+                  className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
+                >
+                  <DollarSign size={16} className="text-[#B794F4] flex-shrink-0" />
+                  <span className="font-medium">View Earnings</span>
+                </button>
+                <div className="border-t border-white/[0.05]" />
+                <button
+                  onClick={() => {
+                    setCurrentView('analytics')
+                    setHeaderMenuOpen(false)
+                  }}
+                  className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
+                >
+                  <TrendingUp size={16} className="text-[#B794F4] flex-shrink-0" />
+                  <span className="font-medium">Analytics</span>
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </header>
 
