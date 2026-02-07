@@ -261,7 +261,7 @@ export default function Dashboard() {
 
             <div className="border-t border-white/[0.08] my-2" />
 
-            <div className="px-0 py-3 mb-1">
+            <div className="px-0 pt-0 pb-0 mb-1">
               <h2 className="text-sm font-semibold text-[#B794F4] uppercase tracking-wider">Creator</h2>
             </div>
 
