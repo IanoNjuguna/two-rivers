@@ -16,7 +16,7 @@ body {
   }
 
   .glass-hover {
-    @apply glass transition-all duration-300 hover:bg-white/[0.05] hover:border-white/[0.12] hover:shadow-card-glow;
+    @apply glass transition-all duration-300 hover:bg-white/[0.05] hover:border-white/[0.12];
   }
 
   .gradient-text {

@@ -30,7 +30,7 @@ export default function ConnectHeader({
       ) : (
         <Button
           onClick={onConnect}
-          className="bg-cyber-pink hover:bg-cyber-pink/90 text-white font-semibold shadow-lg shadow-cyber-pink/20"
+          className="bg-cyber-pink hover:bg-cyber-pink/90 text-white font-semibold"
         >
           <Wallet size={16} className="mr-2" />
           <span className="hidden sm:inline">Connect Wallet</span>
