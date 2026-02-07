@@ -3,7 +3,11 @@
 import React from 'react'
 import { TrendingUp, Calendar, DollarSign } from 'lucide-react'
 
-export default function EarningsView() {
+interface EarningsViewProps {
+  isConnected: boolean
+}
+
+export default function EarningsView({ isConnected }: EarningsViewProps) {
   const totalEarnings = '12.5 ETH'
   const monthlyEarnings = '2.3 ETH'
   const pendingPayout = '1.8 ETH'
@@ -14,6 +18,29 @@ export default function EarningsView() {
     { date: '2024-02-03', track: 'Digital Echo', amount: '1.2 ETH', royalties: 15 },
     { date: '2024-02-04', track: 'Synth Wave', amount: '0.3 ETH', royalties: 4 },
   ]
+
+  if (!isConnected) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-2xl font-bold mb-2">Your Earnings</h2>
+          <p className="text-white/60">Track your revenue from music NFT sales and royalties</p>
+        </div>
+        <div
+          className="border border-white/[0.08] rounded-lg p-12 text-center"
+          style={{ backgroundColor: 'rgba(13, 13, 18, 0.3)' }}
+        >
+          <div className="w-16 h-16 rounded-full mx-auto mb-4" style={{ backgroundColor: 'rgba(183, 148, 244, 0.1)' }}>
+            <div className="w-full h-full flex items-center justify-center text-[#B794F4]">
+              <DollarSign size={32} />
+            </div>
+          </div>
+          <h3 className="text-xl font-semibold mb-2">Sign In to View Your Earnings</h3>
+          <p className="text-white/60">Connect your wallet to see your earnings and manage payouts</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">

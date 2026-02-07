@@ -292,7 +292,7 @@ export default function Dashboard() {
             )}
 
             {currentView === 'earnings' && (
-              <EarningsView />
+              <EarningsView isConnected={isConnected} />
             )}
 
             {currentView === 'analytics' && (
