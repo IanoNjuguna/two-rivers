@@ -185,7 +185,7 @@ export default function Dashboard() {
           )}
 
           {/* Footer Section */}
-          <div className="border-t border-white/[0.08] p-4">
+          <div className="p-4">
             <Footer />
           </div>
         </aside>
