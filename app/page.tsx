@@ -303,20 +303,31 @@ export default function Dashboard() {
             </button>
 
             {isConnected && (
-              <div className="mt-auto pt-4 border-t border-white/[0.08] space-y-4">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full border-white/[0.12] text-white hover:bg-white/[0.05] bg-transparent"
-                  onClick={() => setIsConnected(false)}
-                >
-                  <LogOut size={16} className="mr-2" />
-                  Disconnect
-                </Button>
-                <Footer />
-              </div>
+              <button
+                className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+                onClick={() => setIsConnected(false)}
+              >
+                <LogOut size={16} className="text-[#B794F4] flex-shrink-0" />
+                <span className="text-sm font-medium">Profile</span>
+              </button>
             )}
           </nav>
+
+          {/* Disconnect and Footer - Below scrollable nav */}
+          {isConnected && (
+            <div className="border-t border-white/[0.08] p-4 space-y-4">
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full border-white/[0.12] text-white hover:bg-white/[0.05] bg-transparent"
+                onClick={() => setIsConnected(false)}
+              >
+                <LogOut size={16} className="mr-2" />
+                Disconnect
+              </Button>
+              <Footer />
+            </div>
+          )}
         </aside>
 
         {/* Content Area */}
