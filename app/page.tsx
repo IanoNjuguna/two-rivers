@@ -99,83 +99,73 @@ export default function Dashboard() {
         </div>
       </header>
 
-      {/* Main Layout */}
-      <div className="flex flex-1 mt-16">
-        {/* Desktop Sidebar */}
-        <aside className="hidden lg:flex w-64 border-r border-white/[0.08] fixed left-0 top-16 h-[calc(100vh-64px)] flex-col" style={{ backgroundColor: 'rgba(13, 13, 18, 0.5)' }}>
-          <nav className="flex flex-col p-4 overflow-y-auto flex-1 space-y-2">
-            <div className="px-0 py-2">
-              <h2 className="text-sm font-semibold text-[#B794F4] uppercase tracking-wider">
-                Navigation
-              </h2>
-            </div>
-
+      {/* Navigation Bar */}
+      <nav className="border-b border-white/[0.08] px-4 lg:px-6 py-3" style={{ backgroundColor: 'rgba(13, 13, 18, 0.5)' }}>
+        <div className="flex items-center justify-between gap-4 max-w-full overflow-x-auto">
+          {/* Navigation Items */}
+          <div className="flex items-center gap-2 lg:gap-4">
             <button
               onClick={() => setCurrentView('home')}
-              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+              className="flex items-center gap-2 px-3 lg:px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05] whitespace-nowrap"
             >
               <Home size={18} className="text-[#FF1F8A] flex-shrink-0" />
-              <span className="text-sm font-medium">Home</span>
+              <span className="text-sm font-medium hidden sm:inline">Home</span>
             </button>
             <button
               onClick={() => setCurrentView('library')}
-              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+              className="flex items-center gap-2 px-3 lg:px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05] whitespace-nowrap"
             >
               <Library size={18} className="text-[#B794F4] flex-shrink-0" />
-              <span className="text-sm font-medium">Library</span>
+              <span className="text-sm font-medium hidden sm:inline">Library</span>
             </button>
             <button
               onClick={() => setCurrentView('search')}
-              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+              className="flex items-center gap-2 px-3 lg:px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05] whitespace-nowrap"
             >
               <Search size={18} className="text-[#B794F4] flex-shrink-0" />
-              <span className="text-sm font-medium">Search</span>
+              <span className="text-sm font-medium hidden sm:inline">Search</span>
             </button>
 
-            <div className="border-t border-white/[0.08]" />
-
-            <div className="px-0 py-2">
-              <h2 className="text-xs font-semibold text-[#B794F4] uppercase tracking-wider">Creator</h2>
+            {/* Creator Section */}
+            <div className="border-l border-white/[0.08] pl-2 lg:pl-4 flex items-center gap-2 lg:gap-4">
+              <button
+                onClick={() => setCurrentView('upload')}
+                className="flex items-center gap-2 px-3 lg:px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05] whitespace-nowrap"
+              >
+                <Music size={18} className="text-[#FF1F8A] flex-shrink-0" />
+                <span className="text-sm font-medium hidden sm:inline">Upload</span>
+              </button>
+              <button
+                onClick={() => setCurrentView('earnings')}
+                className="flex items-center gap-2 px-3 lg:px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05] whitespace-nowrap"
+              >
+                <DollarSign size={18} className="text-[#B794F4] flex-shrink-0" />
+                <span className="text-sm font-medium hidden sm:inline">Earnings</span>
+              </button>
+              <button
+                onClick={() => setCurrentView('analytics')}
+                className="flex items-center gap-2 px-3 lg:px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05] whitespace-nowrap"
+              >
+                <TrendingUp size={18} className="text-[#B794F4] flex-shrink-0" />
+                <span className="text-sm font-medium hidden sm:inline">Analytics</span>
+              </button>
+              <button
+                onClick={() => setCurrentView('profile')}
+                className="flex items-center gap-2 px-3 lg:px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05] whitespace-nowrap"
+              >
+                <User size={18} className="text-[#B794F4] flex-shrink-0" />
+                <span className="text-sm font-medium hidden sm:inline">Profile</span>
+              </button>
             </div>
+          </div>
 
-            <button
-              onClick={() => setCurrentView('upload')}
-              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
-            >
-              <Music size={18} className="text-[#FF1F8A] flex-shrink-0" />
-              <span className="text-sm font-medium">Upload</span>
-            </button>
-            <button
-              onClick={() => setCurrentView('earnings')}
-              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
-            >
-              <DollarSign size={18} className="text-[#B794F4] flex-shrink-0" />
-              <span className="text-sm font-medium">Earnings</span>
-            </button>
-            <button
-              onClick={() => setCurrentView('analytics')}
-              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
-            >
-              <TrendingUp size={18} className="text-[#B794F4] flex-shrink-0" />
-              <span className="text-sm font-medium">Analytics</span>
-            </button>
-
-            <button
-              onClick={() => setCurrentView('profile')}
-              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
-            >
-              <User size={18} className="text-[#B794F4] flex-shrink-0" />
-              <span className="text-sm font-medium">Profile</span>
-            </button>
-          </nav>
-
-          {/* Disconnect Button - Above scrollable nav */}
+          {/* Disconnect Button */}
           {isConnected && (
-            <div className="border-t border-white/[0.08] p-4">
+            <div className="border-l border-white/[0.08] pl-4 flex-shrink-0">
               <Button
                 variant="outline"
                 size="sm"
-                className="w-full border-white/[0.12] text-white hover:bg-white/[0.05] bg-transparent"
+                className="border-white/[0.12] text-white hover:bg-white/[0.05] bg-transparent whitespace-nowrap"
                 onClick={() => setIsConnected(false)}
               >
                 <LogOut size={16} className="mr-2" />
@@ -183,126 +173,89 @@ export default function Dashboard() {
               </Button>
             </div>
           )}
-
-          <div className="border-t border-white/[0.08]" />
-
-          {/* Footer Section */}
-          <div className="p-4">
-            <Footer />
-          </div>
-        </aside>
-
-        {/* Content Area */}
-        <main className="flex-1 overflow-y-auto lg:ml-64 pb-48 lg:pb-0">
-          <div className="p-6 max-w-7xl mx-auto">
-            {currentView === 'home' && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2">Discover Music</h2>
-                </div>
-                <MarketplaceGrid songs={mockSongs} isConnected={isConnected} onPlay={handlePlayTrack} />
+        </div>
+      </nav>
+      <main className="flex-1">
+        <div className="p-6 max-w-7xl mx-auto">
+          {currentView === 'home' && (
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold mb-2">Discover Music</h2>
               </div>
-            )}
+              <MarketplaceGrid songs={mockSongs} isConnected={isConnected} onPlay={handlePlayTrack} />
+            </div>
+          )}
 
-            {currentView === 'library' && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2">My Library</h2>
-                  <p className="text-white/60">
-                    Your saved tracks and NFTs
-                  </p>
-                </div>
-                {isConnected ? (
-                  <MyStudioGrid nfts={mockOwnedNFTs} />
-                ) : (
-                  <div className="p-12 text-center rounded-xl" style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                    <Library className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgba(183, 148, 244, 0.4)' }} />
-                    <h3 className="text-xl font-semibold mb-2">
-                      Connect Your Wallet
-                    </h3>
-                    <p className="text-white/60">
-                      Connect your wallet to view your library
-                    </p>
-                  </div>
-                )}
+          {currentView === 'library' && (
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold mb-2">My Library</h2>
+                <p className="text-white/60">
+                  Your saved tracks and NFTs
+                </p>
               </div>
-            )}
-
-            {currentView === 'search' && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2">Search</h2>
-                  <p className="text-white/60">
-                    Find artists, tracks, and collections
-                  </p>
-                </div>
+              {isConnected ? (
+                <MyStudioGrid nfts={mockOwnedNFTs} />
+              ) : (
                 <div className="p-12 text-center rounded-xl" style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                  <Search className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgba(183, 148, 244, 0.4)' }} />
+                  <Library className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgba(183, 148, 244, 0.4)' }} />
                   <h3 className="text-xl font-semibold mb-2">
-                    Search Coming Soon
+                    Connect Your Wallet
                   </h3>
                   <p className="text-white/60">
-                    Advanced search functionality will be available soon
+                    Connect your wallet to view your library
                   </p>
                 </div>
+              )}
+            </div>
+          )}
+
+          {currentView === 'search' && (
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold mb-2">Search</h2>
+                <p className="text-white/60">
+                  Find artists, tracks, and collections
+                </p>
               </div>
-            )}
-
-            {currentView === 'upload' && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2">Upload Track</h2>
-                  <p className="text-white/60">
-                    Create and mint your own music NFT
-                  </p>
-                </div>
-                {isConnected ? (
-                  <div className="border border-white/[0.08] rounded-xl p-12 text-center" style={{ backgroundColor: 'rgba(13, 13, 18, 0.3)' }}>
-                    <div className="w-16 h-16 rounded-full mx-auto mb-4" style={{ backgroundColor: 'rgba(255, 31, 138, 0.1)' }}>
-                      <div className="w-full h-full flex items-center justify-center text-[#FF1F8A]">
-                        <Music size={32} />
-                      </div>
-                    </div>
-                    <h3 className="text-xl font-semibold mb-2">
-                      Upload Your Track
-                    </h3>
-                    <p className="text-white/60 mb-6">
-                      Drag and drop your audio file or click to browse
-                    </p>
-                    <Button className="bg-[#FF1F8A] hover:bg-[#E01A73] text-white">
-                      Choose File
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="border border-white/[0.08] rounded-xl p-12 text-center" style={{ backgroundColor: 'rgba(13, 13, 18, 0.3)' }}>
-                    <div className="w-16 h-16 rounded-full mx-auto mb-4" style={{ backgroundColor: 'rgba(183, 148, 244, 0.1)' }}>
-                      <div className="w-full h-full flex items-center justify-center text-[#B794F4]">
-                        <Music size={32} />
-                      </div>
-                    </div>
-                    <h3 className="text-xl font-semibold mb-2">
-                      Connect Your Wallet
-                    </h3>
-                    <p className="text-white/60">
-                      Connect your wallet to upload tracks
-                    </p>
-                  </div>
-                )}
+              <div className="p-12 text-center rounded-xl" style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                <Search className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgba(183, 148, 244, 0.4)' }} />
+                <h3 className="text-xl font-semibold mb-2">
+                  Search Coming Soon
+                </h3>
+                <p className="text-white/60">
+                  Advanced search functionality will be available soon
+                </p>
               </div>
-            )}
+            </div>
+          )}
 
-            {currentView === 'earnings' && (
-              <EarningsView isConnected={isConnected} />
-            )}
-
-            {currentView === 'analytics' && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2">Analytics</h2>
-                  <p className="text-white/60">
-                    View detailed insights about your music performance
+          {currentView === 'upload' && (
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold mb-2">Upload Track</h2>
+                <p className="text-white/60">
+                  Create and mint your own music NFT
+                </p>
+              </div>
+              {isConnected ? (
+                <div className="border border-white/[0.08] rounded-xl p-12 text-center" style={{ backgroundColor: 'rgba(13, 13, 18, 0.3)' }}>
+                  <div className="w-16 h-16 rounded-full mx-auto mb-4" style={{ backgroundColor: 'rgba(255, 31, 138, 0.1)' }}>
+                    <div className="w-full h-full flex items-center justify-center text-[#FF1F8A]">
+                      <Music size={32} />
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">
+                    Upload Your Track
+                  </h3>
+                  <p className="text-white/60 mb-6">
+                    Drag and drop your audio file or click to browse
                   </p>
+                  <Button className="bg-[#FF1F8A] hover:bg-[#E01A73] text-white">
+                    Choose File
+                  </Button>
                 </div>
+              ) : (
                 <div className="border border-white/[0.08] rounded-xl p-12 text-center" style={{ backgroundColor: 'rgba(13, 13, 18, 0.3)' }}>
                   <div className="w-16 h-16 rounded-full mx-auto mb-4" style={{ backgroundColor: 'rgba(183, 148, 244, 0.1)' }}>
                     <div className="w-full h-full flex items-center justify-center text-[#B794F4]">
@@ -310,57 +263,85 @@ export default function Dashboard() {
                     </div>
                   </div>
                   <h3 className="text-xl font-semibold mb-2">
-                    Analytics Coming Soon
+                    Connect Your Wallet
                   </h3>
                   <p className="text-white/60">
-                    Track plays, revenue, and listener insights
+                    Connect your wallet to upload tracks
                   </p>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
+          )}
 
-            {currentView === 'profile' && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2">Profile</h2>
+          {currentView === 'earnings' && (
+            <EarningsView isConnected={isConnected} />
+          )}
+
+          {currentView === 'analytics' && (
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold mb-2">Analytics</h2>
+                <p className="text-white/60">
+                  View detailed insights about your music performance
+                </p>
+              </div>
+              <div className="border border-white/[0.08] rounded-xl p-12 text-center" style={{ backgroundColor: 'rgba(13, 13, 18, 0.3)' }}>
+                <div className="w-16 h-16 rounded-full mx-auto mb-4" style={{ backgroundColor: 'rgba(183, 148, 244, 0.1)' }}>
+                  <div className="w-full h-full flex items-center justify-center text-[#B794F4]">
+                    <Music size={32} />
+                  </div>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">
+                  Analytics Coming Soon
+                </h3>
+                <p className="text-white/60">
+                  Track plays, revenue, and listener insights
+                </p>
+              </div>
+            </div>
+          )}
+
+          {currentView === 'profile' && (
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold mb-2">Profile</h2>
+                <p className="text-white/60">
+                  Manage your account and settings
+                </p>
+              </div>
+              {isConnected ? (
+                <div className="p-8 rounded-xl" style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-r from-[#FF1F8A] to-[#B794F4]" />
+                    <div>
+                      <h3 className="text-lg font-semibold">Your Profile</h3>
+                      <p className="text-white/60 text-sm">Connected wallet</p>
+                    </div>
+                  </div>
+                  <Button
+                    variant="outline"
+                    className="border-white/[0.12] text-white hover:bg-white/[0.05] w-full bg-transparent"
+                    onClick={() => setIsConnected(false)}
+                  >
+                    <LogOut size={16} className="mr-2" />
+                    Disconnect Wallet
+                  </Button>
+                </div>
+              ) : (
+                <div className="p-12 text-center rounded-xl" style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                  <User className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgba(183, 148, 244, 0.4)' }} />
+                  <h3 className="text-xl font-semibold mb-2">
+                    Connect Your Wallet
+                  </h3>
                   <p className="text-white/60">
-                    Manage your account and settings
+                    Sign in to view your profile
                   </p>
                 </div>
-                {isConnected ? (
-                  <div className="p-8 rounded-xl" style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-r from-[#FF1F8A] to-[#B794F4]" />
-                      <div>
-                        <h3 className="text-lg font-semibold">Your Profile</h3>
-                        <p className="text-white/60 text-sm">Connected wallet</p>
-                      </div>
-                    </div>
-                    <Button
-                      variant="outline"
-                      className="border-white/[0.12] text-white hover:bg-white/[0.05] w-full bg-transparent"
-                      onClick={() => setIsConnected(false)}
-                    >
-                      <LogOut size={16} className="mr-2" />
-                      Disconnect Wallet
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="p-12 text-center rounded-xl" style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                    <User className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgba(183, 148, 244, 0.4)' }} />
-                    <h3 className="text-xl font-semibold mb-2">
-                      Connect Your Wallet
-                    </h3>
-                    <p className="text-white/60">
-                      Sign in to view your profile
-                    </p>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </main>
-      </div>
+              )}
+            </div>
+          )}
+        </div>
+      </main>
 
       {/* Audio Player */}
       <AudioPlayer playerState={playerState} />
