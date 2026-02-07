@@ -179,9 +179,9 @@ export default function Dashboard() {
             )}
           </nav>
 
-          {/* Disconnect and Footer - Below scrollable nav */}
-          <div className="border-t border-white/[0.08] p-4 space-y-4">
-            {isConnected && (
+          {/* Disconnect Button - Above scrollable nav */}
+          {isConnected && (
+            <div className="border-t border-white/[0.08] p-4">
               <Button
                 variant="outline"
                 size="sm"
@@ -191,7 +191,11 @@ export default function Dashboard() {
                 <LogOut size={16} className="mr-2" />
                 Disconnect
               </Button>
-            )}
+            </div>
+          )}
+
+          {/* Footer Section */}
+          <div className="border-t border-white/[0.08] p-4">
             <Footer />
           </div>
         </aside>
