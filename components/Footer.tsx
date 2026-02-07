@@ -26,7 +26,7 @@ export default function Footer() {
               </a>
             ))}
           </div>
-          <div className="pt-2">
+          <div className="pt-2 border-t border-white/[0.08]">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-white/50">Language:</span>
               <button className="text-[#FF1F8A] hover:text-[#FF1F8A]/80 transition-colors font-medium">
@@ -52,7 +52,7 @@ export default function Footer() {
               </a>
             ))}
           </div>
-          <div className="pt-2">
+          <div className="pt-2 border-t border-white/[0.08]">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-white/50">Language:</span>
               <button className="text-[#FF1F8A] hover:text-[#FF1F8A]/80 transition-colors font-medium">
