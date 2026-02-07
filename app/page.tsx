@@ -89,72 +89,94 @@ export default function Dashboard() {
             />
           </div>
 
-          {/* Mobile Hamburger Menu */}
-          <div className="lg:hidden relative">
+          {/* Mobile Actions */}
+          <div className="lg:hidden flex items-center gap-2">
+            {/* Mobile Connect Wallet Button */}
             <button
-              onClick={() => setHeaderMenuOpen(!headerMenuOpen)}
-              className="p-2 hover:bg-white/[0.05] rounded-lg transition-colors"
-              style={{ color: headerMenuOpen ? '#FF1F8A' : 'rgba(255, 255, 255, 0.7)' }}
+              onClick={() => setIsConnected(!isConnected)}
+              className="px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+              style={{
+                backgroundColor: isConnected ? 'rgba(183, 148, 244, 0.1)' : 'rgba(255, 31, 138, 0.1)',
+                color: isConnected ? '#B794F4' : '#FF1F8A',
+                border: `1px solid ${isConnected ? 'rgba(183, 148, 244, 0.3)' : 'rgba(255, 31, 138, 0.3)'}`,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = isConnected ? 'rgba(183, 148, 244, 0.2)' : 'rgba(255, 31, 138, 0.2)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = isConnected ? 'rgba(183, 148, 244, 0.1)' : 'rgba(255, 31, 138, 0.1)'
+              }}
             >
-              <Menu size={20} />
+              {isConnected ? 'Connected' : 'Connect'}
             </button>
 
-            {/* Hamburger Dropdown Menu */}
-            {headerMenuOpen && (
-              <div
-                className="absolute top-full right-0 mt-2 w-56 rounded-lg overflow-hidden border border-white/10 z-50"
-                style={{
-                  backgroundColor: 'rgba(24, 24, 28, 0.9)',
-                  backdropFilter: 'blur(16px)',
-                  boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(255, 31, 138, 0.1)',
-                  animation: 'slideUpSpring 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                }}
+            {/* Hamburger Menu */}
+            <div className="relative">
+              <button
+                onClick={() => setHeaderMenuOpen(!headerMenuOpen)}
+                className="p-2 hover:bg-white/[0.05] rounded-lg transition-colors"
+                style={{ color: headerMenuOpen ? '#FF1F8A' : 'rgba(255, 255, 255, 0.7)' }}
               >
-                <button
-                  onClick={() => {
-                    setCurrentView('profile')
-                    setHeaderMenuOpen(false)
+                <Menu size={20} />
+              </button>
+
+              {/* Hamburger Dropdown Menu */}
+              {headerMenuOpen && (
+                <div
+                  className="absolute top-full right-0 mt-2 w-56 rounded-lg overflow-hidden border border-white/10 z-50"
+                  style={{
+                    backgroundColor: 'rgba(24, 24, 28, 0.9)',
+                    backdropFilter: 'blur(16px)',
+                    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(255, 31, 138, 0.1)',
+                    animation: 'slideUpSpring 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
                   }}
-                  className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
                 >
-                  <User size={16} className="text-[#B794F4] flex-shrink-0" />
-                  <span className="font-medium">Profile</span>
-                </button>
-                <div className="border-t border-white/[0.05]" />
-                <button
-                  onClick={() => {
-                    setCurrentView('upload')
-                    setHeaderMenuOpen(false)
-                  }}
-                  className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
-                >
-                  <Music size={16} className="text-[#FF1F8A] flex-shrink-0" />
-                  <span className="font-medium">Upload Track</span>
-                </button>
-                <div className="border-t border-white/[0.05]" />
-                <button
-                  onClick={() => {
-                    setCurrentView('earnings')
-                    setHeaderMenuOpen(false)
-                  }}
-                  className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
-                >
-                  <DollarSign size={16} className="text-[#B794F4] flex-shrink-0" />
-                  <span className="font-medium">View Earnings</span>
-                </button>
-                <div className="border-t border-white/[0.05]" />
-                <button
-                  onClick={() => {
-                    setCurrentView('analytics')
-                    setHeaderMenuOpen(false)
-                  }}
-                  className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
-                >
-                  <TrendingUp size={16} className="text-[#B794F4] flex-shrink-0" />
-                  <span className="font-medium">Analytics</span>
-                </button>
-              </div>
-            )}
+                  <button
+                    onClick={() => {
+                      setCurrentView('profile')
+                      setHeaderMenuOpen(false)
+                    }}
+                    className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
+                  >
+                    <User size={16} className="text-[#B794F4] flex-shrink-0" />
+                    <span className="font-medium">Profile</span>
+                  </button>
+                  <div className="border-t border-white/[0.05]" />
+                  <button
+                    onClick={() => {
+                      setCurrentView('upload')
+                      setHeaderMenuOpen(false)
+                    }}
+                    className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
+                  >
+                    <Music size={16} className="text-[#FF1F8A] flex-shrink-0" />
+                    <span className="font-medium">Upload Track</span>
+                  </button>
+                  <div className="border-t border-white/[0.05]" />
+                  <button
+                    onClick={() => {
+                      setCurrentView('earnings')
+                      setHeaderMenuOpen(false)
+                    }}
+                    className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
+                  >
+                    <DollarSign size={16} className="text-[#B794F4] flex-shrink-0" />
+                    <span className="font-medium">View Earnings</span>
+                  </button>
+                  <div className="border-t border-white/[0.05]" />
+                  <button
+                    onClick={() => {
+                      setCurrentView('analytics')
+                      setHeaderMenuOpen(false)
+                    }}
+                    className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.08] transition-colors duration-150 flex items-center gap-3 text-white/90"
+                  >
+                    <TrendingUp size={16} className="text-[#B794F4] flex-shrink-0" />
+                    <span className="font-medium">Analytics</span>
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </header>
