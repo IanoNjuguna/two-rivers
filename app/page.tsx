@@ -92,15 +92,23 @@ export default function Dashboard() {
         </div>
       </header>
 
+      {/* Mobile Overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 top-16 bg-black/50 lg:hidden z-30"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Main Content */}
-      <div className="flex pt-16">
-        {/* Sidebar */}
+      <div className="flex pt-16 h-[calc(100vh-64px)]">
+        {/* Sidebar - Fixed like Spotify */}
         <aside
-          className={`fixed lg:static left-0 top-16 bottom-0 w-64 border-r border-white/[0.08] bg-midnight/50 backdrop-blur-sm transition-transform duration-300 lg:translate-x-0 ${
-            sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          className={`fixed lg:static left-0 top-16 bottom-0 w-64 border-r border-white/[0.08] bg-midnight/50 backdrop-blur-sm transition-transform duration-300 z-40 ${
+            sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
           }`}
         >
-          <nav className="flex flex-col p-4 gap-2">
+          <nav className="flex flex-col p-4 gap-2 h-full overflow-y-auto">
             <div className="px-4 py-3 mb-6">
               <h2 className="text-sm font-semibold text-lavender uppercase tracking-wider">
                 Navigation
@@ -127,7 +135,7 @@ export default function Dashboard() {
             />
 
             {isConnected && (
-              <div className="absolute bottom-4 left-4 right-4">
+              <div className="mt-auto pt-4 border-t border-white/[0.08]">
                 <Button
                   variant="outline"
                   size="sm"
@@ -143,10 +151,7 @@ export default function Dashboard() {
         </aside>
 
         {/* Content Area */}
-        <main
-          className="flex-1 overflow-auto"
-          onClick={() => sidebarOpen && setSidebarOpen(false)}
-        >
+        <main className="flex-1 overflow-y-auto">
           <div className="p-6 max-w-7xl mx-auto">
             {currentView === 'marketplace' ? (
               <div className="space-y-6">
