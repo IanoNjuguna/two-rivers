@@ -94,10 +94,135 @@ export default function Dashboard() {
             <span className="font-bold text-lg">Music NFT</span>
           </div>
 
-          {/* Connect Header on the right */}
-          <ConnectHeader isConnected={isConnected} onConnect={() => setIsConnected(true)} />
+          {/* Desktop Connect Header */}
+          <div className="hidden lg:block">
+            <ConnectHeader isConnected={isConnected} onConnect={() => setIsConnected(true)} />
+          </div>
+
+          {/* Mobile/Tablet Controls */}
+          <div className="lg:hidden flex items-center gap-2">
+            {/* Hamburger Menu */}
+            <button
+              onClick={() => setHeaderMenuOpen(!headerMenuOpen)}
+              className="p-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+            >
+              <Menu size={24} />
+            </button>
+            {/* Mobile Connect Header */}
+            <ConnectHeader isConnected={isConnected} onConnect={() => setIsConnected(true)} />
+          </div>
         </div>
       </header>
+
+      {/* Mobile Menu */}
+      {headerMenuOpen && (
+        <div className="lg:hidden fixed top-16 left-0 right-0 z-40 border-b border-white/[0.08]" style={{ backgroundColor: 'rgba(13, 13, 18, 0.95)' }}>
+          <nav className="flex flex-col p-4 space-y-2 max-h-[calc(100vh-64px)] overflow-y-auto">
+            <div className="px-0 py-2">
+              <h2 className="text-sm font-semibold text-[#B794F4] uppercase tracking-wider">
+                Navigation
+              </h2>
+            </div>
+
+            <button
+              onClick={() => {
+                setCurrentView('home')
+                setHeaderMenuOpen(false)
+              }}
+              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+            >
+              <Home size={18} className="text-[#FF1F8A] flex-shrink-0" />
+              <span className="text-sm font-medium">Home</span>
+            </button>
+            <button
+              onClick={() => {
+                setCurrentView('library')
+                setHeaderMenuOpen(false)
+              }}
+              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+            >
+              <Library size={18} className="text-[#B794F4] flex-shrink-0" />
+              <span className="text-sm font-medium">Library</span>
+            </button>
+            <button
+              onClick={() => {
+                setCurrentView('search')
+                setHeaderMenuOpen(false)
+              }}
+              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+            >
+              <Search size={18} className="text-[#B794F4] flex-shrink-0" />
+              <span className="text-sm font-medium">Search</span>
+            </button>
+
+            <div className="border-t border-white/[0.08]" />
+
+            <div className="px-0 py-2">
+              <h2 className="text-xs font-semibold text-[#B794F4] uppercase tracking-wider">Creator</h2>
+            </div>
+
+            <button
+              onClick={() => {
+                setCurrentView('upload')
+                setHeaderMenuOpen(false)
+              }}
+              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+            >
+              <Music size={18} className="text-[#FF1F8A] flex-shrink-0" />
+              <span className="text-sm font-medium">Upload</span>
+            </button>
+            <button
+              onClick={() => {
+                setCurrentView('earnings')
+                setHeaderMenuOpen(false)
+              }}
+              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+            >
+              <DollarSign size={18} className="text-[#B794F4] flex-shrink-0" />
+              <span className="text-sm font-medium">Earnings</span>
+            </button>
+            <button
+              onClick={() => {
+                setCurrentView('analytics')
+                setHeaderMenuOpen(false)
+              }}
+              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+            >
+              <TrendingUp size={18} className="text-[#B794F4] flex-shrink-0" />
+              <span className="text-sm font-medium">Analytics</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setCurrentView('profile')
+                setHeaderMenuOpen(false)
+              }}
+              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+            >
+              <User size={18} className="text-[#B794F4] flex-shrink-0" />
+              <span className="text-sm font-medium">Profile</span>
+            </button>
+
+            {isConnected && (
+              <>
+                <div className="border-t border-white/[0.08]" />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full border-white/[0.12] text-white hover:bg-white/[0.05] bg-transparent"
+                  onClick={() => {
+                    setIsConnected(false)
+                    setHeaderMenuOpen(false)
+                  }}
+                >
+                  <LogOut size={16} className="mr-2" />
+                  Disconnect
+                </Button>
+              </>
+            )}
+          </nav>
+        </div>
+      )}
 
       {/* Main Layout */}
       <div className="flex flex-col lg:flex-row flex-1 mt-16">
