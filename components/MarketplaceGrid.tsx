@@ -8,16 +8,19 @@ interface Song {
   price: string
   cover: string
   collaborators: number
+  url?: string
 }
 
 interface MarketplaceGridProps {
   songs: Song[]
   isConnected: boolean
+  onPlay?: (song: Song) => void
 }
 
 export default function MarketplaceGrid({
   songs,
   isConnected,
+  onPlay,
 }: MarketplaceGridProps) {
   if (!songs.length) {
     return (
@@ -30,7 +33,11 @@ export default function MarketplaceGrid({
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {songs.map((song) => (
-        <SongCard key={song.id} {...song} />
+        <SongCard 
+          key={song.id} 
+          {...song} 
+          onPlay={onPlay ? () => onPlay(song) : undefined}
+        />
       ))}
     </div>
   )

@@ -7,6 +7,8 @@ import MarketplaceGrid from '@/components/MarketplaceGrid'
 import MyStudioGrid from '@/components/MyStudioGrid'
 import ConnectHeader from '@/components/ConnectHeader'
 import EarningsView from '@/components/EarningsView'
+import AudioPlayer from '@/components/AudioPlayer'
+import { useAudioPlayer } from '@/hooks/useAudioPlayer'
 
 const mockSongs = [
   {
@@ -16,6 +18,7 @@ const mockSongs = [
     price: '0.5',
     cover: '#FF1F8A',
     collaborators: 2,
+    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
   },
   {
     id: 2,
@@ -24,6 +27,7 @@ const mockSongs = [
     price: '0.75',
     cover: '#B794F4',
     collaborators: 1,
+    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
   },
   {
     id: 3,
@@ -32,6 +36,7 @@ const mockSongs = [
     price: '1.0',
     cover: '#FF1F8A',
     collaborators: 3,
+    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
   },
   {
     id: 4,
@@ -40,6 +45,7 @@ const mockSongs = [
     price: '0.3',
     cover: '#B794F4',
     collaborators: 0,
+    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
   },
 ]
 
@@ -67,6 +73,14 @@ export default function Dashboard() {
   const [currentView, setCurrentView] = useState<ViewType>('home')
   const [creatorMenuOpen, setCreatorMenuOpen] = useState(false)
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false)
+  const playerState = useAudioPlayer()
+
+  const handlePlayTrack = (track: typeof mockSongs[0]) => {
+    if (playerState.audioRef.current) {
+      playerState.audioRef.current.src = track.url || ''
+    }
+    playerState.play(track, mockSongs)
+  }
 
   return (
     <div style={{ backgroundColor: '#0D0D12' }} className="min-h-screen text-white flex flex-col">
@@ -272,7 +286,7 @@ export default function Dashboard() {
                     Explore the latest collaborative music NFTs on Base Sepolia
                   </p>
                 </div>
-                <MarketplaceGrid songs={mockSongs} isConnected={isConnected} />
+                <MarketplaceGrid songs={mockSongs} isConnected={isConnected} onPlay={handlePlayTrack} />
               </div>
             )}
 
@@ -433,6 +447,9 @@ export default function Dashboard() {
           </div>
         </main>
       </div>
+
+      {/* Audio Player */}
+      <AudioPlayer playerState={playerState} />
 
       {/* Mobile Bottom Navigation */}
       <nav className="fixed bottom-0 left-0 right-0 lg:hidden z-40 border-t border-white/[0.08]" style={{ backgroundColor: 'rgba(13, 13, 18, 0.95)' }}>

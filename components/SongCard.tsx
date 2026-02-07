@@ -1,4 +1,7 @@
+'use client';
+
 import React from 'lucide-react'
+import { Play } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 interface SongCardProps {
@@ -8,6 +11,7 @@ interface SongCardProps {
   price: string
   cover: string
   collaborators: number
+  onPlay?: () => void
 }
 
 export default function SongCard({
@@ -17,6 +21,7 @@ export default function SongCard({
   price,
   cover,
   collaborators,
+  onPlay,
 }: SongCardProps) {
   return (
     <div className="glass-hover group overflow-hidden">
@@ -31,6 +36,21 @@ export default function SongCard({
         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
         </div>
+
+        {/* Play Button Overlay */}
+        {onPlay && (
+          <button
+            onClick={onPlay}
+            className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
+          >
+            <div
+              className="p-4 rounded-full"
+              style={{ backgroundColor: '#FF1F8A' }}
+            >
+              <Play size={24} className="text-white fill-white" />
+            </div>
+          </button>
+        )}
 
         {/* Collaborators Badge */}
         {collaborators > 0 && (
@@ -66,3 +86,4 @@ export default function SongCard({
     </div>
   )
 }
+
