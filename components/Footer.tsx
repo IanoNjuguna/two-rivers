@@ -39,7 +39,7 @@ export default function Footer() {
       </div>
 
       {/* Mobile Footer */}
-      <footer className="lg:hidden px-4 py-6">
+      <footer className="lg:hidden border-t border-white/[0.08] px-4 py-6">
         <div className="space-y-3 text-xs">
           <div className="flex flex-wrap gap-x-2 gap-y-1">
             {footerLinks.map((link) => (
