@@ -85,21 +85,37 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
       <audio ref={audioRef} crossOrigin="anonymous" />
 
       <div className="max-w-7xl mx-auto">
-        {/* Track Info and Controls */}
-        <div className="flex items-center justify-between gap-4 mb-3">
-          <div className="flex items-center gap-3 min-w-0 flex-1">
+        {/* Single Row: Track Info - Progress Bar - Controls */}
+        <div className="flex items-center gap-4">
+          {/* Album Cover + Track Info */}
+          <div className="flex items-center gap-3 min-w-0">
             <div
               className="w-12 h-12 rounded-lg flex-shrink-0"
               style={{ backgroundColor: currentTrack.cover }}
             />
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-white truncate">
-                {currentTrack.title}
-              </p>
-              <p className="text-xs text-white/60 truncate">
-                {currentTrack.creator}
-              </p>
+            <div className="hidden sm:block flex-shrink-0 text-xs text-white/50 w-8 text-right">
+              {formatTime(currentTime)}
             </div>
+          </div>
+
+          {/* Progress Bar - Centered */}
+          <div
+            className="flex-1 h-1 bg-white/[0.1] rounded-full cursor-pointer"
+            onClick={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect()
+              const percent = (e.clientX - rect.left) / rect.width
+              seek(percent * duration)
+            }}
+          >
+            <div
+              className="h-1 bg-gradient-to-r from-[#FF1F8A] to-[#B794F4] rounded-full"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
+
+          {/* Duration */}
+          <div className="hidden sm:block flex-shrink-0 text-xs text-white/50 w-8">
+            {formatTime(duration)}
           </div>
 
           {/* Playback Controls */}
@@ -137,24 +153,15 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
           </div>
         </div>
 
-        {/* Progress Bar */}
-        <div className="mb-3">
-          <div
-            className="h-1 bg-white/[0.1] rounded-full cursor-pointer"
-            onClick={(e) => {
-              const rect = e.currentTarget.getBoundingClientRect()
-              const percent = (e.clientX - rect.left) / rect.width
-              seek(percent * duration)
-            }}
-          >
-            <div
-              className="h-1 bg-gradient-to-r from-[#FF1F8A] to-[#B794F4] rounded-full"
-              style={{ width: `${progressPercent}%` }}
-            />
-          </div>
-          <div className="flex justify-between text-xs text-white/50 mt-1">
-            <span>{formatTime(currentTime)}</span>
-            <span>{formatTime(duration)}</span>
+        {/* Track Title and Creator - Below on mobile, can be added if needed */}
+        <div className="hidden sm:flex items-center gap-3 mt-2 min-w-0">
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-white truncate">
+              {currentTrack.title}
+            </p>
+            <p className="text-xs text-white/60 truncate">
+              {currentTrack.creator}
+            </p>
           </div>
         </div>
       </div>
