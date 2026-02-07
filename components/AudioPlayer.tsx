@@ -85,18 +85,13 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
       <audio ref={audioRef} crossOrigin="anonymous" />
 
       <div className="max-w-7xl mx-auto">
-        {/* Single Row: Track Info - Progress Bar - Controls */}
-        <div className="flex items-center gap-4">
-          {/* Album Cover + Track Info */}
-          <div className="flex items-center gap-3 min-w-0">
-            <div
-              className="w-12 h-12 rounded-lg flex-shrink-0"
-              style={{ backgroundColor: currentTrack.cover }}
-            />
-            <div className="hidden sm:block flex-shrink-0 text-xs text-white/50 w-8 text-right">
-              {formatTime(currentTime)}
-            </div>
-          </div>
+        {/* Minimal Layout: Album Cover - Progress Bar - Controls */}
+        <div className="flex items-center gap-3">
+          {/* Album Cover */}
+          <div
+            className="w-12 h-12 rounded-lg flex-shrink-0"
+            style={{ backgroundColor: currentTrack.cover }}
+          />
 
           {/* Progress Bar - Centered */}
           <div
@@ -111,11 +106,6 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
               className="h-1 bg-gradient-to-r from-[#FF1F8A] to-[#B794F4] rounded-full"
               style={{ width: `${progressPercent}%` }}
             />
-          </div>
-
-          {/* Duration */}
-          <div className="hidden sm:block flex-shrink-0 text-xs text-white/50 w-8">
-            {formatTime(duration)}
           </div>
 
           {/* Playback Controls */}
@@ -150,18 +140,6 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
             >
               <SkipForward size={18} />
             </button>
-          </div>
-        </div>
-
-        {/* Track Title and Creator - Below on mobile, can be added if needed */}
-        <div className="hidden sm:flex items-center gap-3 mt-2 min-w-0">
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-white truncate">
-              {currentTrack.title}
-            </p>
-            <p className="text-xs text-white/60 truncate">
-              {currentTrack.creator}
-            </p>
           </div>
         </div>
       </div>
