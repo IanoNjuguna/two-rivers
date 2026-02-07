@@ -1,11 +1,12 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Music, Home, Library, Search, Upload, User, LogOut } from 'lucide-react'
+import { Music, Home, Library, Search, Plus, User, LogOut, X, Upload, DollarSign, TrendingUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import MarketplaceGrid from '@/components/MarketplaceGrid'
 import MyStudioGrid from '@/components/MyStudioGrid'
 import ConnectHeader from '@/components/ConnectHeader'
+import EarningsView from '@/components/EarningsView'
 
 const mockSongs = [
   {
@@ -59,11 +60,12 @@ const mockOwnedNFTs = [
   },
 ]
 
-type ViewType = 'home' | 'library' | 'search' | 'upload' | 'profile'
+type ViewType = 'home' | 'library' | 'search' | 'upload' | 'profile' | 'earnings' | 'analytics'
 
 export default function Dashboard() {
   const [isConnected, setIsConnected] = useState(false)
   const [currentView, setCurrentView] = useState<ViewType>('home')
+  const [creatorMenuOpen, setCreatorMenuOpen] = useState(false)
 
   return (
     <div style={{ backgroundColor: '#0D0D12' }} className="min-h-screen text-white flex flex-col">
@@ -113,12 +115,32 @@ export default function Dashboard() {
               active={currentView === 'search'}
               onClick={() => setCurrentView('search')}
             />
-            <NavItemDesktop 
-              icon={<Upload size={18} />} 
-              label="Upload"
-              active={currentView === 'upload'}
-              onClick={() => setCurrentView('upload')}
-            />
+
+            {/* Creator Menu - Desktop */}
+            <div className="border-t border-white/[0.08] mt-2 pt-2">
+              <div className="px-4 py-3 mb-2">
+                <h2 className="text-xs font-semibold text-[#B794F4] uppercase tracking-wider">Creator</h2>
+              </div>
+              <NavItemDesktop 
+                icon={<Music size={18} />} 
+                label="Upload"
+                active={currentView === 'upload'}
+                onClick={() => setCurrentView('upload')}
+              />
+              <NavItemDesktop 
+                icon={<DollarSign size={18} />} 
+                label="Earnings"
+                active={currentView === 'earnings'}
+                onClick={() => setCurrentView('earnings')}
+              />
+              <NavItemDesktop 
+                icon={<TrendingUp size={18} />} 
+                label="Analytics"
+                active={currentView === 'analytics'}
+                onClick={() => setCurrentView('analytics')}
+              />
+            </div>
+
             <NavItemDesktop 
               icon={<User size={18} />} 
               label="Profile"
@@ -210,21 +232,29 @@ export default function Dashboard() {
                   </p>
                 </div>
                 {isConnected ? (
-                  <div className="p-12 text-center rounded-xl" style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                    <Upload className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgba(255, 31, 138, 0.4)' }} />
+                  <div className="border border-white/[0.08] rounded-xl p-12 text-center" style={{ backgroundColor: 'rgba(13, 13, 18, 0.3)' }}>
+                    <div className="w-16 h-16 rounded-full mx-auto mb-4" style={{ backgroundColor: 'rgba(255, 31, 138, 0.1)' }}>
+                      <div className="w-full h-full flex items-center justify-center text-[#FF1F8A]">
+                        <Music size={32} />
+                      </div>
+                    </div>
                     <h3 className="text-xl font-semibold mb-2">
                       Upload Your Track
                     </h3>
                     <p className="text-white/60 mb-6">
                       Drag and drop your audio file or click to browse
                     </p>
-                    <Button style={{ backgroundColor: '#FF1F8A' }} className="hover:opacity-80">
+                    <Button className="bg-[#FF1F8A] hover:bg-[#E01A73] text-white">
                       Choose File
                     </Button>
                   </div>
                 ) : (
-                  <div className="p-12 text-center rounded-xl" style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                    <Upload className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgba(183, 148, 244, 0.4)' }} />
+                  <div className="border border-white/[0.08] rounded-xl p-12 text-center" style={{ backgroundColor: 'rgba(13, 13, 18, 0.3)' }}>
+                    <div className="w-16 h-16 rounded-full mx-auto mb-4" style={{ backgroundColor: 'rgba(183, 148, 244, 0.1)' }}>
+                      <div className="w-full h-full flex items-center justify-center text-[#B794F4]">
+                        <Music size={32} />
+                      </div>
+                    </div>
                     <h3 className="text-xl font-semibold mb-2">
                       Connect Your Wallet
                     </h3>
@@ -233,6 +263,34 @@ export default function Dashboard() {
                     </p>
                   </div>
                 )}
+              </div>
+            )}
+
+            {currentView === 'earnings' && (
+              <EarningsView />
+            )}
+
+            {currentView === 'analytics' && (
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-2xl font-bold mb-2">Analytics</h2>
+                  <p className="text-white/60">
+                    View detailed insights about your music performance
+                  </p>
+                </div>
+                <div className="border border-white/[0.08] rounded-xl p-12 text-center" style={{ backgroundColor: 'rgba(13, 13, 18, 0.3)' }}>
+                  <div className="w-16 h-16 rounded-full mx-auto mb-4" style={{ backgroundColor: 'rgba(183, 148, 244, 0.1)' }}>
+                    <div className="w-full h-full flex items-center justify-center text-[#B794F4]">
+                      <Music size={32} />
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">
+                    Analytics Coming Soon
+                  </h3>
+                  <p className="text-white/60">
+                    Track plays, revenue, and listener insights
+                  </p>
+                </div>
               </div>
             )}
 
@@ -280,7 +338,7 @@ export default function Dashboard() {
       </div>
 
       {/* Mobile Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 lg:hidden z-50 border-t border-white/[0.08]" style={{ backgroundColor: 'rgba(13, 13, 18, 0.95)' }}>
+      <nav className="fixed bottom-0 left-0 right-0 lg:hidden z-40 border-t border-white/[0.08]" style={{ backgroundColor: 'rgba(13, 13, 18, 0.95)' }}>
         <div className="flex items-center justify-around h-16">
           <NavItemMobile 
             icon={<Home size={20} />} 
@@ -297,11 +355,58 @@ export default function Dashboard() {
             active={currentView === 'search'}
             onClick={() => setCurrentView('search')}
           />
-          <NavItemMobile 
-            icon={<Upload size={20} />}
-            active={currentView === 'upload'}
-            onClick={() => setCurrentView('upload')}
-          />
+          {/* Floating Creator Menu Button */}
+          <div className="relative">
+            <button
+              onClick={() => setCreatorMenuOpen(!creatorMenuOpen)}
+              className="flex items-center justify-center w-16 h-16 transition relative"
+              style={{ color: creatorMenuOpen ? '#FF1F8A' : 'rgba(255, 255, 255, 0.5)' }}
+              onMouseEnter={(e) => !creatorMenuOpen && (e.currentTarget.style.color = 'white')}
+              onMouseLeave={(e) => !creatorMenuOpen && (e.currentTarget.style.color = 'rgba(255, 255, 255, 0.5)')}
+            >
+              <Plus size={24} />
+            </button>
+
+            {/* Creator Menu Dropdown */}
+            {creatorMenuOpen && (
+              <div
+                className="absolute bottom-full right-0 mb-2 w-48 rounded-lg shadow-lg overflow-hidden border border-white/[0.08]"
+                style={{ backgroundColor: 'rgba(13, 13, 18, 0.95)' }}
+              >
+                <button
+                  onClick={() => {
+                    setCurrentView('upload')
+                    setCreatorMenuOpen(false)
+                  }}
+                  className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.05] transition flex items-center gap-2"
+                >
+                  <Music size={16} className="text-[#FF1F8A]" />
+                  <span>Upload Track</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setCurrentView('earnings')
+                    setCreatorMenuOpen(false)
+                  }}
+                  className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.05] transition flex items-center gap-2 border-t border-white/[0.08]"
+                >
+                  <DollarSign size={16} className="text-[#B794F4]" />
+                  <span>View Earnings</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setCurrentView('analytics')
+                    setCreatorMenuOpen(false)
+                  }}
+                  className="w-full px-4 py-3 text-left text-sm hover:bg-white/[0.05] transition flex items-center gap-2 border-t border-white/[0.08]"
+                >
+                  <TrendingUp size={16} className="text-[#B794F4]" />
+                  <span>Analytics</span>
+                </button>
+              </div>
+            )}
+          </div>
+
           <NavItemMobile 
             icon={<User size={20} />}
             active={currentView === 'profile'}
