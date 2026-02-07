@@ -24,6 +24,21 @@ body {
   }
 }
 
+@keyframes slideUpSpring {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.95);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-4px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 3.9%;
