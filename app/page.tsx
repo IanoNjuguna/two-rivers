@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Menu, Home, Library, Search, DollarSign, TrendingUp, User, LogOut, Plus, Music } from 'lucide-react'
+import { Menu, Home, Library, Search, DollarSign, TrendingUp, User, LogOut, Plus, Music, Copy } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import MarketplaceGrid from '@/components/MarketplaceGrid'
 import MyStudioGrid from '@/components/MyStudioGrid'
@@ -463,6 +463,24 @@ export default function Dashboard() {
                         <p className="text-white/60 text-sm">Connected wallet</p>
                       </div>
                     </div>
+                    
+                    {/* Wallet Address Display */}
+                    <div className="mb-6 p-4 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.04)' }}>
+                      <p className="text-white/60 text-xs mb-2 uppercase tracking-wider">Wallet Address</p>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-mono text-white">0x1234...5678</span>
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText('0x1234...5678')
+                          }}
+                          className="p-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+                          title="Copy wallet address"
+                        >
+                          <Copy size={16} />
+                        </button>
+                      </div>
+                    </div>
+
                     <Button
                       variant="outline"
                       className="border-white/[0.12] text-white hover:bg-white/[0.05] w-full bg-transparent"
