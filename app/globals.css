@@ -22,6 +22,49 @@ body {
   .gradient-text {
     @apply bg-gradient-to-r from-cyber-pink to-lavender bg-clip-text text-transparent;
   }
+
+  /* Background colors */
+  .bg-dark-primary {
+    background-color: #0d0d12;
+  }
+
+  .bg-dark-primary-95 {
+    background-color: rgba(13, 13, 18, 0.95);
+  }
+
+  .bg-dark-primary-50 {
+    background-color: rgba(13, 13, 18, 0.5);
+  }
+
+  .bg-dark-primary-30 {
+    background-color: rgba(13, 13, 18, 0.3);
+  }
+
+  .bg-white-2 {
+    background-color: rgba(255, 255, 255, 0.02);
+  }
+
+  .bg-white-4 {
+    background-color: rgba(255, 255, 255, 0.04);
+  }
+
+  .bg-pink-10 {
+    background-color: rgba(255, 31, 138, 0.1);
+  }
+
+  .bg-lavender-10 {
+    background-color: rgba(183, 148, 244, 0.1);
+  }
+
+  /* Backdrop blur */
+  .backdrop-blur-16 {
+    backdrop-filter: blur(16px);
+  }
+
+  /* Letter spacing */
+  .tracking-wider-custom {
+    letter-spacing: 0.04em;
+  }
 }
 
 @keyframes slideUpSpring {
@@ -159,18 +202,19 @@ body {
   }
 
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #FF1F8A, #B794F4);
+    background: linear-gradient(135deg, #ff1f8a, #b794f4);
     border-radius: 4px;
     transition: background 0.3s ease;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #E01A73, #9D7FD9);
+    background: linear-gradient(135deg, #e01a73, #9d7fd9);
   }
 
   /* Firefox Scrollbar */
   * {
-    scrollbar-color: linear-gradient(135deg, #FF1F8A, #B794F4) rgba(255, 255, 255, 0.02);
+    scrollbar-color: linear-gradient(135deg, #ff1f8a, #b794f4)
+      rgba(255, 255, 255, 0.02);
     scrollbar-width: thin;
   }
 }
