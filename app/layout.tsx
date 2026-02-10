@@ -17,9 +17,23 @@ const spaceMono = Space_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Music NFT Dashboard',
-  description: 'Collaborative Music NFT Marketplace on Base Sepolia',
+  title: 'doba',
+  description: 'doba – Collaborative Music NFT Marketplace on Base Sepolia',
   generator: 'v0.app',
+  openGraph: {
+    images: [
+      {
+        url: '/doba_preview.png',
+        width: 1200,
+        height: 630,
+        alt: 'doba Preview',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: ['/doba_preview.png'],
+  },
 }
 
 export const viewport: Viewport = {
@@ -37,6 +51,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`dark ${spaceMono.variable} ${ibmPlexMono.variable}`}>
+      <head>
+        <link rel="icon" href="/logo.ico" type="image/x-icon" />
+      </head>
       <body className="font-sans antialiased" suppressHydrationWarning>
         {children}
       </body>
