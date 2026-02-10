@@ -1,299 +1,350 @@
-# 🎵 Web3 Music NFT Dashboard
-
-A collaborative Music NFT marketplace dashboard for Base Sepolia with a sleek, modern design using **Neue Machina** and **IBM Plex Mono** typography.
-
-**Status:** ✅ UI Complete & Production Ready | ⏳ Web3 Integration Ready
-
-## 🎨 Design
-
-```
-Color Palette:
-├─ Midnight Blue (#0D0D12) — Deep dark background
-├─ Cyber Pink (#FF1F8A) — Primary CTAs & highlights
-├─ Soft Lavender (#B794F4) — Secondary accents
-└─ Glass Morphism — Translucent cards with backdrop blur
-
-Typography:
-├─ Neue Machina — Headings & UI (300, 400, 900 weights)
-└─ IBM Plex Mono — Code & prices (400, 500, 600 weights)
-```
-
-## 🚀 Quick Start
-
-### Installation
-
-```bash
-npm install
-npm run dev
-```
-
-Visit `http://localhost:3000`
-
-### (Optional) Add Neue Machina Fonts
-
-1. Download from [Pangram Pangram](https://pangrampangram.com/)
-2. Place `.otf` files in `public/fonts/`
-3. See [FONT_SETUP.md](./FONT_SETUP.md) for details
-
-*The app works great with Space Mono fallback if fonts aren't available.*
-
-## 📁 What's Included
-
-### 🎯 Dashboard Features
-
-```
-Marketplace Tab
-├─ Song NFT cards grid (1-4 columns responsive)
-├─ Price display in ETH
-├─ Creator address & collaborators badge
-├─ Mint button per song
-└─ Glass card hover effects
-
-My Studio Tab
-├─ User's owned NFTs
-├─ Total earnings per NFT
-├─ "View Revenue" modal
-├─ Revenue distribution breakdown
-└─ Claim earnings button
-```
-
-### 🎨 Design System
-
-- **Colors:** Midnight, Cyber Pink, Lavender + glass effects
-- **Components:** Pre-styled with shadcn/ui
-- **Responsive:** Mobile-first (1-2-3-4 columns)
-- **Accessibility:** High contrast, keyboard navigation, ARIA labels
-- **Animations:** Smooth transitions, hover states, glow effects
-
-### 📚 Components
-
-| Component | Purpose |
-|-----------|---------|
-| `SongCard.tsx` | Individual NFT card with mint button |
-| `MarketplaceGrid.tsx` | Responsive song grid display |
-| `MyStudioGrid.tsx` | User NFT management + revenue modal |
-| `ConnectHeader.tsx` | Wallet connection UI |
-
-### 🔗 Smart Contract Integration Ready
-
-```typescript
-Contract: 0xa5EF5D72eA368E8c76E9bC96Bf97a77d66cD0f7b
-Chain: Base Sepolia (84532)
-
-Functions:
-├─ songPrices(uint256 id) → uint256
-├─ mint(uint256 id, uint256 amount)
-├─ release(address payee)
-└─ Events: SongPublished, CollaborativeSongPublished
-```
-
-See [WEB3_IMPLEMENTATION_GUIDE.md](./WEB3_IMPLEMENTATION_GUIDE.md) for setup.
-
-## 📖 Documentation
-
-| File | Purpose |
-|------|---------|
-| [QUICK_START.md](./QUICK_START.md) | Get up & running in 5 mins |
-| [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) | Colors, typography, components |
-| [FONT_SETUP.md](./FONT_SETUP.md) | Adding Neue Machina fonts |
-| [WEB3_IMPLEMENTATION_GUIDE.md](./WEB3_IMPLEMENTATION_GUIDE.md) | Blockchain integration |
-
-## 🏗️ Project Structure
-
-```
-app/
-├── page.tsx                 # Main dashboard
-├── layout.tsx              # Fonts + metadata
-└── globals.css             # Design tokens
-
-components/
-├── SongCard.tsx            # NFT card component
-├── MarketplaceGrid.tsx     # Marketplace layout
-├── MyStudioGrid.tsx        # User studio view
-├── ConnectHeader.tsx       # Wallet UI
-└── ui/                     # shadcn/ui components
-
-lib/
-├── web3.ts                 # Contract ABI & constants
-└── utils.ts                # Tailwind utilities
-
-public/
-├── fonts/                  # Custom fonts (Neue Machina)
-└── images/                 # Static assets
-```
-
-## 🎯 Features
-
-### ✅ Implemented
-
-- [x] Complete responsive dashboard UI
-- [x] Marketplace with song cards
-- [x] My Studio with NFT management
-- [x] Revenue tracking & claim modal
-- [x] Wallet connection interface
-- [x] Glass morphism design system
-- [x] Mobile navigation (hamburger menu)
-- [x] Dark mode (always on)
-- [x] Neue Machina + IBM Plex Mono fonts
-- [x] Tailwind + shadcn/ui styling
-- [x] Accessibility (ARIA, keyboard nav, contrast)
-
-### ⏳ Ready for Integration
-
-- [ ] Wagmi Web3 provider setup
-- [ ] Contract read (songPrices)
-- [ ] Contract write (mint)
-- [ ] Event listeners (SongPublished)
-- [ ] Transaction handling
-- [ ] Wallet switching
-
-## 🎨 Styling Guide
-
-### Tailwind Classes
-
-```jsx
-// Glass cards
-<div className="glass p-4 rounded-xl">
-
-// Primary button
-<button className="bg-cyber-pink hover:bg-cyber-pink/90">
-
-// Secondary label
-<span className="text-lavender text-sm">
-
-// Responsive grid
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-```
-
-### Design Tokens in CSS
-
-```css
-/* Colors */
---background: 0 0% 5%;           /* Midnight */
---primary: 310 98% 51%;          /* Cyber Pink */
---accent: 270 93% 60%;           /* Lavender */
-
-/* Effects */
-box-shadow: 0 8px 24px rgba(255, 31, 138, 0.15);  /* Pink glow */
-backdrop-filter: blur(8px);                        /* Glass effect */
-```
-
-## 🔐 Web3 Ready
-
-Smart contract constants and ABI are pre-configured in `lib/web3.ts`:
-
-```typescript
-export const CONTRACT_ADDRESS = '0xa5EF5D72eA368E8c76E9bC96Bf97a77d66cD0f7b'
-export const CHAIN_ID = 84532  // Base Sepolia
-export const CONTRACT_ABI = [...]
-```
-
-To integrate Wagmi:
-
-```bash
-npm install wagmi viem @onchainkit/react
-```
-
-See [WEB3_IMPLEMENTATION_GUIDE.md](./WEB3_IMPLEMENTATION_GUIDE.md) for full setup.
-
-## 📱 Responsive Breakpoints
-
-```
-Mobile:     1 column (< 640px)
-Tablet:     2 columns (640px - 1024px)
-Desktop:    3 columns (1024px - 1280px)
-Extra-wide: 4 columns (> 1280px)
-
-Header:     Fixed top navigation
-Sidebar:    Responsive (hamburger on mobile)
-```
-
-## 🔍 Browser Support
-
-- Chrome/Chromium 90+
-- Firefox 88+
-- Safari 14+
-- Edge 90+
-
-All modern browsers with ES2020+ support.
-
-## 📦 Dependencies
-
-- **Next.js 16** — React framework
-- **React 19** — UI library
-- **TypeScript** — Type safety
-- **Tailwind CSS** — Utility styling
-- **shadcn/ui** — Component library
-- **Lucide React** — Icons
-
-## 🚀 Deployment
-
-### Vercel (Recommended)
-
-```bash
-# Push to GitHub
-# Connect repo to Vercel
-# Deploy with one click!
-```
-
-### Manual Build
-
-```bash
-npm run build
-npm start
-```
-
-## 📋 Testing Checklist
-
-- [x] Dashboard loads correctly
-- [x] Marketplace displays song cards
-- [x] Cards have proper styling (glass effect, glow)
-- [x] Wallet connect button works
-- [x] Tab switching functional
-- [x] Revenue modal opens/closes
-- [x] Mobile responsive (test hamburger menu)
-- [x] Colors match design spec
-- [x] Typography displays correctly
-- [x] Accessibility: keyboard navigation works
-
-## 🎓 Learning Resources
-
-- [Next.js Docs](https://nextjs.org)
-- [React Docs](https://react.dev)
-- [Tailwind CSS](https://tailwindcss.com)
-- [shadcn/ui](https://ui.shadcn.com)
-- [Wagmi Docs](https://wagmi.sh)
-
-## 🤝 Contributing
-
-This is a production-ready starter template. To extend:
-
-1. Add Web3 integration following [WEB3_IMPLEMENTATION_GUIDE.md](./WEB3_IMPLEMENTATION_GUIDE.md)
-2. Update smart contract ABI in `lib/web3.ts`
-3. Customize colors in `tailwind.config.ts` and `app/globals.css`
-4. Modify mock data in `app/page.tsx`
-
-## 📄 License
-
-Build with ❤️ using v0
-
-## 🎵 Next Steps
-
-1. ✅ Explore the UI (browse marketplace, click tabs)
-2. 📝 Review documentation in `/QUICK_START.md`
-3. 🔗 Follow Web3 integration guide when ready
-4. 🚀 Deploy to Vercel for production
+# 📚 Documentation Index
+
+Welcome to the doba documentation! Here's your guide to all available resources.
+
+## 🚀 Getting Started
+
+**New to this project?** Start here:
+
+1. **[QUICK_START.md](./QUICK_START.md)** ⭐
+   - 5-minute setup guide
+   - Installation steps
+   - First time running the app
+   - Troubleshooting
+
+2. **[README.md](./README.md)**
+   - Project overview
+   - Features & technologies
+   - Quick reference
+   - Deployment options
+
+## 🎨 Design & Styling
+
+Understand the visual design and styling system:
+
+1. **[DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md)**
+   - Color palette (Midnight, Cyber Pink, Lavender)
+   - Typography (Neue Machina + IBM Plex Mono)
+   - Component styling
+   - Accessibility guidelines
+   - CSS implementation
+   - Quick reference table
+
+2. **[FONT_SETUP.md](./FONT_SETUP.md)**
+   - Adding Neue Machina fonts
+   - Font weights & files
+   - Fallback options
+   - Troubleshooting font issues
+
+## 🛠️ Development
+
+Learn how to use and customize components:
+
+1. **[COMPONENT_USAGE.md](./COMPONENT_USAGE.md)**
+   - SongCard component
+   - MarketplaceGrid component
+   - MyStudioGrid component
+   - ConnectHeader component
+   - Layout patterns
+   - Styling patterns
+   - Integration examples
+   - Testing examples
+
+2. **[WEB3_IMPLEMENTATION_GUIDE.md](./WEB3_IMPLEMENTATION_GUIDE.md)**
+   - Smart contract setup
+   - Contract integration
+   - Wagmi setup
+   - Event listeners
+   - Web3 functions
+   - Future integration checklist
+
+## 📋 Project Info
+
+Get insights about the project structure and build:
+
+1. **[BUILD_SUMMARY.md](./BUILD_SUMMARY.md)**
+   - What was built
+   - Component status
+   - File structure
+   - Feature checklist
+   - Customization guide
+   - Deployment notes
 
 ---
 
-**Ready to build?** Start with [QUICK_START.md](./QUICK_START.md)!
+## 📖 Documentation Map
 
-Questions about fonts? See [FONT_SETUP.md](./FONT_SETUP.md)
+### By Use Case
 
-Need Web3 help? Check [WEB3_IMPLEMENTATION_GUIDE.md](./WEB3_IMPLEMENTATION_GUIDE.md)
+**"I want to..."**
+
+| Goal | Document | Section |
+|------|----------|---------|
+| Run the app locally | QUICK_START.md | Installation |
+| Understand the design | DESIGN_SYSTEM.md | All sections |
+| Add Neue Machina fonts | FONT_SETUP.md | All sections |
+| Use a component | COMPONENT_USAGE.md | Component guides |
+| Connect to blockchain | WEB3_IMPLEMENTATION_GUIDE.md | All sections |
+| Deploy to production | QUICK_START.md | Building for Production |
+| Customize colors | DESIGN_SYSTEM.md | CSS Implementation |
+| See project summary | BUILD_SUMMARY.md | All sections |
+
+### By Document
+
+| Document | Purpose | Read Time | Level |
+|----------|---------|-----------|-------|
+| QUICK_START.md | Setup & run | 5 min | Beginner |
+| README.md | Overview | 5 min | Beginner |
+| DESIGN_SYSTEM.md | Colors & styling | 10 min | Beginner |
+| FONT_SETUP.md | Font installation | 5 min | Beginner |
+| COMPONENT_USAGE.md | How to use components | 15 min | Intermediate |
+| WEB3_IMPLEMENTATION_GUIDE.md | Blockchain integration | 20 min | Advanced |
+| BUILD_SUMMARY.md | Project details | 10 min | Intermediate |
 
 ---
 
-**Version:** 1.0.0 (MVP - UI Complete)  
-**Last Updated:** February 7, 2026  
-**Built with:** Next.js 16, React 19, Tailwind CSS
+## 🎯 Quick Navigation
+
+### For Designers
+
+- Start with [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md)
+- Reference: Color palette, typography, components
+- Visual guidelines & specifications
+
+### For Developers
+
+- Start with [QUICK_START.md](./QUICK_START.md)
+- Then read [COMPONENT_USAGE.md](./COMPONENT_USAGE.md)
+- Reference: How components work, how to customize
+
+### For Web3 Engineers
+
+- Start with [WEB3_IMPLEMENTATION_GUIDE.md](./WEB3_IMPLEMENTATION_GUIDE.md)
+- Reference: Smart contract integration, Wagmi setup
+- See [lib/web3.ts](./lib/web3.ts) for constants
+
+### For DevOps/Deployment
+
+- See [README.md](./README.md#-deployment)
+- Reference: Building, deployment options, env vars
+
+---
+
+## 📁 Project Structure
+
+```
+Documentation/
+├── README.md                          ⭐ Start here
+├── QUICK_START.md                    📖 Setup guide
+├── DESIGN_SYSTEM.md                  🎨 Design reference
+├── FONT_SETUP.md                     📝 Font guide
+├── COMPONENT_USAGE.md                🔧 Component guide
+├── WEB3_IMPLEMENTATION_GUIDE.md       🔗 Web3 guide
+├── BUILD_SUMMARY.md                  📋 Build info
+├── DOCUMENTATION_INDEX.md             📚 This file
+│
+Code/
+├── app/
+│   ├── page.tsx                      📄 Main doba dashboard
+│   ├── layout.tsx                    ⚙️ Font config
+│   └── globals.css                   🎨 Design tokens
+│
+├── components/
+│   ├── SongCard.tsx                  🎵 NFT card
+│   ├── MarketplaceGrid.tsx           📊 Song grid
+│   ├── MyStudioGrid.tsx              👤 User NFTs
+│   ├── ConnectHeader.tsx             🔐 Wallet UI
+│   └── ui/                           🎛️ shadcn/ui
+│
+└── lib/
+    ├── web3.ts                       🔗 Web3 config
+    └── utils.ts                      🛠️ Utilities
+```
+
+---
+
+## 🔍 Key Files Reference
+
+### Essential Files
+
+| File | Purpose | Key Content |
+|------|---------|-------------|
+| `app/page.tsx` | Main dashboard | doba layout, tabs, navigation |
+| `app/layout.tsx` | Root layout | Font setup, metadata |
+| `app/globals.css` | Global styles | Design tokens, color system |
+| `tailwind.config.ts` | Tailwind config | Colors, fonts, utilities |
+| `lib/web3.ts` | Web3 config | Contract ABI, constants |
+
+### Component Files
+
+| File | Purpose | Props |
+|------|---------|-------|
+| `components/SongCard.tsx` | NFT card | id, title, creator, price, cover, collaborators |
+| `components/MarketplaceGrid.tsx` | Song grid | songs, isConnected |
+| `components/MyStudioGrid.tsx` | User NFTs | nfts |
+| `components/ConnectHeader.tsx` | Wallet | isConnected, onConnect |
+
+### Documentation Files
+
+| File | Topics |
+|------|--------|
+| README.md | Overview, features, stack |
+| QUICK_START.md | Installation, running locally |
+| DESIGN_SYSTEM.md | Colors, typography, components |
+| FONT_SETUP.md | Font installation & troubleshooting |
+| COMPONENT_USAGE.md | Component props, examples, patterns |
+| WEB3_IMPLEMENTATION_GUIDE.md | Smart contracts, Wagmi, integration |
+| BUILD_SUMMARY.md | Project structure, feature status |
+
+---
+
+## 🎓 Learning Path
+
+### Beginner (5 min)
+
+1. Read [QUICK_START.md](./QUICK_START.md)
+2. Run `bun run dev`
+3. Explore doba
+
+### Intermediate (30 min)
+
+1. Review [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md)
+2. Read [COMPONENT_USAGE.md](./COMPONENT_USAGE.md)
+3. Customize colors/fonts
+
+### Advanced (1-2 hours)
+
+1. Study [WEB3_IMPLEMENTATION_GUIDE.md](./WEB3_IMPLEMENTATION_GUIDE.md)
+2. Install Wagmi packages
+3. Connect to smart contract
+
+---
+
+## 🚀 Common Tasks
+
+### "How do I...?"
+
+#### Run the project?
+
+→ [QUICK_START.md](./QUICK_START.md) - Installation section (use `bun install`)
+
+#### Add Neue Machina fonts?
+
+→ [FONT_SETUP.md](./FONT_SETUP.md) - Font Setup section
+
+#### Change the colors?
+
+→ [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) - CSS Implementation section
+
+#### Use a component?
+
+→ [COMPONENT_USAGE.md](./COMPONENT_USAGE.md) - Component sections
+
+#### Connect to blockchain?
+
+→ [WEB3_IMPLEMENTATION_GUIDE.md](./WEB3_IMPLEMENTATION_GUIDE.md) - Setup & config
+
+#### Deploy to production?
+
+→ [QUICK_START.md](./QUICK_START.md) - Building for Production
+
+#### Understand the project?
+
+→ [BUILD_SUMMARY.md](./BUILD_SUMMARY.md) - All sections
+
+---
+
+## 📞 Support & Help
+
+### Issue Troubleshooting
+
+**Fonts not loading?**
+
+- [FONT_SETUP.md](./FONT_SETUP.md) - Troubleshooting section
+
+**App won't start?**
+
+- [QUICK_START.md](./QUICK_START.md) - Troubleshooting section
+
+**Styles look wrong?**
+
+- [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) - Implementation section
+- [COMPONENT_USAGE.md](./COMPONENT_USAGE.md) - Styling reference
+
+**Components not working?**
+
+- [COMPONENT_USAGE.md](./COMPONENT_USAGE.md) - Component guides
+
+**Web3 integration issues?**
+
+- [WEB3_IMPLEMENTATION_GUIDE.md](./WEB3_IMPLEMENTATION_GUIDE.md) - Full guide
+
+---
+
+## 📊 Documentation Stats
+
+- **Total Documents:** 8
+- **Total Pages:** ~50+
+- **Code Examples:** 100+
+- **Components Documented:** 4
+- **Features Listed:** 50+
+- **Customization Examples:** 15+
+
+---
+
+## ✅ Checklist
+
+Before you start:
+
+- [ ] Read QUICK_START.md
+- [ ] Run `bun run dev`
+- [ ] Explore doba
+- [ ] Check DESIGN_SYSTEM.md for colors
+- [ ] Review COMPONENT_USAGE.md for components
+- [ ] (Optional) Setup fonts from FONT_SETUP.md
+- [ ] (When ready) Follow WEB3_IMPLEMENTATION_GUIDE.md
+
+---
+
+## 🎯 Next Steps
+
+1. **Explore:** Run the app and test features
+2. **Customize:** Update colors, fonts, content
+3. **Develop:** Add Web3 integration following guides
+4. **Deploy:** Push to Vercel or your hosting
+5. **Extend:** Add more features as needed
+
+---
+
+## 📝 Document Versions
+
+| Document | Version | Last Updated |
+|----------|---------|--------------|
+| README.md | 1.0 | Feb 7, 2026 |
+| QUICK_START.md | 1.0 | Feb 7, 2026 |
+| DESIGN_SYSTEM.md | 1.0 | Feb 7, 2026 |
+| FONT_SETUP.md | 1.0 | Feb 7, 2026 |
+| COMPONENT_USAGE.md | 1.0 | Feb 7, 2026 |
+| WEB3_IMPLEMENTATION_GUIDE.md | 1.0 | Feb 7, 2026 |
+| BUILD_SUMMARY.md | 1.0 | Feb 7, 2026 |
+| DOCUMENTATION_INDEX.md | 1.0 | Feb 7, 2026 |
+
+---
+
+## 🎵 Happy Building
+
+Everything is ready to go. Start with [QUICK_START.md](./QUICK_START.md) and explore!
+
+**Questions?** Check the relevant documentation file first.
+
+**Ready to code?** Dive into [COMPONENT_USAGE.md](./COMPONENT_USAGE.md)
+
+**Need Web3?** Follow [WEB3_IMPLEMENTATION_GUIDE.md](./WEB3_IMPLEMENTATION_GUIDE.md)
+
+---
+
+*Created with ❤️ for the doba community*
+
+**Project:** doba  
+**Status:** Production Ready  
+**Version:** 1.0.0
