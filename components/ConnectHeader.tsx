@@ -22,7 +22,11 @@ export default function ConnectHeader({
           <div className="hidden lg:flex items-center gap-2 glass px-4 py-2 rounded-lg">
             <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
             <span className="text-sm font-mono text-white/80">{mockAddress}</span>
-            <button className="p-1 hover:bg-white/[0.1] rounded transition">
+            <button
+              className="p-1 hover:bg-white/[0.1] rounded transition"
+              aria-label="Copy address"
+              title="Copy address"
+            >
               <Copy size={14} className="text-white/60" />
             </button>
           </div>
@@ -32,9 +36,8 @@ export default function ConnectHeader({
           onClick={onConnect}
           className="bg-cyber-pink hover:bg-cyber-pink/90 text-white font-semibold"
         >
-          <Wallet size={16} className="mr-2" />
-          <span className="hidden sm:inline">Login</span>
-          <span className="sm:hidden">Login</span>
+          <span className="hidden sm:inline">Sign In</span>
+          <span className="sm:hidden">Sign In</span>
         </Button>
       )}
     </div>

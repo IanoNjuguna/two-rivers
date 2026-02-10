@@ -125,6 +125,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
                 <button
                   onClick={previous}
                   className="p-2 hover:bg-white/[0.05] rounded-lg transition-colors text-white/70 hover:text-white"
+                  aria-label="Previous track"
                 >
                   <SkipBack size={18} />
                 </button>
@@ -149,6 +150,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
                 <button
                   onClick={next}
                   className="p-2 hover:bg-white/[0.05] rounded-lg transition-colors text-white/70 hover:text-white"
+                  aria-label="Next track"
                 >
                   <SkipForward size={18} />
                 </button>

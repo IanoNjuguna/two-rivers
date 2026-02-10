@@ -24,13 +24,13 @@ export default function EarningsView({ isConnected }: EarningsViewProps) {
       <div className="space-y-6">
         <div>
           <h2 className="text-2xl font-bold mb-2">Your Earnings</h2>
-          <p className="text-white/60">Track your revenue from music NFT sales and royalties</p>
+          <p className="text-white/60">Track your revenue from doba NFT sales and royalties</p>
         </div>
         <div
           className="border border-white/[0.08] rounded-lg p-12 text-center"
-          style={{ backgroundColor: 'rgba(13, 13, 18, 0.3)' }}
+          className="bg-dark-primary-30"
         >
-          <div className="w-16 h-16 rounded-full mx-auto mb-4" style={{ backgroundColor: 'rgba(183, 148, 244, 0.1)' }}>
+          <div className="w-16 h-16 rounded-full mx-auto mb-4 bg-lavender-10">
             <div className="w-full h-full flex items-center justify-center text-[#B794F4]">
               <DollarSign size={32} />
             </div>
@@ -46,15 +46,12 @@ export default function EarningsView({ isConnected }: EarningsViewProps) {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold mb-2">Your Earnings</h2>
-        <p className="text-white/60">Track your revenue from music NFT sales and royalties</p>
+        <p className="text-white/60">Track your revenue from doba NFT sales and royalties</p>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div
-          className="border border-white/[0.08] rounded-lg p-6"
-          style={{ backgroundColor: 'rgba(13, 13, 18, 0.5)' }}
-        >
+        <div className="border border-white/[0.08] rounded-lg p-6 bg-dark-primary-50">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-white/60 text-sm">Total Earnings</h3>
             <DollarSign size={16} className="text-[#FF1F8A]" />
@@ -65,7 +62,7 @@ export default function EarningsView({ isConnected }: EarningsViewProps) {
 
         <div
           className="border border-white/[0.08] rounded-lg p-6"
-          style={{ backgroundColor: 'rgba(13, 13, 18, 0.5)' }}
+          className="bg-dark-primary-50"
         >
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-white/60 text-sm">This Month</h3>
@@ -77,7 +74,7 @@ export default function EarningsView({ isConnected }: EarningsViewProps) {
 
         <div
           className="border border-white/[0.08] rounded-lg p-6"
-          style={{ backgroundColor: 'rgba(13, 13, 18, 0.5)' }}
+          className="bg-dark-primary-50"
         >
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-white/60 text-sm">Pending Payout</h3>
@@ -91,7 +88,7 @@ export default function EarningsView({ isConnected }: EarningsViewProps) {
       {/* Earnings History */}
       <div
         className="border border-white/[0.08] rounded-lg overflow-hidden"
-        style={{ backgroundColor: 'rgba(13, 13, 18, 0.3)' }}
+        className="bg-dark-primary-30"
       >
         <div className="p-6 border-b border-white/[0.08]">
           <h3 className="font-semibold">Recent Earnings</h3>
@@ -114,12 +111,7 @@ export default function EarningsView({ isConnected }: EarningsViewProps) {
       </div>
 
       {/* Payout Button */}
-      <button
-        className="w-full py-3 rounded-lg font-semibold transition"
-        style={{ backgroundColor: '#FF1F8A', color: 'white' }}
-        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#E01A73')}
-        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#FF1F8A')}
-      >
+      <button className="w-full py-3 rounded-lg font-semibold transition bg-[#FF1F8A] text-white hover:bg-[#E01A73]">
         Claim Earnings
       </button>
     </div>

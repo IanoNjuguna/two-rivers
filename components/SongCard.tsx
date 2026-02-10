@@ -43,11 +43,9 @@ export default function SongCard({
           <button
             onClick={onPlay}
             className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
+            aria-label={`Play ${title}`}
           >
-            <div
-              className="p-3 rounded-full"
-              style={{ backgroundColor: '#FF1F8A' }}
-            >
+            <div className="p-3 rounded-full bg-[#FF1F8A]">
               <IconPlayerPlay size={20} className="text-white fill-white" />
             </div>
           </button>

@@ -8,7 +8,7 @@ interface Song {
   price: string
   cover: string
   collaborators: number
-  url?: string
+  url: string
 }
 
 interface MarketplaceGridProps {

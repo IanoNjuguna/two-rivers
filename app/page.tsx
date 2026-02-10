@@ -86,14 +86,14 @@ export default function Dashboard() {
   }
 
   return (
-    <div style={{ backgroundColor: '#0D0D12' }} className="min-h-screen text-white flex flex-col">
+    <div className="min-h-screen text-white flex flex-col bg-dark-primary">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-white/[0.08]" style={{ backgroundColor: 'rgba(13, 13, 18, 0.95)', backdropFilter: 'blur(16px)' }}>
+      <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-white/[0.08] bg-dark-primary-95 backdrop-blur-16">
         <div className="h-full px-4 lg:px-6 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg" style={{ backgroundColor: '#FF1F8A' }} />
-            <span className="font-bold text-lg">Music NFT</span>
+            <img src="/logo.png" alt="doba logo" className="w-8 h-8 rounded-lg object-cover" />
+            <span className="font-bold text-lg tracking-wide tracking-wider-custom">doba</span>
           </div>
 
           {/* Desktop Connect Header */}
@@ -108,6 +108,7 @@ export default function Dashboard() {
               <button
                 onClick={() => setHeaderMenuOpen(!headerMenuOpen)}
                 className="p-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+                aria-label="Toggle menu"
               >
                 <Menu size={24} />
               </button>
@@ -120,7 +121,7 @@ export default function Dashboard() {
 
       {/* Mobile Menu */}
       {headerMenuOpen && (
-        <div className="lg:hidden fixed inset-0 top-16 z-40 animate-slide-in-down" style={{ backgroundColor: '#0D0D12' }}>
+        <div className="lg:hidden fixed inset-0 top-16 z-40 animate-slide-in-down bg-dark-primary">
           <nav className="flex flex-col p-4 space-y-2 h-full overflow-y-auto">
             <div className="px-0 py-2">
               <h2 className="text-sm font-semibold text-[#B794F4] uppercase tracking-wider">
@@ -231,7 +232,7 @@ export default function Dashboard() {
       {/* Main Layout */}
       <div className="flex flex-col lg:flex-row flex-1 mt-16">
         {/* Sidebar */}
-        <aside className="hidden lg:flex w-64 border-r border-white/[0.08] flex-col" style={{ backgroundColor: 'rgba(13, 13, 18, 0.5)' }}>
+        <aside className="hidden lg:flex w-64 border-r border-white/[0.08] flex-col bg-dark-primary-50">
           <nav className="flex flex-col p-4 overflow-y-auto flex-1 space-y-1">
             <div className="px-0 pt-0 pb-0 mb-1">
               <h2 className="text-sm font-semibold text-[#B794F4] uppercase tracking-wider">
@@ -344,8 +345,8 @@ export default function Dashboard() {
                 {isConnected ? (
                   <MyStudioGrid nfts={mockOwnedNFTs} />
                 ) : (
-                  <div className="p-12 text-center rounded-xl" style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                    <Library className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgba(183, 148, 244, 0.4)' }} />
+                  <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
+                    <Library className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
                     <h3 className="text-xl font-semibold mb-2">
                       Connect Your Wallet
                     </h3>
@@ -365,8 +366,8 @@ export default function Dashboard() {
                     Find artists, tracks, and collections
                   </p>
                 </div>
-                <div className="p-12 text-center rounded-xl" style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                  <Search className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgba(183, 148, 244, 0.4)' }} />
+                <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
+                  <Search className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
                   <h3 className="text-xl font-semibold mb-2">
                     Search Coming Soon
                   </h3>
@@ -417,8 +418,8 @@ export default function Dashboard() {
 
                     {/* Single Track Upload */}
                     {uploadMode === 'single' && (
-                      <div className="border border-white/[0.08] p-12 text-center" style={{ backgroundColor: 'rgba(13, 13, 18, 0.3)' }}>
-                        <div className="w-16 h-16 mx-auto mb-4" style={{ backgroundColor: 'rgba(255, 31, 138, 0.1)' }}>
+                      <div className="border border-white/[0.08] p-12 text-center bg-dark-primary-30">
+                        <div className="w-16 h-16 mx-auto mb-4 bg-pink-10">
                           <div className="w-full h-full flex items-center justify-center text-[#FF1F8A]">
                             <Music size={32} />
                           </div>
@@ -438,8 +439,8 @@ export default function Dashboard() {
                     {/* Album Upload */}
                     {uploadMode === 'album' && (
                       <div className="space-y-6">
-                        <div className="border border-white/[0.08] p-12 text-center" style={{ backgroundColor: 'rgba(13, 13, 18, 0.3)' }}>
-                          <div className="w-16 h-16 mx-auto mb-4" style={{ backgroundColor: 'rgba(255, 31, 138, 0.1)' }}>
+                        <div className="border border-white/[0.08] p-12 text-center bg-dark-primary-30">
+                          <div className="w-16 h-16 mx-auto mb-4 bg-pink-10">
                             <div className="w-full h-full flex items-center justify-center text-[#FF1F8A]">
                               <Music size={32} />
                             </div>
@@ -467,7 +468,7 @@ export default function Dashboard() {
                           <div className="space-y-4">
                             <h3 className="font-semibold">Tracks ({albumTracks.length})</h3>
                             {albumTracks.map((track, index) => (
-                              <div key={track.id} className="border border-white/[0.08] p-4" style={{ backgroundColor: 'rgba(13, 13, 18, 0.3)' }}>
+                              <div key={track.id} className="border border-white/[0.08] p-4 bg-dark-primary-30">
                                 <div className="flex items-center gap-4">
                                   <span className="text-white/60 text-sm w-8">{index + 1}.</span>
                                   <input
@@ -510,8 +511,8 @@ export default function Dashboard() {
                     )}
                   </>
                 ) : (
-                  <div className="border border-white/[0.08] p-12 text-center" style={{ backgroundColor: 'rgba(13, 13, 18, 0.3)' }}>
-                    <div className="w-16 h-16 mx-auto mb-4" style={{ backgroundColor: 'rgba(183, 148, 244, 0.1)' }}>
+                  <div className="border border-white/[0.08] p-12 text-center bg-dark-primary-30">
+                    <div className="w-16 h-16 mx-auto mb-4 bg-lavender-10">
                       <div className="w-full h-full flex items-center justify-center text-[#B794F4]">
                         <Music size={32} />
                       </div>
@@ -539,8 +540,8 @@ export default function Dashboard() {
                     View detailed insights about your music performance
                   </p>
                 </div>
-                <div className="border border-white/[0.08] rounded-xl p-12 text-center" style={{ backgroundColor: 'rgba(13, 13, 18, 0.3)' }}>
-                  <div className="w-16 h-16 rounded-full mx-auto mb-4" style={{ backgroundColor: 'rgba(183, 148, 244, 0.1)' }}>
+                <div className="border border-white/[0.08] rounded-xl p-12 text-center bg-dark-primary-30">
+                  <div className="w-16 h-16 rounded-full mx-auto mb-4 bg-lavender-10">
                     <div className="w-full h-full flex items-center justify-center text-[#B794F4]">
                       <Music size={32} />
                     </div>
@@ -564,7 +565,7 @@ export default function Dashboard() {
                   </p>
                 </div>
                 {isConnected ? (
-                  <div className="p-8 rounded-xl" style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                  <div className="p-8 rounded-xl bg-white-2 border border-white/[0.08]">
                     <div className="flex items-center gap-4 mb-6">
                       <div className="w-16 h-16 rounded-full bg-gradient-to-r from-[#FF1F8A] to-[#B794F4]" />
                       <div>
@@ -574,7 +575,7 @@ export default function Dashboard() {
                     </div>
                     
                     {/* Wallet Address Display */}
-                    <div className="mb-6 p-4 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.04)' }}>
+                    <div className="mb-6 p-4 rounded-lg bg-white-4">
                       <p className="text-white/60 text-xs mb-2 uppercase tracking-wider">Wallet Address</p>
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-mono text-white">0x1234...5678</span>
@@ -600,8 +601,8 @@ export default function Dashboard() {
                     </Button>
                   </div>
                 ) : (
-                  <div className="p-12 text-center rounded-xl" style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                    <User className="w-12 h-12 mx-auto mb-4" style={{ color: 'rgba(183, 148, 244, 0.4)' }} />
+                  <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
+                    <User className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
                     <h3 className="text-xl font-semibold mb-2">
                       Connect Your Wallet
                     </h3>
