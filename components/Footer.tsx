@@ -1,13 +1,13 @@
 export default function Footer() {
   const footerLinks = [
-    { label: 'Legal', href: '#' },
-    { label: 'Privacy', href: '#' },
-    { label: 'Cookie Policy', href: '#' },
-    { label: 'Cookie Manager', href: '#' },
-    { label: 'Imprint', href: '#' },
-    { label: 'Artist Resources', href: '#' },
-    { label: 'Creator Channels', href: '#' },
-    { label: 'Transparency Reports', href: '#' },
+    { label: 'About', href: '/about' },
+    { label: 'How It Works', href: '/how-it-works' },
+    { label: 'For Artists', href: '/for-artists' },
+    { label: 'FAQ', href: '/faq' },
+    { label: 'Docs', href: '/docs' },
+    { label: 'Terms', href: '/terms' },
+    { label: 'Privacy', href: '/privacy' },
+    { label: 'Support', href: '/support' }
   ]
 
   return (
@@ -33,7 +33,7 @@ export default function Footer() {
                 English (US)
               </button>
             </div>
-            <p className="text-white/30">© 2024 Music NFT</p>
+            <p className="text-white/30">© 2024 doba</p>
           </div>
         </div>
       </div>
@@ -59,7 +59,7 @@ export default function Footer() {
                 English (US)
               </button>
             </div>
-            <p className="text-white/30">© 2024 Music NFT</p>
+            <p className="text-white/30">© 2024 doba</p>
           </div>
         </div>
       </footer>

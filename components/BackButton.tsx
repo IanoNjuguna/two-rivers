@@ -1,0 +1,28 @@
+'use client'
+
+import { useRouter } from 'next/navigation'
+import { IconArrowLeft } from '@tabler/icons-react'
+
+export default function BackButton() {
+  const router = useRouter()
+
+  const handleBack = () => {
+    // Check if there's history to go back to
+    if (window.history.length > 1 && document.referrer.includes(window.location.host)) {
+      router.back()
+    } else {
+      // If no history or external referrer, go to home
+      router.push('/')
+    }
+  }
+
+  return (
+    <button
+      onClick={handleBack}
+      className="inline-flex items-center gap-2 text-white/70 hover:text-white transition-colors mb-8 group"
+    >
+      <IconArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+      <span>Back</span>
+    </button>
+  )
+}
