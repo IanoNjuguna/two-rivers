@@ -1,0 +1,6 @@
+# .bunfig.toml
+[install]
+# Only allow bun to install dependencies
+npm = false
+yarn = false
+pnpm = false

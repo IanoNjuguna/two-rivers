@@ -1,0 +1,1 @@
+This project is configured for Bun only. Use `bun install` and `bun run <script>` for all development tasks. Do not use npm, yarn, or pnpm.
