@@ -1,0 +1,17 @@
+{
+  "name": "doba-metadata-api",
+  "version": "1.0.0",
+  "description": "NFT metadata API for Doba Music",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --hot ./src/index.ts",
+    "start": "bun run ./src/index.ts",
+    "db:init": "bun run ./src/database.ts"
+  },
+  "dependencies": {
+    "hono": "^4.0.0"
+  },
+  "devDependencies": {
+    "bun-types": "latest"
+  }
+}
