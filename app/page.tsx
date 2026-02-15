@@ -10,6 +10,15 @@ import EarningsView from '@/components/EarningsView'
 import AudioPlayer from '@/components/AudioPlayer'
 import Footer from '@/components/Footer'
 import { useAudioPlayer } from '@/hooks/useAudioPlayer'
+import { useSignerStatus, useUser, useLogout } from "@account-kit/react"
+
+// Utility function to truncate wallet address for security
+const formatAddress = (address: string, startChars: number = 6, endChars: number = 4): string => {
+  if (!address || address.length <= startChars + endChars) {
+    return address
+  }
+  return `${address.slice(0, startChars)}...${address.slice(-endChars)}`
+}
 
 const mockSongs = [
   {
@@ -70,7 +79,9 @@ const mockOwnedNFTs = [
 type ViewType = 'home' | 'library' | 'search' | 'upload' | 'profile' | 'earnings' | 'analytics'
 
 export default function Dashboard() {
-  const [isConnected, setIsConnected] = useState(false)
+  const { isConnected, isInitializing } = useSignerStatus()
+  const user = useUser()
+  const { logout } = useLogout()
   const [currentView, setCurrentView] = useState<ViewType>('home')
   const [creatorMenuOpen, setCreatorMenuOpen] = useState(false)
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false)
@@ -86,19 +97,19 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen text-white flex flex-col bg-dark-primary">
+    <div className="min-h-screen text-white flex flex-col bg-[#0D0D12]">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-white/[0.08] bg-dark-primary-95 backdrop-blur-16">
+      <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-white/[0.08] bg-[rgba(13,13,18,0.95)] backdrop-blur-md">
         <div className="h-full px-4 lg:px-6 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-2">
             <img src="/logo.png" alt="doba logo" className="w-8 h-8 rounded-lg object-cover" />
-            <span className="font-bold text-lg tracking-wide tracking-wider-custom">doba</span>
+            <span className="font-bold text-lg tracking-wide tracking-wider">doba</span>
           </div>
 
           {/* Desktop Connect Header */}
           <div className="hidden lg:block">
-            <ConnectHeader isConnected={isConnected} onConnect={() => setIsConnected(true)} />
+            <ConnectHeader />
           </div>
 
           {/* Mobile/Tablet Controls */}
@@ -114,17 +125,17 @@ export default function Dashboard() {
               </button>
             )}
             {/* Mobile Connect Header */}
-            <ConnectHeader isConnected={isConnected} onConnect={() => setIsConnected(true)} />
+            <ConnectHeader />
           </div>
         </div>
       </header>
 
       {/* Mobile Menu */}
       {headerMenuOpen && (
-        <div className="lg:hidden fixed inset-0 top-16 z-40 animate-slide-in-down bg-dark-primary">
+        <div className="lg:hidden fixed inset-0 top-16 z-40 animate-slide-in-down bg-gray-900">
           <nav className="flex flex-col p-4 space-y-2 h-full overflow-y-auto">
             <div className="px-0 py-2">
-              <h2 className="text-sm font-semibold text-[#B794F4] uppercase tracking-wider">
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-purple-400">
                 Navigation
               </h2>
             </div>
@@ -136,7 +147,7 @@ export default function Dashboard() {
               }}
               className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
             >
-              <HomeIcon size={18} className="text-[#FF1F8A] flex-shrink-0" />
+              <HomeIcon size={18} className="text-red-500 flex-shrink-0" />
               <span className="text-sm font-medium">Home</span>
             </button>
             <button
@@ -146,7 +157,7 @@ export default function Dashboard() {
               }}
               className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
             >
-              <Library size={18} className="text-[#B794F4] flex-shrink-0" />
+              <Library size={18} className="text-purple-400 flex-shrink-0" />
               <span className="text-sm font-medium">Library</span>
             </button>
             <button
@@ -156,14 +167,16 @@ export default function Dashboard() {
               }}
               className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
             >
-              <Search size={18} className="text-[#B794F4] flex-shrink-0" />
+              <Search size={18} className="text-purple-400 flex-shrink-0" />
               <span className="text-sm font-medium">Search</span>
             </button>
 
             <div className="border-t border-white/[0.08]" />
 
             <div className="px-0 py-2">
-              <h2 className="text-xs font-semibold text-[#B794F4] uppercase tracking-wider">Creator</h2>
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-purple-400">
+                Creator
+              </h2>
             </div>
 
             <button
@@ -173,7 +186,7 @@ export default function Dashboard() {
               }}
               className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
             >
-              <Music size={18} className="text-[#FF1F8A] flex-shrink-0" />
+              <Music size={18} className="text-red-500 flex-shrink-0" />
               <span className="text-sm font-medium">Upload</span>
             </button>
             <button
@@ -183,7 +196,7 @@ export default function Dashboard() {
               }}
               className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
             >
-              <DollarSign size={18} className="text-[#B794F4] flex-shrink-0" />
+              <DollarSign size={18} className="text-purple-400 flex-shrink-0" />
               <span className="text-sm font-medium">Earnings</span>
             </button>
             <button
@@ -193,7 +206,7 @@ export default function Dashboard() {
               }}
               className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
             >
-              <TrendingUp size={18} className="text-[#B794F4] flex-shrink-0" />
+              <TrendingUp size={18} className="text-purple-400 flex-shrink-0" />
               <span className="text-sm font-medium">Analytics</span>
             </button>
 
@@ -204,38 +217,22 @@ export default function Dashboard() {
               }}
               className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
             >
-              <User size={18} className="text-[#B794F4] flex-shrink-0" />
+              <User size={18} className="text-purple-400 flex-shrink-0" />
               <span className="text-sm font-medium">Profile</span>
             </button>
 
-            {isConnected && (
-              <>
-            <div className="border-t border-white/[0.08]" />
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full border-white/[0.12] text-white hover:bg-white/[0.05] bg-transparent"
-                  onClick={() => {
-                    setIsConnected(false)
-                    setHeaderMenuOpen(false)
-                  }}
-                >
-                  <LogOut size={16} className="mr-2" />
-                  Disconnect
-                </Button>
-              </>
-            )}
-          </nav>
-        </div>
-      )}
+          </nav >
+        </div >
+      )
+      }
 
       {/* Main Layout */}
       <div className="flex flex-col lg:flex-row flex-1 mt-16">
         {/* Sidebar */}
-        <aside className="hidden lg:flex w-64 border-r border-white/[0.08] flex-col bg-dark-primary-50">
+        <aside className="hidden lg:flex w-64 border-r border-white/[0.08] flex-col bg-[#0D0D12]">
           <nav className="flex flex-col p-4 overflow-y-auto flex-1 space-y-1">
             <div className="px-0 pt-0 pb-0 mb-1">
-              <h2 className="text-sm font-semibold text-[#B794F4] uppercase tracking-wider">
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-purple-400">
                 Navigation
               </h2>
             </div>
@@ -265,7 +262,7 @@ export default function Dashboard() {
             <div className="border-t border-white/[0.08] my-2" />
 
             <div className="px-0 pt-3 pb-0 mb-1">
-              <h2 className="text-sm font-semibold text-[#B794F4] uppercase tracking-wider">Creator</h2>
+              <h2 className="text-sm font-semibold text-[#B794F4] uppercase tracking-wider" style={{ letterSpacing: '0.04em' }}>Creator</h2>
             </div>
 
             <button
@@ -299,31 +296,16 @@ export default function Dashboard() {
             </button>
           </nav>
 
-          {/* Disconnect Button - Above scrollable nav */}
-          {isConnected && (
-            <div className="border-t border-white/[0.08] p-4">
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full border-white/[0.12] text-white hover:bg-white/[0.05] bg-transparent"
-                onClick={() => setIsConnected(false)}
-              >
-                <LogOut size={16} className="mr-2" />
-                Disconnect
-              </Button>
-            </div>
-          )}
-
           <div className="border-t border-white/[0.08]" />
 
           {/* Footer Section */}
           <div className="p-4">
             <Footer />
           </div>
-        </aside>
+        </aside >
 
         {/* Content Area */}
-        <main className="flex-1 overflow-y-auto pb-80 lg:pb-0">
+        < main className="flex-1 overflow-y-auto pb-80 lg:pb-0" >
           <div className="p-6 max-w-7xl mx-auto">
             {currentView === 'home' && (
               <div className="space-y-6 animate-fade-in">
@@ -396,21 +378,19 @@ export default function Dashboard() {
                           setUploadMode('single')
                           setAlbumTracks([])
                         }}
-                        className={`px-4 py-3 font-medium text-sm transition ${
-                          uploadMode === 'single'
-                            ? 'text-[#FF1F8A] border-b-2 border-[#FF1F8A]'
-                            : 'text-white/60 hover:text-white'
-                        }`}
+                        className={`px-4 py-3 font-medium text-sm transition ${uploadMode === 'single'
+                          ? 'text-[#FF1F8A] border-b-2 border-[#FF1F8A]'
+                          : 'text-white/60 hover:text-white'
+                          }`}
                       >
                         Single Track
                       </button>
                       <button
                         onClick={() => setUploadMode('album')}
-                        className={`px-4 py-3 font-medium text-sm transition ${
-                          uploadMode === 'album'
-                            ? 'text-[#FF1F8A] border-b-2 border-[#FF1F8A]'
-                            : 'text-white/60 hover:text-white'
-                        }`}
+                        className={`px-4 py-3 font-medium text-sm transition ${uploadMode === 'album'
+                          ? 'text-[#FF1F8A] border-b-2 border-[#FF1F8A]'
+                          : 'text-white/60 hover:text-white'
+                          }`}
                       >
                         Album
                       </button>
@@ -418,8 +398,8 @@ export default function Dashboard() {
 
                     {/* Single Track Upload */}
                     {uploadMode === 'single' && (
-                      <div className="border border-white/[0.08] p-12 text-center bg-dark-primary-30">
-                        <div className="w-16 h-16 mx-auto mb-4 bg-pink-10">
+                      <div className="border border-white/[0.08] p-12 text-center bg-[rgba(13,13,18,0.3)]">
+                        <div className="w-16 h-16 mx-auto mb-4 bg-[rgba(255,31,138,0.1)]">
                           <div className="w-full h-full flex items-center justify-center text-[#FF1F8A]">
                             <Music size={32} />
                           </div>
@@ -439,8 +419,8 @@ export default function Dashboard() {
                     {/* Album Upload */}
                     {uploadMode === 'album' && (
                       <div className="space-y-6">
-                        <div className="border border-white/[0.08] p-12 text-center bg-dark-primary-30">
-                          <div className="w-16 h-16 mx-auto mb-4 bg-pink-10">
+                        <div className="border border-white/[0.08] p-12 text-center bg-[rgba(13,13,18,0.3)]">
+                          <div className="w-16 h-16 mx-auto mb-4 bg-[rgba(255,31,138,0.1)]">
                             <div className="w-full h-full flex items-center justify-center text-[#FF1F8A]">
                               <Music size={32} />
                             </div>
@@ -451,7 +431,7 @@ export default function Dashboard() {
                           <p className="text-white/60 mb-6">
                             Add multiple tracks to create an album
                           </p>
-                          <Button 
+                          <Button
                             onClick={() => {
                               const newId = `track-${Date.now()}`
                               setAlbumTracks([...albumTracks, { id: newId, title: '' }])
@@ -468,7 +448,7 @@ export default function Dashboard() {
                           <div className="space-y-4">
                             <h3 className="font-semibold">Tracks ({albumTracks.length})</h3>
                             {albumTracks.map((track, index) => (
-                              <div key={track.id} className="border border-white/[0.08] p-4 bg-dark-primary-30">
+                              <div key={track.id} className="border border-white/[0.08] p-4 bg-[rgba(13,13,18,0.3)]">
                                 <div className="flex items-center gap-4">
                                   <span className="text-white/60 text-sm w-8">{index + 1}.</span>
                                   <input
@@ -495,7 +475,7 @@ export default function Dashboard() {
                                 </div>
                               </div>
                             ))}
-                            <Button 
+                            <Button
                               onClick={() => {
                                 const newId = `track-${Date.now()}`
                                 setAlbumTracks([...albumTracks, { id: newId, title: '' }])
@@ -511,8 +491,8 @@ export default function Dashboard() {
                     )}
                   </>
                 ) : (
-                  <div className="border border-white/[0.08] p-12 text-center bg-dark-primary-30">
-                    <div className="w-16 h-16 mx-auto mb-4 bg-lavender-10">
+                  <div className="border border-white/[0.08] p-12 text-center bg-[rgba(13,13,18,0.3)]">
+                    <div className="w-16 h-16 mx-auto mb-4 bg-[rgba(183,148,244,0.1)]">
                       <div className="w-full h-full flex items-center justify-center text-[#B794F4]">
                         <Music size={32} />
                       </div>
@@ -540,8 +520,8 @@ export default function Dashboard() {
                     View detailed insights about your music performance
                   </p>
                 </div>
-                <div className="border border-white/[0.08] rounded-xl p-12 text-center bg-dark-primary-30">
-                  <div className="w-16 h-16 rounded-full mx-auto mb-4 bg-lavender-10">
+                <div className="border border-white/[0.08] rounded-xl p-12 text-center bg-[rgba(13,13,18,0.3)]">
+                  <div className="w-16 h-16 rounded-full mx-auto mb-4 bg-[rgba(183,148,244,0.1)]">
                     <div className="w-full h-full flex items-center justify-center text-[#B794F4]">
                       <Music size={32} />
                     </div>
@@ -564,41 +544,33 @@ export default function Dashboard() {
                     Manage your account and settings
                   </p>
                 </div>
-                {isConnected ? (
+                {isConnected && user ? (
                   <div className="p-8 rounded-xl bg-white-2 border border-white/[0.08]">
                     <div className="flex items-center gap-4 mb-6">
                       <div className="w-16 h-16 rounded-full bg-gradient-to-r from-[#FF1F8A] to-[#B794F4]" />
                       <div>
                         <h3 className="text-lg font-semibold">Your Profile</h3>
-                        <p className="text-white/60 text-sm">Connected wallet</p>
+                        <p className="text-white/60 text-sm">{user.email || 'Smart Account'}</p>
                       </div>
                     </div>
-                    
+
                     {/* Wallet Address Display */}
                     <div className="mb-6 p-4 rounded-lg bg-white-4">
-                      <p className="text-white/60 text-xs mb-2 uppercase tracking-wider">Wallet Address</p>
+                      <p className="text-white/60 text-xs mb-2 uppercase tracking-wider" style={{ letterSpacing: '0.04em' }}>Wallet Address</p>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-mono text-white">0x1234...5678</span>
+                        <span className="text-sm font-mono text-white">{formatAddress(user.address)}</span>
                         <button
                           onClick={() => {
-                            navigator.clipboard.writeText('0x1234...5678')
+                            navigator.clipboard.writeText(user.address)
                           }}
                           className="p-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
-                          title="Copy wallet address"
+                          title="Copy full wallet address"
                         >
                           <IconCopy size={16} />
                         </button>
                       </div>
+                      <p className="text-xs text-white/50 mt-2">Click copy to get full address</p>
                     </div>
-
-                    <Button
-                      variant="outline"
-                      className="border-white/[0.12] text-white hover:bg-white/[0.05] w-full bg-transparent"
-                      onClick={() => setIsConnected(false)}
-                    >
-                      <LogOut size={16} className="mr-2" />
-                      Disconnect Wallet
-                    </Button>
                   </div>
                 ) : (
                   <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
@@ -623,7 +595,7 @@ export default function Dashboard() {
         <footer className="lg:hidden px-4 py-6">
           <Footer />
         </footer>
-      </div>
-    </div>
+      </div >
+    </div >
   )
 }
