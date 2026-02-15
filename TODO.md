@@ -4,11 +4,11 @@
 
 ### 1. Complete Core UI Flows
 
-  - [ ] Artist upload flow
-  - [ ] Form for music details (title, artist, description, genre)
-  - [ ] File upload interface (audio + artwork)
-  - [ ] Price setting UI
-  - [ ] Collaborator management (add wallet addresses, set split percentages)
+- [ ] Artist upload flow
+- [ ] Form for music details (title, artist, description, genre)
+- [ ] File upload interface (audio + artwork)
+- [ ] Price setting UI
+- [ ] Collaborator management (add wallet addresses, set split percentages)
 - [ ] Marketplace refinements
   - [ ] Advanced filtering (genre, price range, artist)
   - [ ] Search functionality
@@ -27,11 +27,14 @@
   - [ ] Revenue split breakdown for collaborations
 
 ### 2. Wallet Integration
+
 - [ ] Choose wallet library: **RainbowKit** (recommended) or ConnectKit or wagmi
 - [ ] Install dependencies
+
   ```bash
   bun add @rainbow-me/rainbowkit wagmi viem@2.x @tanstack/react-query
   ```
+
 - [ ] Setup wallet providers
   - [ ] MetaMask support
   - [ ] Coinbase Wallet support
@@ -47,6 +50,7 @@
   - [ ] Display current network
 
 ### 3. Backend/Data Infrastructure
+
 - [ ] Choose database solution (PostgreSQL, MongoDB, Supabase, etc.)
 - [ ] Database schema design
   - [ ] **Users table**
@@ -109,6 +113,7 @@
   - [ ] GET /api/transactions/:address (transaction history)
 
 ### 4. Smart Contract Requirements
+
 - [ ] Define contract specifications
   - [ ] **Music NFT minting**
     - Mint with metadata URI
@@ -145,13 +150,14 @@
   - [ ] Access control tests
 
 ### 5. Testing Environment Setup
+
 - [ ] Setup testnet accounts
   - [ ] Get test wallets
   - [ ] Get testnet ETH from faucets
 - [ ] Deploy to testnets
-  - [ ] Base Sepolia (recommended for Base ecosystem)
+  - [ ] Arbitrum Sepolia (Primary deployment)
+  - [ ] Base Sepolia
   - [ ] Sepolia (Ethereum testnet)
-  - [ ] Arbitrum Sepolia
   - [ ] (Optional) Other L2 testnets
 - [ ] Test full user flows
   - [ ] Wallet connection
@@ -165,6 +171,7 @@
   - [ ] Test transactions
 
 ### 6. User Experience Enhancements
+
 - [ ] Gas estimation
   - [ ] Show estimated gas before transactions
   - [ ] Display in USD equivalent
@@ -187,6 +194,7 @@
   - [ ] Sync with blockchain state
 
 ### 7. Security & Best Practices
+
 - [ ] Security measures
   - [ ] Never store private keys
   - [ ] Input validation (file types, sizes, pricing)
@@ -199,7 +207,7 @@
   - [ ] Artwork validation (PNG, JPG, max 10MB)
 - [ ] DMCA takedown system
   - [ ] DMCA form page
-  - [ ] Email notification to iano@doba.world
+  - [ ] Email notification to <iano@doba.world>
   - [ ] Admin dashboard for takedown requests
 - [ ] Smart contract security
   - [ ] Use OpenZeppelin audited contracts
@@ -208,6 +216,7 @@
   - [ ] (Before mainnet) Get professional audit
 
 ### 8. Legal/Compliance
+
 - [ ] Finalize Terms of Service
   - [ ] Copyright policy (honor system for MVP)
   - [ ] DMCA process
@@ -217,7 +226,7 @@
   - [ ] Future: Content ID-like system
 - [ ] DMCA agent registration
   - [ ] Register with US Copyright Office
-  - [ ] Designate iano@doba.world as contact
+  - [ ] Designate <iano@doba.world> as contact
 - [ ] Privacy policy compliance
   - [ ] Data collection disclosure
   - [ ] Wallet address privacy notice
@@ -225,6 +234,7 @@
 - [ ] (Future) Consult legal counsel for crypto regulations
 
 ### 9. Performance Optimization
+
 - [ ] Frontend optimization
   - [ ] Lazy loading for marketplace grids
   - [ ] Next.js Image component for all images
@@ -246,36 +256,42 @@
 ### 10. Development Roadmap (Recommended Order)
 
 #### Phase 1: Foundation (Week 1-2)
+
 - [x] Footer pages (DONE)
 - [ ] Wallet connection (RainbowKit + wagmi)
 - [ ] Basic database setup
 - [ ] IPFS file upload setup
 
 #### Phase 2: Core Features (Week 3-4)
+
 - [ ] Artist upload flow (UI only, no contract)
 - [ ] Marketplace refinements (filtering, search, pagination)
 - [ ] User profile pages
 - [ ] File upload to IPFS integration
 
 #### Phase 3: Smart Contract (Week 5-6)
+
 - [ ] Write smart contract
 - [ ] Write comprehensive tests
 - [ ] Deploy to testnet
 - [ ] Connect upload flow to contract
 
 #### Phase 4: Integration & Testing (Week 7-8)
+
 - [ ] Full integration testing on testnet
 - [ ] Bug fixes and refinements
 - [ ] UX improvements
 - [ ] Performance optimization
 
 #### Phase 5: Launch Prep (Week 9-10)
+
 - [ ] Security review
 - [ ] Final legal review
 - [ ] Mainnet deployment
 - [ ] Launch!
 
 ## Immediate Next Steps (Start Here)
+
 1. [ ] **Set up wallet integration** (RainbowKit + wagmi)
 2. [ ] **Build artist upload form** (without blockchain, just UI/UX)
 3. [ ] **Set up IPFS** (Pinata account, upload functions)
@@ -285,6 +301,7 @@
 ---
 
 ## Notes
+
 - Using **Bun** as package manager (enforced via .bunfig.toml)
 - Next.js 16.1.6 with React 19
 - Target: Web2 users (normie-friendly language required)
@@ -294,8 +311,9 @@
 - Honor system for copyright (MVP), DMCA for takedowns
 
 ## Resources
-- **Wallet**: https://www.rainbowkit.com/
-- **IPFS**: https://www.pinata.cloud/
-- **Smart Contracts**: https://docs.openzeppelin.com/contracts/
-- **LayerZero** (omnichain): https://layerzero.network/
-- **EIP-2981** (royalties): https://eips.ethereum.org/EIPS/eip-2981
+
+- **Wallet**: <https://www.rainbowkit.com/>
+- **IPFS**: <https://www.pinata.cloud/>
+- **Smart Contracts**: <https://docs.openzeppelin.com/contracts/>
+- **LayerZero** (omnichain): <https://layerzero.network/>
+- **EIP-2981** (royalties): <https://eips.ethereum.org/EIPS/eip-2981>

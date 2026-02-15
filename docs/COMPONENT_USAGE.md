@@ -215,7 +215,7 @@ const [isConnected, setIsConnected] = useState(false)
 - ✅ Connect Wallet button when disconnected
 - ✅ Shows address when connected
 - ✅ Copy address functionality
-- ✅ Network badge (Base Sepolia)
+- ✅ Network badge (Arbitrum Sepolia)
 - ✅ Green status indicator
 - ✅ Responsive text (hidden on mobile)
 
@@ -228,7 +228,7 @@ const [isConnected, setIsConnected] = useState(false)
 
 **Connected:**
 ```
-🟢 0x1234...5678 [📋] | Base Sepolia
+🟢 0x1234...5678 [📋] | Arbitrum Sepolia
 ```
 
 ---

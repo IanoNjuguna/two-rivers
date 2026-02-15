@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-A collaborative Music NFT marketplace dashboard built with React, TypeScript, Tailwind CSS, and shadcn/ui for Base Sepolia (Chain ID: 84532).
+A collaborative Music NFT marketplace dashboard built with React, TypeScript, Tailwind CSS, and shadcn/ui for Arbitrum Sepolia (Chain ID: 421614).
 
 **Smart Contract:** `0xa5EF5D72eA368E8c76E9bC96Bf97a77d66cD0f7b`
 
@@ -144,7 +144,7 @@ Wallet connection UI in header.
 - Connect button when disconnected
 - Shows address, network badge when connected
 - Copy address functionality
-- Network indicator (Base Sepolia)
+- Network indicator (Arbitrum Sepolia)
 
 ## Smart Contract Integration
 
@@ -202,7 +202,7 @@ No environment variables required for initial setup. When integrating with Wagmi
 
 ```env
 # .env.local
-NEXT_PUBLIC_CHAIN_ID=84532
+NEXT_PUBLIC_CHAIN_ID=421614
 NEXT_PUBLIC_RPC_URL=https://sepolia.base.org
 ```
 
@@ -306,7 +306,7 @@ md:grid-cols-2           // Responsive grid
 
 ## Future Web3 Integration Checklist
 
-- [ ] Setup Wagmi provider with Base Sepolia RPC
+- [ ] Setup Wagmi provider with Arbitrum Sepolia RPC
 - [ ] Implement `useContractRead` hook for `songPrices(id)`
 - [ ] Implement `useContractWrite` hook for `mint(id, amount)`
 - [ ] Add event listener for SongPublished/CollaborativeSongPublished
@@ -329,7 +329,7 @@ md:grid-cols-2           // Responsive grid
 
 - Deploy to Vercel for optimal Next.js performance
 - Ensure `NEXT_PUBLIC_*` env vars are set in Vercel dashboard
-- Base Sepolia RPC endpoints are public, no auth needed initially
+- Arbitrum Sepolia RPC endpoints are public, no auth needed initially
 - Consider using Alchemy or Infura RPC in production
 
 ---

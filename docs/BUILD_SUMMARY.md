@@ -49,7 +49,7 @@ Your collaborative Music NFT marketplace dashboard is **production-ready** with 
 ### 6. **Web3 Integration Ready**
    - ✅ Contract constants in `lib/web3.ts`
    - ✅ ABI for smart contract included
-   - ✅ Base Sepolia (Chain ID: 84532) configured
+   - ✅ Arbitrum Sepolia (Chain ID: 421614) configured
    - ✅ Contract address: `0xa5EF5D72eA368E8c76E9bC96Bf97a77d66cD0f7b`
 
 ### 7. **Documentation**
@@ -151,7 +151,7 @@ Deploy to Vercel with one click!
 
 ### Contract Details
 - **Address:** `0xa5EF5D72eA368E8c76E9bC96Bf97a77d66cD0f7b`
-- **Chain:** Base Sepolia (84532)
+- **Chain:** Arbitrum Sepolia (421614)
 - **Functions:** songPrices, mint, release
 - **Events:** SongPublished, CollaborativeSongPublished
 
@@ -207,7 +207,7 @@ Edit `app/globals.css` and `tailwind.config.ts`:
 Update `lib/web3.ts`:
 ```typescript
 export const CONTRACT_ADDRESS = '0x...'
-export const CHAIN_ID = 84532
+export const CHAIN_ID = 421614
 export const CONTRACT_ABI = [...]
 ```
 
@@ -265,7 +265,7 @@ Understand project structure            → This file (BUILD_SUMMARY.md)
 
 🔗 **Web3 Ready**
 - Contract ABI included
-- Base Sepolia configured
+- Arbitrum Sepolia configured
 - Ready for Wagmi integration
 - Mock data for testing
 
@@ -292,7 +292,7 @@ npm start
 
 ### Environment Variables (Optional)
 ```env
-NEXT_PUBLIC_CHAIN_ID=84532
+NEXT_PUBLIC_CHAIN_ID=421614
 NEXT_PUBLIC_RPC_URL=https://sepolia.base.org
 ```
 

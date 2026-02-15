@@ -1,6 +1,6 @@
 # 🎵 Web3 Music NFT Dashboard
 
-A collaborative Music NFT marketplace dashboard for Base Sepolia with a sleek, modern design using **Neue Machina** and **IBM Plex Mono** typography.
+A collaborative Music NFT marketplace dashboard for Arbitrum Sepolia with a sleek, modern design using **Neue Machina** and **IBM Plex Mono** typography.
 
 **Status:** ✅ UI Complete & Production Ready | ⏳ Web3 Integration Ready
 
@@ -78,7 +78,7 @@ My Studio Tab
 
 ```typescript
 Contract: 0xa5EF5D72eA368E8c76E9bC96Bf97a77d66cD0f7b
-Chain: Base Sepolia (84532)
+Chain: Arbitrum Sepolia (421614)
 
 Functions:
 ├─ songPrices(uint256 id) → uint256
@@ -184,7 +184,7 @@ Smart contract constants and ABI are pre-configured in `lib/web3.ts`:
 
 ```typescript
 export const CONTRACT_ADDRESS = '0xa5EF5D72eA368E8c76E9bC96Bf97a77d66cD0f7b'
-export const CHAIN_ID = 84532  // Base Sepolia
+export const CHAIN_ID = 421614  // Arbitrum Sepolia
 export const CONTRACT_ABI = [...]
 ```
 
