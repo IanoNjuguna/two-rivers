@@ -17,6 +17,7 @@ const spaceMono = Space_Mono({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
   title: 'doba',
   description: 'doba – Collaborative Music NFT Marketplace on Arbitrum Sepolia',
   generator: 'v0.app',
