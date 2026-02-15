@@ -27,8 +27,7 @@ export default function EarningsView({ isConnected }: EarningsViewProps) {
           <p className="text-white/60">Track your revenue from doba NFT sales and royalties</p>
         </div>
         <div
-          className="border border-white/[0.08] rounded-lg p-12 text-center"
-          className="bg-dark-primary-30"
+          className="border border-white/[0.08] rounded-lg p-12 text-center bg-dark-primary-30"
         >
           <div className="w-16 h-16 rounded-full mx-auto mb-4 bg-lavender-10">
             <div className="w-full h-full flex items-center justify-center text-[#B794F4]">
@@ -87,8 +86,7 @@ export default function EarningsView({ isConnected }: EarningsViewProps) {
 
       {/* Earnings History */}
       <div
-        className="border border-white/[0.08] rounded-lg overflow-hidden"
-        className="bg-dark-primary-30"
+        className="border border-white/[0.08] rounded-lg overflow-hidden bg-dark-primary-30"
       >
         <div className="p-6 border-b border-white/[0.08]">
           <h3 className="font-semibold">Recent Earnings</h3>

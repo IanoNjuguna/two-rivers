@@ -18,7 +18,7 @@ const spaceMono = Space_Mono({
 
 export const metadata: Metadata = {
   title: 'doba',
-  description: 'doba – Collaborative Music NFT Marketplace on Base Sepolia',
+  description: 'doba – Collaborative Music NFT Marketplace on Arbitrum Sepolia',
   generator: 'v0.app',
   openGraph: {
     images: [
@@ -44,6 +44,8 @@ export const viewport: Viewport = {
   themeColor: '#0D0D12',
 }
 
+import { Providers } from "@/components/Providers"
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -55,7 +57,9 @@ export default function RootLayout({
         <link rel="icon" href="/logo.ico" type="image/x-icon" />
       </head>
       <body className="font-sans antialiased" suppressHydrationWarning>
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   )

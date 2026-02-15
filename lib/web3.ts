@@ -2,12 +2,12 @@
  * Web3 Contract Configuration
  * 
  * Contract Address: 0xa5EF5D72eA368E8c76E9bC96Bf97a77d66cD0f7b
- * Chain: Base Sepolia (Chain ID: 84532)
+ * Chain: Arbitrum Sepolia (Chain ID: 421614)
  */
 
-export const CONTRACT_ADDRESS = '0xa5EF5D72eA368E8c76E9bC96Bf97a77d66cD0f7b'
-export const CHAIN_ID = 84532
-export const CHAIN_NAME = 'Base Sepolia'
+export const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || '0xa5EF5D72eA368E8c76E9bC96Bf97a77d66cD0f7b'
+export const CHAIN_ID = Number(process.env.NEXT_PUBLIC_CHAIN_ID) || 421614
+export const CHAIN_NAME = 'Arbitrum Sepolia'
 
 // Minimal ABI for the Music NFT contract
 export const CONTRACT_ABI = [
@@ -56,7 +56,7 @@ export const CONTRACT_ABI = [
   },
 ]
 
-export const BASE_SEPOLIA_RPC = 'https://sepolia.base.org'
+export const ARBITRUM_SEPOLIA_RPC = 'https://sepolia-rollup.arbitrum.io/rpc'
 
 export function formatAddress(address: string): string {
   if (!address) return ''
