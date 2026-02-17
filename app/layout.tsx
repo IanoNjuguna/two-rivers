@@ -53,7 +53,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`dark ${spaceMono.variable} ${ibmPlexMono.variable}`}>
+    <html lang="en" className={`dark ${spaceMono.variable} ${ibmPlexMono.variable}`} suppressHydrationWarning>
       <head>
         <link rel="icon" href="/logo.ico" type="image/x-icon" />
       </head>

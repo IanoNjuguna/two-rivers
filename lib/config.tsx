@@ -1,3 +1,5 @@
+"use client";
+
 import { AlchemyAccountsUIConfig, createConfig } from "@account-kit/react";
 import { arbitrumSepolia, alchemy } from "@account-kit/infra";
 import { QueryClient } from "@tanstack/react-query";
@@ -9,6 +11,28 @@ const uiConfig: AlchemyAccountsUIConfig = {
 			[{ type: "email" }],
 			[
 				{ type: "passkey" },
+				{ type: "social", authProviderId: "google", mode: "popup" },
+				{ type: "social", authProviderId: "facebook", mode: "popup" },
+				{ type: "social", authProviderId: "twitch", mode: "popup" },
+				{
+					type: "social",
+					authProviderId: "auth0",
+					mode: "popup",
+					auth0Connection: "discord",
+					displayName: "Discord",
+					logoUrl: "/images/discord.svg",
+					scope: "openid profile",
+				},
+				{
+					type: "social",
+					authProviderId: "auth0",
+					mode: "popup",
+					auth0Connection: "twitter",
+					displayName: "Twitter",
+					logoUrl: "/images/twitter.svg",
+					logoUrlDark: "/images/twitter-dark.svg",
+					scope: "openid profile",
+				},
 			],
 			[
 				{
@@ -35,7 +59,7 @@ export const config = createConfig({
 	// get this from the app config you create at https://dashboard.alchemy.com/apps/latest/services/smart-wallets?utm_source=demo_alchemy_com&utm_medium=referral&utm_campaign=demo_to_dashboard
 	transport: alchemy({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY! }),
 	chain: arbitrumSepolia,
-	ssr: true, // set to false if you're not using server-side rendering
+	ssr: false, // Disabled to prevent hydration mismatch with client-side JSX in uiConfig
 	enablePopupOauth: true,
 	// Enable gas sponsorship for seamless user experience
 	policyId: process.env.NEXT_PUBLIC_ALCHEMY_GAS_MANAGER_POLICY_ID,
