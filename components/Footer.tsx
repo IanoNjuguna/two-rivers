@@ -1,4 +1,35 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+
 export default function Footer() {
+  const [currentTime, setCurrentTime] = useState<Date | null>(null)
+
+  useEffect(() => {
+    // Set initial time on mount
+    setCurrentTime(new Date())
+
+    // Update time every second
+    const timer = setInterval(() => {
+      setCurrentTime(new Date())
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [])
+
+  const formatDateTime = (date: Date) => {
+    return date.toLocaleString('en-US', {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    })
+  }
+
   const footerLinks = [
     { label: 'About', href: '/about' },
     { label: 'How It Works', href: '/how-it-works' },
@@ -33,7 +64,12 @@ export default function Footer() {
                 English (US)
               </button>
             </div>
-            <p className="text-white/30">© 2024 doba</p>
+            {currentTime && (
+              <p className="text-white/40 text-[10px] mb-1 font-mono">
+                {formatDateTime(currentTime)}
+              </p>
+            )}
+            <p className="text-white/30">© {new Date().getFullYear()} doba</p>
           </div>
         </div>
       </div>
@@ -59,7 +95,12 @@ export default function Footer() {
                 English (US)
               </button>
             </div>
-            <p className="text-white/30">© 2024 doba</p>
+            {currentTime && (
+              <p className="text-white/40 text-[10px] mb-1 font-mono">
+                {formatDateTime(currentTime)}
+              </p>
+            )}
+            <p className="text-white/30">© {new Date().getFullYear()} doba</p>
           </div>
         </div>
       </footer>
