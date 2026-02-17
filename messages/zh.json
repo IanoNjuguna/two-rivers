@@ -1,0 +1,117 @@
+{
+	"nav": {
+		"navigation": "导航",
+		"home": "首页",
+		"library": "我的库",
+		"search": "搜索",
+		"creator": "创作者",
+		"upload": "上传",
+		"earnings": "收益",
+		"analytics": "数据分析",
+		"profile": "个人资料"
+	},
+	"header": {
+		"loading": "加载中...",
+		"signIn": "登录",
+		"copyAddress": "复制地址",
+		"disconnect": "断开连接"
+	},
+	"home": {
+		"discoverMusic": "发现音乐"
+	},
+	"library": {
+		"title": "我的库",
+		"subtitle": "您保存的曲目和NFT",
+		"connectWallet": "连接您的钱包",
+		"connectToView": "连接钱包以查看您的库"
+	},
+	"search": {
+		"title": "搜索",
+		"subtitle": "查找艺术家、曲目和合集",
+		"comingSoon": "搜索即将推出",
+		"comingSoonDesc": "高级搜索功能即将上线"
+	},
+	"upload": {
+		"title": "上传音乐",
+		"subtitle": "创建并铸造您自己的音乐NFT",
+		"singleTrack": "单曲",
+		"album": "专辑",
+		"uploadTrack": "上传您的曲目",
+		"dragDrop": "拖放您的音频文件或点击浏览",
+		"chooseFile": "选择文件",
+		"createAlbum": "创建专辑",
+		"addMultiple": "添加多首曲目以创建专辑",
+		"addFirstTrack": "添加第一首曲目",
+		"tracks": "曲目",
+		"trackTitle": "曲目 {number} 标题",
+		"remove": "移除",
+		"addTrack": "添加曲目",
+		"connectWallet": "连接您的钱包",
+		"connectToUpload": "连接钱包以上传曲目"
+	},
+	"earnings": {
+		"title": "您的收益",
+		"subtitle": "追踪您的doba NFT销售和版税收入",
+		"signInToView": "登录查看您的收益",
+		"connectToSee": "连接钱包以查看收益并管理付款",
+		"totalEarnings": "总收益",
+		"allTime": "所有时间",
+		"thisMonth": "本月",
+		"pendingPayout": "待付款",
+		"readyToClaim": "可领取",
+		"recentEarnings": "近期收益",
+		"sales": "{count} 笔销售",
+		"claimEarnings": "领取收益"
+	},
+	"analytics": {
+		"title": "数据分析",
+		"subtitle": "查看音乐表现的详细数据",
+		"comingSoon": "数据分析即将推出",
+		"comingSoonDesc": "追踪播放量、收入和听众洞察"
+	},
+	"profile": {
+		"title": "个人资料",
+		"subtitle": "管理您的账户和设置",
+		"yourProfile": "您的资料",
+		"smartAccount": "智能账户",
+		"walletAddress": "钱包地址",
+		"copyFull": "点击复制获取完整地址",
+		"connectWallet": "连接您的钱包",
+		"signInToView": "登录查看您的资料"
+	},
+	"footer": {
+		"about": "关于",
+		"howItWorks": "工作原理",
+		"forArtists": "艺术家专区",
+		"faq": "常见问题",
+		"docs": "文档",
+		"terms": "条款",
+		"privacy": "隐私",
+		"support": "支持",
+		"language": "语言"
+	},
+	"languages": {
+		"en": "English (US)",
+		"sw": "Kiswahili",
+		"fr": "Français",
+		"es": "Español",
+		"pt": "Português",
+		"zh": "中文",
+		"ja": "日本語",
+		"ko": "한국어",
+		"th": "ภาษาไทย",
+		"vi": "Tiếng Việt",
+		"ru": "Русский",
+		"he": "עברית",
+		"ar": "العربية",
+		"uk": "Українська"
+	},
+	"marketplace": {
+		"noSongs": "暂无可用歌曲"
+	},
+	"player": {
+		"previousTrack": "上一首",
+		"nextTrack": "下一首",
+		"play": "播放 {title}"
+	}
+}

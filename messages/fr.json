@@ -1,0 +1,117 @@
+{
+	"nav": {
+		"navigation": "Navigation",
+		"home": "Accueil",
+		"library": "Bibliothèque",
+		"search": "Rechercher",
+		"creator": "Créateur",
+		"upload": "Télécharger",
+		"earnings": "Revenus",
+		"analytics": "Analytique",
+		"profile": "Profil"
+	},
+	"header": {
+		"loading": "Chargement...",
+		"signIn": "Se Connecter",
+		"copyAddress": "Copier l'adresse",
+		"disconnect": "Déconnecter"
+	},
+	"home": {
+		"discoverMusic": "Découvrir la Musique"
+	},
+	"library": {
+		"title": "Ma Bibliothèque",
+		"subtitle": "Vos morceaux et NFT sauvegardés",
+		"connectWallet": "Connectez Votre Portefeuille",
+		"connectToView": "Connectez votre portefeuille pour voir votre bibliothèque"
+	},
+	"search": {
+		"title": "Rechercher",
+		"subtitle": "Trouvez des artistes, des morceaux et des collections",
+		"comingSoon": "Recherche Bientôt Disponible",
+		"comingSoonDesc": "La fonctionnalité de recherche avancée sera bientôt disponible"
+	},
+	"upload": {
+		"title": "Télécharger de la Musique",
+		"subtitle": "Créer et frapper votre propre NFT musical",
+		"singleTrack": "Morceau Unique",
+		"album": "Album",
+		"uploadTrack": "Téléchargez Votre Morceau",
+		"dragDrop": "Glissez-déposez votre fichier audio ou cliquez pour parcourir",
+		"chooseFile": "Choisir un Fichier",
+		"createAlbum": "Créer un Album",
+		"addMultiple": "Ajoutez plusieurs morceaux pour créer un album",
+		"addFirstTrack": "Ajouter le Premier Morceau",
+		"tracks": "Morceaux",
+		"trackTitle": "Titre du Morceau {number}",
+		"remove": "Supprimer",
+		"addTrack": "Ajouter un Morceau",
+		"connectWallet": "Connectez Votre Portefeuille",
+		"connectToUpload": "Connectez votre portefeuille pour télécharger des morceaux"
+	},
+	"earnings": {
+		"title": "Vos Revenus",
+		"subtitle": "Suivez vos revenus des ventes de NFT et des redevances doba",
+		"signInToView": "Connectez-vous pour Voir Vos Revenus",
+		"connectToSee": "Connectez votre portefeuille pour voir vos revenus et gérer les paiements",
+		"totalEarnings": "Revenus Totaux",
+		"allTime": "Depuis toujours",
+		"thisMonth": "Ce Mois",
+		"pendingPayout": "Paiement en Attente",
+		"readyToClaim": "Prêt à réclamer",
+		"recentEarnings": "Revenus Récents",
+		"sales": "{count} ventes",
+		"claimEarnings": "Réclamer les Revenus"
+	},
+	"analytics": {
+		"title": "Analytique",
+		"subtitle": "Consultez des informations détaillées sur les performances de votre musique",
+		"comingSoon": "Analytique Bientôt Disponible",
+		"comingSoonDesc": "Suivez les écoutes, les revenus et les informations sur les auditeurs"
+	},
+	"profile": {
+		"title": "Profil",
+		"subtitle": "Gérez votre compte et vos paramètres",
+		"yourProfile": "Votre Profil",
+		"smartAccount": "Compte Intelligent",
+		"walletAddress": "Adresse du Portefeuille",
+		"copyFull": "Cliquez sur copier pour obtenir l'adresse complète",
+		"connectWallet": "Connectez Votre Portefeuille",
+		"signInToView": "Connectez-vous pour voir votre profil"
+	},
+	"footer": {
+		"about": "À Propos",
+		"howItWorks": "Comment Ça Marche",
+		"forArtists": "Pour les Artistes",
+		"faq": "FAQ",
+		"docs": "Documentation",
+		"terms": "Conditions",
+		"privacy": "Confidentialité",
+		"support": "Support",
+		"language": "Langue"
+	},
+	"languages": {
+		"en": "English (US)",
+		"sw": "Kiswahili",
+		"fr": "Français",
+		"es": "Español",
+		"pt": "Português",
+		"zh": "中文",
+		"ja": "日本語",
+		"ko": "한국어",
+		"th": "ภาษาไทย",
+		"vi": "Tiếng Việt",
+		"ru": "Русский",
+		"he": "עברית",
+		"ar": "العربية",
+		"uk": "Українська"
+	},
+	"marketplace": {
+		"noSongs": "Aucun morceau disponible pour l'instant"
+	},
+	"player": {
+		"previousTrack": "Morceau précédent",
+		"nextTrack": "Morceau suivant",
+		"play": "Jouer {title}"
+	}
+}

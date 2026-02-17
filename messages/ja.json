@@ -1,0 +1,117 @@
+{
+	"nav": {
+		"navigation": "ナビゲーション",
+		"home": "ホーム",
+		"library": "ライブラリ",
+		"search": "検索",
+		"creator": "クリエイター",
+		"upload": "アップロード",
+		"earnings": "収益",
+		"analytics": "アナリティクス",
+		"profile": "プロフィール"
+	},
+	"header": {
+		"loading": "読み込み中...",
+		"signIn": "サインイン",
+		"copyAddress": "アドレスをコピー",
+		"disconnect": "切断"
+	},
+	"home": {
+		"discoverMusic": "音楽を発見"
+	},
+	"library": {
+		"title": "マイライブラリ",
+		"subtitle": "保存したトラックとNFT",
+		"connectWallet": "ウォレットを接続",
+		"connectToView": "ウォレットを接続してライブラリを表示"
+	},
+	"search": {
+		"title": "検索",
+		"subtitle": "アーティスト、トラック、コレクションを検索",
+		"comingSoon": "検索機能は近日公開",
+		"comingSoonDesc": "高度な検索機能がまもなく利用可能になります"
+	},
+	"upload": {
+		"title": "音楽をアップロード",
+		"subtitle": "オリジナルの音楽NFTを作成・ミント",
+		"singleTrack": "シングルトラック",
+		"album": "アルバム",
+		"uploadTrack": "トラックをアップロード",
+		"dragDrop": "オーディオファイルをドラッグ＆ドロップ、またはクリックして参照",
+		"chooseFile": "ファイルを選択",
+		"createAlbum": "アルバムを作成",
+		"addMultiple": "複数のトラックを追加してアルバムを作成",
+		"addFirstTrack": "最初のトラックを追加",
+		"tracks": "トラック",
+		"trackTitle": "トラック {number} タイトル",
+		"remove": "削除",
+		"addTrack": "トラックを追加",
+		"connectWallet": "ウォレットを接続",
+		"connectToUpload": "ウォレットを接続してトラックをアップロード"
+	},
+	"earnings": {
+		"title": "あなたの収益",
+		"subtitle": "doba NFTの販売とロイヤリティの収益を追跡",
+		"signInToView": "サインインして収益を確認",
+		"connectToSee": "ウォレットを接続して収益を確認し、支払いを管理",
+		"totalEarnings": "総収益",
+		"allTime": "全期間",
+		"thisMonth": "今月",
+		"pendingPayout": "保留中の支払い",
+		"readyToClaim": "請求可能",
+		"recentEarnings": "最近の収益",
+		"sales": "{count} 件の販売",
+		"claimEarnings": "収益を請求"
+	},
+	"analytics": {
+		"title": "アナリティクス",
+		"subtitle": "音楽パフォーマンスの詳細なインサイトを表示",
+		"comingSoon": "アナリティクスは近日公開",
+		"comingSoonDesc": "再生数、収益、リスナーのインサイトを追跡"
+	},
+	"profile": {
+		"title": "プロフィール",
+		"subtitle": "アカウントと設定を管理",
+		"yourProfile": "あなたのプロフィール",
+		"smartAccount": "スマートアカウント",
+		"walletAddress": "ウォレットアドレス",
+		"copyFull": "コピーをクリックして完全なアドレスを取得",
+		"connectWallet": "ウォレットを接続",
+		"signInToView": "サインインしてプロフィールを表示"
+	},
+	"footer": {
+		"about": "概要",
+		"howItWorks": "仕組み",
+		"forArtists": "アーティスト向け",
+		"faq": "よくある質問",
+		"docs": "ドキュメント",
+		"terms": "利用規約",
+		"privacy": "プライバシー",
+		"support": "サポート",
+		"language": "言語"
+	},
+	"languages": {
+		"en": "English (US)",
+		"sw": "Kiswahili",
+		"fr": "Français",
+		"es": "Español",
+		"pt": "Português",
+		"zh": "中文",
+		"ja": "日本語",
+		"ko": "한국어",
+		"th": "ภาษาไทย",
+		"vi": "Tiếng Việt",
+		"ru": "Русский",
+		"he": "עברית",
+		"ar": "العربية",
+		"uk": "Українська"
+	},
+	"marketplace": {
+		"noSongs": "利用可能な曲はまだありません"
+	},
+	"player": {
+		"previousTrack": "前のトラック",
+		"nextTrack": "次のトラック",
+		"play": "{title} を再生"
+	}
+}

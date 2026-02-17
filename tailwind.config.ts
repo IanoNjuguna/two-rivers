@@ -13,8 +13,8 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: 'var(--font-space-mono), monospace',
-        mono: 'var(--font-ibm-plex-mono), monospace',
+        sans: 'var(--font-space-mono), var(--font-noto-sans), var(--font-noto-sans-kr), "Noto Sans", "Noto Sans KR", "Noto Sans JP", "Noto Sans SC", "Noto Sans Thai", "Noto Sans Arabic", "Noto Sans Hebrew", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+        mono: 'var(--font-ibm-plex-mono), ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "Courier New", monospace',
       },
       colors: {
         background: 'hsl(var(--background))',

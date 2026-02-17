@@ -1,19 +1,19 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
+import LanguageSwitcher from './LanguageSwitcher'
+import { Link } from '@/i18n/navigation'
 
 export default function Footer() {
+  const t = useTranslations('footer')
   const [currentTime, setCurrentTime] = useState<Date | null>(null)
 
   useEffect(() => {
-    // Set initial time on mount
     setCurrentTime(new Date())
-
-    // Update time every second
     const timer = setInterval(() => {
       setCurrentTime(new Date())
     }, 1000)
-
     return () => clearInterval(timer)
   }, [])
 
@@ -31,14 +31,14 @@ export default function Footer() {
   }
 
   const footerLinks = [
-    { label: 'About', href: '/about' },
-    { label: 'How It Works', href: '/how-it-works' },
-    { label: 'For Artists', href: '/for-artists' },
-    { label: 'FAQ', href: '/faq' },
-    { label: 'Docs', href: '/docs' },
-    { label: 'Terms', href: '/terms' },
-    { label: 'Privacy', href: '/privacy' },
-    { label: 'Support', href: '/support' }
+    { label: t('about'), href: '/about' },
+    { label: t('howItWorks'), href: '/how-it-works' },
+    { label: t('forArtists'), href: '/for-artists' },
+    { label: t('faq'), href: '/faq' },
+    { label: t('docs'), href: '/docs' },
+    { label: t('terms'), href: '/terms' },
+    { label: t('privacy'), href: '/privacy' },
+    { label: t('support'), href: '/support' }
   ]
 
   return (
@@ -48,21 +48,19 @@ export default function Footer() {
         <div className="space-y-3 text-xs">
           <div className="flex flex-wrap gap-x-2 gap-y-1">
             {footerLinks.map((link) => (
-              <a
-                key={link.label}
+              <Link
+                key={link.href}
                 href={link.href}
                 className="text-white/50 hover:text-white/80 transition-colors"
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
           </div>
           <div className="pt-2 border-t border-white/[0.08]">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-white/50">Language:</span>
-              <button className="text-[#FF1F8A] hover:text-[#FF1F8A]/80 transition-colors font-medium">
-                English (US)
-              </button>
+              <span className="text-white/50">{t('language')}:</span>
+              <LanguageSwitcher />
             </div>
             {currentTime && (
               <p className="text-white/40 text-[10px] mb-1 font-mono">
@@ -79,21 +77,19 @@ export default function Footer() {
         <div className="space-y-3 text-xs">
           <div className="flex flex-wrap gap-x-2 gap-y-1">
             {footerLinks.map((link) => (
-              <a
-                key={link.label}
+              <Link
+                key={link.href}
                 href={link.href}
                 className="text-white/50 hover:text-white/80 transition-colors"
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
           </div>
           <div className="pt-2 border-t border-white/[0.08]">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-white/50">Language:</span>
-              <button className="text-[#FF1F8A] hover:text-[#FF1F8A]/80 transition-colors font-medium">
-                English (US)
-              </button>
+              <span className="text-white/50">{t('language')}:</span>
+              <LanguageSwitcher />
             </div>
             {currentTime && (
               <p className="text-white/40 text-[10px] mb-1 font-mono">

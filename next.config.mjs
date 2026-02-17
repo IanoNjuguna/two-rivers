@@ -1,3 +1,5 @@
+import createNextIntlPlugin from 'next-intl/plugin';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   typescript: {
@@ -6,9 +8,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Disable experimental features that might cause issues
-  experimental: {},
-  allowedDevOrigins: ["127.0.0.1:3000", "localhost:3000"],
+
+
   webpack: (config, { isServer }) => {
     // Ignore markdown and other non-JS files in node_modules
     config.module.rules.push({
@@ -20,4 +21,6 @@ const nextConfig = {
   },
 }
 
-export default nextConfig
+const withNextIntl = createNextIntlPlugin();
+
+export default withNextIntl(nextConfig);

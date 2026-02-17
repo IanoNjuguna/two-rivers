@@ -1,0 +1,117 @@
+{
+	"nav": {
+		"navigation": "การนำทาง",
+		"home": "หน้าแรก",
+		"library": "ไลบรารี",
+		"search": "ค้นหา",
+		"creator": "ผู้สร้าง",
+		"upload": "อัปโหลด",
+		"earnings": "รายได้",
+		"analytics": "การวิเคราะห์",
+		"profile": "โปรไฟล์"
+	},
+	"header": {
+		"loading": "กำลังโหลด...",
+		"signIn": "เข้าสู่ระบบ",
+		"copyAddress": "คัดลอกที่อยู่",
+		"disconnect": "ยกเลิกการเชื่อมต่อ"
+	},
+	"home": {
+		"discoverMusic": "ค้นพบเพลง"
+	},
+	"library": {
+		"title": "ไลบรารีของฉัน",
+		"subtitle": "แทร็กและ NFT ที่บันทึกไว้ของคุณ",
+		"connectWallet": "เชื่อมต่อกระเป๋าของคุณ",
+		"connectToView": "เชื่อมต่อกระเป๋าเพื่อดูไลบรารีของคุณ"
+	},
+	"search": {
+		"title": "ค้นหา",
+		"subtitle": "ค้นหาศิลปิน แทร็ก และคอลเลกชัน",
+		"comingSoon": "การค้นหาเร็วๆ นี้",
+		"comingSoonDesc": "ฟังก์ชันการค้นหาขั้นสูงจะพร้อมใช้งานเร็วๆ นี้"
+	},
+	"upload": {
+		"title": "อัปโหลดเพลง",
+		"subtitle": "สร้างและมินต์ NFT เพลงของคุณเอง",
+		"singleTrack": "แทร็กเดี่ยว",
+		"album": "อัลบั้ม",
+		"uploadTrack": "อัปโหลดแทร็กของคุณ",
+		"dragDrop": "ลากและวางไฟล์เสียงของคุณหรือคลิกเพื่อเรียกดู",
+		"chooseFile": "เลือกไฟล์",
+		"createAlbum": "สร้างอัลบั้ม",
+		"addMultiple": "เพิ่มหลายแทร็กเพื่อสร้างอัลบั้ม",
+		"addFirstTrack": "เพิ่มแทร็กแรก",
+		"tracks": "แทร็ก",
+		"trackTitle": "ชื่อแทร็ก {number}",
+		"remove": "ลบ",
+		"addTrack": "เพิ่มแทร็ก",
+		"connectWallet": "เชื่อมต่อกระเป๋าของคุณ",
+		"connectToUpload": "เชื่อมต่อกระเป๋าเพื่ออัปโหลดแทร็ก"
+	},
+	"earnings": {
+		"title": "รายได้ของคุณ",
+		"subtitle": "ติดตามรายได้จากการขาย NFT และค่าลิขสิทธิ์ doba",
+		"signInToView": "เข้าสู่ระบบเพื่อดูรายได้ของคุณ",
+		"connectToSee": "เชื่อมต่อกระเป๋าเพื่อดูรายได้และจัดการการจ่ายเงิน",
+		"totalEarnings": "รายได้รวม",
+		"allTime": "ตลอดเวลา",
+		"thisMonth": "เดือนนี้",
+		"pendingPayout": "การจ่ายเงินที่รอดำเนินการ",
+		"readyToClaim": "พร้อมเรียกร้อง",
+		"recentEarnings": "รายได้ล่าสุด",
+		"sales": "{count} การขาย",
+		"claimEarnings": "เรียกร้องรายได้"
+	},
+	"analytics": {
+		"title": "การวิเคราะห์",
+		"subtitle": "ดูข้อมูลเชิงลึกเกี่ยวกับผลงานเพลงของคุณ",
+		"comingSoon": "การวิเคราะห์เร็วๆ นี้",
+		"comingSoonDesc": "ติดตามการเล่น รายได้ และข้อมูลเชิงลึกของผู้ฟัง"
+	},
+	"profile": {
+		"title": "โปรไฟล์",
+		"subtitle": "จัดการบัญชีและการตั้งค่าของคุณ",
+		"yourProfile": "โปรไฟล์ของคุณ",
+		"smartAccount": "บัญชีอัจฉริยะ",
+		"walletAddress": "ที่อยู่กระเป๋า",
+		"copyFull": "คลิกคัดลอกเพื่อรับที่อยู่เต็ม",
+		"connectWallet": "เชื่อมต่อกระเป๋าของคุณ",
+		"signInToView": "เข้าสู่ระบบเพื่อดูโปรไฟล์ของคุณ"
+	},
+	"footer": {
+		"about": "เกี่ยวกับ",
+		"howItWorks": "วิธีการทำงาน",
+		"forArtists": "สำหรับศิลปิน",
+		"faq": "คำถามที่พบบ่อย",
+		"docs": "เอกสาร",
+		"terms": "ข้อกำหนด",
+		"privacy": "ความเป็นส่วนตัว",
+		"support": "สนับสนุน",
+		"language": "ภาษา"
+	},
+	"languages": {
+		"en": "English (US)",
+		"sw": "Kiswahili",
+		"fr": "Français",
+		"es": "Español",
+		"pt": "Português",
+		"zh": "中文",
+		"ja": "日本語",
+		"ko": "한국어",
+		"th": "ภาษาไทย",
+		"vi": "Tiếng Việt",
+		"ru": "Русский",
+		"he": "עברית",
+		"ar": "العربية",
+		"uk": "Українська"
+	},
+	"marketplace": {
+		"noSongs": "ยังไม่มีเพลงที่พร้อมใช้งาน"
+	},
+	"player": {
+		"previousTrack": "แทร็กก่อนหน้า",
+		"nextTrack": "แทร็กถัดไป",
+		"play": "เล่น {title}"
+	}
+}

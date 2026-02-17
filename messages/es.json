@@ -1,0 +1,117 @@
+{
+	"nav": {
+		"navigation": "Navegación",
+		"home": "Inicio",
+		"library": "Biblioteca",
+		"search": "Buscar",
+		"creator": "Creador",
+		"upload": "Subir",
+		"earnings": "Ganancias",
+		"analytics": "Analítica",
+		"profile": "Perfil"
+	},
+	"header": {
+		"loading": "Cargando...",
+		"signIn": "Iniciar Sesión",
+		"copyAddress": "Copiar dirección",
+		"disconnect": "Desconectar"
+	},
+	"home": {
+		"discoverMusic": "Descubrir Música"
+	},
+	"library": {
+		"title": "Mi Biblioteca",
+		"subtitle": "Tus canciones y NFTs guardados",
+		"connectWallet": "Conecta Tu Billetera",
+		"connectToView": "Conecta tu billetera para ver tu biblioteca"
+	},
+	"search": {
+		"title": "Buscar",
+		"subtitle": "Encuentra artistas, canciones y colecciones",
+		"comingSoon": "Búsqueda Próximamente",
+		"comingSoonDesc": "La funcionalidad de búsqueda avanzada estará disponible pronto"
+	},
+	"upload": {
+		"title": "Subir Música",
+		"subtitle": "Crea y acuña tu propio NFT musical",
+		"singleTrack": "Canción Individual",
+		"album": "Álbum",
+		"uploadTrack": "Sube Tu Canción",
+		"dragDrop": "Arrastra y suelta tu archivo de audio o haz clic para buscar",
+		"chooseFile": "Elegir Archivo",
+		"createAlbum": "Crear Álbum",
+		"addMultiple": "Agrega múltiples canciones para crear un álbum",
+		"addFirstTrack": "Agregar Primera Canción",
+		"tracks": "Canciones",
+		"trackTitle": "Título de Canción {number}",
+		"remove": "Eliminar",
+		"addTrack": "Agregar Canción",
+		"connectWallet": "Conecta Tu Billetera",
+		"connectToUpload": "Conecta tu billetera para subir canciones"
+	},
+	"earnings": {
+		"title": "Tus Ganancias",
+		"subtitle": "Rastrea tus ingresos de ventas de NFT y regalías de doba",
+		"signInToView": "Inicia Sesión para Ver Tus Ganancias",
+		"connectToSee": "Conecta tu billetera para ver tus ganancias y gestionar pagos",
+		"totalEarnings": "Ganancias Totales",
+		"allTime": "Todo el tiempo",
+		"thisMonth": "Este Mes",
+		"pendingPayout": "Pago Pendiente",
+		"readyToClaim": "Listo para reclamar",
+		"recentEarnings": "Ganancias Recientes",
+		"sales": "{count} ventas",
+		"claimEarnings": "Reclamar Ganancias"
+	},
+	"analytics": {
+		"title": "Analítica",
+		"subtitle": "Ver información detallada sobre el rendimiento de tu música",
+		"comingSoon": "Analítica Próximamente",
+		"comingSoonDesc": "Rastrea reproducciones, ingresos e información de los oyentes"
+	},
+	"profile": {
+		"title": "Perfil",
+		"subtitle": "Gestiona tu cuenta y configuración",
+		"yourProfile": "Tu Perfil",
+		"smartAccount": "Cuenta Inteligente",
+		"walletAddress": "Dirección de Billetera",
+		"copyFull": "Haz clic en copiar para obtener la dirección completa",
+		"connectWallet": "Conecta Tu Billetera",
+		"signInToView": "Inicia sesión para ver tu perfil"
+	},
+	"footer": {
+		"about": "Acerca de",
+		"howItWorks": "Cómo Funciona",
+		"forArtists": "Para Artistas",
+		"faq": "Preguntas Frecuentes",
+		"docs": "Documentación",
+		"terms": "Términos",
+		"privacy": "Privacidad",
+		"support": "Soporte",
+		"language": "Idioma"
+	},
+	"languages": {
+		"en": "English (US)",
+		"sw": "Kiswahili",
+		"fr": "Français",
+		"es": "Español",
+		"pt": "Português",
+		"zh": "中文",
+		"ja": "日本語",
+		"ko": "한국어",
+		"th": "ภาษาไทย",
+		"vi": "Tiếng Việt",
+		"ru": "Русский",
+		"he": "עברית",
+		"ar": "العربية",
+		"uk": "Українська"
+	},
+	"marketplace": {
+		"noSongs": "No hay canciones disponibles todavía"
+	},
+	"player": {
+		"previousTrack": "Canción anterior",
+		"nextTrack": "Siguiente canción",
+		"play": "Reproducir {title}"
+	}
+}

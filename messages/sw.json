@@ -1,0 +1,117 @@
+{
+	"nav": {
+		"navigation": "Urambazaji",
+		"home": "Nyumbani",
+		"library": "Maktaba",
+		"search": "Tafuta",
+		"creator": "Muundaji",
+		"upload": "Pakia",
+		"earnings": "Mapato",
+		"analytics": "Uchambuzi",
+		"profile": "Wasifu"
+	},
+	"header": {
+		"loading": "Inapakia...",
+		"signIn": "Ingia",
+		"copyAddress": "Nakili anwani",
+		"disconnect": "Ondoka"
+	},
+	"home": {
+		"discoverMusic": "Gundua Muziki"
+	},
+	"library": {
+		"title": "Maktaba Yangu",
+		"subtitle": "Nyimbo na NFT zako zilizohifadhiwa",
+		"connectWallet": "Unganisha Pochi Yako",
+		"connectToView": "Unganisha pochi yako kuona maktaba yako"
+	},
+	"search": {
+		"title": "Tafuta",
+		"subtitle": "Pata wasanii, nyimbo, na makusanyo",
+		"comingSoon": "Utafutaji Unakuja Hivi Karibuni",
+		"comingSoonDesc": "Utendaji wa utafutaji wa hali ya juu utapatikana hivi karibuni"
+	},
+	"upload": {
+		"title": "Pakia Muziki",
+		"subtitle": "Unda na mint NFT yako ya muziki",
+		"singleTrack": "Wimbo Mmoja",
+		"album": "Albamu",
+		"uploadTrack": "Pakia Wimbo Wako",
+		"dragDrop": "Buruta na udondoshe faili yako ya sauti au bofya kutafuta",
+		"chooseFile": "Chagua Faili",
+		"createAlbum": "Unda Albamu",
+		"addMultiple": "Ongeza nyimbo nyingi kuunda albamu",
+		"addFirstTrack": "Ongeza Wimbo wa Kwanza",
+		"tracks": "Nyimbo",
+		"trackTitle": "Kichwa cha Wimbo {number}",
+		"remove": "Ondoa",
+		"addTrack": "Ongeza Wimbo",
+		"connectWallet": "Unganisha Pochi Yako",
+		"connectToUpload": "Unganisha pochi yako kupakia nyimbo"
+	},
+	"earnings": {
+		"title": "Mapato Yako",
+		"subtitle": "Fuatilia mapato yako kutoka mauzo ya NFT na kodi za doba",
+		"signInToView": "Ingia Kuona Mapato Yako",
+		"connectToSee": "Unganisha pochi yako kuona mapato yako na kudhibiti malipo",
+		"totalEarnings": "Jumla ya Mapato",
+		"allTime": "Wakati wote",
+		"thisMonth": "Mwezi Huu",
+		"pendingPayout": "Malipo Yanayosubiri",
+		"readyToClaim": "Tayari kudai",
+		"recentEarnings": "Mapato ya Hivi Karibuni",
+		"sales": "mauzo {count}",
+		"claimEarnings": "Dai Mapato"
+	},
+	"analytics": {
+		"title": "Uchambuzi",
+		"subtitle": "Angalia maarifa ya kina kuhusu utendaji wa muziki wako",
+		"comingSoon": "Uchambuzi Unakuja Hivi Karibuni",
+		"comingSoonDesc": "Fuatilia masikilizo, mapato, na maarifa ya wasikilizaji"
+	},
+	"profile": {
+		"title": "Wasifu",
+		"subtitle": "Simamia akaunti na mipangilio yako",
+		"yourProfile": "Wasifu Wako",
+		"smartAccount": "Akaunti Mjanja",
+		"walletAddress": "Anwani ya Pochi",
+		"copyFull": "Bofya nakili kupata anwani kamili",
+		"connectWallet": "Unganisha Pochi Yako",
+		"signInToView": "Ingia kuona wasifu wako"
+	},
+	"footer": {
+		"about": "Kuhusu",
+		"howItWorks": "Inavyofanya Kazi",
+		"forArtists": "Kwa Wasanii",
+		"faq": "Maswali",
+		"docs": "Nyaraka",
+		"terms": "Masharti",
+		"privacy": "Faragha",
+		"support": "Msaada",
+		"language": "Lugha"
+	},
+	"languages": {
+		"en": "English (US)",
+		"sw": "Kiswahili",
+		"fr": "Français",
+		"es": "Español",
+		"pt": "Português",
+		"zh": "中文",
+		"ja": "日本語",
+		"ko": "한국어",
+		"th": "ภาษาไทย",
+		"vi": "Tiếng Việt",
+		"ru": "Русский",
+		"he": "עברית",
+		"ar": "العربية",
+		"uk": "Українська"
+	},
+	"marketplace": {
+		"noSongs": "Hakuna nyimbo zinazopatikana bado"
+	},
+	"player": {
+		"previousTrack": "Wimbo uliopita",
+		"nextTrack": "Wimbo unaofuata",
+		"play": "Cheza {title}"
+	}
+}

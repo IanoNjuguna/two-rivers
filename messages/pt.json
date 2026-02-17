@@ -1,0 +1,117 @@
+{
+	"nav": {
+		"navigation": "Navegação",
+		"home": "Início",
+		"library": "Biblioteca",
+		"search": "Pesquisar",
+		"creator": "Criador",
+		"upload": "Enviar",
+		"earnings": "Ganhos",
+		"analytics": "Análises",
+		"profile": "Perfil"
+	},
+	"header": {
+		"loading": "Carregando...",
+		"signIn": "Entrar",
+		"copyAddress": "Copiar endereço",
+		"disconnect": "Desconectar"
+	},
+	"home": {
+		"discoverMusic": "Descobrir Música"
+	},
+	"library": {
+		"title": "Minha Biblioteca",
+		"subtitle": "Suas faixas e NFTs salvos",
+		"connectWallet": "Conecte Sua Carteira",
+		"connectToView": "Conecte sua carteira para ver sua biblioteca"
+	},
+	"search": {
+		"title": "Pesquisar",
+		"subtitle": "Encontre artistas, faixas e coleções",
+		"comingSoon": "Pesquisa Em Breve",
+		"comingSoonDesc": "A funcionalidade de pesquisa avançada estará disponível em breve"
+	},
+	"upload": {
+		"title": "Enviar Música",
+		"subtitle": "Crie e cunhe seu próprio NFT musical",
+		"singleTrack": "Faixa Única",
+		"album": "Álbum",
+		"uploadTrack": "Envie Sua Faixa",
+		"dragDrop": "Arraste e solte seu arquivo de áudio ou clique para procurar",
+		"chooseFile": "Escolher Arquivo",
+		"createAlbum": "Criar Álbum",
+		"addMultiple": "Adicione várias faixas para criar um álbum",
+		"addFirstTrack": "Adicionar Primeira Faixa",
+		"tracks": "Faixas",
+		"trackTitle": "Título da Faixa {number}",
+		"remove": "Remover",
+		"addTrack": "Adicionar Faixa",
+		"connectWallet": "Conecte Sua Carteira",
+		"connectToUpload": "Conecte sua carteira para enviar faixas"
+	},
+	"earnings": {
+		"title": "Seus Ganhos",
+		"subtitle": "Acompanhe sua receita de vendas de NFT e royalties da doba",
+		"signInToView": "Entre para Ver Seus Ganhos",
+		"connectToSee": "Conecte sua carteira para ver seus ganhos e gerenciar pagamentos",
+		"totalEarnings": "Ganhos Totais",
+		"allTime": "Todo o período",
+		"thisMonth": "Este Mês",
+		"pendingPayout": "Pagamento Pendente",
+		"readyToClaim": "Pronto para resgatar",
+		"recentEarnings": "Ganhos Recentes",
+		"sales": "{count} vendas",
+		"claimEarnings": "Resgatar Ganhos"
+	},
+	"analytics": {
+		"title": "Análises",
+		"subtitle": "Veja informações detalhadas sobre o desempenho da sua música",
+		"comingSoon": "Análises Em Breve",
+		"comingSoonDesc": "Acompanhe reproduções, receita e informações dos ouvintes"
+	},
+	"profile": {
+		"title": "Perfil",
+		"subtitle": "Gerencie sua conta e configurações",
+		"yourProfile": "Seu Perfil",
+		"smartAccount": "Conta Inteligente",
+		"walletAddress": "Endereço da Carteira",
+		"copyFull": "Clique em copiar para obter o endereço completo",
+		"connectWallet": "Conecte Sua Carteira",
+		"signInToView": "Entre para ver seu perfil"
+	},
+	"footer": {
+		"about": "Sobre",
+		"howItWorks": "Como Funciona",
+		"forArtists": "Para Artistas",
+		"faq": "Perguntas Frequentes",
+		"docs": "Documentação",
+		"terms": "Termos",
+		"privacy": "Privacidade",
+		"support": "Suporte",
+		"language": "Idioma"
+	},
+	"languages": {
+		"en": "English (US)",
+		"sw": "Kiswahili",
+		"fr": "Français",
+		"es": "Español",
+		"pt": "Português",
+		"zh": "中文",
+		"ja": "日本語",
+		"ko": "한국어",
+		"th": "ภาษาไทย",
+		"vi": "Tiếng Việt",
+		"ru": "Русский",
+		"he": "עברית",
+		"ar": "العربية",
+		"uk": "Українська"
+	},
+	"marketplace": {
+		"noSongs": "Nenhuma música disponível ainda"
+	},
+	"player": {
+		"previousTrack": "Faixa anterior",
+		"nextTrack": "Próxima faixa",
+		"play": "Reproduzir {title}"
+	}
+}

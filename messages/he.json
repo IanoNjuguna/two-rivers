@@ -1,0 +1,117 @@
+{
+	"nav": {
+		"navigation": "ניווט",
+		"home": "דף הבית",
+		"library": "ספרייה",
+		"search": "חיפוש",
+		"creator": "יוצר",
+		"upload": "העלאה",
+		"earnings": "הכנסות",
+		"analytics": "ניתוחים",
+		"profile": "פרופיל"
+	},
+	"header": {
+		"loading": "טוען...",
+		"signIn": "כניסה",
+		"copyAddress": "העתק כתובת",
+		"disconnect": "התנתק"
+	},
+	"home": {
+		"discoverMusic": "גלו מוזיקה"
+	},
+	"library": {
+		"title": "הספרייה שלי",
+		"subtitle": "השירים וה-NFT השמורים שלך",
+		"connectWallet": "חבר את הארנק",
+		"connectToView": "חבר את הארנק שלך כדי לצפות בספרייה"
+	},
+	"search": {
+		"title": "חיפוש",
+		"subtitle": "חפש אמנים, שירים ואוספים",
+		"comingSoon": "חיפוש בקרוב",
+		"comingSoonDesc": "חיפוש מתקדם יהיה זמין בקרוב"
+	},
+	"upload": {
+		"title": "העלאת מוזיקה",
+		"subtitle": "צור והנפק את ה-NFT המוזיקלי שלך",
+		"singleTrack": "שיר בודד",
+		"album": "אלבום",
+		"uploadTrack": "העלה את השיר שלך",
+		"dragDrop": "גרור ושחרר את קובץ האודיו או לחץ לעיון",
+		"chooseFile": "בחר קובץ",
+		"createAlbum": "צור אלבום",
+		"addMultiple": "הוסף מספר שירים ליצירת אלבום",
+		"addFirstTrack": "הוסף שיר ראשון",
+		"tracks": "שירים",
+		"trackTitle": "שם שיר {number}",
+		"remove": "הסר",
+		"addTrack": "הוסף שיר",
+		"connectWallet": "חבר את הארנק",
+		"connectToUpload": "חבר את הארנק שלך כדי להעלות שירים"
+	},
+	"earnings": {
+		"title": "ההכנסות שלך",
+		"subtitle": "עקוב אחר ההכנסות ממכירות NFT ותמלוגים ב-doba",
+		"signInToView": "היכנס לצפייה בהכנסות",
+		"connectToSee": "חבר את הארנק שלך כדי לראות הכנסות ולנהל תשלומים",
+		"totalEarnings": "סך ההכנסות",
+		"allTime": "כל הזמנים",
+		"thisMonth": "החודש",
+		"pendingPayout": "תשלום ממתין",
+		"readyToClaim": "מוכן לתביעה",
+		"recentEarnings": "הכנסות אחרונות",
+		"sales": "{count} מכירות",
+		"claimEarnings": "תבע הכנסות"
+	},
+	"analytics": {
+		"title": "ניתוחים",
+		"subtitle": "צפה בתובנות מפורטות על הביצועים המוזיקליים שלך",
+		"comingSoon": "ניתוחים בקרוב",
+		"comingSoonDesc": "מעקב אחר השמעות, הכנסות ותובנות מאזינים"
+	},
+	"profile": {
+		"title": "פרופיל",
+		"subtitle": "נהל את החשבון וההגדרות שלך",
+		"yourProfile": "הפרופיל שלך",
+		"smartAccount": "חשבון חכם",
+		"walletAddress": "כתובת ארנק",
+		"copyFull": "לחץ להעתקת הכתובת המלאה",
+		"connectWallet": "חבר את הארנק",
+		"signInToView": "היכנס כדי לצפות בפרופיל שלך"
+	},
+	"footer": {
+		"about": "אודות",
+		"howItWorks": "איך זה עובד",
+		"forArtists": "לאמנים",
+		"faq": "שאלות נפוצות",
+		"docs": "מסמכים",
+		"terms": "תנאים",
+		"privacy": "פרטיות",
+		"support": "תמיכה",
+		"language": "שפה"
+	},
+	"languages": {
+		"en": "English (US)",
+		"sw": "Kiswahili",
+		"fr": "Français",
+		"es": "Español",
+		"pt": "Português",
+		"zh": "中文",
+		"ja": "日本語",
+		"ko": "한국어",
+		"th": "ภาษาไทย",
+		"vi": "Tiếng Việt",
+		"ru": "Русский",
+		"he": "עברית",
+		"ar": "العربية",
+		"uk": "Українська"
+	},
+	"marketplace": {
+		"noSongs": "אין שירים זמינים עדיין"
+	},
+	"player": {
+		"previousTrack": "שיר קודם",
+		"nextTrack": "שיר הבא",
+		"play": "נגן {title}"
+	}
+}

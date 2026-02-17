@@ -1,10 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans+Hebrew:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
+/* Force correct fonts for non-Latin scripts — Space Mono doesn't have these glyphs */
+:lang(ko) { font-family: var(--font-noto-sans-kr), "Noto Sans KR", system-ui, sans-serif !important; }
+:lang(ja) { font-family: "Noto Sans JP", system-ui, sans-serif !important; }
+:lang(zh) { font-family: "Noto Sans SC", system-ui, sans-serif !important; }
+:lang(th) { font-family: "Noto Sans Thai", system-ui, sans-serif !important; }
+:lang(ar) { font-family: "Noto Sans Arabic", system-ui, sans-serif !important; }
+:lang(he) { font-family: "Noto Sans Hebrew", system-ui, sans-serif !important; }
 
 @layer utilities {
   .text-balance {

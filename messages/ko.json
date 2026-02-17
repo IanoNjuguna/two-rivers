@@ -1,0 +1,117 @@
+{
+	"nav": {
+		"navigation": "탐색",
+		"home": "홈",
+		"library": "라이브러리",
+		"search": "검색",
+		"creator": "크리에이터",
+		"upload": "업로드",
+		"earnings": "수익",
+		"analytics": "분석",
+		"profile": "프로필"
+	},
+	"header": {
+		"loading": "로딩 중...",
+		"signIn": "로그인",
+		"copyAddress": "주소 복사",
+		"disconnect": "연결 해제"
+	},
+	"home": {
+		"discoverMusic": "음악 발견"
+	},
+	"library": {
+		"title": "내 라이브러리",
+		"subtitle": "저장한 트랙과 NFT",
+		"connectWallet": "지갑 연결",
+		"connectToView": "지갑을 연결하여 라이브러리를 확인하세요"
+	},
+	"search": {
+		"title": "검색",
+		"subtitle": "아티스트, 트랙, 컬렉션 검색",
+		"comingSoon": "검색 기능 출시 예정",
+		"comingSoonDesc": "고급 검색 기능이 곧 제공됩니다"
+	},
+	"upload": {
+		"title": "음악 업로드",
+		"subtitle": "나만의 음악 NFT 생성 및 민팅",
+		"singleTrack": "싱글 트랙",
+		"album": "앨범",
+		"uploadTrack": "트랙 업로드",
+		"dragDrop": "오디오 파일을 드래그 앤 드롭하거나 클릭하여 찾아보기",
+		"chooseFile": "파일 선택",
+		"createAlbum": "앨범 만들기",
+		"addMultiple": "여러 트랙을 추가하여 앨범 만들기",
+		"addFirstTrack": "첫 번째 트랙 추가",
+		"tracks": "트랙",
+		"trackTitle": "트랙 {number} 제목",
+		"remove": "삭제",
+		"addTrack": "트랙 추가",
+		"connectWallet": "지갑 연결",
+		"connectToUpload": "지갑을 연결하여 트랙을 업로드하세요"
+	},
+	"earnings": {
+		"title": "내 수익",
+		"subtitle": "doba NFT 판매 및 로열티 수익 추적",
+		"signInToView": "로그인하여 수익 확인",
+		"connectToSee": "지갑을 연결하여 수익을 확인하고 지급을 관리하세요",
+		"totalEarnings": "총 수익",
+		"allTime": "전체 기간",
+		"thisMonth": "이번 달",
+		"pendingPayout": "대기 중인 지급",
+		"readyToClaim": "청구 가능",
+		"recentEarnings": "최근 수익",
+		"sales": "{count}건 판매",
+		"claimEarnings": "수익 청구"
+	},
+	"analytics": {
+		"title": "분석",
+		"subtitle": "음악 성과에 대한 상세한 인사이트 보기",
+		"comingSoon": "분석 기능 출시 예정",
+		"comingSoonDesc": "재생 수, 수익, 청취자 인사이트 추적"
+	},
+	"profile": {
+		"title": "프로필",
+		"subtitle": "계정 및 설정 관리",
+		"yourProfile": "내 프로필",
+		"smartAccount": "스마트 계정",
+		"walletAddress": "지갑 주소",
+		"copyFull": "복사를 클릭하여 전체 주소 확인",
+		"connectWallet": "지갑 연결",
+		"signInToView": "로그인하여 프로필 확인"
+	},
+	"footer": {
+		"about": "소개",
+		"howItWorks": "작동 방식",
+		"forArtists": "아티스트를 위해",
+		"faq": "자주 묻는 질문",
+		"docs": "문서",
+		"terms": "이용약관",
+		"privacy": "개인정보",
+		"support": "지원",
+		"language": "언어"
+	},
+	"languages": {
+		"en": "English (US)",
+		"sw": "Kiswahili",
+		"fr": "Français",
+		"es": "Español",
+		"pt": "Português",
+		"zh": "中文",
+		"ja": "日本語",
+		"ko": "한국어",
+		"th": "ภาษาไทย",
+		"vi": "Tiếng Việt",
+		"ru": "Русский",
+		"he": "עברית",
+		"ar": "العربية",
+		"uk": "Українська"
+	},
+	"marketplace": {
+		"noSongs": "아직 이용 가능한 곡이 없습니다"
+	},
+	"player": {
+		"previousTrack": "이전 트랙",
+		"nextTrack": "다음 트랙",
+		"play": "{title} 재생"
+	}
+}

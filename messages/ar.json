@@ -1,0 +1,117 @@
+{
+	"nav": {
+		"navigation": "التنقل",
+		"home": "الرئيسية",
+		"library": "المكتبة",
+		"search": "بحث",
+		"creator": "منشئ",
+		"upload": "رفع",
+		"earnings": "الأرباح",
+		"analytics": "التحليلات",
+		"profile": "الملف الشخصي"
+	},
+	"header": {
+		"loading": "جاري التحميل...",
+		"signIn": "تسجيل الدخول",
+		"copyAddress": "نسخ العنوان",
+		"disconnect": "قطع الاتصال"
+	},
+	"home": {
+		"discoverMusic": "اكتشف الموسيقى"
+	},
+	"library": {
+		"title": "مكتبتي",
+		"subtitle": "المقاطع و NFT المحفوظة لديك",
+		"connectWallet": "ربط المحفظة",
+		"connectToView": "اربط محفظتك لعرض مكتبتك"
+	},
+	"search": {
+		"title": "بحث",
+		"subtitle": "ابحث عن فنانين ومقاطع ومجموعات",
+		"comingSoon": "البحث قريبًا",
+		"comingSoonDesc": "خاصية البحث المتقدم ستكون متاحة قريبًا"
+	},
+	"upload": {
+		"title": "رفع موسيقى",
+		"subtitle": "أنشئ وسكّ NFT الموسيقي الخاص بك",
+		"singleTrack": "مقطع واحد",
+		"album": "ألبوم",
+		"uploadTrack": "ارفع المقطع الخاص بك",
+		"dragDrop": "اسحب وأفلت ملف الصوت أو انقر للتصفح",
+		"chooseFile": "اختيار ملف",
+		"createAlbum": "إنشاء ألبوم",
+		"addMultiple": "أضف عدة مقاطع لإنشاء ألبوم",
+		"addFirstTrack": "إضافة المقطع الأول",
+		"tracks": "المقاطع",
+		"trackTitle": "عنوان المقطع {number}",
+		"remove": "إزالة",
+		"addTrack": "إضافة مقطع",
+		"connectWallet": "ربط المحفظة",
+		"connectToUpload": "اربط محفظتك لرفع المقاطع"
+	},
+	"earnings": {
+		"title": "أرباحك",
+		"subtitle": "تتبع إيراداتك من مبيعات NFT والعوائد على doba",
+		"signInToView": "سجل الدخول لعرض أرباحك",
+		"connectToSee": "اربط محفظتك لرؤية أرباحك وإدارة المدفوعات",
+		"totalEarnings": "إجمالي الأرباح",
+		"allTime": "كل الأوقات",
+		"thisMonth": "هذا الشهر",
+		"pendingPayout": "دفعة معلقة",
+		"readyToClaim": "جاهزة للمطالبة",
+		"recentEarnings": "الأرباح الأخيرة",
+		"sales": "{count} مبيعات",
+		"claimEarnings": "المطالبة بالأرباح"
+	},
+	"analytics": {
+		"title": "التحليلات",
+		"subtitle": "عرض رؤى تفصيلية حول أداء الموسيقى الخاصة بك",
+		"comingSoon": "التحليلات قريبًا",
+		"comingSoonDesc": "تتبع التشغيلات والإيرادات ورؤى المستمعين"
+	},
+	"profile": {
+		"title": "الملف الشخصي",
+		"subtitle": "إدارة حسابك وإعداداتك",
+		"yourProfile": "ملفك الشخصي",
+		"smartAccount": "الحساب الذكي",
+		"walletAddress": "عنوان المحفظة",
+		"copyFull": "انقر للنسخ للحصول على العنوان الكامل",
+		"connectWallet": "ربط المحفظة",
+		"signInToView": "سجل الدخول لعرض ملفك الشخصي"
+	},
+	"footer": {
+		"about": "حول",
+		"howItWorks": "كيف يعمل",
+		"forArtists": "للفنانين",
+		"faq": "الأسئلة الشائعة",
+		"docs": "المستندات",
+		"terms": "الشروط",
+		"privacy": "الخصوصية",
+		"support": "الدعم",
+		"language": "اللغة"
+	},
+	"languages": {
+		"en": "English (US)",
+		"sw": "Kiswahili",
+		"fr": "Français",
+		"es": "Español",
+		"pt": "Português",
+		"zh": "中文",
+		"ja": "日本語",
+		"ko": "한국어",
+		"th": "ภาษาไทย",
+		"vi": "Tiếng Việt",
+		"ru": "Русский",
+		"he": "עברית",
+		"ar": "العربية",
+		"uk": "Українська"
+	},
+	"marketplace": {
+		"noSongs": "لا توجد أغاني متاحة بعد"
+	},
+	"player": {
+		"previousTrack": "المقطع السابق",
+		"nextTrack": "المقطع التالي",
+		"play": "تشغيل {title}"
+	}
+}

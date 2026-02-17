@@ -3,10 +3,12 @@
 import React, { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { IconWallet as Wallet, IconCopy as Copy, IconLogout } from '@tabler/icons-react'
+import { useTranslations } from 'next-intl'
 
 import { useUser, useAuthModal, useSignerStatus, useLogout } from "@account-kit/react"
 
 export default function ConnectHeader() {
+  const t = useTranslations('header')
   const [mounted, setMounted] = useState(false)
   const user = useUser()
   const { openAuthModal } = useAuthModal()
@@ -28,7 +30,7 @@ export default function ConnectHeader() {
           disabled
           className="bg-cyber-pink hover:bg-cyber-pink/90 text-white font-semibold"
         >
-          <span className="animate-pulse">Loading...</span>
+          <span className="animate-pulse">{t('loading')}</span>
         </Button>
       ) : isConnected && user ? (
         <div className="flex items-center gap-2">
@@ -38,16 +40,16 @@ export default function ConnectHeader() {
             <button
               onClick={() => navigator.clipboard.writeText(user.address)}
               className="p-1 hover:bg-white/[0.1] rounded transition"
-              aria-label="Copy address"
-              title="Copy address"
+              aria-label={t('copyAddress')}
+              title={t('copyAddress')}
             >
               <Copy size={14} className="text-white/60" />
             </button>
             <button
               onClick={() => logout()}
               className="p-1 hover:bg-white/[0.1] rounded transition ml-1"
-              aria-label="Disconnect"
-              title="Disconnect"
+              aria-label={t('disconnect')}
+              title={t('disconnect')}
             >
               <IconLogout size={14} className="text-white/60 hover:text-red-400" />
             </button>
@@ -58,8 +60,8 @@ export default function ConnectHeader() {
           onClick={openAuthModal}
           className="bg-cyber-pink hover:bg-cyber-pink/90 text-white font-semibold"
         >
-          <span className="hidden sm:inline">Sign In</span>
-          <span className="sm:hidden">Sign In</span>
+          <span className="hidden sm:inline">{t('signIn')}</span>
+          <span className="sm:hidden">{t('signIn')}</span>
         </Button>
       )}
     </div>

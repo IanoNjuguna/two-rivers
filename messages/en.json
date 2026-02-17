@@ -1,0 +1,117 @@
+{
+	"nav": {
+		"navigation": "Navigation",
+		"home": "Home",
+		"library": "Library",
+		"search": "Search",
+		"creator": "Creator",
+		"upload": "Upload",
+		"earnings": "Earnings",
+		"analytics": "Analytics",
+		"profile": "Profile"
+	},
+	"header": {
+		"loading": "Loading...",
+		"signIn": "Sign In",
+		"copyAddress": "Copy address",
+		"disconnect": "Disconnect"
+	},
+	"home": {
+		"discoverMusic": "Discover Music"
+	},
+	"library": {
+		"title": "My Library",
+		"subtitle": "Your saved tracks and NFTs",
+		"connectWallet": "Connect Your Wallet",
+		"connectToView": "Connect your wallet to view your library"
+	},
+	"search": {
+		"title": "Search",
+		"subtitle": "Find artists, tracks, and collections",
+		"comingSoon": "Search Coming Soon",
+		"comingSoonDesc": "Advanced search functionality will be available soon"
+	},
+	"upload": {
+		"title": "Upload Music",
+		"subtitle": "Create and mint your own music NFT",
+		"singleTrack": "Single Track",
+		"album": "Album",
+		"uploadTrack": "Upload Your Track",
+		"dragDrop": "Drag and drop your audio file or click to browse",
+		"chooseFile": "Choose File",
+		"createAlbum": "Create Album",
+		"addMultiple": "Add multiple tracks to create an album",
+		"addFirstTrack": "Add First Track",
+		"tracks": "Tracks",
+		"trackTitle": "Track {number} Title",
+		"remove": "Remove",
+		"addTrack": "Add Track",
+		"connectWallet": "Connect Your Wallet",
+		"connectToUpload": "Connect your wallet to upload tracks"
+	},
+	"earnings": {
+		"title": "Your Earnings",
+		"subtitle": "Track your revenue from doba NFT sales and royalties",
+		"signInToView": "Sign In to View Your Earnings",
+		"connectToSee": "Connect your wallet to see your earnings and manage payouts",
+		"totalEarnings": "Total Earnings",
+		"allTime": "All time",
+		"thisMonth": "This Month",
+		"pendingPayout": "Pending Payout",
+		"readyToClaim": "Ready to claim",
+		"recentEarnings": "Recent Earnings",
+		"sales": "{count} sales",
+		"claimEarnings": "Claim Earnings"
+	},
+	"analytics": {
+		"title": "Analytics",
+		"subtitle": "View detailed insights about your music performance",
+		"comingSoon": "Analytics Coming Soon",
+		"comingSoonDesc": "Track plays, revenue, and listener insights"
+	},
+	"profile": {
+		"title": "Profile",
+		"subtitle": "Manage your account and settings",
+		"yourProfile": "Your Profile",
+		"smartAccount": "Smart Account",
+		"walletAddress": "Wallet Address",
+		"copyFull": "Click copy to get full address",
+		"connectWallet": "Connect Your Wallet",
+		"signInToView": "Sign in to view your profile"
+	},
+	"footer": {
+		"about": "About",
+		"howItWorks": "How It Works",
+		"forArtists": "For Artists",
+		"faq": "FAQ",
+		"docs": "Docs",
+		"terms": "Terms",
+		"privacy": "Privacy",
+		"support": "Support",
+		"language": "Language"
+	},
+	"languages": {
+		"en": "English (US)",
+		"sw": "Kiswahili",
+		"fr": "Français",
+		"es": "Español",
+		"pt": "Português",
+		"zh": "中文",
+		"ja": "日本語",
+		"ko": "한국어",
+		"th": "ภาษาไทย",
+		"vi": "Tiếng Việt",
+		"ru": "Русский",
+		"he": "עברית",
+		"ar": "العربية",
+		"uk": "Українська"
+	},
+	"marketplace": {
+		"noSongs": "No songs available yet"
+	},
+	"player": {
+		"previousTrack": "Previous track",
+		"nextTrack": "Next track",
+		"play": "Play {title}"
+	}
+}

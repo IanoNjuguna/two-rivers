@@ -1,0 +1,117 @@
+{
+	"nav": {
+		"navigation": "Điều hướng",
+		"home": "Trang chủ",
+		"library": "Thư viện",
+		"search": "Tìm kiếm",
+		"creator": "Nhà sáng tạo",
+		"upload": "Tải lên",
+		"earnings": "Thu nhập",
+		"analytics": "Phân tích",
+		"profile": "Hồ sơ"
+	},
+	"header": {
+		"loading": "Đang tải...",
+		"signIn": "Đăng nhập",
+		"copyAddress": "Sao chép địa chỉ",
+		"disconnect": "Ngắt kết nối"
+	},
+	"home": {
+		"discoverMusic": "Khám Phá Âm Nhạc"
+	},
+	"library": {
+		"title": "Thư Viện Của Tôi",
+		"subtitle": "Các bài hát và NFT đã lưu của bạn",
+		"connectWallet": "Kết Nối Ví Của Bạn",
+		"connectToView": "Kết nối ví để xem thư viện của bạn"
+	},
+	"search": {
+		"title": "Tìm Kiếm",
+		"subtitle": "Tìm nghệ sĩ, bài hát và bộ sưu tập",
+		"comingSoon": "Tìm Kiếm Sắp Ra Mắt",
+		"comingSoonDesc": "Chức năng tìm kiếm nâng cao sẽ sớm có mặt"
+	},
+	"upload": {
+		"title": "Tải Lên Âm Nhạc",
+		"subtitle": "Tạo và đúc NFT âm nhạc của riêng bạn",
+		"singleTrack": "Bài Đơn",
+		"album": "Album",
+		"uploadTrack": "Tải Lên Bài Hát",
+		"dragDrop": "Kéo và thả tệp âm thanh hoặc nhấp để duyệt",
+		"chooseFile": "Chọn Tệp",
+		"createAlbum": "Tạo Album",
+		"addMultiple": "Thêm nhiều bài hát để tạo album",
+		"addFirstTrack": "Thêm Bài Đầu Tiên",
+		"tracks": "Bài Hát",
+		"trackTitle": "Tên Bài {number}",
+		"remove": "Xóa",
+		"addTrack": "Thêm Bài",
+		"connectWallet": "Kết Nối Ví Của Bạn",
+		"connectToUpload": "Kết nối ví để tải lên bài hát"
+	},
+	"earnings": {
+		"title": "Thu Nhập Của Bạn",
+		"subtitle": "Theo dõi doanh thu từ bán NFT và tiền bản quyền doba",
+		"signInToView": "Đăng Nhập Để Xem Thu Nhập",
+		"connectToSee": "Kết nối ví để xem thu nhập và quản lý thanh toán",
+		"totalEarnings": "Tổng Thu Nhập",
+		"allTime": "Toàn bộ thời gian",
+		"thisMonth": "Tháng Này",
+		"pendingPayout": "Thanh Toán Đang Chờ",
+		"readyToClaim": "Sẵn sàng yêu cầu",
+		"recentEarnings": "Thu Nhập Gần Đây",
+		"sales": "{count} lượt bán",
+		"claimEarnings": "Yêu Cầu Thu Nhập"
+	},
+	"analytics": {
+		"title": "Phân Tích",
+		"subtitle": "Xem thông tin chi tiết về hiệu suất âm nhạc của bạn",
+		"comingSoon": "Phân Tích Sắp Ra Mắt",
+		"comingSoonDesc": "Theo dõi lượt nghe, doanh thu và thông tin người nghe"
+	},
+	"profile": {
+		"title": "Hồ Sơ",
+		"subtitle": "Quản lý tài khoản và cài đặt của bạn",
+		"yourProfile": "Hồ Sơ Của Bạn",
+		"smartAccount": "Tài Khoản Thông Minh",
+		"walletAddress": "Địa Chỉ Ví",
+		"copyFull": "Nhấp sao chép để lấy địa chỉ đầy đủ",
+		"connectWallet": "Kết Nối Ví Của Bạn",
+		"signInToView": "Đăng nhập để xem hồ sơ của bạn"
+	},
+	"footer": {
+		"about": "Giới Thiệu",
+		"howItWorks": "Cách Hoạt Động",
+		"forArtists": "Dành Cho Nghệ Sĩ",
+		"faq": "Câu Hỏi Thường Gặp",
+		"docs": "Tài Liệu",
+		"terms": "Điều Khoản",
+		"privacy": "Quyền Riêng Tư",
+		"support": "Hỗ Trợ",
+		"language": "Ngôn Ngữ"
+	},
+	"languages": {
+		"en": "English (US)",
+		"sw": "Kiswahili",
+		"fr": "Français",
+		"es": "Español",
+		"pt": "Português",
+		"zh": "中文",
+		"ja": "日本語",
+		"ko": "한국어",
+		"th": "ภาษาไทย",
+		"vi": "Tiếng Việt",
+		"ru": "Русский",
+		"he": "עברית",
+		"ar": "العربية",
+		"uk": "Українська"
+	},
+	"marketplace": {
+		"noSongs": "Chưa có bài hát nào"
+	},
+	"player": {
+		"previousTrack": "Bài trước",
+		"nextTrack": "Bài tiếp",
+		"play": "Phát {title}"
+	}
+}
