@@ -106,7 +106,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen text-white flex flex-col bg-[#0D0D12]">
+    <div className="h-screen overflow-hidden text-white flex flex-col bg-[#0D0D12]">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-white/[0.08] bg-[rgba(13,13,18,0.95)] backdrop-blur-md">
         <div className="h-full px-4 lg:px-6 flex items-center justify-between">
@@ -236,9 +236,9 @@ export default function Dashboard() {
       }
 
       {/* Main Layout */}
-      <div className="flex flex-col lg:flex-row flex-1 mt-16">
+      <div className="flex flex-col lg:flex-row flex-1 mt-16 h-[calc(100vh-4rem)] overflow-hidden">
         {/* Sidebar */}
-        <aside className="hidden lg:flex w-64 border-r border-white/[0.08] flex-col bg-[#0D0D12]">
+        <aside className="hidden lg:flex w-64 border-r border-white/[0.08] flex-col bg-[#0D0D12] overflow-y-auto">
           <nav className="flex flex-col p-4 overflow-y-auto flex-1 space-y-1">
             <div className="px-0 pt-0 pb-0 mb-1">
               <h2 className="text-sm font-semibold uppercase tracking-wider text-purple-400">
@@ -305,16 +305,11 @@ export default function Dashboard() {
             </button>
           </nav>
 
-          <div className="border-t border-white/[0.08]" />
 
-          {/* Footer Section */}
-          <div className="p-4">
-            <Footer />
-          </div>
         </aside >
 
         {/* Content Area */}
-        < main className="flex-1 overflow-y-auto pb-80 lg:pb-0" >
+        <main className="flex-1 overflow-y-auto pb-80 lg:pb-[90px]">
           <div className="p-6 max-w-7xl mx-auto">
             {currentView === 'home' && (
               <div className="space-y-6 animate-fade-in">
@@ -595,16 +590,17 @@ export default function Dashboard() {
               </div>
             )}
           </div>
+
+          {/* Footer */}
+          <footer className="border-t border-white/[0.08] mt-12 py-10 flex justify-center">
+            <Footer />
+          </footer>
         </main>
 
-        {/* Audio Player */}
-        <AudioPlayer playerState={playerState} />
+      </div>
 
-        {/* Mobile-only Footer */}
-        <footer className="lg:hidden px-4 py-6">
-          <Footer />
-        </footer>
-      </div >
-    </div >
+      <AudioPlayer playerState={playerState} />
+
+    </div>
   )
 }
