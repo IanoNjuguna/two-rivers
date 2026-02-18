@@ -9,6 +9,7 @@ import ConnectHeader from '@/components/ConnectHeader'
 import EarningsView from '@/components/EarningsView'
 import AudioPlayer from '@/components/AudioPlayer'
 import Footer from '@/components/Footer'
+import UploadView from '@/components/UploadView'
 import { useAudioPlayer } from '@/hooks/useAudioPlayer'
 import { useSignerStatus, useUser, useLogout } from "@account-kit/react"
 import { useTranslations } from 'next-intl'
@@ -86,8 +87,7 @@ export default function Dashboard() {
   const [currentView, setCurrentView] = useState<ViewType>('home')
   const [creatorMenuOpen, setCreatorMenuOpen] = useState(false)
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false)
-  const [uploadMode, setUploadMode] = useState<'single' | 'album'>('single')
-  const [albumTracks, setAlbumTracks] = useState<Array<{ id: string; title: string; file?: File }>>([])
+
   const playerState = useAudioPlayer()
 
   const tNav = useTranslations('nav')
@@ -365,136 +365,16 @@ export default function Dashboard() {
             )}
 
             {currentView === 'upload' && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2">{tUpload('title')}</h2>
-                  <p className="text-white/60">
-                    {tUpload('subtitle')}
-                  </p>
-                </div>
-
-                {isConnected ? (
-                  <>
-                    {/* Upload Mode Tabs */}
-                    <div className="flex gap-2 border-b border-white/[0.08]">
-                      <button
-                        onClick={() => {
-                          setUploadMode('single')
-                          setAlbumTracks([])
-                        }}
-                        className={`px-4 py-3 font-medium text-sm transition ${uploadMode === 'single'
-                          ? 'text-[#FF1F8A] border-b-2 border-[#FF1F8A]'
-                          : 'text-white/60 hover:text-white'
-                          }`}
-                      >
-                        {tUpload('singleTrack')}
-                      </button>
-                      <button
-                        onClick={() => setUploadMode('album')}
-                        className={`px-4 py-3 font-medium text-sm transition ${uploadMode === 'album'
-                          ? 'text-[#FF1F8A] border-b-2 border-[#FF1F8A]'
-                          : 'text-white/60 hover:text-white'
-                          }`}
-                      >
-                        {tUpload('album')}
-                      </button>
-                    </div>
-
-                    {/* Single Track Upload */}
-                    {uploadMode === 'single' && (
-                      <div className="border border-white/[0.08] p-12 text-center bg-[rgba(13,13,18,0.3)]">
-                        <div className="w-16 h-16 mx-auto mb-4 bg-[rgba(255,31,138,0.1)]">
-                          <div className="w-full h-full flex items-center justify-center text-[#FF1F8A]">
-                            <Music size={32} />
-                          </div>
-                        </div>
-                        <h3 className="text-xl font-semibold mb-2">
-                          {tUpload('uploadTrack')}
-                        </h3>
-                        <p className="text-white/60 mb-6">
-                          {tUpload('dragDrop')}
-                        </p>
-                        <Button className="bg-[#FF1F8A] hover:bg-[#E01A73] text-white">
-                          {tUpload('chooseFile')}
-                        </Button>
-                      </div>
-                    )}
-
-                    {/* Album Upload */}
-                    {uploadMode === 'album' && (
-                      <div className="space-y-6">
-                        <div className="border border-white/[0.08] p-12 text-center bg-[rgba(13,13,18,0.3)]">
-                          <div className="w-16 h-16 mx-auto mb-4 bg-[rgba(255,31,138,0.1)]">
-                            <div className="w-full h-full flex items-center justify-center text-[#FF1F8A]">
-                              <Music size={32} />
-                            </div>
-                          </div>
-                          <h3 className="text-xl font-semibold mb-2">
-                            {tUpload('createAlbum')}
-                          </h3>
-                          <p className="text-white/60 mb-6">
-                            {tUpload('addMultiple')}
-                          </p>
-                          <Button
-                            onClick={() => {
-                              const newId = `track-${Date.now()}`
-                              setAlbumTracks([...albumTracks, { id: newId, title: '' }])
-                            }}
-                            className="bg-[#FF1F8A] hover:bg-[#E01A73] text-white"
-                          >
-                            <IconPlus size={16} className="mr-2" />
-                            {tUpload('addFirstTrack')}
-                          </Button>
-                        </div>
-
-                        {/* Album Tracks List */}
-                        {albumTracks.length > 0 && (
-                          <div className="space-y-4">
-                            <h3 className="font-semibold">{tUpload('tracks')} ({albumTracks.length})</h3>
-                            {albumTracks.map((track, index) => (
-                              <div key={track.id} className="border border-white/[0.08] p-4 bg-[rgba(13,13,18,0.3)]">
-                                <div className="flex items-center gap-4">
-                                  <span className="text-white/60 text-sm w-8">{index + 1}.</span>
-                                  <input
-                                    type="text"
-                                    placeholder={tUpload('trackTitle', { number: index + 1 })}
-                                    value={track.title}
-                                    onChange={(e) => {
-                                      const updated = [...albumTracks]
-                                      updated[index].title = e.target.value
-                                      setAlbumTracks(updated)
-                                    }}
-                                    className="flex-1 bg-white/[0.05] border border-white/[0.08] px-3 py-2 text-sm text-white placeholder-white/40 focus:outline-none focus:border-white/[0.12]"
-                                  />
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => {
-                                      setAlbumTracks(albumTracks.filter((_, i) => i !== index))
-                                    }}
-                                    className="border-white/[0.12] text-white/70 hover:text-white hover:bg-white/[0.05] bg-transparent"
-                                  >
-                                    {tUpload('remove')}
-                                  </Button>
-                                </div>
-                              </div>
-                            ))}
-                            <Button
-                              onClick={() => {
-                                const newId = `track-${Date.now()}`
-                                setAlbumTracks([...albumTracks, { id: newId, title: '' }])
-                              }}
-                              className="w-full bg-white/[0.05] hover:bg-white/[0.1] text-white border border-white/[0.08]"
-                            >
-                              <IconPlus size={16} className="mr-2" />
-                              {tUpload('addTrack')}
-                            </Button>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </>
-                ) : (
+              isConnected ? (
+                <UploadView />
+              ) : (
+                <div className="space-y-6">
+                  <div>
+                    <h2 className="text-2xl font-bold mb-2">{tUpload('title')}</h2>
+                    <p className="text-white/60">
+                      {tUpload('subtitle')}
+                    </p>
+                  </div>
                   <div className="border border-white/[0.08] p-12 text-center bg-[rgba(13,13,18,0.3)]">
                     <div className="w-16 h-16 mx-auto mb-4 bg-[rgba(183,148,244,0.1)]">
                       <div className="w-full h-full flex items-center justify-center text-[#B794F4]">
@@ -508,8 +388,8 @@ export default function Dashboard() {
                       {tUpload('connectToUpload')}
                     </p>
                   </div>
-                )}
-              </div>
+                </div>
+              )
             )}
 
             {currentView === 'earnings' && (
