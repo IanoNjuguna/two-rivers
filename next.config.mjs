@@ -9,12 +9,14 @@ const nextConfig = {
     unoptimized: true,
   },
 
-
   webpack: (config, { isServer }) => {
-    // Ignore markdown and other non-JS files in node_modules
+    // Ignore problematic files in node_modules
     config.module.rules.push({
-      test: /\.md$/,
-      type: 'asset/source',
+      test: /\.(md|zip|sh)$/,
+      type: 'asset/resource',
+      generator: {
+        emit: false, // Don't emit these files
+      },
     });
 
     return config;
