@@ -8,21 +8,20 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-
+  // Disable experimental features that might cause issues
+  experimental: {
+  },
   webpack: (config, { isServer }) => {
-    // Ignore problematic files in node_modules
+    // Ignore markdown and other non-JS files in node_modules
     config.module.rules.push({
-      test: /\.(md|zip|sh)$/,
-      type: 'asset/resource',
-      generator: {
-        emit: false, // Don't emit these files
-      },
+      test: /\.md$/,
+      type: 'asset/source',
     });
 
     return config;
   },
 }
 
-const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
+const withNextIntl = createNextIntlPlugin();
 
 export default withNextIntl(nextConfig);

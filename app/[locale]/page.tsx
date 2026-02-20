@@ -11,7 +11,7 @@ import AudioPlayer from '@/components/AudioPlayer'
 import Footer from '@/components/Footer'
 import UploadView from '@/components/UploadView'
 import { useAudioPlayer } from '@/hooks/useAudioPlayer'
-import { useSignerStatus, useUser, useLogout } from "@account-kit/react"
+import { useSignerStatus, useUser, useLogout, useAccount, useSmartAccountClient } from "@account-kit/react"
 import { useTranslations } from 'next-intl'
 
 // Utility function to truncate wallet address for security
@@ -83,6 +83,9 @@ type ViewType = 'home' | 'library' | 'search' | 'upload' | 'profile' | 'earnings
 export default function Dashboard() {
   const { isConnected, isInitializing } = useSignerStatus()
   const user = useUser()
+  const clientConfig = React.useMemo(() => ({ type: "LightAccount" as const }), [])
+  const { address } = useAccount(clientConfig)
+  const { client } = useSmartAccountClient(clientConfig)
   const { logout } = useLogout()
   const [currentView, setCurrentView] = useState<ViewType>('home')
   const [creatorMenuOpen, setCreatorMenuOpen] = useState(false)
@@ -118,7 +121,7 @@ export default function Dashboard() {
 
           {/* Desktop Connect Header */}
           <div className="hidden lg:block">
-            <ConnectHeader />
+            <ConnectHeader address={address || undefined} />
           </div>
 
           {/* Mobile/Tablet Controls */}
@@ -134,7 +137,7 @@ export default function Dashboard() {
               </button>
             )}
             {/* Mobile Connect Header */}
-            <ConnectHeader />
+            <ConnectHeader address={address || undefined} />
           </div>
         </div>
       </header>
@@ -366,7 +369,7 @@ export default function Dashboard() {
 
             {currentView === 'upload' && (
               isConnected ? (
-                <UploadView />
+                <UploadView client={client} />
               ) : (
                 <div className="space-y-6">
                   <div>
@@ -442,10 +445,10 @@ export default function Dashboard() {
                     <div className="mb-6 p-4 rounded-lg bg-white-4">
                       <p className="text-white/60 text-xs mb-2 uppercase tracking-wider" style={{ letterSpacing: '0.04em' }}>{tProfile('walletAddress')}</p>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-mono text-white">{formatAddress(user.address)}</span>
+                        <span className="text-sm font-mono text-white">{formatAddress(address || user.address)}</span>
                         <button
                           onClick={() => {
-                            navigator.clipboard.writeText(user.address)
+                            navigator.clipboard.writeText(address || user.address)
                           }}
                           className="p-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
                           title={tProfile('copyFull')}

@@ -37,7 +37,7 @@ export default function PrivacyPage() {
               <ul className="space-y-3 text-white/80">
                 <li className="flex items-start gap-2">
                   <span className="text-[#FF1F8A] flex-shrink-0">•</span>
-                  <span><strong>Wallet Address:</strong> Your public Ethereum/Base wallet address when you connect</span>
+                  <span><strong>Wallet Address:</strong> Your public Ethereum-compatible wallet address when you connect</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-[#FF1F8A] flex-shrink-0">•</span>

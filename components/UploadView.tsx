@@ -9,23 +9,128 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils"
 import { GENRES } from '@/constants/genres'
 
+import { useSendUserOperation, useSmartAccountClient } from "@account-kit/react"
+import { CONTRACT_ADDRESS, CONTRACT_ABI, USDC_ADDRESS, PAYMASTER_ADDRESS, ERC20_ABI, DST_EID } from '@/lib/web3'
+import { encodeFunctionData, parseUnits } from 'viem'
+import { toast } from 'sonner'
+
 interface Collaborator {
 	address: string
 	split: number
 }
 
-export default function UploadView() {
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+
+export default function UploadView({ client: propClient }: { client?: any }) {
 	const t = useTranslations('upload')
 
+	const client = propClient
+
+	const [isSending, setIsSending] = useState(false)
 	const [open, setOpen] = useState(false)
 	const [title, setTitle] = useState('')
 	const [description, setDescription] = useState('')
 	const [genre, setGenre] = useState('')
 	const [price, setPrice] = useState('')
+	const [supply, setSupply] = useState('5000')
 	const [audioFile, setAudioFile] = useState<File | null>(null)
 	const [coverFile, setCoverFile] = useState<File | null>(null)
 	const [collaborators, setCollaborators] = useState<Collaborator[]>([])
-	const [isPublishing, setIsPublishing] = useState(false)
+	const [isUploading, setIsUploading] = useState(false)
+	const [assetsCid, setAssetsCid] = useState<string | null>(null)
+	const [audioName, setAudioName] = useState<string>('')
+	const [imageName, setImageName] = useState<string>('')
+	const [isAssetsUploading, setIsAssetsUploading] = useState(false)
+	const [publishedSongId, setPublishedSongId] = useState<bigint | null>(null)
+	const [isSyncing, setIsSyncing] = useState(false)
+	const [syncDone, setSyncDone] = useState(false)
+	const [isMinting, setIsMinting] = useState(false)
+	const [lastUserOpHash, setLastUserOpHash] = useState<string | null>(null)
+
+	// Background Upload Effect
+	React.useEffect(() => {
+		const triggerBackgroundUpload = async () => {
+			if (!audioFile || !coverFile || assetsCid || isAssetsUploading) return
+
+			setIsAssetsUploading(true)
+			try {
+				const formData = new FormData()
+				formData.append('audio', audioFile)
+				formData.append('image', coverFile)
+				formData.append('title', title || 'Untitled')
+
+				const response = await fetch(`${API_URL}/upload-assets`, {
+					method: 'POST',
+					body: formData,
+				})
+
+				if (response.ok) {
+					const data = await response.json()
+					setAssetsCid(data.assetsCid)
+					setAudioName(data.audioName)
+					setImageName(data.imageName)
+					console.log('Background upload complete:', data.assetsCid)
+				}
+			} catch (e) {
+				console.error('Background upload failed:', e)
+			} finally {
+				setIsAssetsUploading(false)
+			}
+		}
+
+		triggerBackgroundUpload()
+	}, [audioFile, coverFile, title])
+
+	const sendUserOperation = async (params: { uo: any, useUSDC?: boolean }) => {
+		if (!client) {
+			toast.error("Wallet not initialized")
+			return
+		}
+
+		setIsSending(true)
+		try {
+			const context = params.useUSDC ? {
+				erc20Context: {
+					tokenAddress: USDC_ADDRESS as `0x${string}`,
+					maxTokenAmount: parseUnits("0.20", 6) // Low friction ceiling: 0.20 USDC
+				}
+			} : undefined;
+
+			// If using USDC, we might need to override the policy ID if it's different from default
+			const overrides = params.useUSDC ? {
+				paymasterAndData: {
+					policyId: process.env.NEXT_PUBLIC_ALCHEMY_ERC20_POLICY_ID
+				}
+			} : undefined;
+
+			const { hash } = await client.sendUserOperation({
+				uo: params.uo,
+				context,
+				overrides: overrides as any
+			})
+			setLastUserOpHash(hash)
+
+			if (!params.useUSDC) {
+				toast.info("Preparing gas-free setup...")
+			} else {
+				toast.success(t('txSubmitted'))
+			}
+
+			console.log('UserOp Hash:', hash)
+			const txHash = await client.waitForUserOperationTransaction({ hash })
+			console.log('Transaction confirmed:', txHash)
+
+			if (params.useUSDC) {
+				toast.success(t('uploadSuccess'))
+			}
+		} catch (error: any) {
+			console.error('UserOperation Error:', error)
+			toast.error(t('txFailed', { error: error.message || error }))
+			throw error
+		} finally {
+			setIsSending(false)
+		}
+	}
 
 	const handleAudioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files && e.target.files[0]) {
@@ -60,31 +165,269 @@ export default function UploadView() {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
-		setIsPublishing(true)
+		console.log('--- Start Publish Flow ---')
+		if (!audioFile || !coverFile || !client) {
+			console.error('Missing prerequisites:', { audio: !!audioFile, cover: !!coverFile, client: !!client })
+			return
+		}
 
-		// Simulate API call
-		await new Promise(resolve => setTimeout(resolve, 2000))
+		setIsUploading(true)
+		const mainToast = toast.loading("Initiating upload process...")
 
-		console.log({
-			title,
-			description,
-			genre,
-			price,
-			audioFile,
-			coverFile,
-			collaborators
-		})
+		try {
+			// 1. Ensure assets are uploaded
+			let currentAssetsCid = assetsCid
+			let currentAudioName = audioName
+			let currentImageName = imageName
 
-		setIsPublishing(false)
-		alert('Track published! (Mock)')
+			if (!currentAssetsCid) {
+				console.log('Uploading assets to IPFS...')
+				toast.loading("Uploading media to IPFS...", { id: mainToast })
+				const formData = new FormData()
+				formData.append('audio', audioFile)
+				formData.append('image', coverFile)
+				formData.append('title', title)
+
+				const assetRes = await fetch(`${API_URL}/upload-assets`, {
+					method: 'POST',
+					body: formData,
+				})
+
+				if (!assetRes.ok) throw new Error(`Media upload failed: ${await assetRes.text()}`)
+				const assetData = await assetRes.json()
+				currentAssetsCid = assetData.assetsCid
+				currentAudioName = assetData.audioName
+				currentImageName = assetData.imageName
+				console.log('Assets uploaded:', currentAssetsCid)
+			}
+
+			// 2. Upload Metadata
+			console.log('Generating metadata...')
+			toast.loading("Generating NFT metadata...", { id: mainToast })
+			const metaResponse = await fetch(`${API_URL}/upload-metadata`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					title,
+					description,
+					artist: 'Artist Name',
+					genre,
+					assetsCid: currentAssetsCid,
+					audioName: currentAudioName,
+					imageName: currentImageName
+				}),
+			})
+
+			if (!metaResponse.ok) throw new Error(`Metadata generation failed: ${await metaResponse.text()}`)
+			const { metadataUri } = await metaResponse.json()
+			console.log('Metadata URI:', metadataUri)
+
+			// 3. Check Allowances (Gas Paymaster + Platform Fee)
+			console.log('Checking USDC allowances...')
+			toast.loading("Checking permissions...", { id: mainToast })
+
+			const [gasAllowance, platformAllowance] = await Promise.all([
+				client.readContract({
+					address: USDC_ADDRESS as `0x${string}`,
+					abi: ERC20_ABI,
+					functionName: 'allowance',
+					args: [client.account.address, PAYMASTER_ADDRESS as `0x${string}`],
+				}),
+				client.readContract({
+					address: USDC_ADDRESS as `0x${string}`,
+					abi: ERC20_ABI,
+					functionName: 'allowance',
+					args: [client.account.address, CONTRACT_ADDRESS as `0x${string}`],
+				})
+			])
+
+			const minGasAllowance = parseUnits("0.20", 6)
+			const minPlatformAllowance = parseUnits("2", 6) // Covers 1.99 USDC fee
+			const maxAllowance = BigInt("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
+
+			console.log('Allowances - Gas:', gasAllowance.toString(), 'Platform:', platformAllowance.toString())
+
+			if (gasAllowance < minGasAllowance || platformAllowance < minPlatformAllowance) {
+				console.log('Insufficient allowances. Starting batch Approve UserOp...')
+				toast.loading("Step 1/2: Approving platform & gas services...", { id: mainToast })
+
+				const calls = []
+				if (gasAllowance < minGasAllowance) {
+					calls.push({
+						target: USDC_ADDRESS as `0x${string}`,
+						data: encodeFunctionData({
+							abi: ERC20_ABI,
+							functionName: 'approve',
+							args: [PAYMASTER_ADDRESS as `0x${string}`, maxAllowance],
+						})
+					})
+				}
+				if (platformAllowance < minPlatformAllowance) {
+					calls.push({
+						target: USDC_ADDRESS as `0x${string}`,
+						data: encodeFunctionData({
+							abi: ERC20_ABI,
+							functionName: 'approve',
+							args: [CONTRACT_ADDRESS as `0x${string}`, maxAllowance],
+						})
+					})
+				}
+
+				await sendUserOperation({
+					uo: calls,
+					useUSDC: false // Sponsored Approve
+				})
+
+				console.log('Approve batch confirmed.')
+				toast.loading("Propagation delay (3s)...", { id: mainToast })
+				await new Promise(r => setTimeout(r, 3000)) // Wait for RPC propagation
+			}
+
+			// 4. Final Publish Transaction
+			console.log('Preparing Publish UserOp...')
+			toast.loading("Step 2/2: Publishing your song...", { id: mainToast })
+
+			let collaboratorsList = collaborators.map(c => c.address).filter(a => a !== '')
+			let sharesList = collaborators.filter(c => c.address !== '').map(c => BigInt(Math.floor((Number(c.split) || 0) * 100)))
+
+			if (collaboratorsList.length === 0) {
+				collaboratorsList = [client.account.address]
+				sharesList = [10000n]
+			}
+
+			// Safety check for supply and price
+			const safeSupply = BigInt(supply || '1')
+			const safePrice = parseUnits(price || '0', 6)
+
+			const publishData = encodeFunctionData({
+				abi: CONTRACT_ABI,
+				functionName: 'publish',
+				args: [
+					metadataUri,
+					safeSupply,
+					safePrice,
+					collaboratorsList,
+					sharesList
+				],
+			})
+
+			console.log('Sending Publish UserOp...')
+			await sendUserOperation({
+				uo: { target: CONTRACT_ADDRESS as `0x${string}`, data: publishData },
+				useUSDC: true
+			})
+
+			// Capture the song ID for syncing
+			const nextId = await client.readContract({
+				address: CONTRACT_ADDRESS as `0x${string}`,
+				abi: CONTRACT_ABI,
+				functionName: 'nextSongId',
+			})
+			setPublishedSongId(BigInt(nextId as any) - 1n)
+
+			console.log('--- Publish Flow Complete ---')
+			toast.success("Song published successfully!", { id: mainToast })
+
+		} catch (error: any) {
+			console.error('Submit Error:', error)
+			toast.error(error.message || "An unexpected error occurred during upload", { id: mainToast })
+		} finally {
+			setIsUploading(false)
+		}
 	}
+
+	const handleSync = async () => {
+		if (!client || publishedSongId === null) return
+
+		setIsSyncing(true)
+		const syncToast = toast.loading("Syncing song on-chain...")
+
+		try {
+			const collaboratorsList = collaborators.map(c => c.address).filter(a => a !== '')
+			const sharesList = collaborators.filter(c => c.address !== '').map(c => BigInt(Math.floor((Number(c.split) || 0) * 100)))
+
+			// 1. Quote Fee
+			const messagingFee = await client.readContract({
+				address: CONTRACT_ADDRESS as `0x${string}`,
+				abi: CONTRACT_ABI,
+				functionName: 'quoteSyncSong',
+				args: [
+					DST_EID,
+					publishedSongId,
+					collaboratorsList,
+					sharesList,
+					"0x" // no options for now
+				]
+			}) as { nativeFee: bigint, lzTokenFee: bigint }
+
+			console.log('LZ Messaging Fee:', messagingFee.nativeFee.toString())
+
+			// 2. Send Sync UserOp
+			const syncData = encodeFunctionData({
+				abi: CONTRACT_ABI,
+				functionName: 'syncSong',
+				args: [
+					DST_EID,
+					publishedSongId,
+					collaboratorsList,
+					sharesList,
+					"0x"
+				]
+			})
+
+			await sendUserOperation({
+				uo: {
+					target: CONTRACT_ADDRESS as `0x${string}`,
+					data: syncData,
+					value: messagingFee.nativeFee // LZ Messaging fees must be sent as value
+				},
+				useUSDC: false // Sync is typically small enough to be sponsored by the project
+			})
+
+			setSyncDone(true)
+			toast.success("Song synced successfully! It will appear on other networks shortly.", { id: syncToast })
+		} catch (error: any) {
+			console.error('Sync Error:', error)
+			toast.error(`Sync failed: ${error.message}`, { id: syncToast })
+		} finally {
+			setIsSyncing(false)
+		}
+	}
+
+	const handleMint = async () => {
+		if (!client || publishedSongId === null) return
+
+		setIsMinting(true)
+		const mintToast = toast.loading("Minting your first copy...")
+
+		try {
+			const mintData = encodeFunctionData({
+				abi: CONTRACT_ABI,
+				functionName: 'mint',
+				args: [publishedSongId],
+			})
+
+			await sendUserOperation({
+				uo: { target: CONTRACT_ADDRESS as `0x${string}`, data: mintData },
+				useUSDC: true
+			})
+
+			toast.success("First copy minted successfully!", { id: mintToast })
+		} catch (error: any) {
+			console.error('Mint Error:', error)
+			toast.error(`Minting failed: ${error.message}`, { id: mintToast })
+		} finally {
+			setIsMinting(false)
+		}
+	}
+
 
 	return (
 		<div className="space-y-8 animate-fade-in max-w-4xl mx-auto pb-20">
 			<div className="border-b border-white/10 pb-6">
 				<h2 className="text-3xl font-bold mb-2 text-white">{t('title')}</h2>
 				<p className="text-lavender italic text-sm mt-1">
-					album support coming soon
+					{t('albumSupportSoon')}
 				</p>
 			</div>
 
@@ -130,7 +473,7 @@ export default function UploadView() {
 										<Command className="bg-[#0D0D12] text-white rounded-none">
 											<CommandInput placeholder="Search genre..." className="h-9 text-white" />
 											<CommandList>
-												<CommandEmpty>No genre found.</CommandEmpty>
+												<CommandEmpty>{t('noGenre')}</CommandEmpty>
 												<CommandGroup>
 													{GENRES.map((g) => (
 														<CommandItem
@@ -178,12 +521,12 @@ export default function UploadView() {
 						<span className="w-1 h-6 bg-purple-400 rounded-none"></span>
 						{t('pricing')}
 					</h3>
-					<div className="w-full md:w-1/2 space-y-2">
+					<div className="space-y-2">
 						<label className="text-sm font-medium text-white/80">{t('priceLabel')}</label>
 						<div className="relative">
 							<input
 								type="number"
-								step="0.0001"
+								step="0.01"
 								min="0"
 								value={price}
 								onChange={(e) => setPrice(e.target.value)}
@@ -199,6 +542,20 @@ export default function UploadView() {
 								</svg>
 							</div>
 						</div>
+					</div>
+
+					<div className="space-y-2">
+						<label className="text-sm font-medium text-white/80">{t('maxSupplyLabel')}</label>
+						<input
+							type="number"
+							min="1"
+							value={supply}
+							onChange={(e) => setSupply(e.target.value)}
+							placeholder={t('maxSupplyPlaceholder')}
+							className="w-full bg-white/5 border border-white/10 rounded-none px-4 py-3 text-white focus:outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400/50 transition-all placeholder:text-white/20"
+							required
+						/>
+						<p className="text-[10px] text-white/40 italic">{t('maxSupplyHint')}</p>
 					</div>
 				</div>
 
@@ -224,10 +581,10 @@ export default function UploadView() {
 									<p className="text-sm text-white/80 mb-1 font-medium truncate max-w-[200px]">
 										{audioFile ? audioFile.name : t('dragDrop')}
 									</p>
-									<p className="text-xs text-white/40 mb-4">{audioFile ? (audioFile.size / 1024 / 1024).toFixed(2) + ' MB' : 'WAV, FLAC, MP3 (Max 50MB)'}</p>
+									<p className="text-xs text-white/40 mb-4">{audioFile ? (audioFile.size / 1024 / 1024).toFixed(2) + ' MB' : t('audioHint')}</p>
 									<label className="cursor-pointer inline-block">
 										<span className="bg-white/10 hover:bg-white/20 text-white px-5 py-2.5 rounded-none text-sm font-medium transition-colors">
-											{audioFile ? 'Change File' : t('chooseFile')}
+											{audioFile ? t('changeFile') : t('chooseFile')}
 										</span>
 										<input type="file" accept="audio/*" onChange={handleAudioChange} className="hidden" />
 									</label>
@@ -268,7 +625,7 @@ export default function UploadView() {
 										</div>
 										<div className="text-center">
 											<p className="text-sm text-white/60 mb-1">{t('dragDrop')}</p>
-											<p className="text-xs text-white/30 mb-4">JPG, PNG (Max 5MB)</p>
+											<p className="text-xs text-white/30 mb-4">{t('coverArtHint')}</p>
 										</div>
 									</>
 								)}
@@ -276,7 +633,7 @@ export default function UploadView() {
 								<div className="relative z-10 text-center">
 									<label className="cursor-pointer inline-block">
 										<span className="bg-white/10 hover:bg-white/20 text-white px-5 py-2.5 rounded-none text-sm font-medium transition-colors backdrop-blur-sm">
-											{coverFile ? 'Change Cover' : t('chooseFile')}
+											{coverFile ? t('changeCover') : t('chooseFile')}
 										</span>
 										<input type="file" accept="image/*" onChange={handleCoverChange} className="hidden" />
 									</label>
@@ -337,31 +694,107 @@ export default function UploadView() {
 						))}
 						{collaborators.length === 0 && (
 							<div className="text-center py-8 border border-white/5 rounded-none bg-white/[0.02]">
-								<p className="text-sm text-white/40 italic">Add collaborators to split revenue automatically.</p>
+								<p className="text-sm text-white/40 italic">{t('collaboratorsHint')}</p>
 							</div>
 						)}
 					</div>
 				</div>
 
+				{/* Status & Tracking */}
+				{(lastUserOpHash || publishedSongId !== null) && (
+					<div className="bg-white/[0.02] border border-white/10 p-4 space-y-3">
+						<div className="flex items-center justify-between text-xs">
+							<span className="text-white/40 uppercase tracking-wider font-bold">Transaction Status</span>
+							{lastUserOpHash && (
+								<a
+									href={`https://jiffyscan.xyz/userOpHash/${lastUserOpHash}`}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="text-cyber-pink hover:underline flex items-center gap-1"
+								>
+									Track on Jiffyscan
+								</a>
+							)}
+						</div>
+						{publishedSongId !== null && (
+							<div className="flex items-center justify-between">
+								<span className="text-sm text-white/80">Song ID: {publishedSongId.toString()}</span>
+								<span className="text-[10px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded-none font-bold">PUBLISHED</span>
+							</div>
+						)}
+					</div>
+				)}
+
 				{/* Action Bar */}
-				<div className="pt-8 flex justify-end">
-					<Button
-						type="submit"
-						disabled={isPublishing || !title || !price || !audioFile || !coverFile}
-						className={`
-                px-8 py-6 text-lg rounded-none font-bold tracking-wide shadow-lg transition-all transform hover:-translate-y-1
-                ${!title || !price || !audioFile || !coverFile
-								? 'bg-gray-600 cursor-not-allowed opacity-50'
-								: 'bg-gradient-to-r from-cyber-pink to-purple-600 hover:shadow-cyber-pink/25 text-white'}
-            `}
-					>
-						{isPublishing ? (
-							<span className="flex items-center gap-2">
-								<span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-								{t('publishing')}
-							</span>
-						) : t('publish')}
-					</Button>
+				<div className="pt-8 flex flex-col gap-4">
+					{syncDone ? (
+						<div className="flex gap-4">
+							<button
+								type="button"
+								disabled={isMinting}
+								onClick={handleMint}
+								className="flex-1 bg-cyber-pink hover:bg-cyber-pink/90 text-white font-medium py-4 px-6 rounded-none flex items-center justify-center gap-2 transition-all transform active:scale-[0.99] disabled:opacity-50"
+							>
+								{isMinting ? (
+									<>
+										<div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+										MINTING...
+									</>
+								) : (
+									<>
+										<IconMusic size={20} />
+										MINT 1ST COPY (TEST)
+									</>
+								)}
+							</button>
+							<div className="flex-1 bg-[#2ecc71]/10 border border-[#2ecc71] text-[#2ecc71] font-medium py-4 px-6 rounded-none flex items-center justify-center gap-2 cursor-default">
+								<IconCheck size={20} />
+								{t('syncedOnchain', { defaultMessage: "SYNCED ON-CHAIN" })}
+							</div>
+						</div>
+					) : publishedSongId !== null ? (
+						<button
+							onClick={handleSync}
+							type="button"
+							disabled={isSyncing}
+							className="w-full bg-[#3498db] hover:bg-[#3498db]/90 text-white font-medium py-4 px-6 rounded-none flex items-center justify-center gap-2 transition-all transform active:scale-[0.99] disabled:opacity-50"
+						>
+							{isSyncing ? (
+								<>
+									<div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+									{t('syncing', { defaultMessage: "SYNCING..." })}
+								</>
+							) : (
+								<>
+									<IconMusic size={20} />
+									{t('syncOnchain', { defaultMessage: "SYNC ON-CHAIN" })}
+								</>
+							)}
+						</button>
+					) : (
+						<button
+							type="submit"
+							disabled={isUploading || isSending}
+							className="w-full bg-cyber-pink hover:bg-cyber-pink/90 text-white font-medium py-4 px-6 rounded-none flex items-center justify-center gap-2 transition-all transform active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed group"
+						>
+							{isUploading ? (
+								<>
+									<div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+									{t('uploadingMedia')}
+								</>
+							) : isSending ? (
+								<>
+									<div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+									{t('confirmingTx', { defaultMessage: "Confirming Transaction..." })}
+								</>
+							) : (
+								<>
+									<IconUpload size={20} className="group-hover:-translate-y-0.5 transition-transform" />
+									{t('publishNow')}
+								</>
+							)}
+						</button>
+					)}
 				</div>
 			</form>
 		</div>

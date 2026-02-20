@@ -53,7 +53,7 @@ const notoSansKr = localFont({
 export const metadata: Metadata = {
 	metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
 	title: 'doba',
-	description: 'doba – Collaborative Music NFT Marketplace on Arbitrum Sepolia',
+	description: 'Tokenise your music. Doba simplifies collaboration by automating revenue sharing and giving artists full control over their sound.',
 	generator: 'v0.app',
 	openGraph: {
 		images: [
