@@ -8,6 +8,12 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  transpilePackages: [
+    "@account-kit/react",
+    "@account-kit/infra",
+    "@account-kit/logging",
+    "jose"
+  ],
   // Disable experimental features that might cause issues
   experimental: {
   },
@@ -17,6 +23,12 @@ const nextConfig = {
       test: /\.md$/,
       type: 'asset/source',
     });
+
+    // Handle jose and other ESM packages
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      crypto: false,
+    };
 
     return config;
   },

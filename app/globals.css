@@ -263,17 +263,7 @@
     transform: scale(0.95);
   }
 
-  /* Angular corner pieces */
-  ::-webkit-scrollbar-thumb::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    right: -2px;
-    width: 4px;
-    height: 4px;
-    background: rgba(183, 148, 244, 0.1);
-    clip-path: polygon(0 100%, 100% 0, 100% 100%);
-  }
+  /* Angular corner pieces - Note: ::before/::after are not supported on scrollbar pseudo-elements */
 
   /* Firefox Angular Scrollbar */
   * {

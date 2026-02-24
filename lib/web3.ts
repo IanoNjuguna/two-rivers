@@ -1,38 +1,65 @@
-import { getAddress } from 'viem'
+import { logger } from './logger'
+import { getAddress, createPublicClient, http } from 'viem'
+import { arbitrum, base, avalanche } from 'viem/chains'
 
 /**
  * Web3 Contract Configuration
  * 
- * Contract Address: 0x3c51e9deec4cb9dc69e261d63228e4fae62ae606 (Home)
- * Contract Address: 0xb550fcd9ad1630c17ba5a96934f8893b795b4801 (Satellite)
+ * Contract Address: 0x636d43f3c7b15289f795b3e5f36caf30524ceb01 (Home)
+ * Contract Address: 0x4f8ef3fa5d64c2804480f2c323c922862001bcfc (Satellite)
  * Chain: Multi-chain (On-chain)
  */
 
 const ADDRESSES = {
-  421614: {
-    usdc: '0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d',
-    paymaster: '0x2cc0c7981D846b9F2a16276556f6e8cb52BfB633', // Alchemy v0.7 Singleton
-    lzEid: 40231,
-    contract: '0x3c51e9deec4cb9dc69e261d63228e4fae62ae606'
+  42161: {
+    usdc: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+    paymaster: '0x2cc0c7981D846b9F2a16276556f6e8cb52BfB633',
+    lzEid: 30110,
+    contract: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+    explorer: 'https://arbiscan.io'
   },
-  84532: {
-    usdc: '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
-    paymaster: '0x2cc0c7981D846b9F2a16276556f6e8cb52BfB633', // Alchemy v0.7 Singleton
-    lzEid: 40245,
-    contract: '0xb550fcD9aD1630C17Ba5a96934F8893B795b4801'
+  8453: {
+    usdc: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+    paymaster: '0x2cc0c7981D846b9F2a16276556f6e8cb52BfB633',
+    lzEid: 30184,
+    contract: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+    explorer: 'https://basescan.org'
+  },
+  43114: {
+    usdc: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E',
+    paymaster: '0x2cc0c7981D846b9F2a16276556f6e8cb52BfB633',
+    lzEid: 30106,
+    contract: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+    explorer: 'https://snowscan.xyz'
   }
 }
 
-export const CHAIN_ID = process.env.NEXT_PUBLIC_ACTIVE_CHAIN === 'base-sepolia' ? 84532 : 421614
-export const CHAIN_NAME = process.env.NEXT_PUBLIC_ACTIVE_CHAIN === 'base-sepolia' ? 'On-chain' : 'On-chain'
+export const getAddressesForChain = (chainId: number) => {
+  return ADDRESSES[chainId as keyof typeof ADDRESSES] || ADDRESSES[42161]
+}
 
+export const CHAIN_ID = process.env.NEXT_PUBLIC_ACTIVE_CHAIN === 'base' ? 8453 :
+  process.env.NEXT_PUBLIC_ACTIVE_CHAIN === 'avalanche' ? 43114 : 42161
+
+export const CHAIN_NAME = process.env.NEXT_PUBLIC_ACTIVE_CHAIN?.toUpperCase() || 'ARBITRUM'
+
+export const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`
+
+// Legacy exports for components that don't support dynamic yet
 const currentAddresses = ADDRESSES[CHAIN_ID as keyof typeof ADDRESSES]
-
-export const CONTRACT_ADDRESS = getAddress(process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || currentAddresses.contract)
 export const USDC_ADDRESS = getAddress(currentAddresses.usdc)
 export const PAYMASTER_ADDRESS = getAddress(currentAddresses.paymaster)
 export const LZ_EID = currentAddresses.lzEid
-export const DST_EID = process.env.NEXT_PUBLIC_ACTIVE_CHAIN === 'base-sepolia' ? 40231 : 40245 // Arbi if Base, Base if Arbi
+
+// Logic to determine destination EID for sync
+export const getDstEid = (chainId: number) => {
+  if (chainId === 42161) return 30184 // Arb -> Base
+  if (chainId === 8453) return 30110  // Base -> Arbi
+  return 30110 // Default to Arbi from Avalanche
+}
+
+export const DST_EID = getDstEid(CHAIN_ID)
+export const LZ_SYNC_OPTIONS = "0x00030100110100000000000000000000000000030d40" // Type 3 options: [Execution: 200,000 gas]
 
 export const ERC20_ABI = [
   {
@@ -93,54 +120,147 @@ export const ERC20_ABI = [
   },
 ] as const
 
-// Minimal ABI for the Doba Music NFT contract (ERC721 OApp)
+// Minimal ABI for the Doba audio streaming contract (ERC-1155)
 export const CONTRACT_ABI = [
   {
     type: 'function',
     name: 'publish',
     stateMutability: 'nonpayable',
     inputs: [
-      { name: 'uri', type: 'string' },
-      { name: 'supply', type: 'uint256' },
-      { name: 'price', type: 'uint256' },
-      { name: 'collaborators', type: 'address[]' },
-      { name: 'shares', type: 'uint256[]' },
+      { name: '_baseUri', type: 'string' },
+      { name: '_maxSupply', type: 'uint256' },
+      { name: '_collaborators', type: 'address[]' },
+      { name: '_shares', type: 'uint256[]' },
     ],
-    outputs: [],
+    outputs: [{ name: '', type: 'uint256' }],
   },
   {
     type: 'function',
     name: 'mint',
-    stateMutability: 'nonpayable', // Changed to nonpayable (USDC transfer)
-    inputs: [{ name: 'songId', type: 'uint256' }],
+    stateMutability: 'nonpayable',
+    inputs: [{ name: '_collectionId', type: 'uint256' }],
     outputs: [],
   },
   {
     type: 'function',
-    name: 'songs',
+    name: 'collections',
     stateMutability: 'view',
-    inputs: [{ name: 'songId', type: 'uint256' }],
+    inputs: [{ name: 'collectionId', type: 'uint256' }],
     outputs: [
       { name: 'id', type: 'uint256' },
       { name: 'artist', type: 'address' },
+      { name: 'splitter', type: 'address' },
+      { name: 'baseUri', type: 'string' },
       { name: 'maxSupply', type: 'uint256' },
-      { name: 'minted', type: 'uint256' },
-      { name: 'uri', type: 'string' },
+      { name: 'exists', type: 'bool' },
     ],
   },
   {
     type: 'function',
-    name: 'artistSplitters',
+    name: 'nextCollectionId',
     stateMutability: 'view',
-    inputs: [{ name: 'artist', type: 'address' }],
+    inputs: [],
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    type: 'function',
+    name: 'uri',
+    stateMutability: 'view',
+    inputs: [{ name: 'tokenId', type: 'uint256' }],
+    outputs: [{ name: '', type: 'string' }],
+  },
+  {
+    type: 'function',
+    name: 'splitterImplementation',
+    stateMutability: 'view',
+    inputs: [],
     outputs: [{ name: '', type: 'address' }],
   },
   {
     type: 'function',
-    name: 'usdc',
+    name: 'quoteSyncSong',
+    stateMutability: 'view',
+    inputs: [
+      { name: '_dstEid', type: 'uint32' },
+      { name: '_collectionId', type: 'uint256' },
+      { name: '_options', type: 'bytes' },
+    ],
+    outputs: [{ name: 'nativeFee', type: 'uint256' }],
+  },
+  {
+    type: 'function',
+    name: 'syncSong',
+    stateMutability: 'payable',
+    inputs: [
+      { name: '_dstEid', type: 'uint32' },
+      { name: '_collectionId', type: 'uint256' },
+      { name: '_options', type: 'bytes' },
+    ],
+    outputs: [
+      {
+        name: 'receipt',
+        type: 'tuple',
+        components: [
+          { name: 'guid', type: 'bytes32' },
+          { name: 'nonce', type: 'uint64' },
+          {
+            name: 'fee',
+            type: 'tuple',
+            components: [
+              { name: 'nativeFee', type: 'uint256' },
+              { name: 'lzTokenFee', type: 'uint256' },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    type: 'event',
+    name: 'CollectionPublished',
+    inputs: [
+      { name: 'collectionId', type: 'uint256', indexed: true },
+      { name: 'artist', type: 'address', indexed: true },
+      { name: 'splitter', type: 'address', indexed: false },
+      { name: 'price', type: 'uint256', indexed: false },
+    ],
+  },
+  {
+    type: 'event',
+    name: 'SongMinted',
+    inputs: [
+      { name: 'collectionId', type: 'uint256', indexed: true },
+      { name: 'tokenId', type: 'uint256', indexed: true },
+      { name: 'buyer', type: 'address', indexed: true },
+    ],
+  },
+  {
+    type: 'function',
+    name: 'owner',
     stateMutability: 'view',
     inputs: [],
     outputs: [{ name: '', type: 'address' }],
+  },
+  {
+    type: 'function',
+    name: 'botFee',
+    stateMutability: 'view',
+    inputs: [],
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    type: 'function',
+    name: 'tokenToCollection',
+    stateMutability: 'view',
+    inputs: [{ name: 'tokenId', type: 'uint256' }],
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    type: 'function',
+    name: 'collectionMinted',
+    stateMutability: 'view',
+    inputs: [{ name: 'collectionId', type: 'uint256' }],
+    outputs: [{ name: '', type: 'uint256' }],
   },
   {
     type: 'function',
@@ -151,41 +271,64 @@ export const CONTRACT_ABI = [
   },
   {
     type: 'function',
-    name: 'nextSongId',
+    name: 'balanceOf',
+    stateMutability: 'view',
+    inputs: [
+      { name: 'account', type: 'address' },
+      { name: 'id', type: 'uint256' },
+    ],
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    type: 'function',
+    name: 'balanceOfBatch',
+    stateMutability: 'view',
+    inputs: [
+      { name: 'accounts', type: 'address[]' },
+      { name: 'ids', type: 'uint256[]' },
+    ],
+    outputs: [{ name: '', type: 'uint256[]' }],
+  },
+] as const
+
+export const SPLITTER_ABI = [
+  {
+    type: 'function',
+    name: 'totalShares',
     stateMutability: 'view',
     inputs: [],
     outputs: [{ name: '', type: 'uint256' }],
   },
   {
     type: 'function',
-    name: 'tokenURI',
+    name: 'shares',
     stateMutability: 'view',
-    inputs: [{ name: 'tokenId', type: 'uint256' }],
-    outputs: [{ name: '', type: 'string' }],
+    inputs: [{ name: 'account', type: 'address' }],
+    outputs: [{ name: '', type: 'uint256' }],
   },
   {
-    type: 'event',
-    name: 'SongPublished',
+    type: 'function',
+    name: 'releasedERC20',
+    stateMutability: 'view',
     inputs: [
-      { name: 'songId', type: 'uint256', indexed: true },
-      { name: 'artist', type: 'address', indexed: true },
-      { name: 'uri', type: 'string', indexed: false },
-      { name: 'price', type: 'uint256', indexed: false },
-      { name: 'supply', type: 'uint256', indexed: false },
+      { name: 'token', type: 'address' },
+      { name: 'account', type: 'address' },
     ],
+    outputs: [{ name: '', type: 'uint256' }],
   },
   {
-    type: 'event',
-    name: 'SongMinted',
+    type: 'function',
+    name: 'releaseERC20',
+    stateMutability: 'nonpayable',
     inputs: [
-      { name: 'songId', type: 'uint256', indexed: true },
-      { name: 'tokenId', type: 'uint256', indexed: true },
-      { name: 'buyer', type: 'address', indexed: true },
+      { name: 'token', type: 'address' },
+      { name: 'account', type: 'address' },
     ],
+    outputs: [],
   },
-]
+] as const
 
-export const ARBITRUM_SEPOLIA_RPC = 'https://sepolia-rollup.arbitrum.io/rpc'
+
 
 export function formatAddress(address: string): string {
   if (!address) return ''
@@ -202,3 +345,64 @@ export function formatEtherShort(wei: string | number): string {
   const eth = formatEther(wei)
   return parseFloat(eth).toFixed(2)
 }
+
+// Multi-chain Public Clients (using Alchemy nodes)
+const ALCHEMY_KEY = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY!;
+
+export const publicClients = {
+  42161: createPublicClient({ chain: arbitrum, transport: http(`https://arb-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`) }),
+  8453: createPublicClient({ chain: base, transport: http(`https://base-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`) }),
+  43114: createPublicClient({ chain: avalanche, transport: http(`https://avax-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`) }),
+}
+
+export type ChainBalances = {
+  chainId: number;
+  chainName: string;
+  native: string;
+  usdc: string;
+  nativeSymbol: string;
+}
+
+export async function fetchAllBalances(address: string): Promise<ChainBalances[]> {
+  const chains = [
+    { id: 42161, name: 'Arbitrum', symbol: 'ETH' },
+    { id: 8453, name: 'Base', symbol: 'ETH' },
+    { id: 43114, name: 'Avalanche', symbol: 'AVAX' }
+  ];
+
+  return Promise.all(chains.map(async (c) => {
+    const client = publicClients[c.id as keyof typeof publicClients];
+    const addrs = ADDRESSES[c.id as keyof typeof ADDRESSES];
+
+    try {
+      const [nativeBalance, usdcBalance] = await Promise.all([
+        client.getBalance({ address: address as `0x${string}` }),
+        client.readContract({
+          address: addrs.usdc as `0x${string}`,
+          abi: ERC20_ABI,
+          functionName: 'balanceOf',
+          args: [address as `0x${string}`]
+        })
+      ]);
+
+      return {
+        chainId: c.id,
+        chainName: c.name,
+        native: formatUnits(nativeBalance, 18),
+        usdc: formatUnits(usdcBalance as bigint, 6),
+        nativeSymbol: c.symbol
+      };
+    } catch (err) {
+      logger.error(`Failed to fetch balances for chain ${c.id}`, err);
+      return {
+        chainId: c.id,
+        chainName: c.name,
+        native: '0.00',
+        usdc: '0.00',
+        nativeSymbol: c.symbol
+      };
+    }
+  }));
+}
+
+import { formatUnits } from 'viem'

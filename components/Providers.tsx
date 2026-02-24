@@ -1,20 +1,29 @@
 "use client";
 
 import React, { useState } from "react";
-import { AlchemyAccountProvider } from "@account-kit/react";
+import { AlchemyAccountProvider, AlchemyAccountsProviderProps } from "@account-kit/react";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
-import { config } from "@/lib/config";
+import { WagmiProvider } from "wagmi";
+import { getConfig } from "@/lib/config";
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({
+	children,
+	initialState
+}: {
+	children: React.ReactNode;
+	initialState?: AlchemyAccountsProviderProps["initialState"];
+}) {
 	// Create a new QueryClient instance for each session
-	// This ensures that the data is not shared between different users/requests
 	const [queryClient] = useState(() => new QueryClient());
+	const [activeConfig] = useState(() => getConfig());
 
 	return (
-		<QueryClientProvider client={queryClient}>
-			<AlchemyAccountProvider config={config} queryClient={queryClient}>
-				{children}
-			</AlchemyAccountProvider>
-		</QueryClientProvider>
+		<WagmiProvider config={(activeConfig as any)._internal.wagmiConfig}>
+			<QueryClientProvider client={queryClient}>
+				<AlchemyAccountProvider config={activeConfig} queryClient={queryClient} initialState={initialState}>
+					{children}
+				</AlchemyAccountProvider>
+			</QueryClientProvider>
+		</WagmiProvider>
 	);
 }
