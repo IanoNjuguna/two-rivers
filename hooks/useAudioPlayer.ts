@@ -6,7 +6,7 @@ export interface Track {
   id: number
   title: string
   creator: string
-  price: string
+  price?: string
   cover: string
   collaborators: number
   url?: string

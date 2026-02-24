@@ -1,6 +1,6 @@
 export const GENRES = [
 	"Afrobeat",
-	"Afro House",
+	"AfroHouse",
 	"Alternative",
 	"Ambient",
 	"Blues",
@@ -31,6 +31,7 @@ export const GENRES = [
 	"Rap",
 	"Reggae",
 	"Reggaeton",
+	"Rhumba",
 	"Rock",
 	"Soul",
 	"Soundtrack",

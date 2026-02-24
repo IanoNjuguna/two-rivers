@@ -1,5 +1,4 @@
-'use client'
-
+import { logger } from '@/lib/logger'
 import React, { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { IconUpload, IconX, IconPlus, IconMusic, IconPhoto, IconTrash, IconCheck, IconChevronDown } from '@tabler/icons-react'
@@ -9,8 +8,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils"
 import { GENRES } from '@/constants/genres'
 
-import { useSendUserOperation, useSmartAccountClient } from "@account-kit/react"
-import { CONTRACT_ADDRESS, CONTRACT_ABI, USDC_ADDRESS, PAYMASTER_ADDRESS, ERC20_ABI, DST_EID } from '@/lib/web3'
+import { useSendUserOperation, useSmartAccountClient, useChain } from "@account-kit/react"
+import { getAddressesForChain, getDstEid, CONTRACT_ABI, ERC20_ABI, LZ_SYNC_OPTIONS } from '@/lib/web3'
 import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
 
@@ -23,15 +22,19 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
 
 export default function UploadView({ client: propClient }: { client?: any }) {
 	const t = useTranslations('upload')
+	const { chain } = useChain()
+	const { usdc: USDC_ADDRESS, contract: CONTRACT_ADDRESS, paymaster: PAYMASTER_ADDRESS } = getAddressesForChain(chain.id)
+	const DST_EID = getDstEid(chain.id)
 
 	const client = propClient
 
 	const [isSending, setIsSending] = useState(false)
 	const [open, setOpen] = useState(false)
 	const [title, setTitle] = useState('')
+	const [artistName, setArtistName] = useState('')
 	const [description, setDescription] = useState('')
 	const [genre, setGenre] = useState('')
-	const [price, setPrice] = useState('')
+	const [price, setPrice] = useState('0.99')
 	const [supply, setSupply] = useState('5000')
 	const [audioFile, setAudioFile] = useState<File | null>(null)
 	const [coverFile, setCoverFile] = useState<File | null>(null)
@@ -46,6 +49,60 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 	const [syncDone, setSyncDone] = useState(false)
 	const [isMinting, setIsMinting] = useState(false)
 	const [lastUserOpHash, setLastUserOpHash] = useState<string | null>(null)
+	const [usdcBalance, setUsdcBalance] = useState<bigint | null>(null)
+	const [nativeBalance, setNativeBalance] = useState<bigint | null>(null)
+	const [hasCollected, setHasCollected] = useState(false)
+
+	// Background Fetch Balance
+	React.useEffect(() => {
+		const fetchBalance = async () => {
+			if (!client || !client.account) {
+				return;
+			}
+
+
+			try {
+				const balance = await client.readContract({
+					address: USDC_ADDRESS as `0x${string}`,
+					abi: ERC20_ABI,
+					functionName: 'balanceOf',
+					args: [client.account.address],
+				})
+
+				setUsdcBalance(balance as bigint)
+
+				// Also fetch native balance
+				const nBalance = await client.getBalance({ address: client.account.address })
+				setNativeBalance(nBalance)
+			} catch (e) {
+				logger.error('UploadView: Failed to fetch balances', e)
+			}
+		}
+		fetchBalance()
+	}, [client])
+
+	// Background Fetch NFT Balance (to detect if already collected)
+	React.useEffect(() => {
+		const fetchNftBalance = async () => {
+			if (!client || !client.account || publishedSongId === null) return;
+
+			try {
+				const balance = await client.readContract({
+					address: CONTRACT_ADDRESS as `0x${string}`,
+					abi: CONTRACT_ABI,
+					functionName: 'balanceOf',
+					args: [client.account.address, publishedSongId],
+				})
+				setHasCollected(balance > 0n)
+			} catch (e) {
+				logger.error('UploadView: Failed to fetch NFT balance', e)
+			}
+		}
+
+		if (publishedSongId !== null) {
+			fetchNftBalance()
+		}
+	}, [client, publishedSongId])
 
 	// Background Upload Effect
 	React.useEffect(() => {
@@ -59,20 +116,24 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 				formData.append('image', coverFile)
 				formData.append('title', title || 'Untitled')
 
+
+
 				const response = await fetch(`${API_URL}/upload-assets`, {
 					method: 'POST',
+					headers: { 'X-API-Key': process.env.NEXT_PUBLIC_API_KEY || '' },
 					body: formData,
 				})
 
 				if (response.ok) {
 					const data = await response.json()
-					setAssetsCid(data.assetsCid)
-					setAudioName(data.audioName)
-					setImageName(data.imageName)
-					console.log('Background upload complete:', data.assetsCid)
+					setAudioName(data.audioHash) // Store the hash
+					setImageName(data.imageHash) // Store the hash
+
+					// Use a separate state to flag that background is done
+					setAssetsCid("READY")
 				}
 			} catch (e) {
-				console.error('Background upload failed:', e)
+				logger.error('Background upload failed', e)
 			} finally {
 				setIsAssetsUploading(false)
 			}
@@ -89,42 +150,23 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 		setIsSending(true)
 		try {
-			const context = params.useUSDC ? {
-				erc20Context: {
-					tokenAddress: USDC_ADDRESS as `0x${string}`,
-					maxTokenAmount: parseUnits("0.20", 6) // Low friction ceiling: 0.20 USDC
-				}
-			} : undefined;
-
-			// If using USDC, we might need to override the policy ID if it's different from default
-			const overrides = params.useUSDC ? {
-				paymasterAndData: {
-					policyId: process.env.NEXT_PUBLIC_ALCHEMY_ERC20_POLICY_ID
-				}
-			} : undefined;
-
+			// We have removed the ERC20 Paymaster (Sponsored Gas) for now
+			// users will pay with native ETH/AVAX
 			const { hash } = await client.sendUserOperation({
-				uo: params.uo,
-				context,
-				overrides: overrides as any
+				uo: params.uo
 			})
 			setLastUserOpHash(hash)
 
-			if (!params.useUSDC) {
-				toast.info("Preparing gas-free setup...")
-			} else {
-				toast.success(t('txSubmitted'))
-			}
+			toast.success(t('txSubmitted'))
 
-			console.log('UserOp Hash:', hash)
 			const txHash = await client.waitForUserOperationTransaction({ hash })
-			console.log('Transaction confirmed:', txHash)
 
-			if (params.useUSDC) {
-				toast.success(t('uploadSuccess'))
-			}
+			const receipt = await client.getTransactionReceipt({ hash: txHash })
+
+			toast.success(t('uploadSuccess'))
+			return receipt
 		} catch (error: any) {
-			console.error('UserOperation Error:', error)
+			logger.error('UserOperation Error', error)
 			toast.error(t('txFailed', { error: error.message || error }))
 			throw error
 		} finally {
@@ -165,9 +207,11 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
-		console.log('--- Start Publish Flow ---')
+
 		if (!audioFile || !coverFile || !client) {
-			console.error('Missing prerequisites:', { audio: !!audioFile, cover: !!coverFile, client: !!client })
+			const status = `audio: ${!!audioFile}, cover: ${!!coverFile}, client: ${!!client}`
+			logger.warn('Missing prerequisites for mint', status)
+			toast.error(`Please ensure you have selected both audio and cover files, and your wallet is connected. (${status})`)
 			return
 		}
 
@@ -175,13 +219,13 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 		const mainToast = toast.loading("Initiating upload process...")
 
 		try {
-			// 1. Ensure assets are uploaded
-			let currentAssetsCid = assetsCid
-			let currentAudioName = audioName
-			let currentImageName = imageName
+			let currentAudioHash = audioName || ''
+			let currentImageHash = imageName || ''
+			let currentAudioName = ''
+			let currentImageName = ''
 
-			if (!currentAssetsCid) {
-				console.log('Uploading assets to IPFS...')
+			if (!assetsCid || assetsCid !== "READY" || !currentAudioHash) {
+
 				toast.loading("Uploading media to IPFS...", { id: mainToast })
 				const formData = new FormData()
 				formData.append('audio', audioFile)
@@ -190,29 +234,37 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 				const assetRes = await fetch(`${API_URL}/upload-assets`, {
 					method: 'POST',
+					headers: { 'X-API-Key': process.env.NEXT_PUBLIC_API_KEY || '' },
 					body: formData,
 				})
 
 				if (!assetRes.ok) throw new Error(`Media upload failed: ${await assetRes.text()}`)
 				const assetData = await assetRes.json()
-				currentAssetsCid = assetData.assetsCid
+
+				currentAudioHash = assetData.audioHash
+				currentImageHash = assetData.imageHash
 				currentAudioName = assetData.audioName
 				currentImageName = assetData.imageName
-				console.log('Assets uploaded:', currentAssetsCid)
+
+
 			}
 
 			// 2. Upload Metadata
-			console.log('Generating metadata...')
+
 			toast.loading("Generating NFT metadata...", { id: mainToast })
 			const metaResponse = await fetch(`${API_URL}/upload-metadata`, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
+				headers: {
+					'Content-Type': 'application/json',
+					'X-API-Key': process.env.NEXT_PUBLIC_API_KEY || ''
+				},
 				body: JSON.stringify({
-					title,
+					title: currentAudioName.replace('audio_', '').replace('.mp3', ''),
 					description,
-					artist: 'Artist Name',
+					artist: artistName || 'Unknown Artist',
 					genre,
-					assetsCid: currentAssetsCid,
+					audioHash: currentAudioHash,
+					imageHash: currentImageHash,
 					audioName: currentAudioName,
 					imageName: currentImageName
 				}),
@@ -220,13 +272,13 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 			if (!metaResponse.ok) throw new Error(`Metadata generation failed: ${await metaResponse.text()}`)
 			const { metadataUri } = await metaResponse.json()
-			console.log('Metadata URI:', metadataUri)
+
 
 			// 3. Check Allowances (Gas Paymaster + Platform Fee)
-			console.log('Checking USDC allowances...')
+
 			toast.loading("Checking permissions...", { id: mainToast })
 
-			const [gasAllowance, platformAllowance] = await Promise.all([
+			const [gasAllowance, platformAllowance, contractOwner, botFee, mintPrice] = await Promise.all([
 				client.readContract({
 					address: USDC_ADDRESS as `0x${string}`,
 					abi: ERC20_ABI,
@@ -238,17 +290,48 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 					abi: ERC20_ABI,
 					functionName: 'allowance',
 					args: [client.account.address, CONTRACT_ADDRESS as `0x${string}`],
-				})
+				}),
+				client.readContract({
+					address: CONTRACT_ADDRESS as `0x${string}`,
+					abi: CONTRACT_ABI,
+					functionName: 'owner',
+				}),
+				client.readContract({
+					address: CONTRACT_ADDRESS as `0x${string}`,
+					abi: CONTRACT_ABI,
+					functionName: 'botFee',
+				}),
+				client.readContract({
+					address: CONTRACT_ADDRESS as `0x${string}`,
+					abi: CONTRACT_ABI,
+					functionName: 'MINT_PRICE',
+				}),
 			])
 
+			const isOwner = client.account.address.toLowerCase() === (contractOwner as string).toLowerCase()
+			const currentBotFee = isOwner ? 0n : BigInt(botFee as any)
+			const currentMintPrice = BigInt(mintPrice as any)
+			const totalUsdcNeeded = currentBotFee + currentMintPrice
+
+			// Check Balance First
+			const userBalance = await client.readContract({
+				address: USDC_ADDRESS as `0x${string}`,
+				abi: ERC20_ABI,
+				functionName: 'balanceOf',
+				args: [client.account.address],
+			}) as bigint
+
+			if (userBalance < totalUsdcNeeded) {
+				const short = totalUsdcNeeded - userBalance
+				const shortAmount = (Number(short) / 1e6).toFixed(2)
+				throw new Error(`Insufficient USDC balance for batch operations. You need another ${shortAmount} USDC. Current: ${(Number(userBalance) / 1e6).toFixed(2)} / Needed: ${(Number(totalUsdcNeeded) / 1e6).toFixed(2)}`)
+			}
+
 			const minGasAllowance = parseUnits("0.20", 6)
-			const minPlatformAllowance = parseUnits("2", 6) // Covers 1.99 USDC fee
+			const minPlatformAllowance = totalUsdcNeeded
 			const maxAllowance = BigInt("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
 
-			console.log('Allowances - Gas:', gasAllowance.toString(), 'Platform:', platformAllowance.toString())
-
 			if (gasAllowance < minGasAllowance || platformAllowance < minPlatformAllowance) {
-				console.log('Insufficient allowances. Starting batch Approve UserOp...')
 				toast.loading("Step 1/2: Approving platform & gas services...", { id: mainToast })
 
 				const calls = []
@@ -278,14 +361,21 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 					useUSDC: false // Sponsored Approve
 				})
 
-				console.log('Approve batch confirmed.')
+
 				toast.loading("Propagation delay (3s)...", { id: mainToast })
 				await new Promise(r => setTimeout(r, 3000)) // Wait for RPC propagation
 			}
 
-			// 4. Final Publish Transaction
-			console.log('Preparing Publish UserOp...')
-			toast.loading("Step 2/2: Publishing your song...", { id: mainToast })
+			// 4. PREPARE BATCH CALLS
+
+			toast.loading("Preparing one-click publish batch...", { id: mainToast })
+
+			const nextId = await client.readContract({
+				address: CONTRACT_ADDRESS as `0x${string}`,
+				abi: CONTRACT_ABI,
+				functionName: 'nextCollectionId',
+			})
+			const tokenId = BigInt(nextId as any)
 
 			let collaboratorsList = collaborators.map(c => c.address).filter(a => a !== '')
 			let sharesList = collaborators.filter(c => c.address !== '').map(c => BigInt(Math.floor((Number(c.split) || 0) * 100)))
@@ -295,42 +385,161 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 				sharesList = [10000n]
 			}
 
-			// Safety check for supply and price
-			const safeSupply = BigInt(supply || '1')
-			const safePrice = parseUnits(price || '0', 6)
+			const calls = []
 
-			const publishData = encodeFunctionData({
-				abi: CONTRACT_ABI,
-				functionName: 'publish',
-				args: [
-					metadataUri,
-					safeSupply,
-					safePrice,
-					collaboratorsList,
-					sharesList
-				],
+			// A. Publish Call
+			calls.push({
+				target: CONTRACT_ADDRESS as `0x${string}`,
+				data: encodeFunctionData({
+					abi: CONTRACT_ABI,
+					functionName: 'publish',
+					args: [metadataUri, BigInt(supply || '5000'), collaboratorsList as `0x${string}`[], sharesList],
+				})
 			})
 
-			console.log('Sending Publish UserOp...')
-			await sendUserOperation({
-				uo: { target: CONTRACT_ADDRESS as `0x${string}`, data: publishData },
-				useUSDC: true
+			// B. Initial Mint Call (Optional but highly recommended for UX)
+			calls.push({
+				target: CONTRACT_ADDRESS as `0x${string}`,
+				data: encodeFunctionData({
+					abi: CONTRACT_ABI,
+					functionName: 'mint',
+					args: [tokenId],
+				})
 			})
 
-			// Capture the song ID for syncing
-			const nextId = await client.readContract({
-				address: CONTRACT_ADDRESS as `0x${string}`,
-				abi: CONTRACT_ABI,
-				functionName: 'nextSongId',
-			})
-			setPublishedSongId(BigInt(nextId as any) - 1n)
+			// C. LayerZero Sync Call
+			let messagingFee = 150000000000000n // 0.00015 ETH fallback
+			try {
+				const fee = await client.readContract({
+					address: CONTRACT_ADDRESS as `0x${string}`,
+					abi: CONTRACT_ABI,
+					functionName: 'quoteSyncSong',
+					args: [DST_EID, tokenId, LZ_SYNC_OPTIONS]
+				}) as bigint
+				messagingFee = fee
+			} catch (e) {
+				console.warn('[DEBUG] Quote for predicted ID failed (expected if it does not exist yet). Trying ID 0 as proxy...')
+				try {
+					const fallbackFee = await client.readContract({
+						address: CONTRACT_ADDRESS as `0x${string}`,
+						abi: CONTRACT_ABI,
+						functionName: 'quoteSyncSong',
+						args: [DST_EID, 0n, LZ_SYNC_OPTIONS]
+					}) as bigint
+					messagingFee = fallbackFee
+				} catch (e2) {
+					logger.warn('Both quote attempts failed. Using static fallback for messaging fee.')
+				}
+			}
 
-			console.log('--- Publish Flow Complete ---')
-			toast.success("Song published successfully!", { id: mainToast })
+
+
+			calls.push({
+				target: CONTRACT_ADDRESS as `0x${string}`,
+				data: encodeFunctionData({
+					abi: CONTRACT_ABI,
+					functionName: 'syncSong',
+					args: [DST_EID, tokenId, LZ_SYNC_OPTIONS],
+				}),
+				value: messagingFee
+			})
+
+			// 5. SEND BATCH USER OPERATION
+
+			toast.loading("Sending one-click publish batch...", { id: mainToast })
+
+			const receipt = await sendUserOperation({
+				uo: calls,
+				useUSDC: false // Initial publish is sponsored
+			})
+
+			// Extract Splitter from logs
+			let splitterAddress = ''
+			try {
+				const { decodeEventLog } = await import('viem')
+				const log = receipt.logs.find((l: any) => l.address.toLowerCase() === CONTRACT_ADDRESS.toLowerCase())
+				if (log) {
+					const event = decodeEventLog({
+						abi: CONTRACT_ABI,
+						data: log.data,
+						topics: log.topics,
+					})
+					if (event.eventName === 'CollectionPublished') {
+						splitterAddress = (event.args as any).splitter
+					}
+				}
+			} catch (e) {
+				logger.warn('Failed to decode logs for splitter', e)
+			}
+
+			setPublishedSongId(tokenId)
+			setSyncDone(true)
+			setHasCollected(true)
+
+			// 6. Register in Backend (Discovery Index)
+			try {
+				await fetch(`${API_URL}/tracks`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'X-API-Key': process.env.NEXT_PUBLIC_API_KEY || ''
+					},
+					body: JSON.stringify({
+						token_id: Number(tokenId),
+						name: title,
+						description,
+						artist: artistName || 'Unknown Artist',
+						genre,
+						image_url: `ipfs://${imageName}`,
+						audio_url: `ipfs://${audioName}`,
+						external_url: `https://doba.world/tracks/${tokenId}`,
+						price: price || '0.99',
+						max_supply: supply || '5000',
+						splitter: splitterAddress,
+						tx_hash: receipt.transactionHash,
+						uploader_address: client.account.address
+					}),
+				})
+
+				// 7. Register Collaborators in Backend
+				if (collaborators.length > 0) {
+					for (const collab of collaborators) {
+						if (!collab.address) continue;
+						await fetch(`${API_URL}/collaborators`, {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json',
+								'X-API-Key': process.env.NEXT_PUBLIC_API_KEY || ''
+							},
+							body: JSON.stringify({
+								track_id: Number(tokenId),
+								wallet_address: collab.address,
+								split_percentage: Number(collab.split) || 0
+							}),
+						})
+					}
+
+				}
+			} catch (e) {
+				logger.error('Backend indexing failed', e)
+			}
+
+
+			toast.success("Song published, minted, and synced successfully!", { id: mainToast })
 
 		} catch (error: any) {
-			console.error('Submit Error:', error)
-			toast.error(error.message || "An unexpected error occurred during upload", { id: mainToast })
+			logger.error('Submit Error', error)
+
+			// Parse common blockchain errors into friendly messages
+			let errorMessage = error.message || "An unexpected error occurred during upload"
+
+			if (errorMessage.includes("transfer amount exceeds balance") || JSON.stringify(error).includes("insufficient funds")) {
+				errorMessage = "Insufficient USDC balance. Please top up your Smart Account with at least 2 USDC to proceed."
+			} else if (errorMessage.includes("User rejected the request")) {
+				errorMessage = "Transaction was canceled. You need to sign the request to publish."
+			}
+
+			toast.error(errorMessage, { id: mainToast, duration: 5000 })
 		} finally {
 			setIsUploading(false)
 		}
@@ -343,8 +552,6 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 		const syncToast = toast.loading("Syncing song on-chain...")
 
 		try {
-			const collaboratorsList = collaborators.map(c => c.address).filter(a => a !== '')
-			const sharesList = collaborators.filter(c => c.address !== '').map(c => BigInt(Math.floor((Number(c.split) || 0) * 100)))
 
 			// 1. Quote Fee
 			const messagingFee = await client.readContract({
@@ -354,24 +561,36 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 				args: [
 					DST_EID,
 					publishedSongId,
-					collaboratorsList,
-					sharesList,
-					"0x" // no options for now
+					LZ_SYNC_OPTIONS
 				]
-			}) as { nativeFee: bigint, lzTokenFee: bigint }
+			}) as bigint
 
-			console.log('LZ Messaging Fee:', messagingFee.nativeFee.toString())
 
-			// 2. Send Sync UserOp
+
+			// 2. Check Native Balance
+			const nativeBalance = await client.getBalance({
+				address: client.account.address
+			})
+
+			if (nativeBalance < messagingFee) {
+				const needed = messagingFee - nativeBalance
+				const neededEth = parseFloat(needed.toString()) / 1e18
+				toast.error(
+					`Insufficient native balance for cross-chain sync fee. You need ~${neededEth.toFixed(5)} more ${chain.name.includes('Arbitrum') ? 'ETH' : 'Native Token'}. Please fund your Smart Account: ${client.account.address}`,
+					{ id: syncToast, duration: 10000 }
+				)
+				setIsSyncing(false)
+				return
+			}
+
+			// 3. Send Sync UserOp
 			const syncData = encodeFunctionData({
 				abi: CONTRACT_ABI,
 				functionName: 'syncSong',
 				args: [
 					DST_EID,
 					publishedSongId,
-					collaboratorsList,
-					sharesList,
-					"0x"
+					LZ_SYNC_OPTIONS
 				]
 			})
 
@@ -379,7 +598,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 				uo: {
 					target: CONTRACT_ADDRESS as `0x${string}`,
 					data: syncData,
-					value: messagingFee.nativeFee // LZ Messaging fees must be sent as value
+					value: messagingFee // LZ Messaging fees must be sent as value
 				},
 				useUSDC: false // Sync is typically small enough to be sponsored by the project
 			})
@@ -387,8 +606,14 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 			setSyncDone(true)
 			toast.success("Song synced successfully! It will appear on other networks shortly.", { id: syncToast })
 		} catch (error: any) {
-			console.error('Sync Error:', error)
-			toast.error(`Sync failed: ${error.message}`, { id: syncToast })
+			logger.error('Sync Error', error)
+
+			// Detect common L0 / Balance issues
+			if (error.message?.includes('insufficient funds') || error.details?.includes('reverted')) {
+				toast.error(`Sync failed: Insufficient native funds for LayerZero cross-chain fees. Please add a small amount of ETH to your Smart Account: ${client.account.address}`, { id: syncToast, duration: 8000 })
+			} else {
+				toast.error(`Sync failed: ${error.message}`, { id: syncToast })
+			}
 		} finally {
 			setIsSyncing(false)
 		}
@@ -412,10 +637,15 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 				useUSDC: true
 			})
 
+			setHasCollected(true)
 			toast.success("First copy minted successfully!", { id: mintToast })
 		} catch (error: any) {
-			console.error('Mint Error:', error)
-			toast.error(`Minting failed: ${error.message}`, { id: mintToast })
+			logger.error('Mint Error', error)
+			if (error.message?.includes('Already Collected') || error.details?.includes('Already Collected')) {
+				toast.error("You have already collected this edition. Only one edition per fan is allowed.", { id: mintToast })
+			} else {
+				toast.error(`Minting failed: ${error.message}`, { id: mintToast })
+			}
 		} finally {
 			setIsMinting(false)
 		}
@@ -430,6 +660,42 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 					{t('albumSupportSoon')}
 				</p>
 			</div>
+
+			{usdcBalance !== null && usdcBalance < 1980000n && (
+				<div className="bg-amber-500/10 border border-amber-500/50 p-6 flex items-start gap-4 animate-fade-in group mb-4">
+					<div className="text-amber-500 mt-1">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+					</div>
+					<div className="flex-1">
+						<h4 className="text-sm font-bold text-amber-500 uppercase tracking-tight mb-1">USDC Balance Required</h4>
+						<p className="text-xs text-white/70 leading-relaxed mb-3">
+							To publish on <strong>Doba</strong>, you need <strong>1.98 USDC</strong>.
+							Your balance: <strong>{(Number(usdcBalance) / 1e6).toFixed(2)} USDC</strong>.
+						</p>
+						<p className="text-[10px] text-white/40 italic">
+							Top up Wallet: <span className="text-amber-500/80 font-mono">{client?.account?.address}</span>
+						</p>
+					</div>
+				</div>
+			)}
+
+			{nativeBalance !== null && nativeBalance < 1000000000000000n && (
+				<div className="bg-blue-500/10 border border-blue-500/50 p-6 flex items-start gap-4 animate-fade-in group mb-4">
+					<div className="text-blue-500 mt-1">
+						<IconMusic size={24} />
+					</div>
+					<div className="flex-1">
+						<h4 className="text-sm font-bold text-blue-500 uppercase tracking-tight mb-1">Native Gas Required</h4>
+						<p className="text-xs text-white/70 leading-relaxed mb-3">
+							You need a small amount of <strong>{chain.name.includes('Arbitrum') ? 'ETH' : (chain.name.includes('Base') ? 'ETH' : 'AVAX')}</strong> for gas fees.
+							Recommended: <strong>$1 - $2</strong>.
+						</p>
+						<p className="text-[10px] text-white/40 italic">
+							Fund Wallet: <span className="text-blue-500/80 font-mono">{client?.account?.address}</span>
+						</p>
+					</div>
+				</div>
+			)}
 
 			<form onSubmit={handleSubmit} className="space-y-10">
 				{/* Track Details */}
@@ -447,6 +713,18 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 								value={title}
 								onChange={(e) => setTitle(e.target.value)}
 								placeholder={t('trackTitlePlaceholder')}
+								className="w-full bg-white/5 border border-white/10 rounded-none px-4 py-3 text-white focus:outline-none focus:border-cyber-pink focus:ring-1 focus:ring-cyber-pink/50 transition-all placeholder:text-white/20"
+								required
+							/>
+						</div>
+
+						<div className="space-y-2">
+							<label className="text-sm font-medium text-white/80">{t('artistNameLabel', { defaultMessage: 'Artist Name' })}</label>
+							<input
+								type="text"
+								value={artistName}
+								onChange={(e) => setArtistName(e.target.value)}
+								placeholder={t('artistNamePlaceholder', { defaultMessage: 'Enter artist name' })}
 								className="w-full bg-white/5 border border-white/10 rounded-none px-4 py-3 text-white focus:outline-none focus:border-cyber-pink focus:ring-1 focus:ring-cyber-pink/50 transition-all placeholder:text-white/20"
 								required
 							/>
@@ -531,7 +809,8 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 								value={price}
 								onChange={(e) => setPrice(e.target.value)}
 								placeholder={t('pricePlaceholder')}
-								className="w-full bg-white/5 border border-white/10 rounded-none px-4 py-3 pl-14 text-white focus:outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400/50 transition-all placeholder:text-white/20"
+								className="w-full bg-white/5 border border-white/10 rounded-none px-4 py-3 pl-14 text-white focus:outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400/50 transition-all placeholder:text-white/20 opacity-60 cursor-not-allowed"
+								readOnly
 								required
 							/>
 							<div className="absolute left-4 top-1/2 -translate-y-1/2">
@@ -646,10 +925,13 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 				{/* Collaborators */}
 				<div className="space-y-6">
 					<div className="flex items-center justify-between">
-						<h3 className="text-xl font-semibold flex items-center gap-2 text-white/90">
-							<span className="w-1 h-6 bg-green-400 rounded-none"></span>
-							{t('collaborators')}
-						</h3>
+						<div>
+							<h3 className="text-xl font-semibold flex items-center gap-2 text-white/90">
+								<span className="w-1 h-6 bg-green-400 rounded-none"></span>
+								{t('collaborators')}
+							</h3>
+							<p className="text-[10px] text-white/40 mt-1 font-medium">{t('collaboratorsWarning')}</p>
+						</div>
 						<button
 							type="button"
 							onClick={addCollaborator}
@@ -731,19 +1013,24 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 						<div className="flex gap-4">
 							<button
 								type="button"
-								disabled={isMinting}
+								disabled={isMinting || hasCollected}
 								onClick={handleMint}
-								className="flex-1 bg-cyber-pink hover:bg-cyber-pink/90 text-white font-medium py-4 px-6 rounded-none flex items-center justify-center gap-2 transition-all transform active:scale-[0.99] disabled:opacity-50"
+								className={`flex-1 ${hasCollected ? 'bg-green-500/20 text-green-400 border border-green-500/30 font-bold' : 'bg-cyber-pink hover:bg-cyber-pink/90 text-white font-medium'} py-4 px-6 rounded-none flex items-center justify-center gap-2 transition-all transform active:scale-[0.99] disabled:opacity-50`}
 							>
 								{isMinting ? (
 									<>
 										<div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-										MINTING...
+										{t('minting')}
+									</>
+								) : hasCollected ? (
+									<>
+										<IconCheck size={20} />
+										{t('alreadyCollected', { defaultMessage: 'ALREADY COLLECTED' })}
 									</>
 								) : (
 									<>
 										<IconMusic size={20} />
-										MINT 1ST COPY (TEST)
+										{t('mintFirstCopy', { defaultMessage: 'MINT YOUR FIRST COPY' })}
 									</>
 								)}
 							</button>
@@ -774,7 +1061,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 					) : (
 						<button
 							type="submit"
-							disabled={isUploading || isSending}
+							disabled={isUploading || isSending || !audioFile || !coverFile || !client}
 							className="w-full bg-cyber-pink hover:bg-cyber-pink/90 text-white font-medium py-4 px-6 rounded-none flex items-center justify-center gap-2 transition-all transform active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed group"
 						>
 							{isUploading ? (
