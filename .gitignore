@@ -10,3 +10,14 @@ node_modules/
 .next/
 .env*.local
 .DS_Store
+# Foundry build artifacts
+out/
+cache/
+
+# Databases
+*.db
+*.db-journal
+
+# API dependencies
+api/node_modules/
+api/dist/
