@@ -9,6 +9,7 @@ This guide shows how to use and customize the dashboard components.
 ## 1. SongCard Component
 
 ### Purpose
+
 Displays a single NFT song card with cover art, price, and mint button.
 
 ### Props
@@ -40,6 +41,7 @@ import SongCard from '@/components/SongCard'
 ```
 
 ### Features
+
 - ✅ Gradient cover art placeholder
 - ✅ Collaborators badge (if > 0)
 - ✅ Price display in ETH
@@ -48,6 +50,7 @@ import SongCard from '@/components/SongCard'
 - ✅ Mint button with hover state
 
 ### Styling
+
 - Glass card effect with backdrop blur
 - Cyber pink button
 - Lavender collaborators badge
@@ -58,6 +61,7 @@ import SongCard from '@/components/SongCard'
 ## 2. MarketplaceGrid Component
 
 ### Purpose
+
 Displays a responsive grid of song cards.
 
 ### Props
@@ -99,6 +103,7 @@ const songs = [
 ```
 
 ### Features
+
 - ✅ Responsive columns (1 → 2 → 3 → 4)
 - ✅ Auto-generates SongCard for each song
 - ✅ Empty state handling
@@ -106,6 +111,7 @@ const songs = [
 - ✅ Mobile-friendly
 
 ### Responsive Behavior
+
 ```
 Mobile (< 640px):     1 column
 Tablet (640-1024px):  2 columns
@@ -118,6 +124,7 @@ Wide (> 1280px):      4 columns
 ## 3. MyStudioGrid Component
 
 ### Purpose
+
 Displays user's owned NFTs with revenue tracking and claim modal.
 
 ### Props
@@ -155,6 +162,7 @@ const myNFTs = [
 ```
 
 ### Features
+
 - ✅ Display owned NFTs in grid
 - ✅ Show total earnings per NFT
 - ✅ "View Revenue" button per card
@@ -165,6 +173,7 @@ const myNFTs = [
 ### Modal Content
 
 The revenue modal shows:
+
 ```
 ┌─────────────────────────────────────┐
 │ Song Title - Revenue Details        │
@@ -187,6 +196,7 @@ The revenue modal shows:
 ## 4. ConnectHeader Component
 
 ### Purpose
+
 Displays wallet connection UI in the header.
 
 ### Props
@@ -212,23 +222,26 @@ const [isConnected, setIsConnected] = useState(false)
 ```
 
 ### Features
+
 - ✅ Connect Wallet button when disconnected
 - ✅ Shows address when connected
 - ✅ Copy address functionality
-- ✅ Network badge (Arbitrum Sepolia)
+- ✅ Network badge (Arbitrum One, Base & Avalanche)
 - ✅ Green status indicator
 - ✅ Responsive text (hidden on mobile)
 
 ### Display States
 
 **Disconnected:**
+
 ```
 [🔗 Connect Wallet]
 ```
 
 **Connected:**
+
 ```
-🟢 0x1234...5678 [📋] | Arbitrum Sepolia
+🟢 0x1234...5678 [📋] | Arbitrum One, Base & Avalanche
 ```
 
 ---
@@ -419,6 +432,7 @@ colors: {
 ## Accessibility
 
 All components include:
+
 - ✅ ARIA labels
 - ✅ Keyboard navigation
 - ✅ High contrast (7:1+ ratio)
@@ -509,6 +523,7 @@ test('renders song card', () => {
 ---
 
 For more details, see:
+
 - [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) - Colors & styling
 - [WEB3_IMPLEMENTATION_GUIDE.md](./WEB3_IMPLEMENTATION_GUIDE.md) - Web3 integration
 - Component source files in `/components/`

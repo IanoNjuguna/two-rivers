@@ -9,6 +9,7 @@ This document outlines the Alchemy Account Abstraction (AA) integration in the d
 ### Smart Wallet Infrastructure
 
 We use **Alchemy Account Kit** which provides:
+
 - **Smart Contract Wallets**: Users get smart accounts instead of EOAs
 - **Gas Sponsorship**: Transaction fees sponsored for seamless UX
 - **Account Abstraction**: Complex interactions simplified
@@ -17,6 +18,7 @@ We use **Alchemy Account Kit** which provides:
 ### Configuration
 
 #### Core Setup
+
 ```typescript
 import { createConfig } from "@account-kit/react";
 import { arbitrumSepolia, alchemy } from "@account-kit/infra";
@@ -31,6 +33,7 @@ export const config = createConfig({
 ```
 
 #### Authentication Methods
+
 ```typescript
 const uiConfig: AlchemyAccountsUIConfig = {
   illustrationStyle: "outline",
@@ -49,6 +52,7 @@ const uiConfig: AlchemyAccountsUIConfig = {
 ## Environment Variables
 
 ### Required Variables
+
 ```bash
 # Alchemy Configuration
 NEXT_PUBLIC_ALCHEMY_API_KEY=your_alchemy_api_key
@@ -59,7 +63,7 @@ NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=your_walletconnect_project_id
 NEXT_PUBLIC_PLATFORM_NAME=doba
 NEXT_PUBLIC_CONTRACT_ADDRESS=0xa5EF5D72eA368E8c76E9bC96Bf97a77d66cD0f7b
 NEXT_PUBLIC_CHAIN_ID=421614
-NEXT_PUBLIC_CHAIN_NAME=Arbitrum Sepolia
+NEXT_PUBLIC_CHAIN_NAME="Arbitrum One, Base & Avalanche"
 NEXT_PUBLIC_RPC_URL=https://arb-sepolia.g.alchemy.com/v2/
 ```
 
@@ -89,6 +93,7 @@ NEXT_PUBLIC_RPC_URL=https://arb-sepolia.g.alchemy.com/v2/
 ### 🎯 User Experience
 
 #### Simplified Onboarding
+
 - **Email + Passkey**: Familiar authentication flow
 - **No Social Friction**: Removed complex OAuth flows
 - **Faster Setup**: Reduced authentication steps
@@ -97,6 +102,7 @@ NEXT_PUBLIC_RPC_URL=https://arb-sepolia.g.alchemy.com/v2/
 #### 🔒 Security Benefits
 
 #### Reduced Attack Surface
+
 - **No Social Media OAuth**: Eliminated third-party authentication risks
 - **Privacy First**: No social media data collection
 - **Compliance Ready**: Simplified audit trail
@@ -105,6 +111,7 @@ NEXT_PUBLIC_RPC_URL=https://arb-sepolia.g.alchemy.com/v2/
 #### 🚀 Performance Optimizations
 
 #### Faster Authentication
+
 - **Reduced Options**: Fewer authentication methods to load
 - **Quick Passkey**: One-tap authentication
 - **Cached Sessions**: Improved user experience
@@ -112,6 +119,7 @@ NEXT_PUBLIC_RPC_URL=https://arb-sepolia.g.alchemy.com/v2/
 ### 🔧 Technical Implementation
 
 #### Provider Setup
+
 ```typescript
 import { AlchemyAccountProvider, QueryClientProvider } from "@account-kit/react";
 import { config } from "@/lib/config";
@@ -130,6 +138,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 ```
 
 #### Hook Usage
+
 ```typescript
 import { useUser, useSignerStatus, useLogout } from "@account-kit/react";
 
@@ -146,13 +155,15 @@ export default function Component() {
 
 ### 🌐 Network Configuration
 
-#### Arbitrum Sepolia Testnet
+#### Arbitrum One, Base & Avalanche
+
 - **Chain ID**: 421614
-- **RPC URL**: https://arb-sepolia.g.alchemy.com/v2/
-- **Block Explorer**: https://sepolia.arbiscan.io/
+- **RPC URL**: <https://arb-sepolia.g.alchemy.com/v2/>
+- **Block Explorer**: <https://sepolia.arbiscan.io/>
 - **Native Token**: ETH
 
 #### Smart Account Features
+
 - **Account Type**: Smart Contract Account
 - **Factory**: Alchemy Light Account Factory
 - **Gas Policy**: Sponsored transactions enabled
@@ -161,6 +172,7 @@ export default function Component() {
 ### 📱 Supported Wallets
 
 #### Embedded Options
+
 1. **Email + Password**
 2. **Passkey (WebAuthn)**
 3. **Social Login**
@@ -171,6 +183,7 @@ export default function Component() {
    - Twitter OAuth
 
 #### External Wallets
+
 1. **WalletConnect** - Universal wallet connection
 2. **Coinbase Wallet** - Direct Coinbase integration
 3. **MetaMask** - Through WalletConnect
@@ -180,12 +193,14 @@ export default function Component() {
 ### 🔒 Security Features
 
 #### Passkey Integration
+
 - WebAuthn standard support
 - Hardware security keys
 - Biometric authentication
 - Passwordless login
 
 #### Social Recovery
+
 - OAuth-based account recovery
 - Multiple recovery options
 - No single point of failure
@@ -193,16 +208,19 @@ export default function Component() {
 ### 🚀 Performance Optimizations
 
 #### Batch Transactions
+
 - Multiple NFT mints in single transaction
 - Reduced gas costs
 - Faster execution
 
 #### Gas Estimation
+
 - Accurate gas estimation
 - Sponsored transaction detection
 - Fallback to user-paid gas
 
 #### Caching
+
 - Account state caching
 - Query result optimization
 - Reduced API calls
@@ -210,11 +228,13 @@ export default function Component() {
 ### 📊 Monitoring & Analytics
 
 #### Transaction Tracking
+
 - Real-time transaction status
 - Gas usage analytics
 - Success/failure rates
 
 #### User Analytics
+
 - Connection methods tracking
 - Wallet type distribution
 - Conversion funnel analysis
@@ -222,37 +242,46 @@ export default function Component() {
 ### 🔧 Development Workflow
 
 #### Local Development
+
 ```bash
 npm run dev -- --webpack
 ```
 
 #### Environment Management
+
 - `.env.local` for local development
 - `.env` for production
 - Never commit sensitive keys
 
 #### Testing Strategy
+
 1. **Unit Tests** - Hook and provider testing
 2. **Integration Tests** - Full authentication flow
 3. **E2E Tests** - User journey testing
-4. **Testnet Testing** - Arbitrum Sepolia validation
+4. **Testing** - Arbitrum One, Base & Avalanche validation
 
 ### 🚨 Common Issues & Solutions
 
 #### Issue: "Project config not found"
-**Solution**: 
+
+**Solution**:
+
 - Verify NEXT_PUBLIC_ALCHEMY_API_KEY is set
 - Check Alchemy dashboard for app configuration
 - Ensure API key has proper permissions
 
 #### Issue: Gas sponsorship not working
+
 **Solution**:
+
 - Verify NEXT_PUBLIC_ALCHEMY_GAS_MANAGER_POLICY_ID
 - Check policy is active in Alchemy dashboard
 - Ensure policy covers target functions
 
 #### Issue: WalletConnect not connecting
+
 **Solution**:
+
 - Verify NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID
 - Check WalletConnect project configuration
 - Ensure project is not paused
@@ -260,11 +289,13 @@ npm run dev -- --webpack
 ### 📚 Additional Resources
 
 #### Documentation
+
 - [Alchemy Account Kit Docs](https://docs.alchemy.com/reference/account-kit)
 - [Alchemy Gas Manager](https://docs.alchemy.com/reference/gas-manager)
 - [WalletConnect Protocol](https://docs.walletconnect.com/2.0/specs)
 
 #### Best Practices
+
 - [ERC-4337 Account Abstraction](https://eips.ethereum.org/EIPS/eip-4337)
 - [WebAuthn Standards](https://webauthn.io/)
 - [Smart Account Security](https://docs.alchemy.com/docs/account-abstraction/security)
@@ -272,12 +303,14 @@ npm run dev -- --webpack
 ### 🔄 Migration Strategy
 
 #### From Traditional Wallets
+
 1. **Phase 1**: Enable both EOA and smart wallets
 2. **Phase 2**: Encourage smart wallet benefits
 3. **Phase 3**: Gradual feature deprecation for EOAs
 4. **Phase 4**: Smart wallet-first experience
 
 #### User Education
+
 - Highlight gas sponsorship benefits
 - Emphasize security improvements
 - Provide migration guides
@@ -288,6 +321,7 @@ npm run dev -- --webpack
 ## 🎛 Conclusion
 
 The Alchemy Account Abstraction integration provides doba users with:
+
 - **Simplified Web3 onboarding** through familiar auth methods
 - **Cost-effective transactions** via gas sponsorship  
 - **Enhanced security** with passkeys and social recovery

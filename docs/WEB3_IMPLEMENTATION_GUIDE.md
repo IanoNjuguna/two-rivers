@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-A collaborative Music NFT marketplace dashboard built with React, TypeScript, Tailwind CSS, and shadcn/ui for Arbitrum Sepolia (Chain ID: 421614).
+A collaborative audio streaming service built with React, TypeScript, Tailwind CSS, and shadcn/ui for Arbitrum One, Base & Avalanche.
 
 **Smart Contract:** `0xa5EF5D72eA368E8c76E9bC96Bf97a77d66cD0f7b`
 
@@ -41,6 +41,7 @@ Glass effect: rgba(255, 255, 255, 0.02) with backdrop blur
 ### Glass Morphism
 
 Translucent cards with subtle blur and soft borders:
+
 ```css
 .glass {
   background: rgba(255, 255, 255, 0.02);
@@ -79,12 +80,14 @@ Translucent cards with subtle blur and soft borders:
 ### Dashboard Layout (page.tsx)
 
 Main page component featuring:
+
 - Fixed header with wallet connection
 - Responsive sidebar navigation
 - Tab system for Marketplace & My Studio views
 - Mobile menu toggle
 
 **Features:**
+
 - Responsive design (mobile-first)
 - Glassmorphic UI elements
 - Two main tabs: Music Marketplace and My Studio
@@ -95,6 +98,7 @@ Main page component featuring:
 Individual song NFT card displayed in marketplace grid.
 
 **Props:**
+
 ```typescript
 {
   id: number
@@ -107,6 +111,7 @@ Individual song NFT card displayed in marketplace grid.
 ```
 
 **Features:**
+
 - Gradient cover art placeholder
 - Collaborators badge
 - Price in ETH with monospace font
@@ -118,6 +123,7 @@ Individual song NFT card displayed in marketplace grid.
 Responsive grid displaying song cards.
 
 **Features:**
+
 - Responsive columns: 1 (mobile) → 2 (tablet) → 3 (desktop) → 4 (xl)
 - Automatic song card mapping
 - Empty state handling
@@ -127,6 +133,7 @@ Responsive grid displaying song cards.
 Grid of user-owned NFTs with revenue tracking.
 
 **Features:**
+
 - Displays owned NFTs
 - Total earnings per NFT
 - "View Revenue" button per NFT
@@ -141,10 +148,11 @@ Grid of user-owned NFTs with revenue tracking.
 Wallet connection UI in header.
 
 **Features:**
+
 - Connect button when disconnected
 - Shows address, network badge when connected
 - Copy address functionality
-- Network indicator (Arbitrum Sepolia)
+- Network indicator (Arbitrum One, Base & Avalanche)
 
 ## Smart Contract Integration
 
@@ -215,6 +223,7 @@ npm install wagmi viem @onchainkit/react
 ```
 
 Update components to use:
+
 - `useContractRead` for `songPrices()`
 - `useContractWrite` for `mint()`
 - Event listeners for SongPublished events
@@ -306,7 +315,7 @@ md:grid-cols-2           // Responsive grid
 
 ## Future Web3 Integration Checklist
 
-- [ ] Setup Wagmi provider with Arbitrum Sepolia RPC
+- [ ] Setup Wagmi provider with Arbitrum One, Base & Avalanche RPCs
 - [ ] Implement `useContractRead` hook for `songPrices(id)`
 - [ ] Implement `useContractWrite` hook for `mint(id, amount)`
 - [ ] Add event listener for SongPublished/CollaborativeSongPublished
@@ -329,7 +338,7 @@ md:grid-cols-2           // Responsive grid
 
 - Deploy to Vercel for optimal Next.js performance
 - Ensure `NEXT_PUBLIC_*` env vars are set in Vercel dashboard
-- Arbitrum Sepolia RPC endpoints are public, no auth needed initially
+- Arbitrum One, Base & Avalanche RPC endpoints are public, no auth needed initially
 - Consider using Alchemy or Infura RPC in production
 
 ---

@@ -16,9 +16,10 @@ This document serves as the single source of truth for contract addresses and de
 
 | Chain | LayerZero EID | Contract Address | USDC Address | Explorer |
 | :--- | :--- | :--- | :--- | :--- |
-| **Arbitrum Sepolia** | 40231 | `0x3c51e9deec4cb9dc69e261d63228e4fae62ae606` | `0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d` | [Arbiscan](https://sepolia.arbiscan.io/) |
-| **Base Sepolia** | 40245 | `0xb550fcD9aD1630C17Ba5a96934F8893B795b4801` | `0x036CbD53842c5426634e7929541eC2318f3dCF7e` | [Basescan](https://sepolia.basescan.org/) |
-| **Avalanche Fuji** | 40106 | `0x...` | `0x5425890298aed601595a70AB815c96711a31Bc65` | [Snowtrace](https://testnet.snowtrace.io/) |
+| **Arbitrum One, Base & Avalanche** | 40231 | `0x3357f2c5d3f18bcbfa040663a0c27e0474f92aee` | `0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d` | [Arbiscan](https://sepolia.arbiscan.io/) |
+| **Base Sepolia** | 40245 | `0x9085DAEf74d3fBF233FCbf599d417E94E762b952` | `0x036CbD53842c5426634e7929541eC2318f3dCF7e` | [Basescan](https://sepolia.basescan.org/) |
+| **Avalanche Fuji** | 40106 | `0x9085DAEf74d3fBF233FCbf599d417E94E762b952` | `0x5425890298aed601595a70AB815c96711a31Bc65` | [Snowtrace](https://testnet.snowtrace.io/) |
+| **Robinhood Testnet** | TBD | `0x9085DAEf74d3fBF233FCbf599d417E94E762b952` | `0x8689aFB9086734e12beA6b5DF541a1da252Ea32a` | [Blockscout](https://robinhood.blockscout.com/) |
 
 ---
 
