@@ -8,6 +8,9 @@ import { routing } from '@/i18n/routing'
 
 import '../globals.css'
 import { Providers } from "@/components/Providers"
+import { headers } from "next/headers"
+import { cookieToInitialState } from "@account-kit/core"
+import { getConfig } from "@/lib/config"
 
 const notoSans = localFont({
 	src: [
@@ -53,7 +56,7 @@ const notoSansKr = localFont({
 export const metadata: Metadata = {
 	metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
 	title: 'doba',
-	description: 'Tokenise your music. Doba simplifies collaboration by automating revenue sharing and giving artists full control over their sound.',
+	description: 'Doba is an audio streaming service. We simplify the distribution of audio media by automating revenue sharing and giving you full control over your sound.',
 	generator: 'v0.app',
 	openGraph: {
 		images: [
@@ -86,6 +89,8 @@ type Props = {
 
 export default async function LocaleLayout({ children, params }: Props) {
 	const { locale } = await params
+	const cookie = (await headers()).get("cookie")
+	const initialState = cookieToInitialState(getConfig(), cookie || undefined)
 
 	if (!routing.locales.includes(locale as any)) {
 		notFound()
@@ -104,7 +109,7 @@ export default async function LocaleLayout({ children, params }: Props) {
 			</head>
 			<body className="font-sans antialiased" suppressHydrationWarning>
 				<NextIntlClientProvider messages={messages}>
-					<Providers>
+					<Providers initialState={initialState}>
 						{children}
 					</Providers>
 				</NextIntlClientProvider>

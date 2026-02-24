@@ -10,11 +10,14 @@ import EarningsView from '@/components/EarningsView'
 import AudioPlayer from '@/components/AudioPlayer'
 import Footer from '@/components/Footer'
 import UploadView from '@/components/UploadView'
-import { useAudioPlayer } from '@/hooks/useAudioPlayer'
-import { useSignerStatus, useUser, useLogout, useAccount, useSmartAccountClient } from "@account-kit/react"
+import ChainSwitcher from '@/components/ChainSwitcher'
+import { ProfileEditor } from '@/components/ProfileEditor'
+import { useAudioPlayer, type Track } from '@/hooks/useAudioPlayer'
+import { useSignerStatus, useUser, useLogout, useAccount, useSmartAccountClient, useAlchemyAccountContext } from "@account-kit/react"
 import { useTranslations } from 'next-intl'
+import { watchSmartAccountClient, getSmartAccountClient } from "@account-kit/core"
+import { getAddressesForChain, CONTRACT_ADDRESS } from "@/lib/web3"
 
-// Utility function to truncate wallet address for security
 const formatAddress = (address: string, startChars: number = 6, endChars: number = 4): string => {
   if (!address || address.length <= startChars + endChars) {
     return address
@@ -22,70 +25,31 @@ const formatAddress = (address: string, startChars: number = 6, endChars: number
   return `${address.slice(0, startChars)}...${address.slice(-endChars)}`
 }
 
-const mockSongs = [
-  {
-    id: 1,
-    title: 'Neon Dreams',
-    creator: '0x1234...5678',
-    price: '0.5',
-    cover: '#FF1F8A',
-    collaborators: 2,
-    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-  },
-  {
-    id: 2,
-    title: 'Cyber Pulse',
-    creator: '0x2345...6789',
-    price: '0.75',
-    cover: '#B794F4',
-    collaborators: 1,
-    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
-  },
-  {
-    id: 3,
-    title: 'Digital Echo',
-    creator: '0x3456...7890',
-    price: '1.0',
-    cover: '#FF1F8A',
-    collaborators: 3,
-    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
-  },
-  {
-    id: 4,
-    title: 'Synth Wave',
-    creator: '0x4567...8901',
-    price: '0.3',
-    cover: '#B794F4',
-    collaborators: 0,
-    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
-  },
-]
-
-const mockOwnedNFTs = [
-  {
-    id: 101,
-    title: 'My First Track',
-    creator: 'You',
-    earnings: '2.5',
-    cover: '#FF1F8A',
-  },
-  {
-    id: 102,
-    title: 'Collab Session',
-    creator: 'You + 1',
-    earnings: '1.8',
-    cover: '#B794F4',
-  },
-]
-
 type ViewType = 'home' | 'library' | 'search' | 'upload' | 'profile' | 'earnings' | 'analytics'
 
 export default function Dashboard() {
-  const { isConnected, isInitializing } = useSignerStatus()
+  const { isConnected: isSignerConnected, isInitializing } = useSignerStatus()
   const user = useUser()
-  const clientConfig = React.useMemo(() => ({ type: "LightAccount" as const }), [])
-  const { address } = useAccount(clientConfig)
-  const { client } = useSmartAccountClient(clientConfig)
+  const { config } = useAlchemyAccountContext()
+  const accountConfig = React.useMemo(() => ({ type: "LightAccount" as const }), [])
+
+  // Use the scaAddress from useAccount (returns EOA address if not authenticated as SCA)
+  const { address: scaAddress } = useAccount(accountConfig)
+
+  // Custom Hook Logic to bypass the "EOA is connected" guard in useSmartAccountClient
+  // This ensures we get a client as long as the Alchemy session is authenticated, 
+  // even if Wagmi (MetaMask) is also connected.
+  const { client } = React.useSyncExternalStore(
+    watchSmartAccountClient(accountConfig, config),
+    () => getSmartAccountClient(accountConfig, config),
+    () => getSmartAccountClient(accountConfig, config)
+  )
+
+  const isConnected = !!(isSignerConnected && client)
+
+  // Use scaAddress as primary, fallback to user.address (from hydration)
+  const effectiveAddress = scaAddress || user?.address
+
   const { logout } = useLogout()
   const [currentView, setCurrentView] = useState<ViewType>('home')
   const [creatorMenuOpen, setCreatorMenuOpen] = useState(false)
@@ -101,11 +65,11 @@ export default function Dashboard() {
   const tAnalytics = useTranslations('analytics')
   const tProfile = useTranslations('profile')
 
-  const handlePlayTrack = (track: typeof mockSongs[0]) => {
+  const handlePlayTrack = (track: Track, tracks?: any[]) => {
     if (playerState.audioRef.current) {
       playerState.audioRef.current.src = track.url || ''
     }
-    playerState.play(track, mockSongs)
+    playerState.play(track, tracks)
   }
 
   return (
@@ -119,13 +83,16 @@ export default function Dashboard() {
             <span className="font-bold text-lg tracking-wide tracking-wider">doba</span>
           </div>
 
-          {/* Desktop Connect Header */}
-          <div className="hidden lg:block">
-            <ConnectHeader address={address || undefined} />
+          {/* Desktop Connect Header & Chain Switcher */}
+          <div className="hidden lg:flex items-center gap-3">
+            <ChainSwitcher />
+            <ConnectHeader address={effectiveAddress || undefined} />
           </div>
 
           {/* Mobile/Tablet Controls */}
           <div className="lg:hidden flex items-center gap-2">
+            {/* Mobile Connect Header & Chain Switcher */}
+            <ChainSwitcher />
             {/* Hamburger Menu - Only show when connected */}
             {isConnected && (
               <button
@@ -136,8 +103,7 @@ export default function Dashboard() {
                 <Menu size={24} />
               </button>
             )}
-            {/* Mobile Connect Header */}
-            <ConnectHeader address={address || undefined} />
+            <ConnectHeader address={effectiveAddress || undefined} />
           </div>
         </div>
       </header>
@@ -319,7 +285,23 @@ export default function Dashboard() {
                 <div>
                   <h2 className="text-2xl font-bold mb-2">{tHome('discoverMusic')}</h2>
                 </div>
-                <MarketplaceGrid songs={mockSongs} isConnected={isConnected} onPlay={handlePlayTrack} />
+                <MarketplaceGrid client={client} onPlay={(track, tracks) => handlePlayTrack({
+                  id: track.token_id,
+                  title: track.name,
+                  creator: track.artist,
+                  cover: track.image_url,
+                  url: track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
+                  collaborators: 0,
+                  price: track.price
+                }, tracks.map(t => ({
+                  id: t.token_id,
+                  title: t.name,
+                  creator: t.artist,
+                  cover: t.image_url,
+                  url: t.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
+                  collaborators: 0,
+                  price: t.price
+                })))} />
               </div>
             )}
 
@@ -332,7 +314,7 @@ export default function Dashboard() {
                   </p>
                 </div>
                 {isConnected ? (
-                  <MyStudioGrid nfts={mockOwnedNFTs} />
+                  <MyStudioGrid address={effectiveAddress || undefined} client={client} />
                 ) : (
                   <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
                     <Library className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
@@ -396,7 +378,7 @@ export default function Dashboard() {
             )}
 
             {currentView === 'earnings' && (
-              <EarningsView isConnected={isConnected} />
+              <EarningsView isConnected={isConnected} client={client} address={effectiveAddress || undefined} />
             )}
 
             {currentView === 'analytics' && (
@@ -432,33 +414,12 @@ export default function Dashboard() {
                   </p>
                 </div>
                 {isConnected && user ? (
-                  <div className="p-8 rounded-xl bg-white-2 border border-white/[0.08]">
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-r from-[#FF1F8A] to-[#B794F4]" />
-                      <div>
-                        <h3 className="text-lg font-semibold">{tProfile('yourProfile')}</h3>
-                        <p className="text-white/60 text-sm">{user.email || tProfile('smartAccount')}</p>
-                      </div>
-                    </div>
-
-                    {/* Wallet Address Display */}
-                    <div className="mb-6 p-4 rounded-lg bg-white-4">
-                      <p className="text-white/60 text-xs mb-2 uppercase tracking-wider" style={{ letterSpacing: '0.04em' }}>{tProfile('walletAddress')}</p>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-mono text-white">{formatAddress(address || user.address)}</span>
-                        <button
-                          onClick={() => {
-                            navigator.clipboard.writeText(address || user.address)
-                          }}
-                          className="p-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
-                          title={tProfile('copyFull')}
-                        >
-                          <IconCopy size={16} />
-                        </button>
-                      </div>
-                      <p className="text-xs text-white/50 mt-2">{tProfile('copyFull')}</p>
-                    </div>
-                  </div>
+                  <ProfileEditor
+                    address={effectiveAddress || user.address}
+                    client={client}
+                    userEmail={user.email}
+                    tProfile={tProfile}
+                  />
                 ) : (
                   <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
                     <User className="w-12 h-12 mx-auto mb-4 text-lavender/40" />

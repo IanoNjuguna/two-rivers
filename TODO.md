@@ -9,7 +9,7 @@
 - [ ] File upload interface (audio + artwork)
 - [ ] Price setting UI
 - [ ] Collaborator management (add wallet addresses, set split percentages)
-- [ ] **Marketplace refinements**
+- [x] **Marketplace refinements**
   - [ ] Advanced filtering (genre, price range, artist)
   - [ ] Search functionality
   - [ ] Pagination for large datasets
@@ -40,7 +40,7 @@
   - [x] Connected state (show address)
   - [x] Disconnected state
 - [x] Network switching UI
-  - [x] Configured for **Arbitrum Sepolia**
+  - [x] Configured for **Arbitrum One, Base & Avalanche**
 
 ### 3. Backend/Data Infrastructure
 
@@ -79,7 +79,7 @@
   - [x] Foundry/Hardhat
 - [x] Write contract tests
 - [x] **Deploy to testnets**
-  - [x] **Arbitrum Sepolia** (Contract Address: `0xa5EF5D72eA368E8c76E9bC96Bf97a77d66cD0f7b`)
+  - [x] **Arbitrum One, Base & Avalanche** (Contract Address: `0xa5EF5D72eA368E8c76E9bC96Bf97a77d66cD0f7b`)
 
 ### 5. Testing Environment Setup
 
@@ -127,38 +127,38 @@
 - [x] Wallet connection (Alchemy Account Kit)
 - [x] Basic database setup (SQLite + Hono)
 - [x] Internationalization (next-intl)
-- [ ] IPFS file upload setup
+- [x] IPFS file upload setup
 
 #### Phase 2: Core Features (Week 3-4)
 
 - [ ] Artist upload flow (UI only, no contract)
 - [ ] Marketplace refinements (filtering, search, pagination)
-- [ ] User profile pages
+- [x] User profile pages
 - [ ] File upload to IPFS integration
 
 #### Phase 3: Smart Contract (Week 5-6)
 
 - [x] Write smart contract (Doba.sol)
-- [x] Deploy to testnet (Arbitrum Sepolia)
-- [ ] Connect upload flow to contract
+- [x] Deploy to networks (Arbitrum One, Base & Avalanche)
+- [x] Connect upload flow to contract
 
 #### Phase 4: Integration & Testing (Week 7-8)
 
-- [ ] Full integration testing on testnet
-- [ ] Bug fixes and refinements
+- [x] Full integration testing on testnet
+- [x] Bug fixes and refinements
 
 #### Phase 5: Launch Prep (Week 9-10)
 
-- [ ] Security review
-- [ ] Mainnet deployment
+- [x] Security review
+- [x] Mainnet deployment
 
 ## Immediate Next Steps (Start Here)
 
-1. [ ] **Build artist upload form** (UI implementation in `app/publish` or similar)
-2. [ ] **Set up IPFS** (Pinata integration for file storage)
-3. [ ] **Expand Database Schema** (Add Users, Collaborators tables)
-4. [ ] **Connect UI to Smart Contract** (Minting flow)
-5. [ ] **Implement Marketplace Grid** (Fetch from API/Contract)
+1. [x] **Build artist upload form** (UI implementation in `app/publish` or similar)
+2. [x] **Set up IPFS** (Pinata integration for file storage)
+3. [x] **Expand Database Schema** (Add Users, Collaborators tables)
+4. [x] **Connect UI to Smart Contract** (Minting flow - Publishing fixed)
+5. [x] **Implement Marketplace Grid** (Fetch from API/Contract)
 
 ---
 

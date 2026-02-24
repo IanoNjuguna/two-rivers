@@ -11,6 +11,7 @@ import {
   IconRepeat,
   IconRepeatOnce,
 } from '@tabler/icons-react'
+import { logger } from '@/lib/logger'
 import { useEffect, useState, useRef, useCallback } from 'react'
 import type { useAudioPlayer } from '@/hooks/useAudioPlayer'
 
@@ -48,58 +49,76 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
     }
   }, [volume, isMuted, audioRef])
 
-  useEffect(() => {
-    const audio = audioRef.current
-    if (!audio) return
+  const handleTimeUpdate = (e: React.SyntheticEvent<HTMLAudioElement>) => {
+    setCurrentTime(e.currentTarget.currentTime)
+  }
 
-    const handleTimeUpdate = () => setCurrentTime(audio.currentTime)
-    const handleLoadedMetadata = () => setDuration(audio.duration)
-    const handleEnded = () => {
-      if (repeatMode === 'one') {
-        audio.currentTime = 0
-        audio.play()
-      } else {
-        next()
+  const handleLoadedMetadata = (e: React.SyntheticEvent<HTMLAudioElement>) => {
+    if (e.currentTarget.duration && e.currentTarget.duration !== Infinity) {
+      setDuration(e.currentTarget.duration)
+    }
+  }
+
+  const handleDurationChange = (e: React.SyntheticEvent<HTMLAudioElement>) => {
+    if (e.currentTarget.duration && e.currentTarget.duration !== Infinity) {
+      setDuration(e.currentTarget.duration)
+    }
+  }
+
+  const handleEnded = () => {
+    if (repeatMode === 'one') {
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0
+        audioRef.current.play()
       }
+    } else {
+      next()
     }
-
-    audio.addEventListener('timeupdate', handleTimeUpdate)
-    audio.addEventListener('loadedmetadata', handleLoadedMetadata)
-    audio.addEventListener('ended', handleEnded)
-
-    return () => {
-      audio.removeEventListener('timeupdate', handleTimeUpdate)
-      audio.removeEventListener('loadedmetadata', handleLoadedMetadata)
-      audio.removeEventListener('ended', handleEnded)
-    }
-  }, [setCurrentTime, setDuration, next, audioRef, repeatMode])
+  }
 
   useEffect(() => {
     const audio = audioRef.current
     if (!audio || !currentTrack) return
+
+    // Sync source if changed
+    if (currentTrack.url && audio.src !== currentTrack.url) {
+      audio.src = currentTrack.url
+      audio.load()
+      setCurrentTime(0)
+      setDuration(0)
+    }
+
     if (isPlaying) {
-      audio.play().catch(() => { })
+      audio.play().catch((e) => logger.warn('[AudioPlayer] Play failed:', e))
     } else {
       audio.pause()
     }
-  }, [isPlaying, currentTrack, audioRef])
+  }, [isPlaying, currentTrack, audioRef, setCurrentTime, setDuration])
 
   const formatTime = (time: number) => {
-    if (!time || isNaN(time)) return '0:00'
+    if (!time || isNaN(time) || time === Infinity) return '0:00'
     const minutes = Math.floor(time / 60)
     const seconds = Math.floor(time % 60)
     return `${minutes}:${seconds.toString().padStart(2, '0')}`
   }
 
-  const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0
+  const progressPercent = (duration > 0 && duration !== Infinity) ? (currentTime / duration) * 100 : 0
 
   const handleProgressClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
+      // Allow seeking even if duration is 0 (browser might just have it cached)
       const rect = e.currentTarget.getBoundingClientRect()
       const percent = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width))
-      seek(percent * duration)
+
+      const targetTime = percent * (duration || 0)
+      if (duration && duration !== Infinity) {
+        seek(targetTime)
+      } else if (audioRef.current && audioRef.current.duration) {
+        // Fallback to direct element duration if state is stale
+        seek(percent * audioRef.current.duration)
+      }
     },
-    [seek, duration]
+    [seek, duration, audioRef]
   )
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,20 +134,18 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
   if (!currentTrack) return null
 
   const accentActive = 'text-[#FF1F8A]'
-  const accentDot = 'after:content-[""] after:block after:w-1 after:h-1 after:rounded-full after:bg-[#FF1F8A] after:mx-auto after:mt-0.5'
 
   return (
-    <div
-      className="fixed bottom-0 left-0 right-0 z-40"
-      style={{
-        background: 'linear-gradient(to bottom, rgba(13,13,18,0.97), rgba(13,13,18,1))',
-        backdropFilter: 'blur(24px)',
-        WebkitBackdropFilter: 'blur(24px)',
-
-
-      }}
-    >
-      <audio ref={audioRef} crossOrigin="anonymous" />
+    <div className="fixed bottom-0 left-0 right-0 z-40 player-glass">
+      <audio
+        ref={audioRef}
+        preload="auto"
+        onTimeUpdate={handleTimeUpdate}
+        onLoadedMetadata={handleLoadedMetadata}
+        onDurationChange={handleDurationChange}
+        onEnded={handleEnded}
+        onPlay={handleDurationChange} /* Refresh duration on play start */
+      />
 
       {/* ─── DESKTOP LAYOUT (md+) ─── */}
       <div className="hidden md:flex items-center gap-4 px-6 h-[90px] max-w-screen-2xl mx-auto">
@@ -138,7 +155,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
           {/* Album Art */}
           <div
             className="w-12 h-12 rounded-md flex-shrink-0 overflow-hidden"
-            style={{ backgroundColor: currentTrack.cover }}
+            style={{ backgroundColor: currentTrack.cover } as React.CSSProperties}
           >
           </div>
 
@@ -158,11 +175,8 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
               {[0, 1, 2].map((i) => (
                 <div
                   key={i}
-                  className="w-[3px] rounded-full bg-[#FF1F8A]"
-                  style={{
-                    animation: `equalizerBar 0.8s ease-in-out ${i * 0.15}s infinite alternate`,
-                    height: '100%',
-                  }}
+                  className="w-[3px] rounded-full bg-[#FF1F8A] equalizer-bar h-full"
+                  style={{ animationDelay: `${i * 0.15}s` } as React.CSSProperties}
                 />
               ))}
             </div>
@@ -235,18 +249,23 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
               ref={progressBarRef}
               className="group relative flex-1 h-3 flex items-center cursor-pointer"
               onClick={handleProgressClick}
+              role="slider"
+              aria-label="Track Progress"
+              aria-valuemin={0}
+              aria-valuemax={Math.round(duration || 0)}
+              aria-valuenow={Math.round(currentTime)}
             >
               {/* Background track */}
               <div className="absolute inset-y-0 my-auto h-[3px] w-full rounded-full bg-white/10" />
               {/* Filled */}
               <div
                 className="absolute inset-y-0 my-auto h-[3px] rounded-full bg-cyber-pink"
-                style={{ width: `${progressPercent}%` }}
+                style={{ width: `${progressPercent}%` } as React.CSSProperties}
               />
               {/* Thumb */}
               <div
-                className="absolute w-3 h-3 rounded-full bg-white shadow-md opacity-0 group-hover:opacity-100 transition-opacity -translate-x-1/2"
-                style={{ left: `${progressPercent}%` }}
+                className="absolute w-3 h-3 rounded-full bg-white shadow-md transition-opacity -translate-x-1/2"
+                style={{ left: `${progressPercent}%` } as React.CSSProperties}
               />
             </div>
 
@@ -274,12 +293,12 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
             <div className="absolute inset-y-0 my-auto h-[3px] w-full rounded-full bg-white/10" />
             <div
               className="absolute inset-y-0 my-auto h-[3px] rounded-full bg-white/60 group-hover:bg-cyber-pink transition-colors"
-              style={{ width: `${(isMuted ? 0 : volume) * 100}%` }}
+              style={{ width: `${(isMuted ? 0 : volume) * 100}%` } as React.CSSProperties}
             />
             {/* Thumb dot — visible on hover */}
             <div
               className="absolute w-3 h-3 rounded-full bg-white opacity-0 group-hover:opacity-100 transition-opacity -translate-x-1/2 pointer-events-none"
-              style={{ left: `${(isMuted ? 0 : volume) * 100}%` }}
+              style={{ left: `${(isMuted ? 0 : volume) * 100}%` } as React.CSSProperties}
             />
             <input
               type="range"
@@ -302,7 +321,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
           {/* Album Art */}
           <div
             className="w-10 h-10 rounded-md flex-shrink-0 overflow-hidden"
-            style={{ backgroundColor: currentTrack.cover }}
+            style={{ backgroundColor: currentTrack.cover } as React.CSSProperties}
           >
           </div>
 
@@ -349,24 +368,16 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
 
         {/* Progress bar — flush to bottom, full width, no timestamps */}
         <div
-          className="h-[3px] w-full cursor-pointer relative"
+          className="h-[3px] w-full cursor-pointer relative bg-white/10"
           onClick={handleProgressClick}
-          style={{ background: 'rgba(255,255,255,0.08)' }}
         >
           <div
             className="h-full rounded-full bg-cyber-pink"
-            style={{ width: `${progressPercent}%` }}
+            style={{ width: `${progressPercent}%` } as React.CSSProperties}
           />
         </div>
       </div>
 
-      {/* Equalizer animation keyframes */}
-      <style>{`
-        @keyframes equalizerBar {
-          from { transform: scaleY(0.3); }
-          to   { transform: scaleY(1); }
-        }
-      `}</style>
     </div>
   )
 }

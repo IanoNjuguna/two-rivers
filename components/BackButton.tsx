@@ -1,6 +1,7 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import { useRouter } from '@/i18n/navigation'
+import { getSafeRedirect } from '@/lib/redirect'
 import { IconArrowLeft } from '@tabler/icons-react'
 
 export default function BackButton() {
@@ -12,7 +13,7 @@ export default function BackButton() {
       router.back()
     } else {
       // If no history or external referrer, go to home
-      router.push('/')
+      router.push(getSafeRedirect('/'))
     }
   }
 
