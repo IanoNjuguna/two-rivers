@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from 'next-intl'
 import { useRouter, usePathname } from '@/i18n/navigation'
+import { getSafeRedirect } from '@/lib/redirect'
 import { routing, type Locale } from '@/i18n/routing'
 import { useState, useRef, useEffect } from 'react'
 import { IconChevronDown } from '@tabler/icons-react'
@@ -25,7 +26,8 @@ export default function LanguageSwitcher() {
 	}, [])
 
 	function handleLocaleChange(newLocale: Locale) {
-		router.replace(pathname, { locale: newLocale })
+		const safePath = getSafeRedirect(pathname)
+		router.replace(safePath, { locale: newLocale })
 		setIsOpen(false)
 	}
 
@@ -46,8 +48,8 @@ export default function LanguageSwitcher() {
 							key={loc}
 							onClick={() => handleLocaleChange(loc)}
 							className={`w-full text-left px-3 py-2 text-xs transition-colors ${loc === locale
-									? 'text-[#FF1F8A] bg-white/[0.05]'
-									: 'text-white/70 hover:text-white hover:bg-white/[0.05]'
+								? 'text-[#FF1F8A] bg-white/[0.05]'
+								: 'text-white/70 hover:text-white hover:bg-white/[0.05]'
 								}`}
 						>
 							{t(loc)}

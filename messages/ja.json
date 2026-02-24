@@ -23,7 +23,9 @@
 		"title": "マイライブラリ",
 		"subtitle": "保存したトラックとNFT",
 		"connectWallet": "ウォレットを接続",
-		"connectToView": "ウォレットを接続してライブラリを表示"
+		"connectToView": "ウォレットを接続してライブラリを表示",
+		"noSongs": "曲が見つかりませんでした",
+		"noSongsDesc": "まだ曲を所有していません。マーケットプレイスで音楽を見つけましょう！"
 	},
 	"search": {
 		"title": "検索",
@@ -70,6 +72,7 @@
 		"changeFile": "ファイルを変更",
 		"changeCover": "カバーを変更",
 		"collaborators": "コラボレーター",
+        "collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
 		"addCollaborator": "コラボレーターを追加",
 		"collaboratorsHint": "コラボレーターを追加して収益を自動分配します。",
 		"walletAddress": "ウォレットアドレス",
@@ -87,7 +90,13 @@
 		"noGenre": "ジャンルが見つかりません。",
 		"publishNow": "Publish Now",
 		"uploadingMedia": "Uploading Media...",
-		"confirmingTx": "Confirming Transaction..."
+		"confirmingTx": "Confirming Transaction...",
+		"artistNameLabel": "アーティスト名",
+		"artistNamePlaceholder": "アーティスト名を入力",
+		"uploadSuccess": "曲が正常に公開されました！",
+		"syncOnchain": "オンチェーン同期",
+		"syncing": "同期中...",
+		"syncedOnchain": "オンチェーン同期済み"
 	},
 	"earnings": {
 		"title": "あなたの収益",

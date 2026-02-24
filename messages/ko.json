@@ -21,9 +21,11 @@
 	},
 	"library": {
 		"title": "내 라이브러리",
-		"subtitle": "저장한 트랙과 NFT",
+		"subtitle": "저장된 트랙 및 NFT",
 		"connectWallet": "지갑 연결",
-		"connectToView": "지갑을 연결하여 라이브러리를 확인하세요"
+		"connectToView": "지갑을 연결하여 라이브러리 보기",
+		"noSongs": "노래를 찾을 수 없습니다",
+		"noSongsDesc": "아직 소유한 노래가 없습니다. 마켓플레이스에서 음악을 찾아보세요!"
 	},
 	"search": {
 		"title": "검색",
@@ -70,6 +72,7 @@
 		"changeFile": "파일 변경",
 		"changeCover": "커버 변경",
 		"collaborators": "협업자",
+        "collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
 		"addCollaborator": "협업자 추가",
 		"collaboratorsHint": "수익을 자동으로 분배할 협업자를 추가하세요.",
 		"walletAddress": "지갑 주소",
@@ -87,7 +90,13 @@
 		"noGenre": "장르를 찾을 수 없습니다.",
 		"publishNow": "Publish Now",
 		"uploadingMedia": "Uploading Media...",
-		"confirmingTx": "Confirming Transaction..."
+		"confirmingTx": "Confirming Transaction...",
+		"artistNameLabel": "아티스트 이름",
+		"artistNamePlaceholder": "아티스트 이름을 입력하세요",
+		"uploadSuccess": "노래가 성공적으로 게시되었습니다!",
+		"syncOnchain": "온체인 동기화",
+		"syncing": "동기화 중...",
+		"syncedOnchain": "온체인 동기화 완료"
 	},
 	"earnings": {
 		"title": "내 수익",

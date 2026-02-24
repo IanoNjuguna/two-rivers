@@ -23,7 +23,9 @@
 		"title": "Maktaba Yangu",
 		"subtitle": "Nyimbo na NFT zako zilizohifadhiwa",
 		"connectWallet": "Unganisha Pochi Yako",
-		"connectToView": "Unganisha pochi yako kuona maktaba yako"
+		"connectToView": "Unganisha pochi yako kuona maktaba yako",
+		"noSongs": "Hakuna nyimbo zilizopatikana",
+		"noSongsDesc": "Bado haumiliki nyimbo zozote. Nenda sokoni kugundua muziki!"
 	},
 	"search": {
 		"title": "Tafuta",
@@ -70,6 +72,7 @@
 		"changeFile": "Badilisha Faili",
 		"changeCover": "Badilisha Jalada",
 		"collaborators": "Washiriki",
+        "collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
 		"addCollaborator": "Ongeza Mshiriki",
 		"collaboratorsHint": "Ongeza washiriki ili kugawana mapato kiotomatiki.",
 		"walletAddress": "Anwani ya Pochi",
@@ -87,7 +90,17 @@
 		"noGenre": "No genre found.",
 		"publishNow": "Publish Now",
 		"uploadingMedia": "Uploading Media...",
-		"confirmingTx": "Confirming Transaction..."
+		"confirmingTx": "Confirming Transaction...",
+		"artistNameLabel": "Jina la Msanii",
+		"artistNamePlaceholder": "Ingiza jina la msanii",
+		"uploadSuccess": "Wimbo umepakiwa kwa mafanikio!",
+		"syncOnchain": "Sawazisha Kwenye Mnyororo",
+		"syncing": "Inasawazisha...",
+		"syncedOnchain": "Imesawazishwa Kwenye Mnyororo",
+		"minting": "Inamint...",
+		"alreadyCollected": "Tayari Imekusanywa",
+		"mintFirstCopy": "Mint Nakala Yako ya Kwanza",
+		"mintingFailed": "Minting imeshindwa: {error}"
 	},
 	"earnings": {
 		"title": "Mapato Yako",
@@ -101,7 +114,8 @@
 		"readyToClaim": "Tayari kudai",
 		"recentEarnings": "Mapato ya Hivi Karibuni",
 		"sales": "mauzo {count}",
-		"claimEarnings": "Dai Mapato"
+		"claimEarnings": "Dai Mapato",
+		"noEarningsHistory": "Hakuna historia ya mapato bado. Data ya hivi sasa itaonekana hapa muziki wako unapokusanywa."
 	},
 	"analytics": {
 		"title": "Uchambuzi",

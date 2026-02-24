@@ -20,10 +20,12 @@
 		"discoverMusic": "Откройте Музыку"
 	},
 	"library": {
-		"title": "Моя Библиотека",
-		"subtitle": "Ваши сохранённые треки и NFT",
-		"connectWallet": "Подключите Кошелёк",
-		"connectToView": "Подключите кошелёк, чтобы увидеть вашу библиотеку"
+		"title": "Моя библиотека",
+		"subtitle": "Ваши сохраненные треки и NFT",
+		"connectWallet": "Подключить кошелек",
+		"connectToView": "Подключите кошелек, чтобы просмотреть библиотеку",
+		"noSongs": "Песни не найдены",
+		"noSongsDesc": "У вас пока нет песен. Отправляйтесь на маркетплейс, чтобы открыть для себя музыку!"
 	},
 	"search": {
 		"title": "Поиск",
@@ -70,6 +72,7 @@
 		"changeFile": "Изменить Файл",
 		"changeCover": "Изменить Обложку",
 		"collaborators": "Соавторы",
+        "collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
 		"addCollaborator": "Добавить Соавтора",
 		"collaboratorsHint": "Добавьте соавторов для автоматического распределения дохода.",
 		"walletAddress": "Адрес Кошелька",
@@ -87,7 +90,13 @@
 		"noGenre": "No genre found.",
 		"publishNow": "Publish Now",
 		"uploadingMedia": "Uploading Media...",
-		"confirmingTx": "Confirming Transaction..."
+		"confirmingTx": "Confirming Transaction...",
+		"artistNameLabel": "Имя исполнителя",
+		"artistNamePlaceholder": "Введите имя исполнителя",
+		"uploadSuccess": "Песня успешно опубликована!",
+		"syncOnchain": "Синхронизировать в сети",
+		"syncing": "Синхронизация...",
+		"syncedOnchain": "Синхронизировано в сети"
 	},
 	"earnings": {
 		"title": "Ваши Доходы",

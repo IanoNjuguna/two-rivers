@@ -21,9 +21,11 @@
 	},
 	"library": {
 		"title": "Mi Biblioteca",
-		"subtitle": "Tus canciones y NFTs guardados",
+		"subtitle": "Tus pistas y NFT guardados",
 		"connectWallet": "Conecta Tu Billetera",
-		"connectToView": "Conecta tu billetera para ver tu biblioteca"
+		"connectToView": "Conecta tu billetera para ver tu biblioteca",
+		"noSongs": "No se encontraron canciones",
+		"noSongsDesc": "Aún no tienes canciones. ¡Ve al mercado para descubrir música!"
 	},
 	"search": {
 		"title": "Buscar",
@@ -70,6 +72,7 @@
 		"changeFile": "Cambiar Archivo",
 		"changeCover": "Cambiar Portada",
 		"collaborators": "Colaboradores",
+        "collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
 		"addCollaborator": "Agregar Colaborador",
 		"collaboratorsHint": "Agrega colaboradores para dividir los ingresos automáticamente.",
 		"walletAddress": "Dirección de Billetera",
@@ -87,7 +90,17 @@
 		"noGenre": "No genre found.",
 		"publishNow": "Publish Now",
 		"uploadingMedia": "Uploading Media...",
-		"confirmingTx": "Confirming Transaction..."
+		"confirmingTx": "Confirming Transaction...",
+		"artistNameLabel": "Nombre del artista",
+		"artistNamePlaceholder": "Ingrese el nombre del artista",
+		"uploadSuccess": "¡Canción publicada con éxito!",
+		"syncOnchain": "Sincronizar en cadena",
+		"syncing": "Sincronizando...",
+		"syncedOnchain": "Sincronizado en cadena",
+		"minting": "Acuñando...",
+		"alreadyCollected": "Ya Coleccionado",
+		"mintFirstCopy": "Acuñar Tu Primera Copia",
+		"mintingFailed": "Error al acuñar: {error}"
 	},
 	"earnings": {
 		"title": "Tus Ganancias",
@@ -101,7 +114,8 @@
 		"readyToClaim": "Listo para reclamar",
 		"recentEarnings": "Ganancias Recientes",
 		"sales": "{count} ventas",
-		"claimEarnings": "Reclamar Ganancias"
+		"claimEarnings": "Reclamar Ganancias",
+		"noEarningsHistory": "Aún no hay historial de ganancias. Los datos en tiempo real aparecerán aquí a medida que se coleccione tu música."
 	},
 	"analytics": {
 		"title": "Analítica",

@@ -20,10 +20,12 @@
 		"discoverMusic": "发现音乐"
 	},
 	"library": {
-		"title": "我的库",
-		"subtitle": "您保存的曲目和NFT",
+		"title": "我的媒体库",
+		"subtitle": "您保存的曲目和 NFT",
 		"connectWallet": "连接您的钱包",
-		"connectToView": "连接钱包以查看您的库"
+		"connectToView": "连接您的钱包以查看媒体库",
+		"noSongs": "未找到歌曲",
+		"noSongsDesc": "您还没有拥有任何歌曲。去市场发现音乐吧！"
 	},
 	"search": {
 		"title": "搜索",
@@ -70,6 +72,7 @@
 		"changeFile": "更改文件",
 		"changeCover": "更改封面",
 		"collaborators": "合作者",
+        "collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
 		"addCollaborator": "添加合作者",
 		"collaboratorsHint": "添加合作者以自动分配收益。",
 		"walletAddress": "钱包地址",
@@ -87,7 +90,13 @@
 		"noGenre": "未找到流派。",
 		"publishNow": "Publish Now",
 		"uploadingMedia": "Uploading Media...",
-		"confirmingTx": "Confirming Transaction..."
+		"confirmingTx": "Confirming Transaction...",
+		"artistNameLabel": "艺术家姓名",
+		"artistNamePlaceholder": "输入艺术家姓名",
+		"uploadSuccess": "歌曲发布成功！",
+		"syncOnchain": "链上同步",
+		"syncing": "同步中...",
+		"syncedOnchain": "已链上同步"
 	},
 	"earnings": {
 		"title": "您的收益",

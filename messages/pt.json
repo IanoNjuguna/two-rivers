@@ -23,7 +23,9 @@
 		"title": "Minha Biblioteca",
 		"subtitle": "Suas faixas e NFTs salvos",
 		"connectWallet": "Conecte Sua Carteira",
-		"connectToView": "Conecte sua carteira para ver sua biblioteca"
+		"connectToView": "Conecte sua carteira para ver sua biblioteca",
+		"noSongs": "Nenhuma música encontrada",
+		"noSongsDesc": "Você ainda não possui músicas. Vá ao mercado para descobrir música!"
 	},
 	"search": {
 		"title": "Pesquisar",
@@ -70,6 +72,7 @@
 		"changeFile": "Alterar Arquivo",
 		"changeCover": "Alterar Capa",
 		"collaborators": "Colaboradores",
+        "collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
 		"addCollaborator": "Adicionar Colaborador",
 		"collaboratorsHint": "Adicione colaboradores para dividir a receita automaticamente.",
 		"walletAddress": "Endereço da Carteira",
@@ -87,7 +90,13 @@
 		"noGenre": "No genre found.",
 		"publishNow": "Publish Now",
 		"uploadingMedia": "Uploading Media...",
-		"confirmingTx": "Confirming Transaction..."
+		"confirmingTx": "Confirming Transaction...",
+		"artistNameLabel": "Nome do artista",
+		"artistNamePlaceholder": "Digite o nome do artista",
+		"uploadSuccess": "Música publicada com sucesso!",
+		"syncOnchain": "Sincronizar na cadeia",
+		"syncing": "Sincronizando...",
+		"syncedOnchain": "Sincronizado na cadeia"
 	},
 	"earnings": {
 		"title": "Seus Ganhos",

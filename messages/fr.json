@@ -23,7 +23,9 @@
 		"title": "Ma Bibliothèque",
 		"subtitle": "Vos morceaux et NFT sauvegardés",
 		"connectWallet": "Connectez Votre Portefeuille",
-		"connectToView": "Connectez votre portefeuille pour voir votre bibliothèque"
+		"connectToView": "Connectez votre portefeuille pour voir votre bibliothèque",
+		"noSongs": "Aucun morceau trouvé",
+		"noSongsDesc": "Vous ne possédez pas encore de morceaux. Rendez-vous sur le marché pour découvrir de la musique !"
 	},
 	"search": {
 		"title": "Rechercher",
@@ -70,6 +72,7 @@
 		"changeFile": "Modifier le Fichier",
 		"changeCover": "Modifier la Couverture",
 		"collaborators": "Collaborateurs",
+        "collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
 		"addCollaborator": "Ajouter un Collaborateur",
 		"collaboratorsHint": "Ajoutez des collaborateurs pour répartir les revenus automatiquement.",
 		"walletAddress": "Adresse du Portefeuille",
@@ -87,7 +90,17 @@
 		"noGenre": "No genre found.",
 		"publishNow": "Publish Now",
 		"uploadingMedia": "Uploading Media...",
-		"confirmingTx": "Confirming Transaction..."
+		"confirmingTx": "Confirming Transaction...",
+		"artistNameLabel": "Nom de l'artiste",
+		"artistNamePlaceholder": "Entrez le nom de l'artiste",
+		"uploadSuccess": "Chanson publiée avec succès !",
+		"syncOnchain": "Synchroniser sur la chaîne",
+		"syncing": "Synchronisation...",
+		"syncedOnchain": "Synchronisé sur la chaîne",
+		"minting": "Frappe en cours...",
+		"alreadyCollected": "Déjà Collecté",
+		"mintFirstCopy": "Frapper Votre Premier Exemplaire",
+		"mintingFailed": "Échec de l'édition : {error}"
 	},
 	"earnings": {
 		"title": "Vos Revenus",
@@ -101,7 +114,8 @@
 		"readyToClaim": "Prêt à réclamer",
 		"recentEarnings": "Revenus Récents",
 		"sales": "{count} ventes",
-		"claimEarnings": "Réclamer les Revenus"
+		"claimEarnings": "Réclamer les Revenus",
+		"noEarningsHistory": "Pas encore d'historique de revenus. Les données en temps réel apparaîtront ici au fur et à mesure que votre musique est collectée."
 	},
 	"analytics": {
 		"title": "Analytique",

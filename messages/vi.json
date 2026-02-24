@@ -20,10 +20,12 @@
 		"discoverMusic": "Khám Phá Âm Nhạc"
 	},
 	"library": {
-		"title": "Thư Viện Của Tôi",
-		"subtitle": "Các bài hát và NFT đã lưu của bạn",
-		"connectWallet": "Kết Nối Ví Của Bạn",
-		"connectToView": "Kết nối ví để xem thư viện của bạn"
+		"title": "Thư viện của tôi",
+		"subtitle": "Các bản nhạc và NFT đã lưu của bạn",
+		"connectWallet": "Kết nối ví của bạn",
+		"connectToView": "Kết nối ví của bạn để xem thư viện",
+		"noSongs": "Không tìm thấy bài hát",
+		"noSongsDesc": "Bạn chưa sở hữu bài hát nào. Hãy đến thị trường để khám phá âm nhạc!"
 	},
 	"search": {
 		"title": "Tìm Kiếm",
@@ -70,6 +72,7 @@
 		"changeFile": "Thay Đổi Tệp",
 		"changeCover": "Thay Đổi Ảnh Bìa",
 		"collaborators": "Cộng Tác Viên",
+        "collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
 		"addCollaborator": "Thêm Cộng Tác Viên",
 		"collaboratorsHint": "Thêm cộng tác viên để tự động phân chia doanh thu.",
 		"walletAddress": "Địa Chỉ Ví",
@@ -87,7 +90,13 @@
 		"noGenre": "Không tìm thấy thể loại.",
 		"publishNow": "Publish Now",
 		"uploadingMedia": "Uploading Media...",
-		"confirmingTx": "Confirming Transaction..."
+		"confirmingTx": "Confirming Transaction...",
+		"artistNameLabel": "Tên nghệ sĩ",
+		"artistNamePlaceholder": "Nhập tên nghệ sĩ",
+		"uploadSuccess": "Bài hát đã được đăng thành công!",
+		"syncOnchain": "Đồng bộ hóa trên chuỗi",
+		"syncing": "Đang đồng bộ...",
+		"syncedOnchain": "Đã đồng bộ hóa trên chuỗi"
 	},
 	"earnings": {
 		"title": "Thu Nhập Của Bạn",

@@ -21,9 +21,11 @@
 	},
 	"library": {
 		"title": "הספרייה שלי",
-		"subtitle": "השירים וה-NFT השמורים שלך",
-		"connectWallet": "חבר את הארנק",
-		"connectToView": "חבר את הארנק שלך כדי לצפות בספרייה"
+		"subtitle": "הרצועות וה-NFT ששמרת",
+		"connectWallet": "חבר את הארנק שלך",
+		"connectToView": "חבר את הארנק שלך כדי לצפות בספרייה שלך",
+		"noSongs": "לא נמצאו שירים",
+		"noSongsDesc": "אין לך עדיין שירים. עבור לשוק כדי לגלות מוזיקה!"
 	},
 	"search": {
 		"title": "חיפוש",
@@ -70,6 +72,7 @@
 		"changeFile": "שנה קובץ",
 		"changeCover": "שנה עטיפה",
 		"collaborators": "שותפים ליצירה",
+        "collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
 		"addCollaborator": "הוסף שותף",
 		"collaboratorsHint": "הוסף שותפים לחלוקת הכנסות אוטומטית.",
 		"walletAddress": "כתובת ארנק",
@@ -87,7 +90,13 @@
 		"noGenre": "ז'אנר לא נמצא.",
 		"publishNow": "Publish Now",
 		"uploadingMedia": "Uploading Media...",
-		"confirmingTx": "Confirming Transaction..."
+		"confirmingTx": "Confirming Transaction...",
+		"artistNameLabel": "שם האמן",
+		"artistNamePlaceholder": "הזן את שם האמן",
+		"uploadSuccess": "השיר פורסם בהצלחה!",
+		"syncOnchain": "סנכרון ברשת",
+		"syncing": "מסנכרן...",
+		"syncedOnchain": "סונכרן ברשת"
 	},
 	"earnings": {
 		"title": "ההכנסות שלך",

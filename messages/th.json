@@ -20,10 +20,12 @@
 		"discoverMusic": "ค้นพบเพลง"
 	},
 	"library": {
-		"title": "ไลบรารีของฉัน",
-		"subtitle": "แทร็กและ NFT ที่บันทึกไว้ของคุณ",
-		"connectWallet": "เชื่อมต่อกระเป๋าของคุณ",
-		"connectToView": "เชื่อมต่อกระเป๋าเพื่อดูไลบรารีของคุณ"
+		"title": "คลังของฉัน",
+		"subtitle": "แทร็กและ NFT ที่คุณบันทึกไว้",
+		"connectWallet": "เชื่อมต่อกระเป๋าเงินของคุณ",
+		"connectToView": "เชื่อมต่อกระเป๋าเงินของคุณเพื่อดูคลังของคุณ",
+		"noSongs": "ไม่พบเพลง",
+		"noSongsDesc": "คุณยังไม่มีเพลงใดๆ ไปที่ตลาดเพื่อค้นหาเพลงใหม่!"
 	},
 	"search": {
 		"title": "ค้นหา",
@@ -70,6 +72,7 @@
 		"changeFile": "เปลี่ยนไฟล์",
 		"changeCover": "เปลี่ยนหน้าปก",
 		"collaborators": "ผู้ทำงานร่วมกัน",
+        "collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
 		"addCollaborator": "เพิ่มผู้ทำงานร่วมกัน",
 		"collaboratorsHint": "เพิ่มผู้ทำงานร่วมกันเพื่อแบ่งรายได้โดยอัตโนมัติ",
 		"walletAddress": "ที่อยู่กระเป๋าเงิน",
@@ -87,7 +90,13 @@
 		"noGenre": "ไม่พบประเภทเพลง",
 		"publishNow": "Publish Now",
 		"uploadingMedia": "Uploading Media...",
-		"confirmingTx": "Confirming Transaction..."
+		"confirmingTx": "Confirming Transaction...",
+		"artistNameLabel": "ชื่อศิลปิน",
+		"artistNamePlaceholder": "กรอกชื่อศิลปิน",
+		"uploadSuccess": "เผยแพร่เพลงสำเร็จแล้ว!",
+		"syncOnchain": "ซิงค์บนเชน",
+		"syncing": "กำลังซิงค์...",
+		"syncedOnchain": "ซิงค์บนเชนแล้ว"
 	},
 	"earnings": {
 		"title": "รายได้ของคุณ",

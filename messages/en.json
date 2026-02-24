@@ -23,7 +23,9 @@
 		"title": "My Library",
 		"subtitle": "Your saved tracks and NFTs",
 		"connectWallet": "Connect Your Wallet",
-		"connectToView": "Connect your wallet to view your library"
+		"connectToView": "Connect your wallet to view your library",
+		"noSongs": "No songs found",
+		"noSongsDesc": "You don't own any songs yet. Head to the marketplace to discover music!"
 	},
 	"search": {
 		"title": "Search",
@@ -57,7 +59,7 @@
 		"genrePlaceholder": "Select genre",
 		"releaseDateLabel": "Release Date",
 		"pricing": "Pricing",
-		"priceLabel": "Price (USDC)",
+		"priceLabel": "Price (USDC) - Recommended: 0.99",
 		"pricePlaceholder": "0.99",
 		"maxSupplyLabel": "Max Supply",
 		"maxSupplyPlaceholder": "e.g. 5000",
@@ -70,6 +72,7 @@
 		"changeFile": "Change File",
 		"changeCover": "Change Cover",
 		"collaborators": "Collaborators",
+		"collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
 		"addCollaborator": "Add Collaborator",
 		"collaboratorsHint": "Add collaborators to split revenue automatically.",
 		"walletAddress": "Wallet Address",
@@ -87,7 +90,17 @@
 		"noGenre": "No genre found.",
 		"publishNow": "Publish Now",
 		"uploadingMedia": "Uploading Media...",
-		"confirmingTx": "Confirming Transaction..."
+		"confirmingTx": "Confirming Transaction...",
+		"artistNameLabel": "Artist Name",
+		"artistNamePlaceholder": "Enter artist name",
+		"uploadSuccess": "Song published successfully!",
+		"syncOnchain": "Sync On-Chain",
+		"syncing": "Syncing...",
+		"syncedOnchain": "Synced On-Chain",
+		"minting": "Minting...",
+		"alreadyCollected": "Already Collected",
+		"mintFirstCopy": "Mint Your First Copy",
+		"mintingFailed": "Minting failed: {error}"
 	},
 	"earnings": {
 		"title": "Your Earnings",
@@ -101,7 +114,10 @@
 		"readyToClaim": "Ready to claim",
 		"recentEarnings": "Recent Earnings",
 		"sales": "{count} sales",
-		"claimEarnings": "Claim Earnings"
+		"claimEarnings": "Claim Earnings",
+		"noEarningsHistory": "No earnings history yet. Real-time data will appear here as your music is collected.",
+		"crossChainAssets": "Cross-chain Assets",
+		"allNetworks": "All Networks"
 	},
 	"analytics": {
 		"title": "Analytics",
@@ -113,7 +129,7 @@
 		"title": "Profile",
 		"subtitle": "Manage your account and settings",
 		"yourProfile": "Your Profile",
-		"smartAccount": "Smart Account",
+		"smartAccount": "Wallet",
 		"walletAddress": "Wallet Address",
 		"copyFull": "Click copy to get full address",
 		"connectWallet": "Connect Your Wallet",

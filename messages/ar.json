@@ -23,7 +23,9 @@
 		"title": "مكتبتي",
 		"subtitle": "المقاطع و NFT المحفوظة لديك",
 		"connectWallet": "ربط المحفظة",
-		"connectToView": "اربط محفظتك لعرض مكتبتك"
+		"connectToView": "اربط محفظتك لعرض مكتبتك",
+		"noSongs": "لم يتم العثور على أغانٍ",
+		"noSongsDesc": "أنت لا تملك أي أغانٍ بعد. توجه إلى المتجر لاكتشاف الموسيقى!"
 	},
 	"search": {
 		"title": "بحث",
@@ -70,6 +72,7 @@
 		"changeFile": "تغيير الملف",
 		"changeCover": "تغيير الغلاف",
 		"collaborators": "المشاركون",
+        "collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
 		"addCollaborator": "إضافة مشارك",
 		"collaboratorsHint": "أضف مشاركين لتوزيع الإيرادات تلقائيًا.",
 		"walletAddress": "عنوان المحفظة",
@@ -87,7 +90,13 @@
 		"noGenre": "لم يتم العثور على النوع.",
 		"publishNow": "Publish Now",
 		"uploadingMedia": "Uploading Media...",
-		"confirmingTx": "Confirming Transaction..."
+		"confirmingTx": "Confirming Transaction...",
+		"artistNameLabel": "اسم الفنان",
+		"artistNamePlaceholder": "أدخل اسم الفنان",
+		"uploadSuccess": "تم نشر الأغنية بنجاح!",
+		"syncOnchain": "مزامنة على السلسلة",
+		"syncing": "جاري المزامنة...",
+		"syncedOnchain": "تمت المزامنة على السلسلة"
 	},
 	"earnings": {
 		"title": "أرباحك",
