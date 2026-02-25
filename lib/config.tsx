@@ -58,6 +58,9 @@ export const getConfig = () => {
 	const apiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY!;
 
 	const getTransport = (chainId?: number) => {
+		if (typeof window !== 'undefined') {
+			console.log(`[Alchemy] Transport for ${chainId || 'default'}: API Key prefix ${apiKey.slice(0, 5)}...`);
+		}
 		return alchemy({ apiKey });
 	};
 
@@ -88,6 +91,14 @@ export const getConfig = () => {
 		enablePopupOauth: false,
 		connectors: [],
 	}, uiConfig);
+
+	if (typeof window !== 'undefined') {
+		console.log("[Alchemy] Config created with Policy IDs:", {
+			arb: process.env.NEXT_PUBLIC_ALCHEMY_ARB_POLICY_ID?.slice(0, 8),
+			base: process.env.NEXT_PUBLIC_ALCHEMY_BASE_POLICY_ID?.slice(0, 8),
+			avax: process.env.NEXT_PUBLIC_ALCHEMY_AVAX_POLICY_ID?.slice(0, 8),
+		});
+	}
 
 
 	if (process.env.NODE_ENV !== "production") {
