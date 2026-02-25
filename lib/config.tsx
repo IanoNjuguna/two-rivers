@@ -55,7 +55,7 @@ export const getConfig = () => {
 	if (globalForConfig._config) return globalForConfig._config;
 
 	const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
-	const apiKey = "05d-rzkbC1t_Wv0Pv9czr"; // Hardcoded temporarily for debugging
+	const apiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY!;
 
 	const getTransport = (chainId?: number) => {
 		if (typeof window !== 'undefined') {
