@@ -10,10 +10,8 @@ const uiConfig: AlchemyAccountsUIConfig = {
 	auth: {
 		sections: [
 			[{ type: "email" }],
-			[{ type: "passkey" }],
-			[{ type: "external_wallets", walletConnectProjectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "" }],
 		],
-		addPasskeyOnSignup: true,
+		addPasskeyOnSignup: false,
 		header: <img src="/logo.png" alt="Logo" className="w-12 h-12" />,
 	},
 	supportUrl: "https://doba.world",
@@ -56,34 +54,41 @@ const globalForConfig = globalThis as unknown as { _config: ReturnType<typeof cr
 export const getConfig = () => {
 	if (globalForConfig._config) return globalForConfig._config;
 
+	const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+	const apiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY!;
+
+	const getTransport = (chainId?: number) => {
+		return alchemy({ apiKey });
+	};
+
+
+
 	const newConfig = createConfig({
-		transport: alchemy({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY! }),
+		transport: getTransport(),
 		chain: activeChain,
 		chains: [
 			{
 				chain: arbitrum,
-				transport: alchemy({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY! }),
+				transport: getTransport(42161),
 				policyId: process.env.NEXT_PUBLIC_ALCHEMY_ARB_POLICY_ID,
 			},
 			{
 				chain: base,
-				transport: alchemy({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY! }),
+				transport: getTransport(8453),
 				policyId: process.env.NEXT_PUBLIC_ALCHEMY_BASE_POLICY_ID,
 			},
 			{
 				chain: avalancheChain,
-				transport: alchemy({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY! }),
+				transport: getTransport(43114),
 				policyId: process.env.NEXT_PUBLIC_ALCHEMY_AVAX_POLICY_ID,
 			},
 		],
 		ssr: true,
 		storage: cookieStorage,
-		enablePopupOauth: true,
-		connectors: [
-			injected(),
-			walletConnect({ projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "" })
-		],
+		enablePopupOauth: false,
+		connectors: [],
 	}, uiConfig);
+
 
 	if (process.env.NODE_ENV !== "production") {
 		globalForConfig._config = newConfig;

@@ -17,6 +17,14 @@ const nextConfig = {
   // Disable experimental features that might cause issues
   experimental: {
   },
+  async rewrites() {
+    return [
+      {
+        source: '/api-backend/:path*',
+        destination: 'http://127.0.0.1:3001/:path*',
+      },
+    ]
+  },
   webpack: (config, { isServer }) => {
     // Ignore markdown and other non-JS files in node_modules
     config.module.rules.push({

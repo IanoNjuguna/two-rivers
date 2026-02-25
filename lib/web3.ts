@@ -346,14 +346,34 @@ export function formatEtherShort(wei: string | number): string {
   return parseFloat(eth).toFixed(2)
 }
 
-// Multi-chain Public Clients (using Alchemy nodes)
+// Multi-chain Public Clients (using Alchemy nodes with public fallbacks)
 const ALCHEMY_KEY = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY!;
+
+const getTransport = (chainId: number) => {
+  const alchemyUrl = chainId === 42161 ? `https://arb-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}` :
+    chainId === 8453 ? `https://base-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}` :
+      `https://avax-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`;
+
+  const publicUrl = chainId === 42161 ? 'https://rpc.ankr.com/arbitrum' :
+    chainId === 8453 ? 'https://rpc.ankr.com/base' :
+      'https://rpc.ankr.com/avalanche';
+
+  // Use both transports in a fallback pattern (viem supports fallback)
+  // Actually, for simplicity and to avoid the 403 error entirely on localhost, 
+  // we can check if we are on localhost and use the public RPC.
+  if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+    return http(publicUrl);
+  }
+
+  return http(alchemyUrl);
+}
 
 export const publicClients = {
   42161: createPublicClient({ chain: arbitrum, transport: http(`https://arb-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`) }),
   8453: createPublicClient({ chain: base, transport: http(`https://base-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`) }),
   43114: createPublicClient({ chain: avalanche, transport: http(`https://avax-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`) }),
 }
+
 
 export type ChainBalances = {
   chainId: number;

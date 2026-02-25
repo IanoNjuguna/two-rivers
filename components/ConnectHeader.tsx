@@ -61,7 +61,7 @@ export default function ConnectHeader({ address: propAddress }: { address?: stri
         setIsBridging(true);
         try {
           // @ts-ignore - Account Kit deep types request a 'bundle' string which is not strictly necessary here
-          await authenticate({ type: "passkey" });
+          openAuthModal();
         } catch (error) {
           logger.error('ConnectHeader: Auto-bridging failed', error);
         } finally {
@@ -165,8 +165,7 @@ export default function ConnectHeader({ address: propAddress }: { address?: stri
       ) : isSignerConnected && !client ? (
         <Button
           onClick={() => {
-            // @ts-ignore - Account Kit deep types request a 'bundle' string which is not strictly necessary here
-            authenticate({ type: "passkey" }); // Fallback type to satisfy TS, though UI handles generic auth modal
+            openAuthModal();
           }}
           className="bg-purple-600 hover:bg-purple-700 text-white font-semibold"
           disabled={isBridging}
