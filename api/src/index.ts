@@ -11,19 +11,8 @@ import { jwt } from 'hono/jwt'
 const app = new Hono()
 
 // Enable CORS
-const allowedOrigins = [
-  'http://localhost:3000',
-  'https://localhost:3000',
-  'https://doba.world'
-]
-
 app.use('/*', cors({
-  origin: (origin) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      return origin || allowedOrigins[0]
-    }
-    return null
-  },
+  origin: '*',
   allowHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],
   allowMethods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
   credentials: true,
