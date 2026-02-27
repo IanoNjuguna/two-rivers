@@ -2,9 +2,9 @@ export async function GET() {
 	const URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://doba.world';
 	return Response.json({
 		accountAssociation: {
-			header: process.env.FC_DOMAIN_HEADER || '',
-			payload: process.env.FC_DOMAIN_PAYLOAD || '',
-			signature: process.env.FC_DOMAIN_SIGNATURE || '',
+			header: 'eyJmaWQiOjExNjQzNjgsInR5cGUiOiJhdXRoIiwia2V5IjoiMHhlNzQyQzAxZTdEOTUyMUE0NDJkODJmODk5NUI3MkEyODE5MGFEMzJFIn0',
+			payload: 'eyJkb21haW4iOiJkb2JhLndvcmxkIn0',
+			signature: 'voST/MQHkJ2wSOUgWiyjKWuXH5wMuvbSKlp3jRAzm3koo9/yJ96pB61AXwVrVf2Q6Aj0S+ONhZx8MYdDoI61zRw=',
 		},
 		miniapp: {
 			version: '1',
