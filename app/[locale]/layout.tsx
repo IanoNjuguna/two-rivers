@@ -62,7 +62,7 @@ export const metadata: Metadata = {
 	openGraph: {
 		images: [
 			{
-				url: '/doba_preview.png',
+				url: '/doba-preview.png',
 				width: 1200,
 				height: 630,
 				alt: 'doba Preview',
@@ -71,19 +71,19 @@ export const metadata: Metadata = {
 	},
 	twitter: {
 		card: 'summary_large_image',
-		images: ['/doba_preview.png'],
+		images: ['/doba-preview.png'],
 	},
 	other: {
 		'fc:miniapp': JSON.stringify({
 			version: 'next',
-			imageUrl: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://doba.world'}/doba_preview.png`,
+			imageUrl: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://doba.world'}/doba-preview.png`,
 			button: {
 				title: 'Open doba',
 				action: {
 					type: 'launch_miniapp',
 					name: 'doba',
 					url: process.env.NEXT_PUBLIC_SITE_URL || 'https://doba.world',
-					splashImageUrl: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://doba.world'}/doba_preview.png`,
+					splashImageUrl: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://doba.world'}/doba-preview.png`,
 					splashBackgroundColor: '#0D0D12',
 				},
 			},

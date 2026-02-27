@@ -11,7 +11,7 @@ export async function GET() {
 			name: 'doba',
 			homeUrl: URL,
 			iconUrl: `${URL}/logo.png`,
-			splashImageUrl: `${URL}/doba_preview.png`,
+			splashImageUrl: `${URL}/doba-preview.png`,
 			splashBackgroundColor: '#0D0D12',
 			webhookUrl: `${URL}/api/webhook`,
 		},
