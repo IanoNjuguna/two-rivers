@@ -9,7 +9,10 @@ export function MiniAppInit() {
 	useEffect(() => {
 		const load = async () => {
 			try {
-				await sdk.actions.ready();
+				const context = await sdk.context;
+				if (context) {
+					await sdk.actions.ready();
+				}
 			} catch (e) {
 				console.error('Failed to call sdk.actions.ready', e);
 			}
@@ -17,7 +20,6 @@ export function MiniAppInit() {
 
 		if (!isLoaded) {
 			setIsLoaded(true);
-			// Add a slight delay to ensure the bridge is ready
 			setTimeout(() => {
 				load();
 			}, 100);

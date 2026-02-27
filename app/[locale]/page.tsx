@@ -453,11 +453,11 @@ function DashboardLayout({ isConnected, effectiveAddress, client, userEmail }: a
                     {tProfile('subtitle')}
                   </p>
                 </div>
-                {isConnected && user ? (
+                {isConnected && effectiveAddress ? (
                   <ProfileEditor
-                    address={effectiveAddress || user.address}
+                    address={effectiveAddress}
                     client={client}
-                    userEmail={user.email}
+                    userEmail={userEmail}
                     tProfile={tProfile}
                   />
                 ) : (
