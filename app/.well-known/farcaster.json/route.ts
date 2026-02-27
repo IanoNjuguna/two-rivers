@@ -24,7 +24,11 @@ export async function GET() {
 			ogTitle: 'doba — on-chain audio streaming',
 			ogDescription: 'Stream music, share revenue, own your sound.',
 			ogImageUrl: `${URL}/doba_preview.png`,
-			noindex: false,
 		},
+	}, {
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			'Access-Control-Allow-Methods': 'GET',
+		}
 	});
 }
