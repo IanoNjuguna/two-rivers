@@ -7,7 +7,7 @@ import { IconCopy, IconEdit, IconCheck, IconX } from '@tabler/icons-react'
 import { toast } from 'sonner'
 import MyUploadsGrid from '@/components/MyUploadsGrid'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://doba-api-494043112081.us-central1.run.app'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '/api-backend'
 
 interface UserProfile {
 	address: string

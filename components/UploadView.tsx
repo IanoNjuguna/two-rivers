@@ -19,7 +19,7 @@ interface Collaborator {
 	split: number
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://doba-api-494043112081.us-central1.run.app'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '/api-backend'
 
 export default function UploadView({ client: propClient }: { client?: any }) {
 	const t = useTranslations('upload')
