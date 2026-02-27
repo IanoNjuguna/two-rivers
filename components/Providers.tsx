@@ -25,7 +25,7 @@ export function Providers({
 
 	// Render a minimal shell while detecting context
 	if (isMiniApp === null) {
-		return <>{children}</>;
+		return <div className="h-screen bg-[#0D0D12]" />;
 	}
 
 	if (isMiniApp) {
