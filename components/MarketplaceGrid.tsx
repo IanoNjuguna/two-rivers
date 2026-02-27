@@ -27,13 +27,16 @@ export default function MarketplaceGrid({ client, onPlay }: { client?: any, onPl
     const fetchTracks = async () => {
       try {
         const fetchUrl = `${API_URL.replace(/\/$/, '')}/tracks`
+        console.log(`[Mini App] Fetching tracks from: ${fetchUrl}`)
         const res = await fetch(fetchUrl)
         if (res.ok) {
           const data = await res.json()
           setTracks(data)
+        } else {
+          logger.error(`[Mini App] Fetch failed with status: ${res.status} ${res.statusText}`)
         }
-      } catch (error) {
-        logger.error('Failed to fetch tracks', error)
+      } catch (error: any) {
+        logger.error('[Mini App] Failed to fetch tracks exception:', error?.message || error)
       } finally {
         setLoading(false)
       }
