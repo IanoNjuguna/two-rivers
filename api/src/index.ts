@@ -14,7 +14,7 @@ const app = new Hono()
 // Enable CORS
 app.use('/*', cors({
   origin: '*',
-  allowHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],
+  allowHeaders: ['*'], // Allow any custom header from Alchemy/Wagmi/Warpcast
   allowMethods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
 }))
 
