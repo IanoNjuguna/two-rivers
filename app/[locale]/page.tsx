@@ -15,8 +15,6 @@ import { ProfileEditor } from '@/components/ProfileEditor'
 import { useAudioPlayer, type Track } from '@/hooks/useAudioPlayer'
 import { useTranslations } from 'next-intl'
 import { watchSmartAccountClient, getSmartAccountClient } from "@account-kit/core"
-import { getAddressesForChain, CONTRACT_ADDRESS } from "@/lib/web3"
-
 // We must dynamically import the Alchemy hooks or only use them in AlchemyDashboard!
 // BUT we can't dynamically import named exports easily. We rely on the generic Dashboard 
 // rendering AlchemyDashboard which then calls these hooks.
@@ -41,7 +39,13 @@ export default function Dashboard() {
 
   useEffect(() => {
     sdk.isInMiniApp()
-      .then(res => setIsMiniApp(res))
+      .then(res => {
+        setIsMiniApp(res)
+        if (res) {
+          // Ensure ready is called when we know we're rendering a Mini App Dashboard
+          setTimeout(() => sdk.actions.ready(), 100)
+        }
+      })
       .catch(() => setIsMiniApp(false))
       .finally(() => setMounted(true))
   }, [])
