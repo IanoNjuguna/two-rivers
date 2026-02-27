@@ -13,7 +13,11 @@ const app = new Hono()
 
 // Enable CORS
 app.use('/*', cors({
-  origin: '*',
+  origin: (origin) => {
+    // Reflect the domain if present, else fallback
+    if (origin) return origin;
+    return 'http://localhost:3000';
+  },
   allowHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],
   allowMethods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
   credentials: true,
