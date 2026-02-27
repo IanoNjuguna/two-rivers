@@ -19,7 +19,14 @@ interface SongCardProps {
   genre?: string
   price?: string
   client?: any
+  trackChainId?: string
   onPlay?: () => void
+}
+
+const CHAIN_BADGE: Record<string, { logo: string; label: string }> = {
+  '42161': { logo: 'https://icons.llamao.fi/icons/chains/rsz_arbitrum.jpg', label: 'Arbitrum' },
+  '8453': { logo: 'https://icons.llamao.fi/icons/chains/rsz_base.jpg', label: 'Base' },
+  '43114': { logo: 'https://icons.llamao.fi/icons/chains/rsz_avalanche.jpg', label: 'Avalanche' },
 }
 
 export default function SongCard({
@@ -31,6 +38,7 @@ export default function SongCard({
   genre,
   price,
   client,
+  trackChainId,
   onPlay,
 }: SongCardProps) {
   const chainId = useChainId()
@@ -185,6 +193,17 @@ export default function SongCard({
 
         {/* Overlay with Glossy effect */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D12] via-transparent to-transparent opacity-60" />
+
+        {/* Chain Badge */}
+        {trackChainId && CHAIN_BADGE[trackChainId] && (
+          <div className="absolute bottom-2 left-2 z-10" title={CHAIN_BADGE[trackChainId].label}>
+            <img
+              src={CHAIN_BADGE[trackChainId].logo}
+              alt={CHAIN_BADGE[trackChainId].label}
+              className="w-5 h-5 rounded-full ring-1 ring-white/20 shadow-md"
+            />
+          </div>
+        )}
 
         {/* Play Button Overlay */}
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">

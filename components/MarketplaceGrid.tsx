@@ -5,7 +5,6 @@ import { logger } from '@/lib/logger'
 import React, { useEffect, useState } from 'react'
 import SongCard from './SongCard'
 import { useTranslations } from 'next-intl'
-import { useChainId } from 'wagmi'
 
 interface Track {
   token_id: number
@@ -15,20 +14,20 @@ interface Track {
   audio_url: string
   genre?: string
   price?: string
+  chain_id?: string
 }
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
 
 export default function MarketplaceGrid({ client, onPlay }: { client?: any, onPlay?: (track: Track, tracks: Track[]) => void }) {
   const t = useTranslations('marketplace')
-  const chainId = useChainId()
   const [tracks, setTracks] = useState<Track[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchTracks = async () => {
       try {
-        const fetchUrl = `${API_URL.replace(/\/$/, '')}/tracks?chain_id=${chainId}`
+        const fetchUrl = `${API_URL.replace(/\/$/, '')}/tracks`
         const res = await fetch(fetchUrl)
         if (res.ok) {
           const data = await res.json()
@@ -44,7 +43,7 @@ export default function MarketplaceGrid({ client, onPlay }: { client?: any, onPl
     }
 
     fetchTracks()
-  }, [chainId])
+  }, [])
 
   if (loading) {
     return (
@@ -76,6 +75,7 @@ export default function MarketplaceGrid({ client, onPlay }: { client?: any, onPl
           audioUrl={track.audio_url}
           genre={track.genre}
           price={track.price}
+          trackChainId={track.chain_id}
           client={client}
           onPlay={onPlay ? () => onPlay(track, tracks) : undefined}
         />
