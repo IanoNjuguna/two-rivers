@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { IconWallet as Wallet, IconCopy as Copy, IconLogout } from '@tabler/icons-react'
 import { useTranslations } from 'next-intl'
 
-import { useAccount, useDisconnect, useBalance, useReadContract } from 'wagmi'
+import { useAccount, useDisconnect, useBalance, useReadContract, useConnect } from 'wagmi'
 import { getAddressesForChain, ERC20_ABI } from "@/lib/web3"
 import { sdk } from '@farcaster/miniapp-sdk'
 import { formatUnits } from "viem"
@@ -17,12 +17,26 @@ export default function MiniAppHeader({ address: propAddress }: { address?: stri
 
 	const { address: wagmiAddress, isConnected, chainId } = useAccount()
 	const { disconnect } = useDisconnect()
+	const { connect, connectors } = useConnect()
 
 	const address = propAddress || wagmiAddress
 
+	// Auto-connect Farcaster Mini App
+	useEffect(() => {
+		if (!isConnected && connectors.length > 0) {
+			const farcasterConnector = connectors.find((c: any) => c.id === 'farcasterMiniApp' || c.name === 'Farcaster')
+			if (farcasterConnector) {
+				connect({ connector: farcasterConnector })
+			} else {
+				// Fallback to the first available connector (which should be farcasterMiniApp anyway)
+				connect({ connector: connectors[0] })
+			}
+		}
+	}, [isConnected, connectors, connect])
+
 	// Fetch Farcaster profile
 	useEffect(() => {
-		sdk.context.then((ctx) => {
+		sdk.context.then((ctx: any) => {
 			if (ctx?.user) {
 				setFarcasterUser(ctx.user)
 			}
