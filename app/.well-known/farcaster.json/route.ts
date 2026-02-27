@@ -1,5 +1,5 @@
 export async function GET() {
-	const URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://doba.world';
+	const URL = 'https://doba.world';
 	return Response.json({
 		accountAssociation: {
 			header: 'eyJmaWQiOjExNjQzNjgsInR5cGUiOiJhdXRoIiwia2V5IjoiMHhlNzQyQzAxZTdEOTUyMUE0NDJkODJmODk5NUI3MkEyODE5MGFEMzJFIn0',
