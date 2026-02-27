@@ -8,7 +8,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils"
 import { GENRES } from '@/constants/genres'
 
-import { useSendUserOperation, useSmartAccountClient, useChain } from "@account-kit/react"
+import { useSendUserOperation, useSmartAccountClient } from "@account-kit/react"
+import { useChainId } from "wagmi"
 import { getAddressesForChain, getDstEid, CONTRACT_ABI, ERC20_ABI, LZ_SYNC_OPTIONS } from '@/lib/web3'
 import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
@@ -22,9 +23,10 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
 
 export default function UploadView({ client: propClient }: { client?: any }) {
 	const t = useTranslations('upload')
-	const { chain } = useChain()
-	const { usdc: USDC_ADDRESS, contract: CONTRACT_ADDRESS, paymaster: PAYMASTER_ADDRESS } = getAddressesForChain(chain.id)
-	const DST_EID = getDstEid(chain.id)
+	const chainId = useChainId()
+	const { usdc: USDC_ADDRESS, contract: CONTRACT_ADDRESS, paymaster: PAYMASTER_ADDRESS } = getAddressesForChain(chainId || 42161)
+	const MathChain = { id: chainId || 42161, name: chainId === 8453 ? 'Base' : 'Arbitrum' }
+	const DST_EID = getDstEid(MathChain.id)
 
 	const client = propClient
 
@@ -576,7 +578,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 				const needed = messagingFee - nativeBalance
 				const neededEth = parseFloat(needed.toString()) / 1e18
 				toast.error(
-					`Insufficient native balance for cross-chain sync fee. You need ~${neededEth.toFixed(5)} more ${chain.name.includes('Arbitrum') ? 'ETH' : 'Native Token'}. Please fund your Smart Account: ${client.account.address}`,
+					`Insufficient native balance for cross-chain sync fee. You need ~${neededEth.toFixed(5)} more ${MathChain.name.includes('Arbitrum') ? 'ETH' : 'Native Token'}. Please fund your Smart Account: ${client.account.address}`,
 					{ id: syncToast, duration: 10000 }
 				)
 				setIsSyncing(false)
@@ -687,7 +689,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 					<div className="flex-1">
 						<h4 className="text-sm font-bold text-blue-500 uppercase tracking-tight mb-1">Native Gas Required</h4>
 						<p className="text-xs text-white/70 leading-relaxed mb-3">
-							You need a small amount of <strong>{chain.name.includes('Arbitrum') ? 'ETH' : (chain.name.includes('Base') ? 'ETH' : 'AVAX')}</strong> for gas fees.
+							You need a small amount of <strong>{MathChain.name.includes('Arbitrum') ? 'ETH' : (MathChain.name.includes('Base') ? 'ETH' : 'AVAX')}</strong> for gas fees.
 							Recommended: <strong>$1 - $2</strong>.
 						</p>
 						<p className="text-[10px] text-white/40 italic">

@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { IconEye, IconMusic, IconMicrophone } from '@tabler/icons-react'
 import { CONTRACT_ABI, getAddressesForChain } from '@/lib/web3'
-import { useChain } from "@account-kit/react"
 import { useTranslations } from 'next-intl'
+import { useChainId } from "wagmi"
 
 interface Track {
   token_id: number
@@ -27,8 +27,8 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
 
 export default function MyStudioGrid({ address, client }: MyStudioGridProps) {
   const t = useTranslations('library')
-  const { chain } = useChain()
-  const { contract: CONTRACT_ADDRESS, explorer: EXPLORER_URL } = getAddressesForChain(chain.id)
+  const chainId = useChainId()
+  const { contract: CONTRACT_ADDRESS, explorer: EXPLORER_URL } = getAddressesForChain(chainId || 42161)
   const [ownedTracks, setOwnedTracks] = useState<Track[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedTrack, setSelectedTrack] = useState<Track | null>(null)

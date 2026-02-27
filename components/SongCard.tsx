@@ -6,7 +6,7 @@ import React from 'react'
 import { IconPlayerPlay, IconMusic, IconLoader2, IconShoppingBag, IconCheck } from '@tabler/icons-react'
 import { cn } from '@/lib/utils'
 import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain } from '@/lib/web3'
-import { useChain } from "@account-kit/react"
+import { useChainId } from "wagmi"
 import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
 
@@ -33,12 +33,12 @@ export default function SongCard({
   client,
   onPlay,
 }: SongCardProps) {
-  const { chain } = useChain()
+  const chainId = useChainId()
   const {
     usdc: CURRENT_USDC,
     contract: CURRENT_CONTRACT,
     explorer: EXPLORER_URL
-  } = getAddressesForChain(chain.id)
+  } = getAddressesForChain(chainId || 42161)
   const [isMinting, setIsMinting] = React.useState(false)
   const [hasOwned, setHasOwned] = React.useState(false)
 

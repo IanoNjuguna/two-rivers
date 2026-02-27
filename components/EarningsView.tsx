@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Calendar } from "@/components/ui/calendar"
 import { IconTrendingUp, IconCalendar, IconCurrencyDollar as DollarSign, IconCheck, IconExternalLink } from '@tabler/icons-react'
 import { useTranslations } from 'next-intl'
-import { useChain } from "@account-kit/react"
+import { useChainId } from "wagmi"
 import { SPLITTER_ABI, ERC20_ABI, formatAddress, fetchAllBalances, ChainBalances, getAddressesForChain } from '@/lib/web3'
 import { parseUnits, formatUnits } from 'viem'
 import { toast } from 'sonner'
@@ -33,8 +33,8 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
 
 export default function EarningsView({ isConnected, client, address }: EarningsViewProps) {
   const t = useTranslations('earnings')
-  const { chain } = useChain()
-  const CURRENT_USDC = getAddressesForChain(chain?.id || 42161).usdc
+  const chainId = useChainId()
+  const CURRENT_USDC = getAddressesForChain(chainId || 42161).usdc
   const [loading, setLoading] = useState(false)
   const [royaltyTracks, setRoyaltyTracks] = useState<RoyaltyEntry[]>([])
   const [totalPending, setTotalPending] = useState('0.00')
