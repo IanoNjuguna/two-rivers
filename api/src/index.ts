@@ -231,7 +231,7 @@ app.post('/auth/siwf', async (c) => {
     }
 
     const fid = verifyResponse.fid
-    const custodyAddress = verifyResponse.custody || verifyResponse.address
+    const custodyAddress = verifyResponse.data?.address
 
     // Fetch verified addresses from Hubble via Neynar (if key exists)
     let verifiedAddresses: string[] = []
