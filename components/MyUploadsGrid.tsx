@@ -21,7 +21,7 @@ interface MyUploadsGridProps {
 	address?: string
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://doba-api-494043112081.us-central1.run.app'
 
 export default function MyUploadsGrid({ address }: MyUploadsGridProps) {
 	const chainId = useChainId()
