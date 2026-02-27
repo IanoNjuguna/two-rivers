@@ -40,8 +40,10 @@ export default function Dashboard() {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    sdk.isInMiniApp().then(res => setIsMiniApp(res)).catch(() => setIsMiniApp(false))
-    setMounted(true)
+    sdk.isInMiniApp()
+      .then(res => setIsMiniApp(res))
+      .catch(() => setIsMiniApp(false))
+      .finally(() => setMounted(true))
   }, [])
 
   if (!mounted) return <div className="h-screen bg-[#0D0D12]" />
