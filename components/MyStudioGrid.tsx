@@ -42,7 +42,7 @@ export default function MyStudioGrid({ address, client }: MyStudioGridProps) {
 
       try {
         // 1. Fetch all tracks from indexer
-        const res = await fetch(`${API_URL}/tracks`)
+        const res = await fetch(`${API_URL.replace(/\/$/, '')}/tracks`)
         if (!res.ok) throw new Error('Failed to fetch tracks')
         const allTracks: Track[] = await res.json()
 

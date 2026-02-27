@@ -43,7 +43,7 @@ export function ProfileEditor({ address, client, userEmail, tProfile }: any) {
 			// Request signature from the connected wallet (Alchemy EOA)
 			const signature = await signMessageAsync({ message })
 
-			const res = await fetch(`${API_URL}/auth/siwf`, {
+			const res = await fetch(`${API_URL.replace(/\/$/, '')}/auth/siwf`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -84,7 +84,7 @@ export function ProfileEditor({ address, client, userEmail, tProfile }: any) {
 	useEffect(() => {
 		const fetchProfile = async () => {
 			try {
-				const res = await fetch(`${API_URL}/users/${address}`)
+				const res = await fetch(`${API_URL.replace(/\/$/, '')}/users/${address}`)
 				if (res.ok) {
 					const data = await res.json()
 					setProfile(data)
@@ -119,7 +119,7 @@ export function ProfileEditor({ address, client, userEmail, tProfile }: any) {
 		setIsSaving(true)
 
 		try {
-			const res = await fetch(`${API_URL}/users`, {
+			const res = await fetch(`${API_URL.replace(/\/$/, '')}/users`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',

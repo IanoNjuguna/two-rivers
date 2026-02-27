@@ -120,7 +120,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 
 
-				const response = await fetch(`${API_URL}/upload-assets`, {
+				const response = await fetch(`${API_URL.replace(/\/$/, '')}/upload-assets`, {
 					method: 'POST',
 					headers: { 'X-API-Key': process.env.NEXT_PUBLIC_API_KEY || '' },
 					body: formData,
@@ -234,7 +234,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 				formData.append('image', coverFile)
 				formData.append('title', title)
 
-				const assetRes = await fetch(`${API_URL}/upload-assets`, {
+				const assetRes = await fetch(`${API_URL.replace(/\/$/, '')}/upload-assets`, {
 					method: 'POST',
 					headers: { 'X-API-Key': process.env.NEXT_PUBLIC_API_KEY || '' },
 					body: formData,
@@ -254,7 +254,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 			// 2. Upload Metadata
 
 			toast.loading("Generating NFT metadata...", { id: mainToast })
-			const metaResponse = await fetch(`${API_URL}/upload-metadata`, {
+			const metaResponse = await fetch(`${API_URL.replace(/\/$/, '')}/upload-metadata`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -480,7 +480,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 			// 6. Register in Backend (Discovery Index)
 			try {
-				await fetch(`${API_URL}/tracks`, {
+				await fetch(`${API_URL.replace(/\/$/, '')}/tracks`, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
@@ -508,7 +508,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 				if (collaborators.length > 0) {
 					for (const collab of collaborators) {
 						if (!collab.address) continue;
-						await fetch(`${API_URL}/collaborators`, {
+						await fetch(`${API_URL.replace(/\/$/, '')}/collaborators`, {
 							method: 'POST',
 							headers: {
 								'Content-Type': 'application/json',

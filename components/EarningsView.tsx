@@ -49,7 +49,7 @@ export default function EarningsView({ isConnected, client, address }: EarningsV
       fetchAllBalances(address).then(setGlobalBalances)
 
       // 1. Fetch all tracks to find splitters
-      const res = await fetch(`${API_URL}/tracks`)
+      const res = await fetch(`${API_URL.replace(/\/$/, '')}/tracks`)
       const tracks: Track[] = await res.json()
 
       const entries: RoyaltyEntry[] = []
