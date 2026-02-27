@@ -388,7 +388,8 @@ app.post('/upload-metadata', async (c) => {
 // Remaining endpoints (tracks, health, root)
 app.get('/tracks', async (c) => {
   const artist = c.req.query('artist')
-  const tracks = await getAllTracks(artist)
+  const chainId = c.req.query('chain_id')
+  const tracks = await getAllTracks(artist, chainId)
   return c.json(tracks)
 })
 

@@ -71,7 +71,7 @@ async function init() {
   `)
 
   // Simple migrations
-  const trackColumns = ['price', 'max_supply', 'splitter', 'tx_hash', 'uploader_address']
+  const trackColumns = ['price', 'max_supply', 'splitter', 'tx_hash', 'uploader_address', 'chain_id']
   for (const col of trackColumns) {
     try {
       await db.execute(`ALTER TABLE tracks ADD COLUMN ${col} TEXT`)
@@ -115,6 +115,7 @@ export interface Track {
   splitter?: string
   tx_hash?: string
   uploader_address?: string
+  chain_id?: string
 }
 
 export interface User {
@@ -153,8 +154,8 @@ export async function getTrack(tokenId: number): Promise<Track | null> {
 export async function addTrack(track: Track): Promise<void> {
   await db.execute({
     sql: `
-      INSERT INTO tracks (token_id, name, description, artist, genre, duration, release_date, image_url, audio_url, external_url, price, max_supply, splitter, tx_hash, uploader_address)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO tracks (token_id, name, description, artist, genre, duration, release_date, image_url, audio_url, external_url, price, max_supply, splitter, tx_hash, uploader_address, chain_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(token_id) DO UPDATE SET
         name = excluded.name,
         description = excluded.description,
@@ -169,7 +170,8 @@ export async function addTrack(track: Track): Promise<void> {
         max_supply = excluded.max_supply,
         splitter = excluded.splitter,
         tx_hash = excluded.tx_hash,
-        uploader_address = excluded.uploader_address
+        uploader_address = excluded.uploader_address,
+        chain_id = excluded.chain_id
     `,
     args: [
       track.token_id,
@@ -186,19 +188,28 @@ export async function addTrack(track: Track): Promise<void> {
       track.max_supply ?? null,
       track.splitter ?? null,
       track.tx_hash ?? null,
-      track.uploader_address ?? null
+      track.uploader_address ?? null,
+      track.chain_id ?? null
     ]
   })
 }
 
-export async function getAllTracks(artist?: string): Promise<Track[]> {
-  let sql = 'SELECT * FROM tracks ORDER BY token_id DESC'
-  let args: any[] = []
+export async function getAllTracks(artist?: string, chainId?: string): Promise<Track[]> {
+  const conditions: string[] = []
+  const args: any[] = []
 
   if (artist) {
-    sql = 'SELECT * FROM tracks WHERE artist = ? OR artist COLLATE NOCASE = ? ORDER BY token_id DESC'
-    args = [artist, artist]
+    conditions.push('(artist = ? OR artist COLLATE NOCASE = ?)')
+    args.push(artist, artist)
   }
+
+  if (chainId) {
+    conditions.push('chain_id = ?')
+    args.push(chainId)
+  }
+
+  const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : ''
+  const sql = `SELECT * FROM tracks ${where} ORDER BY token_id DESC`
 
   const rs = await db.execute({ sql, args })
   return rs.rows as unknown as Track[]

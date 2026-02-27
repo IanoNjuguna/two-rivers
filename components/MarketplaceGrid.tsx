@@ -5,6 +5,7 @@ import { logger } from '@/lib/logger'
 import React, { useEffect, useState } from 'react'
 import SongCard from './SongCard'
 import { useTranslations } from 'next-intl'
+import { useChainId } from 'wagmi'
 
 interface Track {
   token_id: number
@@ -20,30 +21,30 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
 
 export default function MarketplaceGrid({ client, onPlay }: { client?: any, onPlay?: (track: Track, tracks: Track[]) => void }) {
   const t = useTranslations('marketplace')
+  const chainId = useChainId()
   const [tracks, setTracks] = useState<Track[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchTracks = async () => {
       try {
-        const fetchUrl = `${API_URL.replace(/\/$/, '')}/tracks`
-        console.log(`[Mini App] Fetching tracks from: ${fetchUrl}`)
+        const fetchUrl = `${API_URL.replace(/\/$/, '')}/tracks?chain_id=${chainId}`
         const res = await fetch(fetchUrl)
         if (res.ok) {
           const data = await res.json()
           setTracks(data)
         } else {
-          logger.error(`[Mini App] Fetch failed with status: ${res.status} ${res.statusText}`)
+          logger.error(`Failed to fetch tracks: ${res.status} ${res.statusText}`)
         }
       } catch (error: any) {
-        logger.error('[Mini App] Failed to fetch tracks exception:', error?.message || error)
+        logger.error('Failed to fetch tracks:', error?.message || error)
       } finally {
         setLoading(false)
       }
     }
 
     fetchTracks()
-  }, [])
+  }, [chainId])
 
   if (loading) {
     return (

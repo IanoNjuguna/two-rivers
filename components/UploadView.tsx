@@ -499,7 +499,8 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 						max_supply: supply || '5000',
 						splitter: splitterAddress,
 						tx_hash: receipt.transactionHash,
-						uploader_address: client.account.address
+						uploader_address: client.account.address,
+						chain_id: String(chainId)
 					}),
 				})
 
