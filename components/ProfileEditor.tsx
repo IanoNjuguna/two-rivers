@@ -43,10 +43,35 @@ export function ProfileEditor({ address, client, userEmail, tProfile }: any) {
 			// Request signature from the connected wallet (Alchemy EOA)
 			const signature = await signMessageAsync({ message })
 
-			// Send signature to backend for SIWF verification (simulated for UI)
-			// In a real flow, the user would enter their FID or use a Farcaster client,
-			// but we will send the signature to standard auth/login/link endpoint.
-			toast.info('Linking Farcaster Account: Signature successful. Integration pending backend FID provision.')
+			const res = await fetch(`${API_URL}/auth/siwf`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					message,
+					signature,
+					nonce,
+					skipLink: false
+				})
+			})
+
+			if (!res.ok) {
+				const errorData = await res.json()
+				throw new Error(errorData.message || errorData.error || 'SIWF Verification failed')
+			}
+
+			const data = await res.json()
+
+			if (data.linked) {
+				toast.success('Successfully linked Farcaster Account!')
+				// Refresh the profile page to show linked status
+				setTimeout(() => window.location.reload(), 1000)
+			} else {
+				// We need to implement the Alchemy Email Link step here if not linked
+				toast.info('SIWF pending: Needs Email link signature next. Check console.')
+				console.log('Pending SIWF Token:', data.pendingSiwfToken)
+			}
 
 		} catch (err: any) {
 			logger.error('Farcaster linking failed', err)
