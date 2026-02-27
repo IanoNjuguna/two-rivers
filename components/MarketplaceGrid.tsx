@@ -26,7 +26,8 @@ export default function MarketplaceGrid({ client, onPlay }: { client?: any, onPl
   useEffect(() => {
     const fetchTracks = async () => {
       try {
-        const res = await fetch(`${API_URL}/tracks`)
+        const fetchUrl = `${API_URL.replace(/\/$/, '')}/tracks`
+        const res = await fetch(fetchUrl)
         if (res.ok) {
           const data = await res.json()
           setTracks(data)
