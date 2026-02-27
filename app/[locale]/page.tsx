@@ -13,9 +13,14 @@ import UploadView from '@/components/UploadView'
 import ChainSwitcher from '@/components/ChainSwitcher'
 import { ProfileEditor } from '@/components/ProfileEditor'
 import { useAudioPlayer, type Track } from '@/hooks/useAudioPlayer'
-import { useSignerStatus, useUser, useLogout, useAccount, useSmartAccountClient, useAlchemyAccountContext } from "@account-kit/react"
 import { useTranslations } from 'next-intl'
 import { watchSmartAccountClient, getSmartAccountClient } from "@account-kit/core"
+import { getAddressesForChain, CONTRACT_ADDRESS } from "@/lib/web3"
+
+// We must dynamically import the Alchemy hooks or only use them in AlchemyDashboard!
+// BUT we can't dynamically import named exports easily. We rely on the generic Dashboard 
+// rendering AlchemyDashboard which then calls these hooks.
+import { useSignerStatus, useUser, useLogout, useAccount, useSmartAccountClient, useAlchemyAccountContext } from "@account-kit/react"
 import { getAddressesForChain, CONTRACT_ADDRESS } from "@/lib/web3"
 
 import { useAccount as useWagmiAccount } from 'wagmi'

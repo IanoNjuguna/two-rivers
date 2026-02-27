@@ -1,7 +1,9 @@
 'use client'
 
-import React from 'react'
-import { useChain, useAlchemyAccountContext } from "@account-kit/react"
+import React, { useState, useEffect } from 'react'
+import { useChain as useAlchemyChain } from "@account-kit/react"
+import { useChainId, useSwitchChain } from "wagmi"
+import sdk from '@farcaster/miniapp-sdk'
 import { arbitrum, base, avalancheChain as avalanche } from "@/lib/config"
 import { Button } from "@/components/ui/button"
 import { IconChevronDown, IconCheck } from "@tabler/icons-react"
@@ -15,10 +17,25 @@ const CHAINS_METADATA = [
 ]
 
 export default function ChainSwitcher() {
-	const { chain, setChain } = useChain()
+	const [isMiniApp, setIsMiniApp] = useState(false)
+
+	// Wagmi
+	const wagmiChainId = useChainId()
+	const { switchChain: wagmiSwitchChain } = useSwitchChain()
+
+	// Alchemy (Conditionally safely used?)
+	// Actually, we can't call useAlchemyChain conditionally. 
+	// The safest way is to split into two inner components or rely on wagmi.
+	// Since wagmi is our universal truth for chainId, let's just use wagmi completely
+	// for the read state. For setting the chain, we'll try to use Wagmi's switchChain.
+
+	useEffect(() => {
+		sdk.isInMiniApp().then(res => setIsMiniApp(res)).catch(() => setIsMiniApp(false))
+	}, [])
 
 	// Use Number() for robust comparison
-	const currentChainMetadata = CHAINS_METADATA.find(c => Number(c.id) === Number(chain?.id)) || CHAINS_METADATA[0]
+	const activeChainId = wagmiChainId || 42161
+	const currentChainMetadata = CHAINS_METADATA.find(c => Number(c.id) === Number(activeChainId)) || CHAINS_METADATA[0]
 
 	return (
 		<Popover>
@@ -36,18 +53,18 @@ export default function ChainSwitcher() {
 							<button
 								key={c.id}
 								onClick={() => {
-									setChain({ chain: c.chain })
+									if (wagmiSwitchChain) wagmiSwitchChain({ chainId: c.id as any })
 								}}
 								title={c.name}
 								className={cn(
 									"w-full flex items-center justify-center p-2 transition-all duration-200 rounded-full group relative",
-									Number(chain?.id) === Number(c.id) ? "bg-cyber-pink/20 text-white" : "text-white/60 hover:bg-white/5 hover:text-white"
+									Number(activeChainId) === Number(c.id) ? "bg-cyber-pink/20 text-white" : "text-white/60 hover:bg-white/5 hover:text-white"
 								)}
 							>
 								<div className="w-6 h-6 rounded-full overflow-hidden flex items-center justify-center p-0">
 									<img src={c.icon} alt={c.name} className="w-full h-full object-contain" />
 								</div>
-								{Number(chain?.id) === Number(c.id) && (
+								{Number(activeChainId) === Number(c.id) && (
 									<div className="absolute right-1 top-1 w-2 h-2 rounded-full bg-cyber-pink border border-[#0D0D12]" />
 								)}
 							</button>

@@ -38,7 +38,8 @@ export default function MyUploadsGrid({ address }: MyUploadsGridProps) {
 			}
 
 			try {
-				const res = await fetch(`${API_URL}/tracks?artist=${address}`)
+				const fetchUrl = `${API_URL.replace(/\/$/, '')}/tracks?artist=${address}`
+				const res = await fetch(fetchUrl)
 				if (!res.ok) throw new Error('Failed to fetch user uploads')
 				const userTracks: Track[] = await res.json()
 				setUploads(userTracks)
