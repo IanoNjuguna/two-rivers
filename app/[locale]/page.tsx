@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { IconMenu2 as Menu, IconHome as HomeIcon, IconBooks as Library, IconSearch as Search, IconCurrencyDollar as DollarSign, IconTrendingUp as TrendingUp, IconUser as User, IconLogout as LogOut, IconPlus, IconMusic as Music, IconCopy } from '@tabler/icons-react'
 import { Button } from '@/components/ui/button'
 import MarketplaceGrid from '@/components/MarketplaceGrid'
@@ -18,6 +18,9 @@ import { useTranslations } from 'next-intl'
 import { watchSmartAccountClient, getSmartAccountClient } from "@account-kit/core"
 import { getAddressesForChain, CONTRACT_ADDRESS } from "@/lib/web3"
 
+import { useAccount as useWagmiAccount } from 'wagmi'
+import { sdk } from "@farcaster/miniapp-sdk"
+
 const formatAddress = (address: string, startChars: number = 6, endChars: number = 4): string => {
   if (!address || address.length <= startChars + endChars) {
     return address
@@ -28,17 +31,30 @@ const formatAddress = (address: string, startChars: number = 6, endChars: number
 type ViewType = 'home' | 'library' | 'search' | 'upload' | 'profile' | 'earnings' | 'analytics'
 
 export default function Dashboard() {
+  const [isMiniApp, setIsMiniApp] = useState<boolean>(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    sdk.isInMiniApp().then(res => setIsMiniApp(res)).catch(() => setIsMiniApp(false))
+    setMounted(true)
+  }, [])
+
+  if (!mounted) return <div className="h-screen bg-[#0D0D12]" />
+
+  return isMiniApp ? <MiniAppDashboard /> : <AlchemyDashboard />
+}
+
+// ------------------------------------------------------------------------------------------------
+// Web (Alchemy) Dashboard
+// ------------------------------------------------------------------------------------------------
+function AlchemyDashboard() {
   const { isConnected: isSignerConnected, isInitializing } = useSignerStatus()
   const user = useUser()
   const { config } = useAlchemyAccountContext()
   const accountConfig = React.useMemo(() => ({ type: "LightAccount" as const }), [])
 
-  // Use the scaAddress from useAccount (returns EOA address if not authenticated as SCA)
   const { address: scaAddress } = useAccount(accountConfig)
 
-  // Custom Hook Logic to bypass the "EOA is connected" guard in useSmartAccountClient
-  // This ensures we get a client as long as the Alchemy session is authenticated, 
-  // even if Wagmi (MetaMask) is also connected.
   const { client } = React.useSyncExternalStore(
     watchSmartAccountClient(accountConfig, config),
     () => getSmartAccountClient(accountConfig, config),
@@ -46,13 +62,26 @@ export default function Dashboard() {
   )
 
   const isConnected = !!(isSignerConnected && client)
-
-  // Use scaAddress as primary, fallback to user.address (from hydration)
   const effectiveAddress = scaAddress || user?.address
 
-  const { logout } = useLogout()
+  return <DashboardLayout isConnected={isConnected} effectiveAddress={effectiveAddress} client={client} userEmail={user?.email} />
+}
+
+// ------------------------------------------------------------------------------------------------
+// Farcaster Mini App Dashboard (Wagmi Only)
+// ------------------------------------------------------------------------------------------------
+function MiniAppDashboard() {
+  const { address, isConnected } = useWagmiAccount()
+  // Generate a mock LightAccount client that uses Wagmi strictly if needed by components, 
+  // or pass null and have components fallback to Wagmi EOA
+  return <DashboardLayout isConnected={isConnected} effectiveAddress={address} client={null} userEmail={undefined} />
+}
+
+// ------------------------------------------------------------------------------------------------
+// Shared UI Layout
+// ------------------------------------------------------------------------------------------------
+function DashboardLayout({ isConnected, effectiveAddress, client, userEmail }: any) {
   const [currentView, setCurrentView] = useState<ViewType>('home')
-  const [creatorMenuOpen, setCreatorMenuOpen] = useState(false)
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false)
 
   const playerState = useAudioPlayer()
