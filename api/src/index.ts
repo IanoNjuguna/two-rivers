@@ -399,6 +399,25 @@ app.get('/health', async (c) => {
   return c.json({ status: 'ok', version: SERVER_VERSION, pinata })
 })
 
+app.post('/api/webhook', async (c) => {
+  try {
+    const payload = await c.req.json()
+    logger.info('Received Farcaster Webhook', { event: payload.event, fid: payload.fid })
+
+    // Webhook shape according to Farcaster Mini Apps spec:
+    // { event: 'app_added' | 'app_removed', fid: number }
+    if (payload.event === 'app_added') {
+      logger.info(`App added by FID: ${payload.fid}`)
+      // Future: Store FID to send them notifications
+    }
+
+    return c.json({ success: true })
+  } catch (error) {
+    logger.error('Failed to parse Farcaster webhook payload', error)
+    return c.json({ error: 'Invalid payload' }, 400)
+  }
+})
+
 app.post('/tracks', authMiddleware, async (c) => {
   const track = await c.req.json();
   const payload = c.get('jwtPayload')

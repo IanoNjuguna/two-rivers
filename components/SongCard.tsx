@@ -3,12 +3,13 @@
 import { logger } from '@/lib/logger'
 
 import React from 'react'
-import { IconPlayerPlay, IconMusic, IconLoader2, IconShoppingBag, IconCheck } from '@tabler/icons-react'
+import { IconPlayerPlay, IconMusic, IconLoader2, IconShoppingBag, IconCheck, IconShare } from '@tabler/icons-react'
 import { cn } from '@/lib/utils'
 import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain } from '@/lib/web3'
 import { useChainId } from "wagmi"
 import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
+import sdk from '@farcaster/miniapp-sdk'
 
 interface SongCardProps {
   tokenId: number
@@ -174,6 +175,23 @@ export default function SongCard({
     }
   }
 
+  const handleShare = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    const text = `Check out "${name}" by ${artist} on Doba! 🎵`
+    const embedUrl = `https://doba.world` // We use root URL so Warpcast loads the frame correctly
+
+    // Construct the Warpcast intent URL
+    const warpcastIntentUrl = `https://warpcast.com/~/compose?text=${encodeURIComponent(text)}&embeds[]=${encodeURIComponent(embedUrl)}`
+
+    try {
+      // Try to open via SDK if we're inside the Mini App
+      sdk.actions.openUrl(warpcastIntentUrl)
+    } catch (error) {
+      // Fallback to standard window open if not in Farcaster context
+      window.open(warpcastIntentUrl, '_blank')
+    }
+  }
+
   return (
     <div className="group relative flex flex-col bg-white/[0.03] border border-white/5 hover:border-cyber-pink/30 transition-all duration-300">
       {/* Angular Corner Tag */}
@@ -256,6 +274,14 @@ export default function SongCard({
               <IconShoppingBag size={14} />
             )}
             {isMinting ? 'Minting...' : hasOwned ? 'Collected' : 'Collect Song'}
+          </button>
+
+          <button
+            onClick={handleShare}
+            className="w-full py-2 flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-all bg-white/5 hover:bg-white/10 text-white/50 hover:text-white border border-white/10"
+          >
+            <IconShare size={14} />
+            Share
           </button>
         </div>
       </div>
