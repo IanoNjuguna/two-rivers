@@ -13,7 +13,10 @@ const app = new Hono()
 
 // Enable CORS
 app.use('/*', cors({
-  origin: '*',
+  origin: (origin) => {
+    // If there's an origin, allow it explicitly. Otherwise default to * for non-browser clients.
+    return origin ? origin : '*'
+  },
   allowHeaders: ['*'], // Allow any custom header from Alchemy/Wagmi/Warpcast
   allowMethods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
 }))
