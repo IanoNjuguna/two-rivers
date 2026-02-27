@@ -1,5 +1,5 @@
 import { verifyMessage } from 'viem'
-import { logger } from '../../lib/logger'
+import { logger } from './lib/logger'
 
 const ACCESS_TOKEN_EXP = 7 * 24 * 60 * 60 // 7 days in seconds
 

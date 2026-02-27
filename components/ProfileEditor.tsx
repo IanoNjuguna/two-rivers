@@ -1,5 +1,5 @@
 'use client'
-
+import { useSignMessage } from 'wagmi'
 import { logger } from '@/lib/logger'
 
 import React, { useState, useEffect } from 'react'
@@ -14,6 +14,7 @@ interface UserProfile {
 	username: string | null
 	bio: string | null
 	avatar_url: string | null
+	farcaster_fid: number | null
 }
 
 const formatAddress = (addr: string) => {
@@ -24,12 +25,36 @@ const formatAddress = (addr: string) => {
 export function ProfileEditor({ address, client, userEmail, tProfile }: any) {
 	const [profile, setProfile] = useState<UserProfile | null>(null)
 	const [isEditing, setIsEditing] = useState(false)
+	const [isLinking, setIsLinking] = useState(false)
 	const [username, setUsername] = useState('')
 	const [bio, setBio] = useState('')
 	const [avatarUrl, setAvatarUrl] = useState('')
 	const [avatarFile, setAvatarFile] = useState<File | null>(null)
 	const [isLoading, setIsLoading] = useState(true)
 	const [isSaving, setIsSaving] = useState(false)
+	const { signMessageAsync } = useSignMessage()
+
+	const handleLinkFarcaster = async () => {
+		try {
+			setIsLinking(true)
+			const nonce = Math.random().toString(36).substring(2) + Date.now().toString(36)
+			const message = `doba.world wants you to sign in with your Ethereum account:\n${address}\n\nLink your Farcaster account to doba.\n\nURI: https://doba.world\nVersion: 1\nChain ID: 8453\nNonce: ${nonce}\nIssued At: ${new Date().toISOString()}`
+
+			// Request signature from the connected wallet (Alchemy EOA)
+			const signature = await signMessageAsync({ message })
+
+			// Send signature to backend for SIWF verification (simulated for UI)
+			// In a real flow, the user would enter their FID or use a Farcaster client,
+			// but we will send the signature to standard auth/login/link endpoint.
+			toast.info('Linking Farcaster Account: Signature successful. Integration pending backend FID provision.')
+
+		} catch (err: any) {
+			logger.error('Farcaster linking failed', err)
+			toast.error('Failed to link Farcaster account: ' + (err.message || 'Unknown error'))
+		} finally {
+			setIsLinking(false)
+		}
+	}
 
 	useEffect(() => {
 		const fetchProfile = async () => {
@@ -85,7 +110,7 @@ export function ProfileEditor({ address, client, userEmail, tProfile }: any) {
 
 			if (!res.ok) throw new Error('Failed to save profile')
 
-			setProfile({ address, username, bio, avatar_url: avatarUrl })
+			setProfile({ address, username, bio, avatar_url: avatarUrl, farcaster_fid: profile?.farcaster_fid || null })
 			setIsEditing(false)
 			toast.dismiss()
 			toast.success('Profile updated successfully!')
@@ -235,21 +260,45 @@ export function ProfileEditor({ address, client, userEmail, tProfile }: any) {
 			</div>
 
 			{/* Wallet Address Display */}
-			<div className="p-4 bg-black/40 border border-white/5 flex items-center justify-between mb-12 clip-tag">
-				<div>
-					<p className="text-white/40 text-[10px] uppercase tracking-widest font-bold mb-1">{tProfile('walletAddress')}</p>
-					<span className="text-sm font-mono text-white/90">{formatAddress(address)}</span>
+			<div className="flex flex-col md:flex-row gap-4 mb-12">
+				<div className="flex-1 p-4 bg-black/40 border border-white/5 flex items-center justify-between clip-tag">
+					<div>
+						<p className="text-white/40 text-[10px] uppercase tracking-widest font-bold mb-1">{tProfile('walletAddress')}</p>
+						<span className="text-sm font-mono text-white/90">{formatAddress(address)}</span>
+					</div>
+					<button
+						onClick={() => {
+							navigator.clipboard.writeText(address)
+							toast.success('Address copied!')
+						}}
+						className="p-2.5 bg-white/5 hover:bg-white/10 transition text-white/70 hover:text-white"
+						title={tProfile('copyFull')}
+					>
+						<IconCopy size={16} />
+					</button>
 				</div>
-				<button
-					onClick={() => {
-						navigator.clipboard.writeText(address)
-						toast.success('Address copied!')
-					}}
-					className="p-2.5 bg-white/5 hover:bg-white/10 transition text-white/70 hover:text-white"
-					title={tProfile('copyFull')}
-				>
-					<IconCopy size={16} />
-				</button>
+
+				<div className="flex-1 p-4 bg-black/40 border border-white/5 flex items-center justify-between clip-tag">
+					<div>
+						<p className="text-[#8a63d2]/60 text-[10px] uppercase tracking-widest font-bold mb-1">Farcaster</p>
+						<span className="text-sm font-mono text-white/90">
+							{profile?.farcaster_fid ? `FID: ${profile.farcaster_fid}` : 'Not Linked'}
+						</span>
+					</div>
+					{profile?.farcaster_fid ? (
+						<div className="text-green-400 p-2.5 flex items-center gap-1 text-[10px] uppercase tracking-widest font-bold bg-white/5">
+							<IconCheck size={16} /> Linked
+						</div>
+					) : (
+						<button
+							onClick={handleLinkFarcaster}
+							disabled={isLinking}
+							className="text-xs px-4 py-2 border border-[#8a63d2] text-[#8a63d2] hover:bg-[#8a63d2] hover:text-white transition-all font-bold clip-tag disabled:opacity-50"
+						>
+							{isLinking ? 'Connecting...' : 'Link Account'}
+						</button>
+					)}
+				</div>
 			</div>
 
 			{/* Uploads Grid */}

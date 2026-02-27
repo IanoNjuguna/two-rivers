@@ -11,6 +11,7 @@ import { Providers } from "@/components/Providers"
 import { headers } from "next/headers"
 import { cookieToInitialState } from "@account-kit/core"
 import { getConfig } from "@/lib/config"
+import { MiniAppInit } from "@/components/MiniAppInit"
 
 const notoSans = localFont({
 	src: [
@@ -72,6 +73,22 @@ export const metadata: Metadata = {
 		card: 'summary_large_image',
 		images: ['/doba_preview.png'],
 	},
+	other: {
+		'fc:miniapp': JSON.stringify({
+			version: 'next',
+			imageUrl: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://doba.world'}/doba_preview.png`,
+			button: {
+				title: 'Open doba',
+				action: {
+					type: 'launch_miniapp',
+					name: 'doba',
+					url: process.env.NEXT_PUBLIC_SITE_URL || 'https://doba.world',
+					splashImageUrl: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://doba.world'}/doba_preview.png`,
+					splashBackgroundColor: '#0D0D12',
+				},
+			},
+		}),
+	},
 }
 
 export const viewport: Viewport = {
@@ -110,6 +127,7 @@ export default async function LocaleLayout({ children, params }: Props) {
 			<body className="font-sans antialiased" suppressHydrationWarning>
 				<NextIntlClientProvider messages={messages}>
 					<Providers initialState={initialState}>
+						<MiniAppInit />
 						{children}
 					</Providers>
 				</NextIntlClientProvider>

@@ -1,4 +1,4 @@
-import { logger } from '../../lib/logger'
+import { logger } from './lib/logger'
 import { createClient } from '@libsql/client'
 
 const url = process.env.TURSO_URL || 'file:doba.db'
@@ -40,6 +40,8 @@ async function init() {
       bio TEXT,
       avatar_url TEXT,
       role TEXT DEFAULT 'user',
+      farcaster_fid INTEGER UNIQUE,
+      farcaster_custody_address TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `)
@@ -78,10 +80,16 @@ async function init() {
     }
   }
 
-  const userColumns = ['role']
+  const userColumns = ['role', 'farcaster_fid', 'farcaster_custody_address']
   for (const col of userColumns) {
     try {
-      await db.execute(`ALTER TABLE users ADD COLUMN ${col} TEXT DEFAULT 'user'`)
+      if (col === 'role') {
+        await db.execute(`ALTER TABLE users ADD COLUMN ${col} TEXT DEFAULT 'user'`)
+      } else if (col === 'farcaster_fid') {
+        await db.execute(`ALTER TABLE users ADD COLUMN ${col} INTEGER UNIQUE`)
+      } else {
+        await db.execute(`ALTER TABLE users ADD COLUMN ${col} TEXT`)
+      }
     } catch (e) {
       // Column probably already exists
     }
@@ -115,6 +123,8 @@ export interface User {
   bio?: string
   avatar_url?: string
   role?: 'admin' | 'user'
+  farcaster_fid?: number
+  farcaster_custody_address?: string
 }
 
 export interface Collaborator {
@@ -217,21 +227,40 @@ export async function getUser(address: string): Promise<User | null> {
 export async function addUser(user: User): Promise<void> {
   await db.execute({
     sql: `
-      INSERT INTO users (address, username, bio, avatar_url, role)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO users (address, username, bio, avatar_url, role, farcaster_fid, farcaster_custody_address)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(address) DO UPDATE SET
         username = excluded.username,
         bio = excluded.bio,
         avatar_url = excluded.avatar_url,
-        role = COALESCE(excluded.role, users.role)
+        role = COALESCE(excluded.role, users.role),
+        farcaster_fid = excluded.farcaster_fid,
+        farcaster_custody_address = excluded.farcaster_custody_address
     `,
     args: [
       user.address,
       user.username ?? null,
       user.bio ?? null,
       user.avatar_url ?? null,
-      user.role ?? 'user'
+      user.role ?? 'user',
+      user.farcaster_fid ?? null,
+      user.farcaster_custody_address ?? null
     ]
+  })
+}
+
+export async function getUserByFid(fid: number): Promise<User | null> {
+  const rs = await db.execute({
+    sql: 'SELECT * FROM users WHERE farcaster_fid = ?',
+    args: [fid]
+  })
+  return rs.rows[0] as unknown as User | null
+}
+
+export async function linkFidToUser(address: string, fid: number, custodyAddress: string): Promise<void> {
+  await db.execute({
+    sql: 'UPDATE users SET farcaster_fid = ?, farcaster_custody_address = ? WHERE address = ?',
+    args: [fid, custodyAddress, address]
   })
 }
 

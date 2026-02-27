@@ -1,8 +1,9 @@
-import { logger } from '../../lib/logger'
+import { logger } from './lib/logger'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import { getTrack, addTrack, getAllTracks, deleteTrack, deleteAllTracks, getUser, addUser, getTrackCollaborators, addCollaborator, isAdmin, type Track, type RefreshToken, addRefreshToken, getRefreshToken, revokeRefreshTokenFamily } from './database'
+import { getTrack, addTrack, getAllTracks, deleteTrack, deleteAllTracks, getUser, addUser, getTrackCollaborators, addCollaborator, isAdmin, type Track, type RefreshToken, addRefreshToken, getRefreshToken, revokeRefreshTokenFamily, getUserByFid, linkFidToUser } from './database'
 import { verifyWalletSignature, signJWT, verifyJWT, generateRefreshToken, getAccessTokenPayload } from './auth'
+import { createAppClient, viemConnector } from '@farcaster/auth-client'
 import axios from 'axios'
 import FormData from 'form-data'
 import { Buffer } from 'buffer'
@@ -207,6 +208,139 @@ app.post('/auth/refresh', async (c) => {
   await addRefreshToken(newRt)
 
   return c.json({ accessToken, refreshToken: newRefreshTokenString })
+})
+
+const pendingSiwfTokens = new Map<string, { fid: number, custodyAddress: string, expiresAt: number }>()
+
+app.post('/auth/siwf', async (c) => {
+  const { message, signature, nonce, skipLink } = await c.req.json()
+
+  try {
+    const farcasterClient = createAppClient({
+      ethereum: viemConnector(),
+    })
+
+    const verifyResponse = await farcasterClient.verifySignInMessage({
+      message,
+      signature,
+      domain: 'doba.world',
+      nonce,
+    })
+
+    if (!verifyResponse.success) {
+      return c.json({ error: 'Authentication failed', message: 'Invalid SIWF signature' }, 401)
+    }
+
+    const fid = verifyResponse.fid
+    const custodyAddress = verifyResponse.custody || verifyResponse.address
+
+    // Fetch verified addresses from Hubble via Neynar (if key exists)
+    let verifiedAddresses: string[] = []
+    if (process.env.NEYNAR_API_KEY) {
+      try {
+        const res = await axios.get(`https://hub-api.neynar.com/v1/verificationsByFid?fid=${fid}`, {
+          headers: { 'api_key': process.env.NEYNAR_API_KEY }
+        })
+        verifiedAddresses = res.data.messages.map((m: any) =>
+          m.data.verificationAddEthAddressBody.address.toLowerCase()
+        )
+      } catch (err) {
+        logger.warn(`Failed to fetch Farcaster verified addresses for FID ${fid}`)
+      }
+    }
+
+    let userRecord = await getUserByFid(fid)
+
+    if (!userRecord && verifiedAddresses.length > 0) {
+      for (const addr of verifiedAddresses) {
+        const u = await getUser(addr)
+        if (u) {
+          await linkFidToUser(addr, fid, custodyAddress)
+          userRecord = u
+          break
+        }
+      }
+    }
+
+    if (userRecord) {
+      const address = userRecord.address
+      const accessToken = await signJWT(getAccessTokenPayload(address), JWT_SECRET)
+      const refreshTokenString = generateRefreshToken()
+      await addRefreshToken({
+        token: refreshTokenString,
+        user_address: address,
+        family: refreshTokenString,
+        expires_at: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60),
+        revoked: false
+      })
+      return c.json({ linked: true, address, accessToken, refreshToken: refreshTokenString })
+    }
+
+    // No existing user found. 
+    if (skipLink) {
+      // Create new fresh user
+      await addUser({ address: custodyAddress, role: 'user', farcaster_fid: fid, farcaster_custody_address: custodyAddress })
+      const accessToken = await signJWT(getAccessTokenPayload(custodyAddress), JWT_SECRET)
+      const refreshTokenString = generateRefreshToken()
+      await addRefreshToken({
+        token: refreshTokenString,
+        user_address: custodyAddress,
+        family: refreshTokenString,
+        expires_at: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60),
+        revoked: false
+      })
+      return c.json({ linked: true, address: custodyAddress, accessToken, refreshToken: refreshTokenString })
+    }
+
+    // Hold proof in memory for linking
+    const pendingToken = Math.random().toString(36).substring(2) + Date.now().toString(36)
+    pendingSiwfTokens.set(pendingToken, { fid, custodyAddress, expiresAt: Date.now() + 5 * 60 * 1000 })
+    return c.json({ linked: false, pendingSiwfToken: pendingToken })
+
+  } catch (error: any) {
+    logger.error(`SIWF error:`, error)
+    return c.json({ error: 'SIWF processing failed' }, 500)
+  }
+})
+
+app.post('/auth/link-fid', async (c) => {
+  const { pendingSiwfToken, emailToken } = await c.req.json()
+  // 1. Verify SIWF token
+  const pendingData = pendingSiwfTokens.get(pendingSiwfToken)
+  if (!pendingData || pendingData.expiresAt < Date.now()) {
+    return c.json({ error: 'Invalid or expired SIWF session' }, 401)
+  }
+
+  // 2. Here we would verify the email magic link token (`emailToken`).
+  // Since Alchemy Account Kit verifies email links entirely on the client side,
+  // the client would pass their Alchemy session signature/token or wallet address directly.
+  // For this implementation, we expect `address` and `signature` of an Alchemy authenticated session.
+  const { address, signature, message } = await c.req.json()
+  const isValid = await verifyWalletSignature(address, signature, message)
+
+  if (!isValid) return c.json({ error: 'Invalid linking signature' }, 401)
+
+  // Link!
+  let userRecord = await getUser(address)
+  if (!userRecord) {
+    await addUser({ address, role: 'user' })
+    userRecord = await getUser(address)
+  }
+
+  await linkFidToUser(address, pendingData.fid, pendingData.custodyAddress)
+  pendingSiwfTokens.delete(pendingSiwfToken)
+
+  const accessToken = await signJWT(getAccessTokenPayload(address), JWT_SECRET)
+  const refreshTokenString = generateRefreshToken()
+  await addRefreshToken({
+    token: refreshTokenString,
+    user_address: address,
+    family: refreshTokenString,
+    expires_at: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60),
+    revoked: false
+  })
+
+  return c.json({ linked: true, address, accessToken, refreshToken: refreshTokenString })
 })
 
 // IPFS Upload Metadata Proxy (Accept dual hashes)

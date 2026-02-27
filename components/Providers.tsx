@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AlchemyAccountProvider, AlchemyAccountsProviderProps } from "@account-kit/react";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
 import { getConfig } from "@/lib/config";
+import { sdk } from "@farcaster/miniapp-sdk";
+import { miniAppWagmiConfig, miniAppQueryClient } from "@/lib/miniapp-config";
 
 export function Providers({
 	children,
@@ -13,14 +15,33 @@ export function Providers({
 	children: React.ReactNode;
 	initialState?: AlchemyAccountsProviderProps["initialState"];
 }) {
-	// Create a new QueryClient instance for each session
+	const [isMiniApp, setIsMiniApp] = useState<boolean | null>(null);
 	const [queryClient] = useState(() => new QueryClient());
-	const [activeConfig] = useState(() => getConfig());
+	const [alchemyConfig] = useState(() => getConfig());
+
+	useEffect(() => {
+		sdk.isInMiniApp().then(setIsMiniApp).catch(() => setIsMiniApp(false));
+	}, []);
+
+	// Render a minimal shell while detecting context
+	if (isMiniApp === null) {
+		return <>{children}</>;
+	}
+
+	if (isMiniApp) {
+		return (
+			<WagmiProvider config={miniAppWagmiConfig}>
+				<QueryClientProvider client={miniAppQueryClient}>
+					{children}
+				</QueryClientProvider>
+			</WagmiProvider>
+		);
+	}
 
 	return (
-		<WagmiProvider config={(activeConfig as any)._internal.wagmiConfig}>
+		<WagmiProvider config={(alchemyConfig as any)._internal.wagmiConfig}>
 			<QueryClientProvider client={queryClient}>
-				<AlchemyAccountProvider config={activeConfig} queryClient={queryClient} initialState={initialState}>
+				<AlchemyAccountProvider config={alchemyConfig} queryClient={queryClient} initialState={initialState}>
 					{children}
 				</AlchemyAccountProvider>
 			</QueryClientProvider>

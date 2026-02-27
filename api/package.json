@@ -9,6 +9,7 @@
     "db:init": "bun run ./src/database.ts"
   },
   "dependencies": {
+    "@farcaster/auth-client": "^0.7.1",
     "@libsql/client": "^0.17.0",
     "axios": "^1.13.5",
     "form-data": "^4.0.5",
