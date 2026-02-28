@@ -283,7 +283,7 @@ export default function SongCard({
       <img
         src={(imageUrl || '').replace('ipfs://', process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud/ipfs/')}
         alt={name}
-        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
       />
 
       {/* Heart Pop Animation Overlay */}
@@ -295,6 +295,13 @@ export default function SongCard({
           size={80}
           className="text-cyber-pink fill-cyber-pink drop-shadow-[0_0_30px_rgba(255,31,138,0.8)]"
         />
+      </div>
+
+      {/* Centered Play Action - appears on hover */}
+      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none">
+        <div className="bg-cyber-pink/90 text-white p-3 rounded-full shadow-[0_0_20px_rgba(255,31,138,0.4)] transform transition-transform group-hover:scale-110">
+          <IconPlayerPlay size={24} className="fill-white" />
+        </div>
       </div>
 
       {/* Genre Tag - top right */}
