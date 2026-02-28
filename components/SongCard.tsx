@@ -248,7 +248,25 @@ export default function SongCard({
   const lastTapRef = React.useRef<number>(0)
 
   const handleDoubleTap = async (e: React.MouseEvent | React.TouchEvent) => {
-    if (hasOwned || isMinting) return
+    if (hasOwned) {
+      toast('Collected', {
+        position: 'top-center',
+        duration: 1500,
+        style: {
+          background: 'rgba(255, 31, 138, 0.1)',
+          color: '#FF1F8A',
+          border: '1px solid rgba(255, 31, 138, 0.3)',
+          backdropFilter: 'blur(8px)',
+          fontSize: '10px',
+          fontWeight: 'bold',
+          textTransform: 'uppercase',
+          letterSpacing: '0.1em',
+          borderRadius: '4px',
+        }
+      })
+      return
+    }
+    if (isMinting) return
 
     // Visual feedback
     setShowHeart(true)
