@@ -23,7 +23,7 @@ interface MyStudioGridProps {
   client?: any // SmartAccountClient
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || '/api-backend'
+const API_URL = '/api-backend'
 
 export default function MyStudioGrid({ address, client }: MyStudioGridProps) {
   const t = useTranslations('library')

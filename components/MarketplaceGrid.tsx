@@ -17,7 +17,7 @@ interface Track {
   chain_id?: string
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || '/api-backend'
+const API_URL = '/api-backend'
 
 export default function MarketplaceGrid({ client, onPlay }: { client?: any, onPlay?: (track: Track, tracks: Track[]) => void }) {
   const t = useTranslations('marketplace')
