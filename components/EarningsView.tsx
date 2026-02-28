@@ -29,7 +29,7 @@ interface RoyaltyEntry {
   shares: number
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || '/api-backend'
+const API_URL = '/api-backend'
 
 export default function EarningsView({ isConnected, client, address }: EarningsViewProps) {
   const t = useTranslations('earnings')

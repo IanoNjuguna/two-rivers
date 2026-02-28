@@ -21,7 +21,7 @@ interface MyUploadsGridProps {
 	address?: string
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || '/api-backend'
+const API_URL = '/api-backend'
 
 export default function MyUploadsGrid({ address }: MyUploadsGridProps) {
 	const chainId = useChainId()
