@@ -247,13 +247,13 @@ export default function SongCard({
   return (
     <div
       className="group relative aspect-square overflow-hidden bg-white/[0.03] border border-white/5 hover:border-cyber-pink/30 transition-all duration-300 cursor-pointer"
-      onClick={() => router.push(`/${locale}/track/${tokenId}`)}
+      onClick={onPlay}
     >
       {/* Cover Image - fills entire square */}
       <img
         src={(imageUrl || '').replace('ipfs://', process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud/ipfs/')}
         alt={name}
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
       />
 
       {/* Genre Tag - top right */}
@@ -286,17 +286,26 @@ export default function SongCard({
         </div>
       </div>
 
-      {/* Bottom gradient overlay */}
+      {/* Bottom gradient overlay - always visible */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-      {/* Title & Artist - always visible at bottom */}
-      <div className="absolute bottom-0 left-0 right-0 z-10 p-3">
+      {/* Title & Artist - always visible at bottom, slides up on hover */}
+      <div className="absolute bottom-0 left-0 right-0 z-10 p-3 transition-transform duration-300 group-hover:translate-y-[-100%]">
         <h3 className="font-bold text-sm text-white truncate drop-shadow-lg">
           {name}
         </h3>
         <p className="text-[10px] text-white/60 font-medium truncate uppercase tracking-wider mt-0.5">
           {artist}
         </p>
+      </div>
+
+      {/* Play Button - centered, appears on hover */}
+      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+        <div
+          className="bg-cyber-pink/90 hover:bg-cyber-pink text-white p-3 rounded-full shadow-[0_0_20px_rgba(255,31,138,0.4)] transition-transform hover:scale-110"
+        >
+          <IconPlayerPlay size={20} className="fill-white" />
+        </div>
       </div>
     </div>
   )
