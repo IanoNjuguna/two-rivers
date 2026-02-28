@@ -10,7 +10,7 @@ import {
   IconArrowsShuffle,
   IconRepeat,
   IconRepeatOnce,
-  IconShoppingBag,
+  IconHeart,
   IconLoader2,
   IconCheck,
 } from '@tabler/icons-react'
@@ -424,7 +424,7 @@ export default function AudioPlayer({ playerState, client }: AudioPlayerProps) {
               {isMinting ? (
                 <IconLoader2 size={16} className="animate-spin" />
               ) : (
-                <IconShoppingBag size={16} />
+                <IconHeart size={16} />
               )}
               <span className="whitespace-nowrap">
                 {currentTrack.price ? `Collect for $${parseFloat(currentTrack.price).toFixed(2)}` : 'Collect Track'}
@@ -504,7 +504,7 @@ export default function AudioPlayer({ playerState, client }: AudioPlayerProps) {
                 className="p-2 text-cyber-pink active:scale-90 transition-transform"
                 title="Collect Song"
               >
-                {isMinting ? <IconLoader2 size={20} className="animate-spin" /> : <IconShoppingBag size={20} />}
+                {isMinting ? <IconLoader2 size={20} className="animate-spin" /> : <IconHeart size={20} />}
               </button>
             )}
 

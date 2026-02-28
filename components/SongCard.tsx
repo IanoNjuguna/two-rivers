@@ -3,7 +3,7 @@
 import { logger } from '@/lib/logger'
 
 import React from 'react'
-import { IconPlayerPlay, IconMusic, IconLoader2, IconShoppingBag, IconCheck, IconShare, IconCopy } from '@tabler/icons-react'
+import { IconPlayerPlay, IconMusic, IconLoader2, IconHeart, IconCheck, IconShare, IconCopy } from '@tabler/icons-react'
 import { cn } from '@/lib/utils'
 import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain } from '@/lib/web3'
 import { useChainId, useWalletClient, usePublicClient, useAccount } from "wagmi"
@@ -244,17 +244,58 @@ export default function SongCard({
     toast.success('Link copied to clipboard!')
   }
 
+  const [showHeart, setShowHeart] = React.useState(false)
+  const lastTapRef = React.useRef<number>(0)
+
+  const handleDoubleTap = async (e: React.MouseEvent | React.TouchEvent) => {
+    if (hasOwned || isMinting) return
+
+    // Visual feedback
+    setShowHeart(true)
+    setTimeout(() => setShowHeart(false), 800)
+
+    // Trigger Mint
+    handleMint(e as any)
+  }
+
+  const handleClick = (e: React.MouseEvent) => {
+    // Single tap/click -> Play
+    onPlay?.()
+  }
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const now = Date.now()
+    const DOUBLE_TAP_DELAY = 300
+    if (now - lastTapRef.current < DOUBLE_TAP_DELAY) {
+      handleDoubleTap(e)
+    }
+    lastTapRef.current = now
+  }
+
   return (
     <div
       className="group relative aspect-square overflow-hidden bg-white/[0.03] border border-white/5 hover:border-cyber-pink/30 transition-all duration-300 cursor-pointer"
-      onClick={onPlay}
+      onDoubleClick={handleDoubleTap}
+      onClick={handleClick}
+      onTouchEnd={handleTouchEnd}
     >
       {/* Cover Image - fills entire square */}
       <img
         src={(imageUrl || '').replace('ipfs://', process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud/ipfs/')}
         alt={name}
-        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
       />
+
+      {/* Heart Pop Animation Overlay */}
+      <div className={cn(
+        "absolute inset-0 flex items-center justify-center z-30 pointer-events-none transition-all duration-500",
+        showHeart ? "opacity-100 scale-125" : "opacity-0 scale-75"
+      )}>
+        <IconHeart
+          size={80}
+          className="text-cyber-pink fill-cyber-pink drop-shadow-[0_0_30px_rgba(255,31,138,0.8)]"
+        />
+      </div>
 
       {/* Genre Tag - top right */}
       <div className="absolute top-0 right-0 z-20">
@@ -299,39 +340,20 @@ export default function SongCard({
         </p>
       </div>
 
-      {/* Centered Actions - appears on hover */}
-      <div className="absolute inset-0 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-        {/* Play Button */}
-        <div
-          className="bg-cyber-pink/90 hover:bg-cyber-pink text-white p-3 rounded-full shadow-[0_0_20px_rgba(255,31,138,0.4)] transition-transform hover:scale-110 active:scale-95"
-          onClick={onPlay}
-        >
-          <IconPlayerPlay size={20} className="fill-white" />
+      {/* Progress/Minting Overlay */}
+      {isMinting && (
+        <div className="absolute inset-0 z-40 bg-black/40 backdrop-blur-[2px] flex flex-col items-center justify-center gap-2">
+          <IconLoader2 size={32} className="text-cyber-pink animate-spin" />
+          <span className="text-[10px] font-bold text-white uppercase tracking-tighter">Minting...</span>
         </div>
+      )}
 
-        {/* Collect Button (Shortcut) */}
-        {!hasOwned && (
-          <button
-            onClick={handleMint}
-            disabled={isMinting}
-            className="bg-white hover:bg-white/90 text-black p-3 rounded-full shadow-xl transition-transform hover:scale-110 active:scale-95 disabled:opacity-50 flex items-center justify-center"
-            title="Collect Song"
-          >
-            {isMinting ? (
-              <IconLoader2 size={20} className="animate-spin text-cyber-pink" />
-            ) : (
-              <IconShoppingBag size={20} />
-            )}
-          </button>
-        )}
-
-        {/* Owned Indicator (if already owned) */}
-        {hasOwned && (
-          <div className="bg-green-500/90 text-white p-3 rounded-full shadow-lg scale-90" title="Owned">
-            <IconCheck size={20} />
-          </div>
-        )}
-      </div>
+      {/* Owned Badge */}
+      {hasOwned && (
+        <div className="absolute top-2 left-2 z-30 bg-green-500 text-white rounded-full p-1 shadow-lg">
+          <IconCheck size={12} />
+        </div>
+      )}
     </div>
   )
 }
