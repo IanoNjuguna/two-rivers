@@ -299,13 +299,38 @@ export default function SongCard({
         </p>
       </div>
 
-      {/* Play Button - centered, appears on hover */}
-      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+      {/* Centered Actions - appears on hover */}
+      <div className="absolute inset-0 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+        {/* Play Button */}
         <div
-          className="bg-cyber-pink/90 hover:bg-cyber-pink text-white p-3 rounded-full shadow-[0_0_20px_rgba(255,31,138,0.4)] transition-transform hover:scale-110"
+          className="bg-cyber-pink/90 hover:bg-cyber-pink text-white p-3 rounded-full shadow-[0_0_20px_rgba(255,31,138,0.4)] transition-transform hover:scale-110 active:scale-95"
+          onClick={onPlay}
         >
           <IconPlayerPlay size={20} className="fill-white" />
         </div>
+
+        {/* Collect Button (Shortcut) */}
+        {!hasOwned && (
+          <button
+            onClick={handleMint}
+            disabled={isMinting}
+            className="bg-white hover:bg-white/90 text-black p-3 rounded-full shadow-xl transition-transform hover:scale-110 active:scale-95 disabled:opacity-50 flex items-center justify-center"
+            title="Collect Song"
+          >
+            {isMinting ? (
+              <IconLoader2 size={20} className="animate-spin text-cyber-pink" />
+            ) : (
+              <IconShoppingBag size={20} />
+            )}
+          </button>
+        )}
+
+        {/* Owned Indicator (if already owned) */}
+        {hasOwned && (
+          <div className="bg-green-500/90 text-white p-3 rounded-full shadow-lg scale-90" title="Owned">
+            <IconCheck size={20} />
+          </div>
+        )}
       </div>
     </div>
   )

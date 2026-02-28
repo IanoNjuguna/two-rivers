@@ -503,7 +503,7 @@ function DashboardLayout({ isConnected, effectiveAddress, client, userEmail }: a
 
       </div>
 
-      <AudioPlayer playerState={playerState} />
+      <AudioPlayer playerState={playerState} client={client} />
 
     </div>
   )
