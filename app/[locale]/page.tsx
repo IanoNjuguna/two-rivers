@@ -318,7 +318,7 @@ function DashboardLayout({ isConnected, effectiveAddress, client, userEmail }: a
         </aside >
 
         {/* Content Area */}
-        <main className="flex-1 overflow-y-auto pb-80 lg:pb-[90px]">
+        <main className={`flex-1 overflow-y-auto ${playerState.currentTrack ? 'pb-[60px] md:pb-[90px]' : ''}`}>
           <div className="p-6 max-w-7xl mx-auto">
             {currentView === 'home' && (
               <div className="space-y-6 animate-fade-in">
