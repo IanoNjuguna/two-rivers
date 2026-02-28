@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils"
 import { GENRES } from '@/constants/genres'
 
 import { useSendUserOperation, useSmartAccountClient } from "@account-kit/react"
-import { useChainId } from "wagmi"
+import { useChainId, useAccount, useWalletClient, usePublicClient } from "wagmi"
 import { getAddressesForChain, getDstEid, CONTRACT_ABI, ERC20_ABI, LZ_SYNC_OPTIONS } from '@/lib/web3'
 import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
@@ -24,11 +24,16 @@ const API_URL = '/api-backend'
 export default function UploadView({ client: propClient }: { client?: any }) {
 	const t = useTranslations('upload')
 	const chainId = useChainId()
+	const { address: wagmiAddress } = useAccount()
+	const { data: walletClient } = useWalletClient()
+	const publicClient = usePublicClient()
+
 	const { usdc: USDC_ADDRESS, contract: CONTRACT_ADDRESS, paymaster: PAYMASTER_ADDRESS } = getAddressesForChain(chainId || 42161)
 	const MathChain = { id: chainId || 42161, name: chainId === 8453 ? 'Base' : 'Arbitrum' }
 	const DST_EID = getDstEid(MathChain.id)
 
 	const client = propClient
+	const effectiveAddress = client?.account?.address || wagmiAddress
 
 	const [isSending, setIsSending] = useState(false)
 	const [open, setOpen] = useState(false)
@@ -58,53 +63,73 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 	// Background Fetch Balance
 	React.useEffect(() => {
 		const fetchBalance = async () => {
-			if (!client || !client.account) {
-				return;
-			}
-
+			if (!effectiveAddress) return;
 
 			try {
-				const balance = await client.readContract({
-					address: USDC_ADDRESS as `0x${string}`,
-					abi: ERC20_ABI,
-					functionName: 'balanceOf',
-					args: [client.account.address],
-				})
+				let balance, nBalance;
 
-				setUsdcBalance(balance as bigint)
+				if (client) {
+					balance = await client.readContract({
+						address: USDC_ADDRESS as `0x${string}`,
+						abi: ERC20_ABI,
+						functionName: 'balanceOf',
+						args: [effectiveAddress],
+					})
+					nBalance = await client.getBalance({ address: effectiveAddress })
+				} else if (publicClient) {
+					balance = await publicClient.readContract({
+						address: USDC_ADDRESS as `0x${string}`,
+						abi: ERC20_ABI,
+						functionName: 'balanceOf',
+						args: [effectiveAddress as `0x${string}`],
+					})
+					nBalance = await publicClient.getBalance({ address: effectiveAddress as `0x${string}` })
+				}
 
-				// Also fetch native balance
-				const nBalance = await client.getBalance({ address: client.account.address })
-				setNativeBalance(nBalance)
+				if (balance !== undefined) setUsdcBalance(balance as bigint)
+				if (nBalance !== undefined) setNativeBalance(nBalance)
 			} catch (e) {
 				logger.error('UploadView: Failed to fetch balances', e)
 			}
 		}
-		fetchBalance()
-	}, [client])
+
+		if (effectiveAddress && (client || publicClient)) {
+			fetchBalance()
+		}
+	}, [effectiveAddress, client, publicClient, USDC_ADDRESS])
 
 	// Background Fetch NFT Balance (to detect if already collected)
 	React.useEffect(() => {
 		const fetchNftBalance = async () => {
-			if (!client || !client.account || publishedSongId === null) return;
+			if (!effectiveAddress || publishedSongId === null) return;
 
 			try {
-				const balance = await client.readContract({
-					address: CONTRACT_ADDRESS as `0x${string}`,
-					abi: CONTRACT_ABI,
-					functionName: 'balanceOf',
-					args: [client.account.address, publishedSongId],
-				})
-				setHasCollected(balance > 0n)
+				let balance;
+				if (client) {
+					balance = await client.readContract({
+						address: CONTRACT_ADDRESS as `0x${string}`,
+						abi: CONTRACT_ABI,
+						functionName: 'balanceOf',
+						args: [effectiveAddress, publishedSongId],
+					})
+				} else if (publicClient) {
+					balance = await publicClient.readContract({
+						address: CONTRACT_ADDRESS as `0x${string}`,
+						abi: CONTRACT_ABI,
+						functionName: 'balanceOf',
+						args: [effectiveAddress as `0x${string}`, publishedSongId],
+					})
+				}
+				if (balance !== undefined) setHasCollected((balance as bigint) > 0n)
 			} catch (e) {
 				logger.error('UploadView: Failed to fetch NFT balance', e)
 			}
 		}
 
-		if (publishedSongId !== null) {
+		if (publishedSongId !== null && effectiveAddress && (client || publicClient)) {
 			fetchNftBalance()
 		}
-	}, [client, publishedSongId])
+	}, [effectiveAddress, client, publicClient, publishedSongId, CONTRACT_ADDRESS])
 
 	// Background Upload Effect
 	React.useEffect(() => {
@@ -145,28 +170,47 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 	}, [audioFile, coverFile, title])
 
 	const sendUserOperation = async (params: { uo: any, useUSDC?: boolean }) => {
-		if (!client) {
+		if (!client && !walletClient) {
 			toast.error("Wallet not initialized")
-			return
+			return null
 		}
 
 		setIsSending(true)
 		try {
-			// We have removed the ERC20 Paymaster (Sponsored Gas) for now
-			// users will pay with native ETH/AVAX
-			const { hash } = await client.sendUserOperation({
-				uo: params.uo
-			})
-			setLastUserOpHash(hash)
+			if (client) {
+				// We have removed the ERC20 Paymaster (Sponsored Gas) for now
+				// users will pay with native ETH/AVAX
+				const { hash } = await client.sendUserOperation({
+					uo: params.uo
+				})
+				setLastUserOpHash(hash)
 
-			toast.success(t('txSubmitted'))
+				toast.success(t('txSubmitted'))
+				const txHash = await client.waitForUserOperationTransaction({ hash })
+				const receipt = await client.getTransactionReceipt({ hash: txHash })
+				toast.success(t('uploadSuccess'))
+				return receipt
+			} else if (walletClient && publicClient) {
+				// Fallback to standard EOA transactions via Wagmi
+				// If uo is an array, we execute them sequentially
+				const uoList = Array.isArray(params.uo) ? params.uo : [params.uo]
+				let lastReceipt = null
 
-			const txHash = await client.waitForUserOperationTransaction({ hash })
+				for (let i = 0; i < uoList.length; i++) {
+					const tx = uoList[i]
+					const hash = await walletClient.sendTransaction({
+						to: tx.target as `0x${string}`,
+						data: tx.data as `0x${string}`,
+						value: tx.value || 0n
+					})
+					setLastUserOpHash(hash)
+					toast.success(`Transaction ${i + 1}/${uoList.length} submitted`)
+					lastReceipt = await publicClient.waitForTransactionReceipt({ hash })
+				}
 
-			const receipt = await client.getTransactionReceipt({ hash: txHash })
-
-			toast.success(t('uploadSuccess'))
-			return receipt
+				toast.success(t('uploadSuccess'))
+				return lastReceipt
+			}
 		} catch (error: any) {
 			logger.error('UserOperation Error', error)
 			toast.error(t('txFailed', { error: error.message || error }))
@@ -210,8 +254,8 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
 
-		if (!audioFile || !coverFile || !client) {
-			const status = `audio: ${!!audioFile}, cover: ${!!coverFile}, client: ${!!client}`
+		if (!audioFile || !coverFile || !effectiveAddress) {
+			const status = `audio: ${!!audioFile}, cover: ${!!coverFile}, connected: ${!!effectiveAddress}`
 			logger.warn('Missing prerequisites for mint', status)
 			toast.error(`Please ensure you have selected both audio and cover files, and your wallet is connected. (${status})`)
 			return
@@ -310,18 +354,29 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 				}),
 			])
 
-			const isOwner = client.account.address.toLowerCase() === (contractOwner as string).toLowerCase()
+			const isOwner = effectiveAddress.toLowerCase() === (contractOwner as string).toLowerCase()
 			const currentBotFee = isOwner ? 0n : BigInt(botFee as any)
 			const currentMintPrice = BigInt(mintPrice as any)
 			const totalUsdcNeeded = currentBotFee + currentMintPrice
 
 			// Check Balance First
-			const userBalance = await client.readContract({
-				address: USDC_ADDRESS as `0x${string}`,
-				abi: ERC20_ABI,
-				functionName: 'balanceOf',
-				args: [client.account.address],
-			}) as bigint
+			let userBalance = 0n;
+
+			if (client) {
+				userBalance = await client.readContract({
+					address: USDC_ADDRESS as `0x${string}`,
+					abi: ERC20_ABI,
+					functionName: 'balanceOf',
+					args: [effectiveAddress],
+				}) as bigint
+			} else if (publicClient) {
+				userBalance = await publicClient.readContract({
+					address: USDC_ADDRESS as `0x${string}`,
+					abi: ERC20_ABI,
+					functionName: 'balanceOf',
+					args: [effectiveAddress as `0x${string}`],
+				}) as bigint
+			}
 
 			if (userBalance < totalUsdcNeeded) {
 				const short = totalUsdcNeeded - userBalance
@@ -383,7 +438,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 			let sharesList = collaborators.filter(c => c.address !== '').map(c => BigInt(Math.floor((Number(c.split) || 0) * 100)))
 
 			if (collaboratorsList.length === 0) {
-				collaboratorsList = [client.account.address]
+				collaboratorsList = [effectiveAddress]
 				sharesList = [10000n]
 			}
 
@@ -412,23 +467,39 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 			// C. LayerZero Sync Call
 			let messagingFee = 150000000000000n // 0.00015 ETH fallback
 			try {
-				const fee = await client.readContract({
-					address: CONTRACT_ADDRESS as `0x${string}`,
-					abi: CONTRACT_ABI,
-					functionName: 'quoteSyncSong',
-					args: [DST_EID, tokenId, LZ_SYNC_OPTIONS]
-				}) as bigint
-				messagingFee = fee
-			} catch (e) {
-				console.warn('[DEBUG] Quote for predicted ID failed (expected if it does not exist yet). Trying ID 0 as proxy...')
-				try {
-					const fallbackFee = await client.readContract({
+				if (client) {
+					messagingFee = await client.readContract({
 						address: CONTRACT_ADDRESS as `0x${string}`,
 						abi: CONTRACT_ABI,
 						functionName: 'quoteSyncSong',
-						args: [DST_EID, 0n, LZ_SYNC_OPTIONS]
+						args: [DST_EID, tokenId, LZ_SYNC_OPTIONS]
 					}) as bigint
-					messagingFee = fallbackFee
+				} else if (publicClient) {
+					messagingFee = await publicClient.readContract({
+						address: CONTRACT_ADDRESS as `0x${string}`,
+						abi: CONTRACT_ABI,
+						functionName: 'quoteSyncSong',
+						args: [DST_EID, tokenId, LZ_SYNC_OPTIONS]
+					}) as bigint
+				}
+			} catch (e) {
+				console.warn('[DEBUG] Quote for predicted ID failed (expected if it does not exist yet). Trying ID 0 as proxy...')
+				try {
+					if (client) {
+						messagingFee = await client.readContract({
+							address: CONTRACT_ADDRESS as `0x${string}`,
+							abi: CONTRACT_ABI,
+							functionName: 'quoteSyncSong',
+							args: [DST_EID, 0n, LZ_SYNC_OPTIONS]
+						}) as bigint
+					} else if (publicClient) {
+						messagingFee = await publicClient.readContract({
+							address: CONTRACT_ADDRESS as `0x${string}`,
+							abi: CONTRACT_ABI,
+							functionName: 'quoteSyncSong',
+							args: [DST_EID, 0n, LZ_SYNC_OPTIONS]
+						}) as bigint
+					}
 				} catch (e2) {
 					logger.warn('Both quote attempts failed. Using static fallback for messaging fee.')
 				}
@@ -459,15 +530,17 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 			let splitterAddress = ''
 			try {
 				const { decodeEventLog } = await import('viem')
-				const log = receipt.logs.find((l: any) => l.address.toLowerCase() === CONTRACT_ADDRESS.toLowerCase())
-				if (log) {
-					const event = decodeEventLog({
-						abi: CONTRACT_ABI,
-						data: log.data,
-						topics: log.topics,
-					})
-					if (event.eventName === 'CollectionPublished') {
-						splitterAddress = (event.args as any).splitter
+				if (receipt?.logs) {
+					const log = receipt.logs.find((l: any) => l.address.toLowerCase() === CONTRACT_ADDRESS.toLowerCase())
+					if (log) {
+						const event = decodeEventLog({
+							abi: CONTRACT_ABI,
+							data: log.data,
+							topics: log.topics,
+						})
+						if (event.eventName === 'CollectionPublished') {
+							splitterAddress = (event.args as any).splitter
+						}
 					}
 				}
 			} catch (e) {
@@ -498,8 +571,8 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 						price: price || '0.99',
 						max_supply: supply || '5000',
 						splitter: splitterAddress,
-						tx_hash: receipt.transactionHash,
-						uploader_address: client.account.address,
+						tx_hash: receipt?.transactionHash || '',
+						uploader_address: effectiveAddress,
 						chain_id: String(chainId)
 					}),
 				})
@@ -549,7 +622,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 	}
 
 	const handleSync = async () => {
-		if (!client || publishedSongId === null) return
+		if (!effectiveAddress || publishedSongId === null) return
 
 		setIsSyncing(true)
 		const syncToast = toast.loading("Syncing song on-chain...")
@@ -557,29 +630,50 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 		try {
 
 			// 1. Quote Fee
-			const messagingFee = await client.readContract({
-				address: CONTRACT_ADDRESS as `0x${string}`,
-				abi: CONTRACT_ABI,
-				functionName: 'quoteSyncSong',
-				args: [
-					DST_EID,
-					publishedSongId,
-					LZ_SYNC_OPTIONS
-				]
-			}) as bigint
+			let messagingFee = 0n;
+			if (client) {
+				messagingFee = await client.readContract({
+					address: CONTRACT_ADDRESS as `0x${string}`,
+					abi: CONTRACT_ABI,
+					functionName: 'quoteSyncSong',
+					args: [
+						DST_EID,
+						publishedSongId,
+						LZ_SYNC_OPTIONS
+					]
+				}) as bigint
+			} else if (publicClient) {
+				messagingFee = await publicClient.readContract({
+					address: CONTRACT_ADDRESS as `0x${string}`,
+					abi: CONTRACT_ABI,
+					functionName: 'quoteSyncSong',
+					args: [
+						DST_EID,
+						publishedSongId,
+						LZ_SYNC_OPTIONS
+					]
+				}) as bigint
+			}
 
 
 
 			// 2. Check Native Balance
-			const nativeBalance = await client.getBalance({
-				address: client.account.address
-			})
+			let nativeBalance = 0n;
+			if (client) {
+				nativeBalance = await client.getBalance({
+					address: effectiveAddress as `0x${string}`
+				})
+			} else if (publicClient) {
+				nativeBalance = await publicClient.getBalance({
+					address: effectiveAddress as `0x${string}`
+				})
+			}
 
 			if (nativeBalance < messagingFee) {
 				const needed = messagingFee - nativeBalance
 				const neededEth = parseFloat(needed.toString()) / 1e18
 				toast.error(
-					`Insufficient native balance for cross-chain sync fee. You need ~${neededEth.toFixed(5)} more ${MathChain.name.includes('Arbitrum') ? 'ETH' : 'Native Token'}. Please fund your Smart Account: ${client.account.address}`,
+					`Insufficient native balance for cross-chain sync fee. You need ~${neededEth.toFixed(5)} more ${MathChain.name.includes('Arbitrum') ? 'ETH' : 'Native Token'}. Please fund your Wallet: ${effectiveAddress}`,
 					{ id: syncToast, duration: 10000 }
 				)
 				setIsSyncing(false)
@@ -623,7 +717,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 	}
 
 	const handleMint = async () => {
-		if (!client || publishedSongId === null) return
+		if (!effectiveAddress || publishedSongId === null) return
 
 		setIsMinting(true)
 		const mintToast = toast.loading("Minting your first copy...")
@@ -1064,7 +1158,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 					) : (
 						<button
 							type="submit"
-							disabled={isUploading || isSending || !audioFile || !coverFile || !client}
+							disabled={isUploading || isSending || !audioFile || !coverFile || !effectiveAddress}
 							className="w-full bg-cyber-pink hover:bg-cyber-pink/90 text-white font-medium py-4 px-6 rounded-none flex items-center justify-center gap-2 transition-all transform active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed group"
 						>
 							{isUploading ? (
