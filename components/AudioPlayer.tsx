@@ -18,6 +18,7 @@ import { logger } from '@/lib/logger'
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useLocale } from 'next-intl'
+import { cn } from '@/lib/utils'
 import type { useAudioPlayer } from '@/hooks/useAudioPlayer'
 import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain } from '@/lib/web3'
 import { useChainId, useWalletClient, usePublicClient, useAccount } from 'wagmi'
@@ -415,25 +416,27 @@ export default function AudioPlayer({ playerState, client }: AudioPlayerProps) {
         {/* RIGHT: Quick Conversion + Volume */}
         <div className="flex items-center gap-4 w-[25%] justify-end">
           {/* QUICK COLLECT BUTTON */}
-          {!hasOwned ? (
-            <button
-              onClick={handleMint}
-              disabled={isMinting}
-              className="p-2.5 rounded-full bg-cyber-pink hover:bg-cyber-pink/80 text-white transition-all hover:scale-110 active:scale-95 shadow-[0_0_15px_rgba(255,31,138,0.3)] disabled:opacity-50 flex items-center justify-center flex-shrink-0"
-              title={currentTrack.price ? `Collect for $${parseFloat(currentTrack.price).toFixed(2)}` : 'Collect Track'}
-            >
-              {isMinting ? (
-                <IconLoader2 size={20} className="animate-spin" />
-              ) : (
-                <IconHeart size={20} className="fill-white" />
-              )}
-            </button>
-          ) : (
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-500 text-[10px] font-bold uppercase tracking-wider">
-              <IconCheck size={14} />
-              Collected
-            </div>
-          )}
+          <button
+            onClick={!hasOwned ? handleMint : undefined}
+            disabled={isMinting}
+            className={cn(
+              "p-2 transition-all hover:scale-110 active:scale-95 disabled:opacity-50 flex items-center justify-center flex-shrink-0 group/heart",
+              hasOwned ? "text-cyber-pink" : "text-white/40 hover:text-white"
+            )}
+            title={hasOwned ? "Collected" : (currentTrack.price ? `Collect for $${parseFloat(currentTrack.price).toFixed(2)}` : 'Collect Track')}
+          >
+            {isMinting ? (
+              <IconLoader2 size={22} className="animate-spin text-cyber-pink" />
+            ) : (
+              <IconHeart
+                size={22}
+                className={cn(
+                  "transition-colors",
+                  hasOwned ? "fill-cyber-pink text-cyber-pink" : "fill-none"
+                )}
+              />
+            )}
+          </button>
 
           <div className="flex items-center gap-2 min-w-[100px]">
             <button
@@ -495,16 +498,24 @@ export default function AudioPlayer({ playerState, client }: AudioPlayerProps) {
           {/* Controls + Quick Collect */}
           <div className="flex items-center gap-2 flex-shrink-0">
             {/* Mobile Quick Collect */}
-            {!hasOwned && (
-              <button
-                onClick={handleMint}
-                disabled={isMinting}
-                className="p-2 text-cyber-pink active:scale-90 transition-transform"
-                title="Collect Song"
-              >
-                {isMinting ? <IconLoader2 size={20} className="animate-spin" /> : <IconHeart size={20} />}
-              </button>
-            )}
+            <button
+              onClick={!hasOwned ? handleMint : undefined}
+              disabled={isMinting}
+              className={cn(
+                "p-2 active:scale-90 transition-transform",
+                hasOwned ? "text-cyber-pink" : "text-white/40"
+              )}
+              title={hasOwned ? "Collected" : "Collect Song"}
+            >
+              {isMinting ? (
+                <IconLoader2 size={22} className="animate-spin text-cyber-pink" />
+              ) : (
+                <IconHeart
+                  size={22}
+                  className={cn(hasOwned && "fill-cyber-pink")}
+                />
+              )}
+            </button>
 
             <button
               onClick={togglePlayPause}
