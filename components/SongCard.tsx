@@ -3,7 +3,7 @@
 import { logger } from '@/lib/logger'
 
 import React from 'react'
-import { IconPlayerPlay, IconMusic, IconLoader2, IconShoppingBag, IconCheck, IconShare } from '@tabler/icons-react'
+import { IconPlayerPlay, IconMusic, IconLoader2, IconShoppingBag, IconCheck, IconShare, IconCopy } from '@tabler/icons-react'
 import { cn } from '@/lib/utils'
 import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain } from '@/lib/web3'
 import { useChainId } from "wagmi"
@@ -198,6 +198,14 @@ export default function SongCard({
     }
   }
 
+  const handleCopyLink = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    // For now, it copies the root. In the future, this could be a specific track route like /track/${tokenId}
+    const url = `https://doba.world`
+    navigator.clipboard.writeText(url)
+    toast.success('Link copied to clipboard!')
+  }
+
   return (
     <div className="group relative flex flex-col bg-white/[0.03] border border-white/5 hover:border-cyber-pink/30 transition-all duration-300">
       {/* Angular Corner Tag */}
@@ -282,13 +290,23 @@ export default function SongCard({
             {isMinting ? 'Minting...' : hasOwned ? 'Collected' : 'Collect Song'}
           </button>
 
-          <button
-            onClick={handleShare}
-            className="w-full py-2 flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-all bg-white/5 hover:bg-white/10 text-white/50 hover:text-white border border-white/10"
-          >
-            <IconShare size={14} />
-            Share
-          </button>
+          <div className="flex items-center gap-2 w-full">
+            <button
+              onClick={handleShare}
+              className="flex-1 py-2 flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-all bg-white/5 hover:bg-white/10 text-white/50 hover:text-white border border-white/10"
+            >
+              <IconShare size={14} />
+              Share
+            </button>
+
+            <button
+              onClick={handleCopyLink}
+              title="Copy Link"
+              className="px-3 py-2 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest transition-all bg-white/5 hover:bg-white/10 text-white/50 hover:text-white border border-white/10"
+            >
+              <IconCopy size={14} />
+            </button>
+          </div>
         </div>
       </div>
 
