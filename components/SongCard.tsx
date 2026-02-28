@@ -204,7 +204,7 @@ export default function SongCard({
       {/* Cover Image Container */}
       <div className="relative aspect-square overflow-hidden bg-white/5">
         <img
-          src={imageUrl.replace('ipfs://', process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud/ipfs/')}
+          src={(imageUrl || '').replace('ipfs://', process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud/ipfs/')}
           alt={name}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />

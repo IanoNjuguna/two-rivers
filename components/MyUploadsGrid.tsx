@@ -84,7 +84,7 @@ export default function MyUploadsGrid({ address }: MyUploadsGridProps) {
 						{/* Cover Image */}
 						<div className="aspect-square w-full relative overflow-hidden">
 							<img
-								src={track.image_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/')}
+								src={(track.image_url || '').replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/')}
 								alt={track.name}
 								className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
 							/>
@@ -140,7 +140,7 @@ export default function MyUploadsGrid({ address }: MyUploadsGridProps) {
 					<div className="space-y-6 py-2">
 						<div className="aspect-square w-full rounded-xl overflow-hidden border border-white/10">
 							<img
-								src={selectedTrack?.image_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/')}
+								src={(selectedTrack?.image_url || '').replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/')}
 								alt={selectedTrack?.name}
 								className="w-full h-full object-cover"
 							/>
@@ -175,7 +175,7 @@ export default function MyUploadsGrid({ address }: MyUploadsGridProps) {
 							<Button
 								className="w-full bg-[#FF1F8A] hover:bg-[#FF1F8A]/90 text-white font-bold py-6 rounded-xl shadow-[0_0_20px_rgba(255,31,138,0.3)] transition-all duration-300"
 								onClick={() => {
-									window.open(selectedTrack?.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'), '_blank')
+									window.open((selectedTrack?.audio_url || '').replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'), '_blank')
 								}}
 							>
 								Open Audio File
