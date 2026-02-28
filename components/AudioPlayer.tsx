@@ -419,16 +419,14 @@ export default function AudioPlayer({ playerState, client }: AudioPlayerProps) {
             <button
               onClick={handleMint}
               disabled={isMinting}
-              className="flex items-center gap-2 px-4 py-2 rounded-full bg-cyber-pink hover:bg-cyber-pink/80 text-white text-xs font-bold transition-all hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(255,31,138,0.3)] disabled:opacity-50"
+              className="p-2.5 rounded-full bg-cyber-pink hover:bg-cyber-pink/80 text-white transition-all hover:scale-110 active:scale-95 shadow-[0_0_15px_rgba(255,31,138,0.3)] disabled:opacity-50 flex items-center justify-center flex-shrink-0"
+              title={currentTrack.price ? `Collect for $${parseFloat(currentTrack.price).toFixed(2)}` : 'Collect Track'}
             >
               {isMinting ? (
-                <IconLoader2 size={16} className="animate-spin" />
+                <IconLoader2 size={20} className="animate-spin" />
               ) : (
-                <IconHeart size={16} />
+                <IconHeart size={20} className="fill-white" />
               )}
-              <span className="whitespace-nowrap">
-                {currentTrack.price ? `Collect for $${parseFloat(currentTrack.price).toFixed(2)}` : 'Collect Track'}
-              </span>
             </button>
           ) : (
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-500 text-[10px] font-bold uppercase tracking-wider">
