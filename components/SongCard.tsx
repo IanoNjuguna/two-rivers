@@ -183,11 +183,17 @@ export default function SongCard({
     // Construct the Warpcast intent URL
     const warpcastIntentUrl = `https://warpcast.com/~/compose?text=${encodeURIComponent(text)}&embeds[]=${encodeURIComponent(embedUrl)}`
 
-    try {
-      // Try to open via SDK if we're inside the Mini App
-      sdk.actions.openUrl(warpcastIntentUrl)
-    } catch (error) {
-      // Fallback to standard window open if not in Farcaster context
+    const isIframe = window.self !== window.top
+
+    if (isIframe) {
+      try {
+        // Try to open via SDK if we're inside the Mini App
+        sdk.actions.openUrl(warpcastIntentUrl)
+      } catch (error) {
+        window.open(warpcastIntentUrl, '_blank')
+      }
+    } else {
+      // Fast fallback to standard window open if definitely not in Farcaster context
       window.open(warpcastIntentUrl, '_blank')
     }
   }
