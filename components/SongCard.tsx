@@ -44,6 +44,7 @@ export default function SongCard({
   client,
   trackChainId,
   onPlay,
+  isPlaying = false,
 }: SongCardProps) {
   const chainId = useChainId()
   const router = useRouter()
