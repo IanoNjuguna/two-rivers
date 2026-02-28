@@ -218,7 +218,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
             {/* Play / Pause */}
             <button
               onClick={togglePlayPause}
-              className="w-10 h-10 rounded-none flex items-center justify-center flex-shrink-0 transition-all bg-cyber-pink hover:bg-cyber-pink/80 active:scale-95 active:brightness-75"
+              className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all bg-cyber-pink hover:bg-cyber-pink/80 active:scale-95 active:brightness-75"
               aria-label={isPlaying ? 'Pause' : 'Play'}
             >
               {isPlaying
@@ -361,7 +361,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
 
             <button
               onClick={togglePlayPause}
-              className="w-9 h-9 rounded-none flex items-center justify-center transition-all bg-cyber-pink hover:bg-cyber-pink/80 active:scale-95 active:brightness-75"
+              className="w-9 h-9 rounded-full flex items-center justify-center transition-all bg-cyber-pink hover:bg-cyber-pink/80 active:scale-95 active:brightness-75"
               aria-label={isPlaying ? 'Pause' : 'Play'}
             >
               {isPlaying
