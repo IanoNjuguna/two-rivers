@@ -106,6 +106,11 @@ function DashboardLayout({ isConnected, effectiveAddress, client, userEmail }: a
   const tProfile = useTranslations('profile')
 
   const handlePlayTrack = (track: Track, tracks?: any[]) => {
+    if (playerState.currentTrack?.id === track.id) {
+      playerState.togglePlayPause()
+      return
+    }
+
     if (playerState.audioRef.current) {
       playerState.audioRef.current.src = track.url || ''
     }
