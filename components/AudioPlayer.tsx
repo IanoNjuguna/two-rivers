@@ -212,7 +212,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
               className="p-1.5 text-white hover:text-white/70 transition-all hover:scale-110"
               aria-label="Previous"
             >
-              <SkipBack size={20} />
+              <SkipBack size={20} className="fill-white" />
             </button>
 
             {/* Play / Pause */}
@@ -222,8 +222,8 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
               aria-label={isPlaying ? 'Pause' : 'Play'}
             >
               {isPlaying
-                ? <Pause size={18} className="text-white" />
-                : <Play size={18} className="text-white ml-0.5" />
+                ? <Pause size={18} className="text-white fill-white" />
+                : <Play size={18} className="text-white fill-white ml-0.5" />
               }
             </button>
 
@@ -233,7 +233,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
               className="p-1.5 text-white hover:text-white/70 transition-all hover:scale-110"
               aria-label="Next"
             >
-              <SkipForward size={20} />
+              <SkipForward size={20} className="fill-white" />
             </button>
 
             {/* Repeat */}
@@ -356,7 +356,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
               className="p-2 text-white hover:text-white/70 transition-colors"
               aria-label="Previous"
             >
-              <SkipBack size={18} />
+              <SkipBack size={18} className="fill-white" />
             </button>
 
             <button
@@ -365,8 +365,8 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
               aria-label={isPlaying ? 'Pause' : 'Play'}
             >
               {isPlaying
-                ? <Pause size={16} className="text-white" />
-                : <Play size={16} className="text-white ml-0.5" />
+                ? <Pause size={16} className="text-white fill-white" />
+                : <Play size={16} className="text-white fill-white ml-0.5" />
               }
             </button>
 
@@ -375,7 +375,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
               className="p-2 text-white hover:text-white/70 transition-colors"
               aria-label="Next"
             >
-              <SkipForward size={18} />
+              <SkipForward size={18} className="fill-white" />
             </button>
           </div>
         </div>
