@@ -3,7 +3,7 @@
 import { logger } from '@/lib/logger'
 
 import React from 'react'
-import { IconPlayerPlay, IconMusic, IconLoader2, IconHeart, IconCheck, IconShare, IconCopy } from '@tabler/icons-react'
+import { IconPlayerPlay, IconPlayerPause, IconMusic, IconLoader2, IconHeart, IconCheck, IconShare, IconCopy } from '@tabler/icons-react'
 import { cn } from '@/lib/utils'
 import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain } from '@/lib/web3'
 import { useChainId, useWalletClient, usePublicClient, useAccount } from "wagmi"
@@ -24,6 +24,7 @@ interface SongCardProps {
   client?: any
   trackChainId?: string
   onPlay?: () => void
+  isPlaying?: boolean
 }
 
 const CHAIN_BADGE: Record<string, { logo: string; label: string }> = {
@@ -318,7 +319,11 @@ export default function SongCard({
       {/* Centered Play Action - appears on hover */}
       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none">
         <div className="bg-cyber-pink/90 text-white p-3 rounded-full shadow-[0_0_20px_rgba(255,31,138,0.4)] transform transition-transform group-hover:scale-110">
-          <IconPlayerPlay size={24} className="fill-white" />
+          {isPlaying ? (
+            <IconPlayerPause size={24} className="fill-white" />
+          ) : (
+            <IconPlayerPlay size={24} className="fill-white" />
+          )}
         </div>
       </div>
 

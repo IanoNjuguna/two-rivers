@@ -19,7 +19,17 @@ interface Track {
 
 const API_URL = '/api-backend'
 
-export default function MarketplaceGrid({ client, onPlay }: { client?: any, onPlay?: (track: Track, tracks: Track[]) => void }) {
+export default function MarketplaceGrid({
+  client,
+  onPlay,
+  currentTrackId,
+  isPlaying
+}: {
+  client?: any,
+  onPlay?: (track: Track, tracks: Track[]) => void,
+  currentTrackId?: number | null,
+  isPlaying?: boolean
+}) {
   const t = useTranslations('marketplace')
   const [tracks, setTracks] = useState<Track[]>([])
   const [loading, setLoading] = useState(true)
@@ -78,6 +88,7 @@ export default function MarketplaceGrid({ client, onPlay }: { client?: any, onPl
           trackChainId={track.chain_id}
           client={client}
           onPlay={onPlay ? () => onPlay(track, tracks) : undefined}
+          isPlaying={isPlaying && currentTrackId === track.token_id}
         />
       ))}
     </div>

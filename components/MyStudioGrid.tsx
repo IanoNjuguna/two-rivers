@@ -2,7 +2,7 @@ import { logger } from '@/lib/logger'
 import React, { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { IconEye, IconMusic, IconMicrophone } from '@tabler/icons-react'
+import { IconEye, IconMusic, IconMicrophone, IconPlayerPause } from '@tabler/icons-react'
 import { CONTRACT_ABI, getAddressesForChain } from '@/lib/web3'
 import { useTranslations } from 'next-intl'
 import { useChainId } from "wagmi"
@@ -24,11 +24,13 @@ interface MyStudioGridProps {
   address?: string
   client?: any // SmartAccountClient
   onPlay?: (track: Track, tracks: Track[]) => void
+  currentTrackId?: number | null
+  isPlaying?: boolean
 }
 
 const API_URL = '/api-backend'
 
-export default function MyStudioGrid({ address, client, onPlay }: MyStudioGridProps) {
+export default function MyStudioGrid({ address, client, onPlay, currentTrackId, isPlaying }: MyStudioGridProps) {
   const t = useTranslations('library')
   const chainId = useChainId()
   const { contract: CONTRACT_ADDRESS, explorer: EXPLORER_URL } = getAddressesForChain(chainId || 42161)
@@ -124,12 +126,16 @@ export default function MyStudioGrid({ address, client, onPlay }: MyStudioGridPr
           >
             {/* Index / Play Button */}
             <div className="flex justify-center items-center">
-              {hoveredTrackId === track.token_id ? (
+              {hoveredTrackId === track.token_id || (isPlaying && currentTrackId === track.token_id) ? (
                 <button
                   onClick={() => onPlay?.(track, ownedTracks)}
                   className="text-white hover:text-purple-400 transition-colors"
                 >
-                  <IconMusic size={16} className="text-purple-400 animate-pulse" />
+                  {isPlaying && currentTrackId === track.token_id ? (
+                    <IconPlayerPause size={16} className="text-purple-400" />
+                  ) : (
+                    <IconMusic size={16} className="text-purple-400 animate-pulse" />
+                  )}
                 </button>
               ) : (
                 <span className="text-sm font-medium text-white/40">{index + 1}</span>

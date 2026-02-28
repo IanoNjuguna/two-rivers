@@ -325,23 +325,27 @@ function DashboardLayout({ isConnected, effectiveAddress, client, userEmail }: a
                 <div>
                   <h2 className="text-2xl font-bold mb-2">{tHome('discoverMusic')}</h2>
                 </div>
-                <MarketplaceGrid client={client} onPlay={(track, tracks) => handlePlayTrack({
-                  id: track.token_id,
-                  title: track.name,
-                  creator: track.artist,
-                  cover: track.image_url,
-                  url: track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
-                  collaborators: 0,
-                  price: track.price
-                }, tracks.map(t => ({
-                  id: t.token_id,
-                  title: t.name,
-                  creator: t.artist,
-                  cover: t.image_url,
-                  url: t.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
-                  collaborators: 0,
-                  price: t.price
-                })))} />
+                <MarketplaceGrid
+                  client={client}
+                  currentTrackId={playerState.currentTrack?.id}
+                  isPlaying={playerState.isPlaying}
+                  onPlay={(track, tracks) => handlePlayTrack({
+                    id: track.token_id,
+                    title: track.name,
+                    creator: track.artist,
+                    cover: track.image_url,
+                    url: track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
+                    collaborators: 0,
+                    price: track.price
+                  }, tracks.map(t => ({
+                    id: t.token_id,
+                    title: t.name,
+                    creator: t.artist,
+                    cover: t.image_url,
+                    url: t.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
+                    collaborators: 0,
+                    price: t.price
+                  })))} />
               </div>
             )}
 
@@ -357,6 +361,8 @@ function DashboardLayout({ isConnected, effectiveAddress, client, userEmail }: a
                   <MyStudioGrid
                     address={effectiveAddress || undefined}
                     client={client}
+                    currentTrackId={playerState.currentTrack?.id}
+                    isPlaying={playerState.isPlaying}
                     onPlay={(track, tracks) => handlePlayTrack({
                       id: track.token_id,
                       title: track.name,
