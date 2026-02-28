@@ -16,22 +16,26 @@ interface Track {
   description?: string
   genre?: string
   tx_hash?: string
+  price?: string
+  created_at?: string
 }
 
 interface MyStudioGridProps {
   address?: string
   client?: any // SmartAccountClient
+  onPlay?: (track: Track, tracks: Track[]) => void
 }
 
 const API_URL = '/api-backend'
 
-export default function MyStudioGrid({ address, client }: MyStudioGridProps) {
+export default function MyStudioGrid({ address, client, onPlay }: MyStudioGridProps) {
   const t = useTranslations('library')
   const chainId = useChainId()
   const { contract: CONTRACT_ADDRESS, explorer: EXPLORER_URL } = getAddressesForChain(chainId || 42161)
   const [ownedTracks, setOwnedTracks] = useState<Track[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedTrack, setSelectedTrack] = useState<Track | null>(null)
+  const [hoveredTrackId, setHoveredTrackId] = useState<number | null>(null)
 
   useEffect(() => {
     const fetchOwnedTracks = async () => {
@@ -78,9 +82,9 @@ export default function MyStudioGrid({ address, client }: MyStudioGridProps) {
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[...Array(3)].map((_, i) => (
-          <div key={i} className="h-48 glass animate-pulse rounded-xl" />
+      <div className="space-y-4">
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className="h-14 glass animate-pulse rounded-md" />
         ))}
       </div>
     )
@@ -97,55 +101,84 @@ export default function MyStudioGrid({ address, client }: MyStudioGridProps) {
   }
 
   return (
-    <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {ownedTracks.map((track) => (
+    <div className="flex flex-col">
+      {/* List Header */}
+      <div className="grid grid-cols-[48px_1fr_120px_160px_60px] gap-4 px-4 py-2 border-b border-white/5 text-xs font-medium text-white/40 uppercase tracking-widest mb-2">
+        <div className="flex justify-center">#</div>
+        <div>Title</div>
+        <div className="hidden md:block">Genre</div>
+        <div className="hidden lg:block">Date Added</div>
+        <div className="flex justify-center">
+          <IconEye size={14} className="opacity-40" />
+        </div>
+      </div>
+
+      {/* List Rows */}
+      <div className="flex flex-col">
+        {ownedTracks.map((track, index) => (
           <div
             key={track.token_id}
-            className="group relative bg-[#16161E] border border-white/[0.08] hover:border-purple-500/50 transition-all duration-300 rounded-xl overflow-hidden"
+            onMouseEnter={() => setHoveredTrackId(track.token_id)}
+            onMouseLeave={() => setHoveredTrackId(null)}
+            className="grid grid-cols-[48px_1fr_120px_160px_60px] gap-4 px-4 py-2 hover:bg-white/[0.05] transition-colors rounded-md group items-center"
           >
-            {/* Cover Image */}
-            <div className="aspect-square w-full relative overflow-hidden">
-              <img
-                src={(track.image_url || '').replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/')}
-                alt={track.name}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
+            {/* Index / Play Button */}
+            <div className="flex justify-center items-center">
+              {hoveredTrackId === track.token_id ? (
+                <button
+                  onClick={() => onPlay?.(track, ownedTracks)}
+                  className="text-white hover:text-purple-400 transition-colors"
+                >
+                  <IconMusic size={16} className="text-purple-400 animate-pulse" />
+                </button>
+              ) : (
+                <span className="text-sm font-medium text-white/40">{index + 1}</span>
+              )}
+            </div>
 
-              {/* Badge for Ownership */}
-              <div className="absolute top-3 right-3 bg-purple-600/90 backdrop-blur-md text-[10px] font-bold px-2 py-1 rounded shadow-lg uppercase tracking-wider">
-                Owned
+            {/* Track Info (Title + Artist) */}
+            <div
+              className="flex items-center gap-3 min-w-0 cursor-pointer"
+              onClick={() => onPlay?.(track, ownedTracks)}
+            >
+              <div className="w-10 h-10 rounded overflow-hidden flex-shrink-0 border border-white/10">
+                <img
+                  src={(track.image_url || '').replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/')}
+                  alt={track.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="min-w-0">
+                <h4 className="text-sm font-bold text-white truncate group-hover:text-purple-400 transition-colors">
+                  {track.name}
+                </h4>
+                <p className="text-xs text-white/50 truncate flex items-center gap-1">
+                  <IconMicrophone size={10} className="text-purple-400/50" />
+                  {track.artist}
+                </p>
               </div>
             </div>
 
-            {/* Content */}
-            <div className="p-4 space-y-3">
-              <div>
-                <h3 className="font-bold text-base text-white line-clamp-1 group-hover:text-purple-400 transition-colors">
-                  {track.name}
-                </h3>
-                <div className="flex items-center gap-1.5 mt-1">
-                  <IconMicrophone size={12} className="text-purple-400" />
-                  <p className="text-xs text-white/60 truncate">{track.artist}</p>
-                </div>
-              </div>
+            {/* Genre */}
+            <div className="hidden md:flex items-center text-xs text-white/50">
+              <span className="bg-white/5 px-2 py-0.5 rounded border border-white/5">{track.genre || 'Ambient'}</span>
+            </div>
 
-              <div className="flex items-center justify-between pt-3 border-t border-white/[0.05]">
-                <div className="flex gap-2">
-                  <div className="bg-white/5 py-1 px-2 rounded text-[10px] text-white/40">
-                    ID #{track.token_id}
-                  </div>
-                </div>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="h-8 w-8 p-0 hover:bg-purple-500/20 text-purple-400"
-                  onClick={() => setSelectedTrack(track)}
-                >
-                  <IconEye size={18} />
-                </Button>
-              </div>
+            {/* Date Added */}
+            <div className="hidden lg:flex items-center text-xs text-white/40">
+              {track.created_at ? new Date(track.created_at).toLocaleDateString() : 'N/A'}
+            </div>
+
+            {/* View Details Button */}
+            <div className="flex justify-center">
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-8 w-8 p-0 hover:bg-purple-500/20 text-white/40 hover:text-purple-400"
+                onClick={() => setSelectedTrack(track)}
+              >
+                <IconEye size={18} />
+              </Button>
             </div>
           </div>
         ))}
@@ -229,6 +262,6 @@ export default function MyStudioGrid({ address, client }: MyStudioGridProps) {
           </div>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   )
 }

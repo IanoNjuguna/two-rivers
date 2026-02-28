@@ -354,7 +354,27 @@ function DashboardLayout({ isConnected, effectiveAddress, client, userEmail }: a
                   </p>
                 </div>
                 {isConnected ? (
-                  <MyStudioGrid address={effectiveAddress || undefined} client={client} />
+                  <MyStudioGrid
+                    address={effectiveAddress || undefined}
+                    client={client}
+                    onPlay={(track, tracks) => handlePlayTrack({
+                      id: track.token_id,
+                      title: track.name,
+                      creator: track.artist,
+                      cover: track.image_url,
+                      url: track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
+                      collaborators: 0,
+                      price: track.price
+                    }, tracks.map(t => ({
+                      id: t.token_id,
+                      title: t.name,
+                      creator: t.artist,
+                      cover: t.image_url,
+                      url: t.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
+                      collaborators: 0,
+                      price: t.price
+                    })))}
+                  />
                 ) : (
                   <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
                     <Library className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
