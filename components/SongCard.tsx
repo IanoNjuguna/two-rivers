@@ -289,8 +289,8 @@ export default function SongCard({
       {/* Bottom gradient overlay - always visible */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-      {/* Title & Artist - always visible at bottom, slides up on hover */}
-      <div className="absolute bottom-0 left-0 right-0 z-10 p-3 transition-transform duration-300 group-hover:translate-y-[-100%]">
+      {/* Title & Artist - always visible at bottom */}
+      <div className="absolute bottom-0 left-0 right-0 z-10 p-3">
         <h3 className="font-bold text-sm text-white truncate drop-shadow-lg">
           {name}
         </h3>
