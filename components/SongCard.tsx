@@ -10,6 +10,8 @@ import { useChainId, useWalletClient, usePublicClient, useAccount } from "wagmi"
 import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
 import sdk from '@farcaster/miniapp-sdk'
+import { useRouter } from 'next/navigation'
+import { useLocale } from 'next-intl'
 
 interface SongCardProps {
   tokenId: number
@@ -43,6 +45,8 @@ export default function SongCard({
   onPlay,
 }: SongCardProps) {
   const chainId = useChainId()
+  const router = useRouter()
+  const locale = useLocale()
   const { data: walletClient } = useWalletClient()
   const publicClient = usePublicClient()
   const { address } = useAccount()
@@ -241,8 +245,10 @@ export default function SongCard({
   }
 
   return (
-    <div className="group relative aspect-square overflow-hidden bg-white/[0.03] border border-white/5 hover:border-cyber-pink/30 transition-all duration-300 cursor-pointer">
-      {/* Cover Image - fills entire square */}
+    <div
+      className="group relative aspect-square overflow-hidden bg-white/[0.03] border border-white/5 hover:border-cyber-pink/30 transition-all duration-300 cursor-pointer"
+      onClick={() => router.push(`/${locale}/track/${tokenId}`)}
+    >      {/* Cover Image - fills entire square */}
       <img
         src={(imageUrl || '').replace('ipfs://', process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud/ipfs/')}
         alt={name}

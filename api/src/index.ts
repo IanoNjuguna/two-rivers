@@ -396,6 +396,14 @@ app.get('/tracks', async (c) => {
   return c.json(tracks)
 })
 
+app.get('/tracks/:id', async (c) => {
+  const id = parseInt(c.req.param('id'))
+  if (isNaN(id)) return c.json({ error: 'Invalid track ID' }, 400)
+  const track = await getTrack(id)
+  if (!track) return c.json({ error: 'Track not found' }, 404)
+  return c.json(track)
+})
+
 app.get('/health', async (c) => {
   let pinata = 'unknown'
   try { await axios.get('https://api.pinata.cloud/health', { timeout: 2000 }); pinata = 'ok' } catch { pinata = 'error' }
