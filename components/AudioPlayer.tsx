@@ -13,6 +13,8 @@ import {
 } from '@tabler/icons-react'
 import { logger } from '@/lib/logger'
 import { useEffect, useState, useRef, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
+import { useLocale } from 'next-intl'
 import type { useAudioPlayer } from '@/hooks/useAudioPlayer'
 
 interface AudioPlayerProps {
@@ -41,6 +43,8 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
   const [repeatMode, setRepeatMode] = useState<'off' | 'all' | 'one'>('off')
   const [isDragging, setIsDragging] = useState(false)
   const progressBarRef = useRef<HTMLDivElement>(null)
+  const router = useRouter()
+  const locale = useLocale()
 
   // Sync volume to audio element
   useEffect(() => {
@@ -151,7 +155,10 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
       <div className="hidden md:flex items-center gap-4 px-6 h-[90px] max-w-screen-2xl mx-auto">
 
         {/* LEFT: Track Info */}
-        <div className="flex items-center gap-3 w-[30%] min-w-0">
+        <div
+          className="flex items-center gap-3 w-[30%] min-w-0 cursor-pointer hover:opacity-80 transition-opacity"
+          onClick={() => router.push(`/${locale}/track/${currentTrack.id}`)}
+        >
           {/* Album Art */}
           <div className="w-12 h-12 rounded-md flex-shrink-0 overflow-hidden bg-white/5">
             <img
@@ -319,7 +326,10 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
       {/* ─── MOBILE LAYOUT (< md) ─── */}
       <div className="flex md:hidden flex-col">
         {/* Main row */}
-        <div className="flex items-center gap-3 px-4 py-2.5">
+        <div
+          className="flex items-center gap-3 px-4 py-2.5 cursor-pointer"
+          onClick={() => router.push(`/${locale}/track/${currentTrack.id}`)}
+        >
           {/* Album Art */}
           <div className="w-10 h-10 rounded-md flex-shrink-0 overflow-hidden bg-white/5">
             <img
