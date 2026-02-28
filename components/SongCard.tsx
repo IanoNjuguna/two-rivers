@@ -299,7 +299,12 @@ export default function SongCard({
               <span className="text-[10px] font-mono">#{tokenId}</span>
             </div>
             <div className="text-[10px] text-cyber-pink font-bold border border-cyber-pink/20 px-1.5 py-0.5">
-              USDC {price || '0.99'}
+              {(() => {
+                const currentPrice = price ? parseFloat(price) : 0.99;
+                if (currentPrice === 0) return 'FREE';
+                if (currentPrice < 1) return `${Math.round(currentPrice * 100)}¢`;
+                return `USDC ${currentPrice.toFixed(2)}`;
+              })()}
             </div>
           </div>
 
