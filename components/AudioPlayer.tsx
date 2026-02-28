@@ -153,10 +153,12 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
         {/* LEFT: Track Info */}
         <div className="flex items-center gap-3 w-[30%] min-w-0">
           {/* Album Art */}
-          <div
-            className="w-12 h-12 rounded-md flex-shrink-0 overflow-hidden"
-            style={{ backgroundColor: currentTrack.cover } as React.CSSProperties}
-          >
+          <div className="w-12 h-12 rounded-md flex-shrink-0 overflow-hidden bg-white/5">
+            <img
+              src={(currentTrack.cover || '').replace('ipfs://', process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud/ipfs/')}
+              alt={currentTrack.title}
+              className="w-full h-full object-cover"
+            />
           </div>
 
           {/* Title + Artist */}
@@ -319,10 +321,12 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
         {/* Main row */}
         <div className="flex items-center gap-3 px-4 py-2.5">
           {/* Album Art */}
-          <div
-            className="w-10 h-10 rounded-md flex-shrink-0 overflow-hidden"
-            style={{ backgroundColor: currentTrack.cover } as React.CSSProperties}
-          >
+          <div className="w-10 h-10 rounded-md flex-shrink-0 overflow-hidden bg-white/5">
+            <img
+              src={(currentTrack.cover || '').replace('ipfs://', process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud/ipfs/')}
+              alt={currentTrack.title}
+              className="w-full h-full object-cover"
+            />
           </div>
 
           {/* Track Info */}
