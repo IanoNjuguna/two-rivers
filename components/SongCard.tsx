@@ -25,9 +25,9 @@ interface SongCardProps {
 }
 
 const CHAIN_BADGE: Record<string, { logo: string; label: string }> = {
-  '42161': { logo: 'https://icons.llamao.fi/icons/chains/rsz_arbitrum.jpg', label: 'Arbitrum' },
-  '8453': { logo: 'https://icons.llamao.fi/icons/chains/rsz_base.jpg', label: 'Base' },
-  '43114': { logo: 'https://icons.llamao.fi/icons/chains/rsz_avalanche.jpg', label: 'Avalanche' },
+  '42161': { logo: '/images/arbitrum.png', label: 'Arbitrum' },
+  '8453': { logo: '/images/base.png', label: 'Base' },
+  '43114': { logo: '/images/avalanche.png', label: 'Avalanche' },
 }
 
 export default function SongCard({
