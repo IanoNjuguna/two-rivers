@@ -6,7 +6,7 @@ import React from 'react'
 import { IconPlayerPlay, IconMusic, IconLoader2, IconShoppingBag, IconCheck, IconShare, IconCopy } from '@tabler/icons-react'
 import { cn } from '@/lib/utils'
 import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain } from '@/lib/web3'
-import { useChainId } from "wagmi"
+import { useChainId, useWalletClient, usePublicClient, useAccount } from "wagmi"
 import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
 import sdk from '@farcaster/miniapp-sdk'
@@ -43,23 +43,34 @@ export default function SongCard({
   onPlay,
 }: SongCardProps) {
   const chainId = useChainId()
+  const { data: walletClient } = useWalletClient()
+  const publicClient = usePublicClient()
+  const { address } = useAccount()
+
+  // Standardize the active address
+  const effectiveAddress = client?.account?.address || address
+
   const {
     usdc: CURRENT_USDC,
     contract: CURRENT_CONTRACT,
     explorer: EXPLORER_URL
   } = getAddressesForChain(chainId || 42161)
+
   const [isMinting, setIsMinting] = React.useState(false)
   const [hasOwned, setHasOwned] = React.useState(false)
 
+  // Determine active reader for contracts
+  const activeClient = client || publicClient
+
   // Check ownership
   const checkOwnership = React.useCallback(async () => {
-    if (!client || !client.account) return
+    if (!effectiveAddress || !activeClient) return
     try {
-      const balance = await client.readContract({
+      const balance = await activeClient.readContract({
         address: CURRENT_CONTRACT as `0x${string}`,
         abi: CONTRACT_ABI,
         functionName: 'balanceOf',
-        args: [client.account.address, BigInt(tokenId)],
+        args: [effectiveAddress as `0x${string}`, BigInt(tokenId)],
       }) as bigint
       setHasOwned(balance > 0n)
       return balance > 0n
@@ -75,7 +86,7 @@ export default function SongCard({
 
   const handleMint = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    if (!client) {
+    if (!effectiveAddress) {
       toast.error("Please connect your wallet first")
       return
     }
@@ -93,10 +104,16 @@ export default function SongCard({
 
     try {
       // 0. Check Native Balance for Gas
-      const nativeBalance = await client.getBalance({ address: client.account.address })
+      let nativeBalance = 0n;
+      if (client) {
+        nativeBalance = await client.getBalance({ address: effectiveAddress as `0x${string}` })
+      } else if (publicClient) {
+        nativeBalance = await publicClient.getBalance({ address: effectiveAddress as `0x${string}` })
+      }
+
       if (nativeBalance < parseUnits("0.0001", 18)) { // Rough estimate for a mint
         toast.error(
-          `Insufficient native balance for gas. Please fund your Wallet: ${client.account.address}`,
+          `Insufficient native balance for gas. Please fund your Wallet: ${effectiveAddress}`,
           { id: mainToast, duration: 8000 }
         )
         setIsMinting(false)
@@ -104,12 +121,11 @@ export default function SongCard({
       }
 
       // 1. Check Allowance
-
-      const allowance = await client.readContract({
+      const allowance = await activeClient.readContract({
         address: CURRENT_USDC as `0x${string}`,
         abi: ERC20_ABI,
         functionName: 'allowance',
-        args: [client.account.address, CURRENT_CONTRACT as `0x${string}`],
+        args: [effectiveAddress as `0x${string}`, CURRENT_CONTRACT as `0x${string}`],
       }) as bigint
 
       // 2. Approve if needed
@@ -121,10 +137,18 @@ export default function SongCard({
           args: [CURRENT_CONTRACT as `0x${string}`, 1000000000000n], // High allowance for better UX
         })
 
-        const { hash: approveHash } = await client.sendUserOperation({
-          uo: { target: CURRENT_USDC as `0x${string}`, data: approveData }
-        })
-        await client.waitForUserOperationTransaction({ hash: approveHash })
+        if (client) {
+          const { hash: approveHash } = await client.sendUserOperation({
+            uo: { target: CURRENT_USDC as `0x${string}`, data: approveData }
+          })
+          await client.waitForUserOperationTransaction({ hash: approveHash })
+        } else if (walletClient) {
+          const tx = await walletClient.sendTransaction({
+            to: CURRENT_USDC as `0x${string}`,
+            data: approveData
+          })
+          await publicClient?.waitForTransactionReceipt({ hash: tx })
+        }
       }
 
       // 3. Mint
@@ -135,11 +159,21 @@ export default function SongCard({
         args: [BigInt(tokenId)],
       })
 
-      const { hash: mintHash } = await client.sendUserOperation({
-        uo: { target: CURRENT_CONTRACT as `0x${string}`, data: mintData }
-      })
+      let txReceipt;
 
-      const txReceipt = await client.waitForUserOperationTransaction({ hash: mintHash })
+      if (client) {
+        const { hash: mintHash } = await client.sendUserOperation({
+          uo: { target: CURRENT_CONTRACT as `0x${string}`, data: mintData }
+        })
+        txReceipt = await client.waitForUserOperationTransaction({ hash: mintHash })
+      } else if (walletClient) {
+        const tx = await walletClient.sendTransaction({
+          to: CURRENT_CONTRACT as `0x${string}`,
+          data: mintData
+        })
+        const receipt = await publicClient?.waitForTransactionReceipt({ hash: tx })
+        txReceipt = receipt?.transactionHash || tx
+      }
 
       // Update local state immediately
       setHasOwned(true)
