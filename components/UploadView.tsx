@@ -758,7 +758,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 					<div className="flex-1">
 						<h4 className="text-sm font-bold text-amber-500 uppercase tracking-tight mb-1">USDC Balance Required</h4>
 						<p className="text-xs text-white/70 leading-relaxed mb-3">
-							To publish on <strong>Doba</strong>, you need <strong>1.98 USDC</strong>.
+							To publish on <strong>Doba</strong>, you need <strong>1 USDC</strong>.
 							Your balance: <strong>{(Number(usdcBalance) / 1e6).toFixed(2)} USDC</strong>.
 						</p>
 						<p className="text-[10px] text-white/40 italic">
