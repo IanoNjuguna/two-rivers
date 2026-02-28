@@ -320,34 +320,31 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 			const { metadataUri } = await metaResponse.json()
 
 
-			// 3. Check Allowances (Gas Paymaster + Platform Fee)
+			// 3. Check Allowances (Platform Fee)
 
 			toast.loading("Checking permissions...", { id: mainToast })
 
-			const [gasAllowance, platformAllowance, contractOwner, botFee, mintPrice] = await Promise.all([
-				client.readContract({
+			const activeClient = client || publicClient
+			if (!activeClient) throw new Error("No web3 client available")
+
+			const [platformAllowance, contractOwner, botFee, mintPrice] = await Promise.all([
+				activeClient.readContract({
 					address: USDC_ADDRESS as `0x${string}`,
 					abi: ERC20_ABI,
 					functionName: 'allowance',
-					args: [client.account.address, PAYMASTER_ADDRESS as `0x${string}`],
+					args: [effectiveAddress as `0x${string}`, CONTRACT_ADDRESS as `0x${string}`],
 				}),
-				client.readContract({
-					address: USDC_ADDRESS as `0x${string}`,
-					abi: ERC20_ABI,
-					functionName: 'allowance',
-					args: [client.account.address, CONTRACT_ADDRESS as `0x${string}`],
-				}),
-				client.readContract({
+				activeClient.readContract({
 					address: CONTRACT_ADDRESS as `0x${string}`,
 					abi: CONTRACT_ABI,
 					functionName: 'owner',
 				}),
-				client.readContract({
+				activeClient.readContract({
 					address: CONTRACT_ADDRESS as `0x${string}`,
 					abi: CONTRACT_ABI,
 					functionName: 'botFee',
 				}),
-				client.readContract({
+				activeClient.readContract({
 					address: CONTRACT_ADDRESS as `0x${string}`,
 					abi: CONTRACT_ABI,
 					functionName: 'MINT_PRICE',
@@ -380,42 +377,28 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 			if (userBalance < totalUsdcNeeded) {
 				const short = totalUsdcNeeded - userBalance
-				const shortAmount = (Number(short) / 1e6).toFixed(2)
-				throw new Error(`Insufficient USDC balance for batch operations. You need another ${shortAmount} USDC. Current: ${(Number(userBalance) / 1e6).toFixed(2)} / Needed: ${(Number(totalUsdcNeeded) / 1e6).toFixed(2)}`)
+				const shortAmount = (Number(short) / 1e6).toFixed(4)
+				throw new Error(`Insufficient USDC balance for batch operations. You need another ${shortAmount} USDC. Current: ${(Number(userBalance) / 1e6).toFixed(4)} / Needed: ${(Number(totalUsdcNeeded) / 1e6).toFixed(4)}`)
 			}
 
-			const minGasAllowance = parseUnits("0.20", 6)
 			const minPlatformAllowance = totalUsdcNeeded
 			const maxAllowance = BigInt("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
 
-			if (gasAllowance < minGasAllowance || platformAllowance < minPlatformAllowance) {
-				toast.loading("Step 1/2: Approving platform & gas services...", { id: mainToast })
+			if (platformAllowance < minPlatformAllowance) {
+				toast.loading("Step 1/2: Approving platform services...", { id: mainToast })
 
 				const calls = []
-				if (gasAllowance < minGasAllowance) {
-					calls.push({
-						target: USDC_ADDRESS as `0x${string}`,
-						data: encodeFunctionData({
-							abi: ERC20_ABI,
-							functionName: 'approve',
-							args: [PAYMASTER_ADDRESS as `0x${string}`, maxAllowance],
-						})
+				calls.push({
+					target: USDC_ADDRESS as `0x${string}`,
+					data: encodeFunctionData({
+						abi: ERC20_ABI,
+						functionName: 'approve',
+						args: [CONTRACT_ADDRESS as `0x${string}`, maxAllowance],
 					})
-				}
-				if (platformAllowance < minPlatformAllowance) {
-					calls.push({
-						target: USDC_ADDRESS as `0x${string}`,
-						data: encodeFunctionData({
-							abi: ERC20_ABI,
-							functionName: 'approve',
-							args: [CONTRACT_ADDRESS as `0x${string}`, maxAllowance],
-						})
-					})
-				}
+				})
 
 				await sendUserOperation({
-					uo: calls,
-					useUSDC: false // Sponsored Approve
+					uo: calls
 				})
 
 
@@ -427,11 +410,20 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 			toast.loading("Preparing one-click publish batch...", { id: mainToast })
 
-			const nextId = await client.readContract({
-				address: CONTRACT_ADDRESS as `0x${string}`,
-				abi: CONTRACT_ABI,
-				functionName: 'nextCollectionId',
-			})
+			let nextId;
+			if (client) {
+				nextId = await client.readContract({
+					address: CONTRACT_ADDRESS as `0x${string}`,
+					abi: CONTRACT_ABI,
+					functionName: 'nextCollectionId',
+				})
+			} else if (publicClient) {
+				nextId = await publicClient.readContract({
+					address: CONTRACT_ADDRESS as `0x${string}`,
+					abi: CONTRACT_ABI,
+					functionName: 'nextCollectionId',
+				})
+			}
 			const tokenId = BigInt(nextId as any)
 
 			let collaboratorsList = collaborators.map(c => c.address).filter(a => a !== '')

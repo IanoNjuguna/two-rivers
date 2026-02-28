@@ -73,17 +73,14 @@ export const getConfig = () => {
 			{
 				chain: arbitrum,
 				transport: getTransport(42161),
-				policyId: process.env.NEXT_PUBLIC_ALCHEMY_ARB_POLICY_ID,
 			},
 			{
 				chain: base,
 				transport: getTransport(8453),
-				policyId: process.env.NEXT_PUBLIC_ALCHEMY_BASE_POLICY_ID,
 			},
 			{
 				chain: avalancheChain,
 				transport: getTransport(43114),
-				policyId: process.env.NEXT_PUBLIC_ALCHEMY_AVAX_POLICY_ID,
 			},
 		],
 		ssr: true,
