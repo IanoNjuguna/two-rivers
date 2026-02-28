@@ -248,11 +248,12 @@ export default function SongCard({
     <div
       className="group relative aspect-square overflow-hidden bg-white/[0.03] border border-white/5 hover:border-cyber-pink/30 transition-all duration-300 cursor-pointer"
       onClick={() => router.push(`/${locale}/track/${tokenId}`)}
-    >      {/* Cover Image - fills entire square */}
+    >
+      {/* Cover Image - fills entire square */}
       <img
         src={(imageUrl || '').replace('ipfs://', process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud/ipfs/')}
         alt={name}
-        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+        className="absolute inset-0 w-full h-full object-cover"
       />
 
       {/* Genre Tag - top right */}
@@ -273,7 +274,7 @@ export default function SongCard({
         </div>
       )}
 
-      {/* Price Badge - visible by default, top-left below chain badge */}
+      {/* Price Badge */}
       <div className="absolute top-2 right-2 z-20 mt-5">
         <div className="text-[9px] text-white font-bold bg-black/60 backdrop-blur-sm border border-cyber-pink/30 px-1.5 py-0.5 rounded-sm">
           {(() => {
@@ -285,79 +286,17 @@ export default function SongCard({
         </div>
       </div>
 
-      {/* Bottom gradient overlay - always visible */}
+      {/* Bottom gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
       {/* Title & Artist - always visible at bottom */}
-      <div className="absolute bottom-0 left-0 right-0 z-10 p-3 transition-transform duration-300 group-hover:translate-y-[-100%]">
+      <div className="absolute bottom-0 left-0 right-0 z-10 p-3">
         <h3 className="font-bold text-sm text-white truncate drop-shadow-lg">
           {name}
         </h3>
         <p className="text-[10px] text-white/60 font-medium truncate uppercase tracking-wider mt-0.5">
           {artist}
         </p>
-      </div>
-
-      {/* Hover Action Panel - slides up from bottom */}
-      <div className="absolute bottom-0 left-0 right-0 z-20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out">
-        <div className="bg-black/70 backdrop-blur-md border-t border-white/10 p-3 space-y-2">
-          {/* Title & Artist - repeated in panel */}
-          <div>
-            <h3 className="font-bold text-xs text-white truncate">{name}</h3>
-            <p className="text-[9px] text-white/50 truncate uppercase tracking-wider">{artist}</p>
-          </div>
-
-          {/* Collect Button */}
-          <button
-            onClick={handleMint}
-            disabled={isMinting || hasOwned}
-            className={cn(
-              "w-full py-1.5 flex items-center justify-center gap-1.5 text-[9px] font-bold uppercase tracking-widest transition-all rounded-sm",
-              hasOwned
-                ? "bg-green-500/10 text-green-400 border border-green-500/20 cursor-default"
-                : "bg-[#B794F4]/10 hover:bg-[#B794F4] text-[#B794F4] hover:text-white border border-[#B794F4]/20",
-              isMinting && "opacity-50 cursor-not-allowed"
-            )}
-          >
-            {isMinting ? (
-              <IconLoader2 size={12} className="animate-spin" />
-            ) : hasOwned ? (
-              <IconCheck size={12} />
-            ) : (
-              <IconShoppingBag size={12} />
-            )}
-            {isMinting ? 'Minting...' : hasOwned ? 'Collected' : 'Collect'}
-          </button>
-
-          {/* Share & Copy Row */}
-          <div className="flex items-center gap-1.5 w-full">
-            <button
-              onClick={handleShare}
-              className="flex-1 py-1.5 flex items-center justify-center gap-1.5 text-[9px] font-bold uppercase tracking-widest transition-all bg-white/5 hover:bg-white/10 text-white/50 hover:text-white border border-white/10 rounded-sm"
-            >
-              <IconShare size={11} />
-              Share
-            </button>
-            <button
-              onClick={handleCopyLink}
-              title="Copy Link"
-              className="px-2.5 py-1.5 flex items-center justify-center transition-all bg-white/5 hover:bg-white/10 text-white/50 hover:text-white border border-white/10 rounded-sm"
-            >
-              <IconCopy size={11} />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Play Button - centered, appears on hover */}
-      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-        <button
-          onClick={onPlay}
-          aria-label={`Play ${name}`}
-          className="bg-cyber-pink/90 hover:bg-cyber-pink text-white p-3 rounded-full shadow-[0_0_20px_rgba(255,31,138,0.4)] transition-transform hover:scale-110"
-        >
-          <IconPlayerPlay size={20} className="fill-white" />
-        </button>
       </div>
     </div>
   )
