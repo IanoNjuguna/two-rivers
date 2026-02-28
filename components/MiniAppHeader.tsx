@@ -17,7 +17,7 @@ export default function MiniAppHeader({ address: propAddress }: { address?: stri
 
 	const { address: wagmiAddress, isConnected, chainId } = useAccount()
 	const { disconnect } = useDisconnect()
-	const { connect, connectors } = useConnect()
+	const { connect, connectors, isPending } = useConnect()
 
 	const address = propAddress || wagmiAddress
 
@@ -138,10 +138,17 @@ export default function MiniAppHeader({ address: propAddress }: { address?: stri
 				</div>
 			) : (
 				<Button
-					disabled
-					className="bg-blue-600 hover:bg-blue-700 text-white font-semibold opacity-50"
+					onClick={() => {
+						const farcasterConnector = connectors.find((c: any) => c.id === 'farcasterMiniApp' || c.name === 'Farcaster')
+						if (farcasterConnector) connect({ connector: farcasterConnector })
+						else if (connectors.length > 0) connect({ connector: connectors[0] })
+					}}
+					disabled={isPending}
+					className="bg-blue-600 hover:bg-blue-700 text-white font-semibold"
 				>
-					<span className="animate-pulse">Connecting Base Account...</span>
+					<span className={isPending ? "animate-pulse" : ""}>
+						{isPending ? 'Connecting...' : 'Connect Base Wallet'}
+					</span>
 				</Button>
 			)}
 		</div>
