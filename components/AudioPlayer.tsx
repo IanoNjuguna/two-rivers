@@ -176,7 +176,6 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
             <div className="marquee-container">
               <div className="marquee-content">
                 <span className="text-sm font-semibold text-white pr-12">{currentTrack.title}</span>
-                <span className="text-sm font-semibold text-white pr-12">{currentTrack.title}</span>
               </div>
             </div>
             <p className="text-xs text-white/50 truncate mt-0.5">
@@ -349,7 +348,6 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
           <div className="flex-1 min-w-0">
             <div className="marquee-container">
               <div className="marquee-content">
-                <span className="text-sm font-semibold text-white pr-8">{currentTrack.title}</span>
                 <span className="text-sm font-semibold text-white pr-8">{currentTrack.title}</span>
               </div>
             </div>
