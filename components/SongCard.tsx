@@ -241,116 +241,118 @@ export default function SongCard({
   }
 
   return (
-    <div className="group relative flex flex-col bg-white/[0.03] border border-white/5 hover:border-cyber-pink/30 transition-all duration-300">
-      {/* Angular Corner Tag */}
+    <div className="group relative aspect-square overflow-hidden bg-white/[0.03] border border-white/5 hover:border-cyber-pink/30 transition-all duration-300 cursor-pointer">
+      {/* Cover Image - fills entire square */}
+      <img
+        src={(imageUrl || '').replace('ipfs://', process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud/ipfs/')}
+        alt={name}
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+      />
+
+      {/* Genre Tag - top right */}
       <div className="absolute top-0 right-0 z-20">
         <div className="bg-cyber-pink text-[8px] font-bold px-2 py-0.5 text-white tracking-widest uppercase clip-tag">
           {genre || 'RARE'}
         </div>
       </div>
 
-      {/* Cover Image Container */}
-      <div className="relative aspect-square overflow-hidden bg-white/5">
-        <img
-          src={(imageUrl || '').replace('ipfs://', process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud/ipfs/')}
-          alt={name}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-        />
+      {/* Chain Badge - top left */}
+      {trackChainId && CHAIN_BADGE[trackChainId] && (
+        <div className="absolute top-2 left-2 z-20" title={CHAIN_BADGE[trackChainId].label}>
+          <img
+            src={CHAIN_BADGE[trackChainId].logo}
+            alt={CHAIN_BADGE[trackChainId].label}
+            className="w-5 h-5 rounded-full ring-1 ring-white/20 shadow-md"
+          />
+        </div>
+      )}
 
-        {/* Overlay with Glossy effect */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D12] via-transparent to-transparent opacity-60" />
-
-        {/* Chain Badge */}
-        {trackChainId && CHAIN_BADGE[trackChainId] && (
-          <div className="absolute bottom-2 left-2 z-10" title={CHAIN_BADGE[trackChainId].label}>
-            <img
-              src={CHAIN_BADGE[trackChainId].logo}
-              alt={CHAIN_BADGE[trackChainId].label}
-              className="w-5 h-5 rounded-full ring-1 ring-white/20 shadow-md"
-            />
-          </div>
-        )}
-
-        {/* Play Button Overlay */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-          <button
-            onClick={onPlay}
-            aria-label={`Play ${name}`}
-            className="bg-cyber-pink hover:bg-cyber-pink/90 text-white p-4 shadow-[0_0_20px_rgba(255,31,138,0.4)] transition-transform hover:scale-110 clip-hex-btn"
-          >
-            <IconPlayerPlay size={24} className="fill-white" />
-          </button>
+      {/* Price Badge - visible by default, top-left below chain badge */}
+      <div className="absolute top-2 right-2 z-20 mt-5">
+        <div className="text-[9px] text-white font-bold bg-black/60 backdrop-blur-sm border border-cyber-pink/30 px-1.5 py-0.5 rounded-sm">
+          {(() => {
+            const currentPrice = price ? parseFloat(price) : 0.99;
+            if (currentPrice === 0) return 'FREE';
+            if (currentPrice < 1) return `${Math.round(currentPrice * 100)}¢`;
+            return `$${currentPrice.toFixed(2)}`;
+          })()}
         </div>
       </div>
 
-      {/* Info Section */}
-      <div className="p-4 space-y-1 bg-gradient-to-b from-transparent to-white/[0.02]">
-        <h3 className="font-bold text-sm text-white truncate group-hover:text-cyber-pink transition-colors">
+      {/* Bottom gradient overlay - always visible */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+      {/* Title & Artist - always visible at bottom */}
+      <div className="absolute bottom-0 left-0 right-0 z-10 p-3 transition-transform duration-300 group-hover:translate-y-[-100%]">
+        <h3 className="font-bold text-sm text-white truncate drop-shadow-lg">
           {name}
         </h3>
-        <p className="text-xs text-white/40 font-medium truncate uppercase tracking-tighter">
+        <p className="text-[10px] text-white/60 font-medium truncate uppercase tracking-wider mt-0.5">
           {artist}
         </p>
+      </div>
 
-        <div className="pt-2 flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5 text-white/20">
-              <IconMusic size={12} />
-              <span className="text-[10px] font-mono">#{tokenId}</span>
-            </div>
-            <div className="text-[10px] text-cyber-pink font-bold border border-cyber-pink/20 px-1.5 py-0.5">
-              {(() => {
-                const currentPrice = price ? parseFloat(price) : 0.99;
-                if (currentPrice === 0) return 'FREE';
-                if (currentPrice < 1) return `${Math.round(currentPrice * 100)}¢`;
-                return `USDC ${currentPrice.toFixed(2)}`;
-              })()}
-            </div>
+      {/* Hover Action Panel - slides up from bottom */}
+      <div className="absolute bottom-0 left-0 right-0 z-20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out">
+        <div className="bg-black/70 backdrop-blur-md border-t border-white/10 p-3 space-y-2">
+          {/* Title & Artist - repeated in panel */}
+          <div>
+            <h3 className="font-bold text-xs text-white truncate">{name}</h3>
+            <p className="text-[9px] text-white/50 truncate uppercase tracking-wider">{artist}</p>
           </div>
 
+          {/* Collect Button */}
           <button
             onClick={handleMint}
             disabled={isMinting || hasOwned}
             className={cn(
-              "w-full py-2 flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-all",
+              "w-full py-1.5 flex items-center justify-center gap-1.5 text-[9px] font-bold uppercase tracking-widest transition-all rounded-sm",
               hasOwned
-                ? "bg-green-500/10 text-green-500 border border-green-500/20 cursor-default"
+                ? "bg-green-500/10 text-green-400 border border-green-500/20 cursor-default"
                 : "bg-[#B794F4]/10 hover:bg-[#B794F4] text-[#B794F4] hover:text-white border border-[#B794F4]/20",
               isMinting && "opacity-50 cursor-not-allowed"
             )}
           >
             {isMinting ? (
-              <IconLoader2 size={14} className="animate-spin" />
+              <IconLoader2 size={12} className="animate-spin" />
             ) : hasOwned ? (
-              <IconCheck size={14} />
+              <IconCheck size={12} />
             ) : (
-              <IconShoppingBag size={14} />
+              <IconShoppingBag size={12} />
             )}
-            {isMinting ? 'Minting...' : hasOwned ? 'Collected' : 'Collect Song'}
+            {isMinting ? 'Minting...' : hasOwned ? 'Collected' : 'Collect'}
           </button>
 
-          <div className="flex items-center gap-2 w-full">
+          {/* Share & Copy Row */}
+          <div className="flex items-center gap-1.5 w-full">
             <button
               onClick={handleShare}
-              className="flex-1 py-2 flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-all bg-white/5 hover:bg-white/10 text-white/50 hover:text-white border border-white/10"
+              className="flex-1 py-1.5 flex items-center justify-center gap-1.5 text-[9px] font-bold uppercase tracking-widest transition-all bg-white/5 hover:bg-white/10 text-white/50 hover:text-white border border-white/10 rounded-sm"
             >
-              <IconShare size={14} />
+              <IconShare size={11} />
               Share
             </button>
-
             <button
               onClick={handleCopyLink}
               title="Copy Link"
-              className="px-3 py-2 flex items-center justify-center text-[10px] font-bold uppercase tracking-widest transition-all bg-white/5 hover:bg-white/10 text-white/50 hover:text-white border border-white/10"
+              className="px-2.5 py-1.5 flex items-center justify-center transition-all bg-white/5 hover:bg-white/10 text-white/50 hover:text-white border border-white/10 rounded-sm"
             >
-              <IconCopy size={14} />
+              <IconCopy size={11} />
             </button>
           </div>
         </div>
       </div>
 
-      {/* Aesthetic Border Bottom */}
-      <div className="h-0.5 w-full bg-white/5 group-hover:bg-cyber-pink transition-colors duration-300" />
+      {/* Play Button - centered, appears on hover */}
+      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+        <button
+          onClick={onPlay}
+          aria-label={`Play ${name}`}
+          className="bg-cyber-pink/90 hover:bg-cyber-pink text-white p-3 rounded-full shadow-[0_0_20px_rgba(255,31,138,0.4)] transition-transform hover:scale-110"
+        >
+          <IconPlayerPlay size={20} className="fill-white" />
+        </button>
+      </div>
     </div>
   )
 }
