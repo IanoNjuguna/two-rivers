@@ -109,3 +109,4 @@ export const getConfig = () => {
 export const config = getConfig();
 
 export const queryClient = new QueryClient();
+export const accountConfig = { type: "LightAccount" as const };

@@ -8,6 +8,7 @@ import { routing } from '@/i18n/routing'
 
 import '../globals.css'
 import { Providers } from "@/components/Providers"
+import { AudioProvider } from "@/components/AudioProvider"
 import { headers } from "next/headers"
 import { cookieToInitialState } from "@account-kit/core"
 import { getConfig } from "@/lib/config"
@@ -128,7 +129,9 @@ export default async function LocaleLayout({ children, params }: Props) {
 				<NextIntlClientProvider messages={messages}>
 					<Providers initialState={initialState}>
 						<MiniAppInit />
-						{children}
+						<AudioProvider>
+							{children}
+						</AudioProvider>
 					</Providers>
 				</NextIntlClientProvider>
 			</body>

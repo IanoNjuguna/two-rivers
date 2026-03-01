@@ -9,6 +9,8 @@ import { useChainId, useWalletClient, usePublicClient, useAccount } from 'wagmi'
 import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
 import sdk from '@farcaster/miniapp-sdk'
+import { useAudio } from '@/components/AudioProvider'
+import { type Track as PlayerTrack } from '@/hooks/useAudioPlayer'
 
 const CHAIN_BADGE: Record<string, { logo: string; label: string }> = {
 	'42161': { logo: '/images/arbitrum.png', label: 'Arbitrum' },
@@ -39,10 +41,11 @@ export default function TrackDetailPage() {
 
 	const [track, setTrack] = useState<Track | null>(null)
 	const [loading, setLoading] = useState(true)
-	const [isPlaying, setIsPlaying] = useState(false)
 	const [isMinting, setIsMinting] = useState(false)
 	const [hasOwned, setHasOwned] = useState(false)
-	const audioRef = React.useRef<HTMLAudioElement | null>(null)
+
+	const { playerState, handlePlayTrack } = useAudio()
+	const isPlaying = playerState.currentTrack?.id === track?.token_id && playerState.isPlaying
 
 	const chainId = useChainId()
 	const { data: walletClient } = useWalletClient()
@@ -100,14 +103,16 @@ export default function TrackDetailPage() {
 		(url || '').replace('ipfs://', process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud/ipfs/')
 
 	const togglePlay = () => {
-		if (!audioRef.current || !track) return
-		if (isPlaying) {
-			audioRef.current.pause()
-		} else {
-			audioRef.current.src = resolveIpfs(track.audio_url)
-			audioRef.current.play()
-		}
-		setIsPlaying(!isPlaying)
+		if (!track) return
+		handlePlayTrack({
+			id: track.token_id,
+			title: track.name,
+			creator: track.artist,
+			cover: track.image_url,
+			url: track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
+			collaborators: 0,
+			price: track.price
+		})
 	}
 
 	const handleMint = async () => {
@@ -235,7 +240,6 @@ export default function TrackDetailPage() {
 
 	return (
 		<div className="min-h-screen bg-[#0D0D12] text-white">
-			<audio ref={audioRef} onEnded={() => setIsPlaying(false)} />
 
 			{/* Hero Section */}
 			<div className="relative w-full aspect-square max-h-[60vh] overflow-hidden">

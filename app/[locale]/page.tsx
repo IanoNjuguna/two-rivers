@@ -12,7 +12,8 @@ import Footer from '@/components/Footer'
 import UploadView from '@/components/UploadView'
 import ChainSwitcher from '@/components/ChainSwitcher'
 import { ProfileEditor } from '@/components/ProfileEditor'
-import { useAudioPlayer, type Track } from '@/hooks/useAudioPlayer'
+import { type Track } from '@/hooks/useAudioPlayer'
+import { useAudio } from '@/components/AudioProvider'
 import { useTranslations } from 'next-intl'
 import { watchSmartAccountClient, getSmartAccountClient } from "@account-kit/core"
 // We must dynamically import the Alchemy hooks or only use them in AlchemyDashboard!
@@ -75,7 +76,7 @@ function AlchemyDashboard() {
   const isConnected = !!(isSignerConnected && client)
   const effectiveAddress = scaAddress || user?.address
 
-  return <DashboardLayout isConnected={isConnected} effectiveAddress={effectiveAddress} client={client} userEmail={user?.email} />
+  return <DashboardLayout />
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -85,17 +86,17 @@ function MiniAppDashboard() {
   const { address, isConnected } = useWagmiAccount()
   // Generate a mock LightAccount client that uses Wagmi strictly if needed by components, 
   // or pass null and have components fallback to Wagmi EOA
-  return <DashboardLayout isConnected={isConnected} effectiveAddress={address} client={null} userEmail={undefined} />
+  return <DashboardLayout />
 }
 
 // ------------------------------------------------------------------------------------------------
 // Shared UI Layout
 // ------------------------------------------------------------------------------------------------
-function DashboardLayout({ isConnected, effectiveAddress, client, userEmail }: any) {
+function DashboardLayout() {
   const [currentView, setCurrentView] = useState<ViewType>('home')
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false)
 
-  const playerState = useAudioPlayer()
+  const { playerState, handlePlayTrack, client, effectiveAddress, isConnected, userEmail } = useAudio()
 
   const tNav = useTranslations('nav')
   const tHome = useTranslations('home')
@@ -105,17 +106,7 @@ function DashboardLayout({ isConnected, effectiveAddress, client, userEmail }: a
   const tAnalytics = useTranslations('analytics')
   const tProfile = useTranslations('profile')
 
-  const handlePlayTrack = (track: Track, tracks?: any[]) => {
-    if (playerState.currentTrack?.id === track.id) {
-      playerState.togglePlayPause()
-      return
-    }
-
-    if (playerState.audioRef.current) {
-      playerState.audioRef.current.src = track.url || ''
-    }
-    playerState.play(track, tracks)
-  }
+  // handlePlayTrack is now provided by AudioProvider
 
   return (
     <div className="h-screen overflow-hidden text-white flex flex-col bg-[#0D0D12]">
@@ -513,8 +504,6 @@ function DashboardLayout({ isConnected, effectiveAddress, client, userEmail }: a
         </main>
 
       </div>
-
-      <AudioPlayer playerState={playerState} client={client} />
 
     </div>
   )
