@@ -86,12 +86,15 @@ async function init() {
       if (col === 'role') {
         await db.execute(`ALTER TABLE users ADD COLUMN ${col} TEXT DEFAULT 'user'`)
       } else if (col === 'farcaster_fid') {
-        await db.execute(`ALTER TABLE users ADD COLUMN ${col} INTEGER UNIQUE`)
+        await db.execute(`ALTER TABLE users ADD COLUMN ${col} INTEGER`)
+        await db.execute(`CREATE UNIQUE INDEX IF NOT EXISTS idx_users_farcaster_fid ON users(farcaster_fid)`)
       } else {
         await db.execute(`ALTER TABLE users ADD COLUMN ${col} TEXT`)
       }
-    } catch (e) {
-      // Column probably already exists
+    } catch (e: any) {
+      if (!e.message.includes('already exists') && !e.message.includes('duplicate column name')) {
+        logger.error(`Migration failed for column ${col}`, e.message)
+      }
     }
   }
   logger.info(`Database initialized (${url.startsWith('file:') ? 'Local' : 'Turso'})`)

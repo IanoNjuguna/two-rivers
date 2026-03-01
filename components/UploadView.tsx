@@ -13,6 +13,7 @@ import { useChainId, useAccount, useWalletClient, usePublicClient } from "wagmi"
 import { getAddressesForChain, getDstEid, CONTRACT_ABI, ERC20_ABI, LZ_SYNC_OPTIONS } from '@/lib/web3'
 import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
+import { useBackendAuth } from '@/hooks/useBackendAuth'
 
 interface Collaborator {
 	address: string
@@ -34,6 +35,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 	const client = propClient
 	const { openAuthModal } = useAuthModal()
+	const { accessToken, getValidToken } = useBackendAuth()
 	const user = useUser()
 	const isAuthenticated = !!user?.address
 	const effectiveAddress = client?.account?.address || wagmiAddress || user?.address
@@ -137,7 +139,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 	// Background Upload Effect
 	React.useEffect(() => {
 		const triggerBackgroundUpload = async () => {
-			if (!audioFile || !coverFile || assetsCid || isAssetsUploading) return
+			if (!audioFile || !coverFile || assetsCid || isAssetsUploading || !accessToken) return
 
 			setIsAssetsUploading(true)
 			try {
@@ -150,7 +152,10 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 				const response = await fetch(`${API_URL.replace(/\/$/, '')}/upload-assets`, {
 					method: 'POST',
-					headers: { 'X-API-Key': process.env.NEXT_PUBLIC_API_KEY || '' },
+					headers: {
+						'X-API-Key': process.env.NEXT_PUBLIC_API_KEY || '',
+						'Authorization': `Bearer ${accessToken}`
+					},
 					body: formData,
 				})
 
@@ -255,12 +260,15 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 	}
 
 	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault()
 		if (!isAuthenticated) {
 			toast.error("Please sign in to upload music")
 			openAuthModal()
 			return
 		}
+
+		const token = await getValidToken()
+		if (!token) return // login failed or cancelled
+
 
 		if (!audioFile || !coverFile || !effectiveAddress) {
 			const status = `audio: ${!!audioFile}, cover: ${!!coverFile}, connected: ${!!effectiveAddress}`
@@ -288,7 +296,10 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 				const assetRes = await fetch(`${API_URL.replace(/\/$/, '')}/upload-assets`, {
 					method: 'POST',
-					headers: { 'X-API-Key': process.env.NEXT_PUBLIC_API_KEY || '' },
+					headers: {
+						'X-API-Key': process.env.NEXT_PUBLIC_API_KEY || '',
+						'Authorization': `Bearer ${token}`
+					},
 					body: formData,
 				})
 
@@ -310,7 +321,8 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					'X-API-Key': process.env.NEXT_PUBLIC_API_KEY || ''
+					'X-API-Key': process.env.NEXT_PUBLIC_API_KEY || '',
+					'Authorization': `Bearer ${token}`
 				},
 				body: JSON.stringify({
 					title: currentAudioName.replace('audio_', '').replace('.mp3', ''),
@@ -557,7 +569,8 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
-						'X-API-Key': process.env.NEXT_PUBLIC_API_KEY || ''
+						'X-API-Key': process.env.NEXT_PUBLIC_API_KEY || '',
+						'Authorization': `Bearer ${token}`
 					},
 					body: JSON.stringify({
 						token_id: Number(tokenId),
@@ -585,7 +598,8 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 							method: 'POST',
 							headers: {
 								'Content-Type': 'application/json',
-								'X-API-Key': process.env.NEXT_PUBLIC_API_KEY || ''
+								'X-API-Key': process.env.NEXT_PUBLIC_API_KEY || '',
+								'Authorization': `Bearer ${token}`
 							},
 							body: JSON.stringify({
 								track_id: Number(tokenId),

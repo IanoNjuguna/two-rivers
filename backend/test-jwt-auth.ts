@@ -19,6 +19,8 @@ async function runTests() {
 		address,
 		signature,
 		message
+	}, {
+		headers: { 'X-API-Key': 'dev-secret-key' }
 	})
 
 	const { accessToken, refreshToken } = loginRes.data
@@ -29,7 +31,10 @@ async function runTests() {
 	console.log('\n--- Testing Protected Route Access ---')
 	try {
 		const deleteRes = await axios.delete(`${API_URL}/tracks/999`, {
-			headers: { Authorization: `Bearer ${accessToken}` }
+			headers: {
+				Authorization: `Bearer ${accessToken}`,
+				'X-API-Key': 'dev-secret-key'
+			}
 		})
 		console.log('✅ Auth Middleware Success (Checked valid token)')
 	} catch (err: any) {
@@ -44,6 +49,8 @@ async function runTests() {
 	console.log('\n--- Testing Token Rotation ---')
 	const refreshRes = await axios.post(`${API_URL}/auth/refresh`, {
 		refreshToken
+	}, {
+		headers: { 'X-API-Key': 'dev-secret-key' }
 	})
 	const { accessToken: newAt, refreshToken: newRt } = refreshRes.data
 	console.log('✅ Token Rotated successfully')
@@ -53,6 +60,8 @@ async function runTests() {
 	try {
 		await axios.post(`${API_URL}/auth/refresh`, {
 			refreshToken
+		}, {
+			headers: { 'X-API-Key': 'dev-secret-key' }
 		})
 		console.log('❌ FAIL: Old refresh token was reused successfully')
 	} catch (err: any) {

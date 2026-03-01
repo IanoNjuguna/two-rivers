@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react'
 import { IconCopy, IconEdit, IconCheck, IconX } from '@tabler/icons-react'
 import { toast } from 'sonner'
 import MyUploadsGrid from '@/components/MyUploadsGrid'
+import { useBackendAuth } from '@/hooks/useBackendAuth'
 
 const API_URL = '/api-backend'
 
@@ -33,6 +34,7 @@ export function ProfileEditor({ address, client, userEmail, tProfile }: any) {
 	const [isLoading, setIsLoading] = useState(true)
 	const [isSaving, setIsSaving] = useState(false)
 	const { signMessageAsync } = useSignMessage()
+	const { getValidToken } = useBackendAuth()
 
 	const handleLinkFarcaster = async () => {
 		try {
@@ -118,11 +120,15 @@ export function ProfileEditor({ address, client, userEmail, tProfile }: any) {
 		setIsSaving(true)
 
 		try {
+			const token = await getValidToken()
+			if (!token) return
+
 			const res = await fetch(`${API_URL.replace(/\/$/, '')}/users`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					'X-API-Key': process.env.NEXT_PUBLIC_API_KEY || ''
+					'X-API-Key': process.env.NEXT_PUBLIC_API_KEY || '',
+					'Authorization': `Bearer ${token}`
 				},
 				body: JSON.stringify({
 					address,

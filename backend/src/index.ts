@@ -50,6 +50,7 @@ const authMiddleware = async (c: any, next: any) => {
 
   const token = authHeader.split(' ')[1]
   const payload = await verifyJWT(token, JWT_SECRET)
+
   if (!payload) {
     return c.json({ error: 'Unauthorized', message: 'Invalid or expired access token' }, 401)
   }
@@ -61,15 +62,15 @@ const authMiddleware = async (c: any, next: any) => {
 // Simple API Key Middleware for mutating routes (POST, DELETE, PUT)
 app.use('*', async (c, next) => {
   if (['POST', 'DELETE', 'PUT', 'PATCH'].includes(c.req.method)) {
-    // Exclude auth routes from API Key requirement if we want, or keep it as an extra layer
+    // Exclude auth routes from API Key requirement
     if (c.req.path.startsWith('/auth/')) return await next()
 
     const apiKey = c.req.header('X-API-Key')
-    const validKey = process.env.API_SECRET_KEY
+    const validKey = process.env.ADMIN_API_KEY || process.env.API_SECRET_KEY
 
-    // If a key is configured on the server, enforce it
+    // If a key is configured on the server, enforce it strictly
     if (validKey && apiKey !== validKey) {
-      logger.warn(`Unauthorized ${c.req.method} attempt.`)
+      logger.warn(`Unauthorized ${c.req.method} attempt to ${c.req.path} - Invalid API Key`)
       return c.json({ error: 'Unauthorized. Invalid or missing X-API-Key.' }, 401)
     }
   }
@@ -83,7 +84,7 @@ const getPinataJwt = () => {
 }
 
 // IPFS Upload Assets Proxy (PIN INDIVIDUALLY)
-app.post('/upload-assets', async (c) => {
+app.post('/upload-assets', authMiddleware, async (c) => {
   const pinataJwt = getPinataJwt()
   if (!pinataJwt) return c.json({ error: 'Pinata JWT not configured' }, 500)
 
@@ -346,7 +347,7 @@ app.post('/auth/link-fid', async (c) => {
 })
 
 // IPFS Upload Metadata Proxy (Accept dual hashes)
-app.post('/upload-metadata', async (c) => {
+app.post('/upload-metadata', authMiddleware, async (c) => {
   const pinataJwt = getPinataJwt()
   if (!pinataJwt) return c.json({ error: 'Pinata JWT not configured' }, 500)
 
@@ -429,14 +430,18 @@ app.post('/api/webhook', async (c) => {
   }
 })
 
-app.post('/tracks', async (c) => {
+app.post('/tracks', authMiddleware, async (c) => {
   const track = await c.req.json();
+  const payload = c.get('jwtPayload')
+  const requesterAddress = payload.sub
 
-  // NOTE: Temporarily removed authMiddleware since the frontend doesn't pass the JWT yet.
-  // The route is protected by API Key middleware instead.
-  const requesterAddress = track.uploader_address || 'unknown';
+  // Verify that the uploader_address matches the authenticated user
+  if (track.uploader_address && track.uploader_address.toLowerCase() !== requesterAddress.toLowerCase()) {
+    logger.warn(`Unauthorized track upload attempt for ${track.uploader_address} by ${requesterAddress}`)
+    return c.json({ error: 'Forbidden. You can only upload tracks to your own address.' }, 403)
+  }
 
-  logger.debug('Track Upload Attempt via API Key', { address: requesterAddress, track: track.name })
+  logger.debug('Track Upload Attempt via JWT', { address: requesterAddress, track: track.name })
 
   try {
     await addTrack({ ...track, uploader_address: requesterAddress })
@@ -523,20 +528,20 @@ app.get('/tracks/:id/collaborators', async (c) => {
   return c.json(collaborators)
 })
 
-app.post('/collaborators', async (c) => {
+app.post('/collaborators', authMiddleware, async (c) => {
   const collab = await c.req.json()
+  const payload = c.get('jwtPayload')
+  const requesterAddress = payload.sub
+
   const track = await getTrack(collab.track_id)
   if (!track) return c.json({ error: 'Track not found' }, 404)
 
-  // Temporarily relying on API Key for authorization instead of JWT
-  // const payload = c.get('jwtPayload')
-  // const requesterAddress = payload.sub
-  // const isUserAdmin = await isAdmin(requesterAddress)
+  const isUserAdmin = await isAdmin(requesterAddress)
 
-  // if (!isUserAdmin && track.uploader_address?.toLowerCase() !== requesterAddress.toLowerCase()) {
-  //   logger.warn(`Unauthorized collaborator addition attempt for track ${collab.track_id} by ${requesterAddress}`)
-  //   return c.json({ error: 'Forbidden. Only the track owner or admin can add collaborators.' }, 403)
-  // }
+  if (!isUserAdmin && track.uploader_address?.toLowerCase() !== requesterAddress.toLowerCase()) {
+    logger.warn(`Unauthorized collaborator addition attempt for track ${collab.track_id} by ${requesterAddress}`)
+    return c.json({ error: 'Forbidden. Only the track owner or admin can add collaborators.' }, 403)
+  }
 
   await addCollaborator(collab)
   return c.json({ success: true })
