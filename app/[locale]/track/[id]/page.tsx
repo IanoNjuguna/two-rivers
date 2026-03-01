@@ -9,6 +9,7 @@ import { useChainId, useWalletClient, usePublicClient, useAccount } from 'wagmi'
 import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
 import sdk from '@farcaster/miniapp-sdk'
+import { useAuthModal, useUser } from "@account-kit/react"
 import { useAudio } from '@/components/AudioProvider'
 import { type Track as PlayerTrack } from '@/hooks/useAudioPlayer'
 
@@ -52,6 +53,9 @@ export default function TrackDetailPage() {
 	const publicClient = usePublicClient()
 	const { address } = useAccount()
 	const effectiveAddress = address
+	const { openAuthModal } = useAuthModal()
+	const user = useUser()
+	const isAuthenticated = !!user?.address
 
 	const {
 		usdc: CURRENT_USDC,
@@ -116,6 +120,11 @@ export default function TrackDetailPage() {
 	}
 
 	const handleMint = async () => {
+		if (!isAuthenticated) {
+			toast.error("Please sign in to collect this track")
+			openAuthModal()
+			return
+		}
 		if (!effectiveAddress) {
 			toast.error("Please connect your wallet first")
 			return

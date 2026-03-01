@@ -9,6 +9,7 @@ import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain } from '@/lib/web3'
 import { useChainId, useWalletClient, usePublicClient, useAccount } from "wagmi"
 import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
+import { useAuthModal, useUser } from "@account-kit/react"
 import sdk from '@farcaster/miniapp-sdk'
 import { useRouter } from 'next/navigation'
 import { useLocale } from 'next-intl'
@@ -52,6 +53,9 @@ export default function SongCard({
   const { data: walletClient } = useWalletClient()
   const publicClient = usePublicClient()
   const { address } = useAccount()
+  const { openAuthModal } = useAuthModal()
+  const user = useUser()
+  const isAuthenticated = !!user?.address
 
   // Standardize the active address
   const effectiveAddress = client?.account?.address || address
@@ -92,8 +96,9 @@ export default function SongCard({
 
   const handleMint = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    if (!effectiveAddress) {
-      toast.error("Please connect your wallet first")
+    if (!isAuthenticated) {
+      toast.error("Please sign in to collect this track")
+      openAuthModal()
       return
     }
 

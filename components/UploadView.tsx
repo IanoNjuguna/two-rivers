@@ -8,7 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils"
 import { GENRES } from '@/constants/genres'
 
-import { useSendUserOperation, useSmartAccountClient } from "@account-kit/react"
+import { useSendUserOperation, useSmartAccountClient, useAuthModal, useUser } from "@account-kit/react"
 import { useChainId, useAccount, useWalletClient, usePublicClient } from "wagmi"
 import { getAddressesForChain, getDstEid, CONTRACT_ABI, ERC20_ABI, LZ_SYNC_OPTIONS } from '@/lib/web3'
 import { encodeFunctionData, parseUnits } from 'viem'
@@ -33,7 +33,10 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 	const DST_EID = getDstEid(MathChain.id)
 
 	const client = propClient
-	const effectiveAddress = client?.account?.address || wagmiAddress
+	const { openAuthModal } = useAuthModal()
+	const user = useUser()
+	const isAuthenticated = !!user?.address
+	const effectiveAddress = client?.account?.address || wagmiAddress || user?.address
 
 	const [isSending, setIsSending] = useState(false)
 	const [open, setOpen] = useState(false)
@@ -253,6 +256,11 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
+		if (!isAuthenticated) {
+			toast.error("Please sign in to upload music")
+			openAuthModal()
+			return
+		}
 
 		if (!audioFile || !coverFile || !effectiveAddress) {
 			const status = `audio: ${!!audioFile}, cover: ${!!coverFile}, connected: ${!!effectiveAddress}`

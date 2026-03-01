@@ -3,7 +3,8 @@ import React, { createContext, useContext, useCallback, useMemo } from 'react'
 import { useAudioPlayer, type Track } from '@/hooks/useAudioPlayer'
 import AudioPlayer from './AudioPlayer'
 import { watchSmartAccountClient, getSmartAccountClient } from "@account-kit/core"
-import { useSignerStatus, useUser, useAccount, useAlchemyAccountContext } from "@account-kit/react"
+import { useSignerStatus, useUser, useAccount, useAlchemyAccountContext, useAuthModal } from "@account-kit/react"
+import { toast } from 'sonner'
 import { useAccount as useWagmiAccount } from 'wagmi'
 import { accountConfig } from '@/lib/config'
 
@@ -42,9 +43,17 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 	)
 
 	const effectiveAddress = scaAddress || user?.address || wagmiAddress
-	const isConnected = !!(isSignerConnected && client) || isWagmiConnected
+	const isAuthenticated = !!user?.address
+
+	const { openAuthModal } = useAuthModal()
 
 	const handlePlayTrack = useCallback((track: Track, tracks?: any[]) => {
+		if (!isAuthenticated) {
+			toast.error("Please sign in to stream music")
+			openAuthModal()
+			return
+		}
+
 		if (playerState.currentTrack?.id === track.id) {
 			playerState.togglePlayPause()
 			return
@@ -54,7 +63,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 			playerState.audioRef.current.src = track.url || ''
 		}
 		playerState.play(track, tracks)
-	}, [playerState])
+	}, [playerState, isAuthenticated, openAuthModal])
 
 	const value = useMemo(() => ({
 		playerState,

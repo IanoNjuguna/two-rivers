@@ -24,6 +24,7 @@ import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain } from '@/lib/web3'
 import { useChainId, useWalletClient, usePublicClient, useAccount } from 'wagmi'
 import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
+import { useAuthModal, useUser } from "@account-kit/react"
 
 interface AudioPlayerProps {
   playerState: ReturnType<typeof useAudioPlayer>
@@ -31,6 +32,9 @@ interface AudioPlayerProps {
 }
 
 export default function AudioPlayer({ playerState, client }: AudioPlayerProps) {
+  const { openAuthModal } = useAuthModal();
+  const user = useUser();
+  const isAuthenticated = !!user?.address;
   const {
     currentTrack,
     isPlaying,
@@ -94,8 +98,9 @@ export default function AudioPlayer({ playerState, client }: AudioPlayerProps) {
 
   const handleMint = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    if (!effectiveAddress || !currentTrack) {
-      toast.error("Please connect your wallet first")
+    if (!isAuthenticated || !currentTrack) {
+      toast.error("Please sign in to collect this track")
+      openAuthModal()
       return
     }
 
@@ -314,7 +319,7 @@ export default function AudioPlayer({ playerState, client }: AudioPlayerProps) {
                 <div
                   key={i}
                   className="w-[3px] rounded-full bg-[#FF1F8A] equalizer-bar h-full"
-                  style={{ animationDelay: `${i * 0.15}s` } as React.CSSProperties}
+                  style={{ '--delay': `${i * 0.15}s` } as React.CSSProperties}
                 />
               ))}
             </div>
@@ -392,18 +397,19 @@ export default function AudioPlayer({ playerState, client }: AudioPlayerProps) {
               aria-valuemin={0}
               aria-valuemax={Math.round(duration || 0)}
               aria-valuenow={Math.round(currentTime)}
+              aria-valuetext={`${formatTime(currentTime)} of ${formatTime(duration)}`}
             >
               {/* Background track */}
               <div className="absolute inset-y-0 my-auto h-[3px] w-full rounded-full bg-white/10" />
               {/* Filled */}
               <div
                 className="absolute inset-y-0 my-auto h-[3px] rounded-full bg-cyber-pink"
-                style={{ width: `${progressPercent}%` } as React.CSSProperties}
+                style={{ width: `${progressPercent}%` }}
               />
               {/* Thumb */}
               <div
                 className="absolute w-3 h-3 rounded-full bg-white shadow-md transition-opacity -translate-x-1/2 opacity-0 group-hover:opacity-100"
-                style={{ left: `${progressPercent}%` } as React.CSSProperties}
+                style={{ left: `${progressPercent}%` }}
               />
             </div>
 
@@ -457,6 +463,8 @@ export default function AudioPlayer({ playerState, client }: AudioPlayerProps) {
               value={isMuted ? 0 : volume}
               onChange={handleVolumeChange}
               className="flex-1 accent-[#FF1F8A] h-[3px] bg-white/20 rounded-full cursor-pointer"
+              aria-label="Volume"
+              title="Volume"
             />
           </div>
         </div>
@@ -543,7 +551,7 @@ export default function AudioPlayer({ playerState, client }: AudioPlayerProps) {
         >
           <div
             className="h-full rounded-full bg-cyber-pink"
-            style={{ width: `${progressPercent}%` } as React.CSSProperties}
+            style={{ width: `${progressPercent}%` }}
           />
         </div>
       </div>

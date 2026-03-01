@@ -177,6 +177,7 @@
 
   .equalizer-bar {
     animation: equalizer 0.8s ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
   }
 
   .marquee-container {
