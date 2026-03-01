@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { IconPlayerPlay, IconPlayerPause, IconArrowLeft, IconShare, IconCopy, IconShoppingBag, IconLoader2, IconCheck } from '@tabler/icons-react'
+import { IconPlayerPlay, IconPlayerPause, IconArrowLeft, IconShare, IconCopy, IconHeart, IconLoader2, IconCheck } from '@tabler/icons-react'
 import { cn } from '@/lib/utils'
 import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain } from '@/lib/web3'
 import { useChainId, useWalletClient, usePublicClient, useAccount } from 'wagmi'
@@ -329,7 +329,7 @@ export default function TrackDetailPage() {
 						) : hasOwned ? (
 							<IconCheck size={16} />
 						) : (
-							<IconShoppingBag size={16} />
+							<IconHeart size={16} />
 						)}
 						{isMinting ? 'Minting...' : hasOwned ? 'Collected' : 'Collect Song'}
 					</button>
