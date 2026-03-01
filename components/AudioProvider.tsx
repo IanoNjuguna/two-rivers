@@ -44,6 +44,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 
 	const effectiveAddress = scaAddress || user?.address || wagmiAddress
 	const isAuthenticated = !!user?.address
+	const isConnected = !!(isSignerConnected && client) || isWagmiConnected
 
 	const { openAuthModal } = useAuthModal()
 
