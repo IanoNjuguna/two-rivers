@@ -4,6 +4,7 @@ export { arbitrum, base, alchemy, defineAlchemyChain };
 import { avalanche as viemAvalanche } from "viem/chains";
 import { http } from "viem";
 import { QueryClient } from "@tanstack/react-query";
+import { farcasterMiniApp } from '@farcaster/miniapp-wagmi-connector';
 
 const uiConfig: AlchemyAccountsUIConfig = {
 	illustrationStyle: "outline",
@@ -63,6 +64,7 @@ export const getConfig = () => {
 
 
 
+
 	const newConfig = createConfig({
 		transport: getTransport(),
 		chain: activeChain,
@@ -83,7 +85,9 @@ export const getConfig = () => {
 		ssr: true,
 		storage: cookieStorage,
 		enablePopupOauth: false,
-		connectors: [],
+		connectors: [
+			farcasterMiniApp()
+		],
 	}, uiConfig);
 
 

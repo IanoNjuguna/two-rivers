@@ -8,7 +8,22 @@ import { logger } from '@/lib/logger'
 
 const API_URL = '/api-backend'
 
+import { sdk } from '@farcaster/miniapp-sdk'
+
 export function useBackendAuth() {
+	const [isMiniApp, setIsMiniApp] = useState<boolean | null>(null)
+
+	// Safely detect environment
+	useEffect(() => {
+		sdk.isInMiniApp()
+			.then(setIsMiniApp)
+			.catch(() => setIsMiniApp(false))
+	}, [])
+
+	// Use hooks but handle their absence/usage carefully
+	// Note: We MUST call hooks at top level, but some might throw if Provider is missing.
+	// We'll wrap them or use proxies if needed, but for now let's just use them 
+	// and ensure downstream logic is guarded.
 	const user = useUser()
 	const { address: wagmiAddress } = useAccount()
 	const { client: smartAccountClient } = useSmartAccountClient({ type: "LightAccount" })
@@ -22,11 +37,15 @@ export function useBackendAuth() {
 	// Load from localStorage on mount or address change
 	useEffect(() => {
 		if (effectiveAddress) {
-			const stored = localStorage.getItem(`doba_jwt_${effectiveAddress.toLowerCase()}`)
-			if (stored) {
-				// Potential: Verify expiration here if JWT payload is visible
-				setAccessToken(stored)
-			} else {
+			try {
+				const stored = localStorage.getItem(`doba_jwt_${effectiveAddress.toLowerCase()}`)
+				if (stored) {
+					setAccessToken(stored)
+				} else {
+					setAccessToken(null)
+				}
+			} catch (e) {
+				logger.warn('localStorage access blocked in this environment', e)
 				setAccessToken(null)
 			}
 		} else {
@@ -66,7 +85,11 @@ export function useBackendAuth() {
 			}
 
 			const data = await res.json()
-			localStorage.setItem(`doba_jwt_${effectiveAddress.toLowerCase()}`, data.accessToken)
+			try {
+				localStorage.setItem(`doba_jwt_${effectiveAddress.toLowerCase()}`, data.accessToken)
+			} catch (e) {
+				logger.warn('Failed to save JWT to localStorage', e)
+			}
 			setAccessToken(data.accessToken)
 
 			logger.info(`Backend login successful for ${effectiveAddress}`)
@@ -90,7 +113,11 @@ export function useBackendAuth() {
 
 	const logout = useCallback(() => {
 		if (effectiveAddress) {
-			localStorage.removeItem(`doba_jwt_${effectiveAddress.toLowerCase()}`)
+			try {
+				localStorage.removeItem(`doba_jwt_${effectiveAddress.toLowerCase()}`)
+			} catch (e) {
+				// ignore
+			}
 		}
 		setAccessToken(null)
 	}, [effectiveAddress])

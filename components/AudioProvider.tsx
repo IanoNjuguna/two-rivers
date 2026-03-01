@@ -50,7 +50,14 @@ function AudioProviderInner({ children, isMiniApp, playerState }: { children: Re
 	// but even here, they might throw if the Provider is absent.
 	// We'll use a safer approach: render a different Inner component for each mode.
 
-	if (isMiniApp === null) return <>{children}</> // Wait for detection
+	if (isMiniApp === null) {
+		// During detection, provide a minimal context to prevent context-using children from crashing
+		return (
+			<AudioContext.Provider value={null as any}>
+				<div className="h-screen bg-[#0D0D12]" />
+			</AudioContext.Provider>
+		)
+	}
 
 	return isMiniApp ? (
 		<MiniAppAudioProvider playerState={playerState}>

@@ -6,7 +6,6 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
 import { getConfig } from "@/lib/config";
 import { sdk } from "@farcaster/miniapp-sdk";
-import { miniAppWagmiConfig, miniAppQueryClient } from "@/lib/miniapp-config";
 
 export function Providers({
 	children,
@@ -20,22 +19,14 @@ export function Providers({
 	const [alchemyConfig] = useState(() => getConfig());
 
 	useEffect(() => {
-		sdk.isInMiniApp().then(setIsMiniApp).catch(() => setIsMiniApp(false));
+		sdk.isInMiniApp()
+			.then(setIsMiniApp)
+			.catch(() => setIsMiniApp(false));
 	}, []);
 
 	// Render a minimal shell while detecting context
 	if (isMiniApp === null) {
 		return <div className="h-screen bg-[#0D0D12]" />;
-	}
-
-	if (isMiniApp) {
-		return (
-			<WagmiProvider config={miniAppWagmiConfig}>
-				<QueryClientProvider client={miniAppQueryClient}>
-					{children}
-				</QueryClientProvider>
-			</WagmiProvider>
-		);
 	}
 
 	return (
