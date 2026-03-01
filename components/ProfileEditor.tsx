@@ -70,7 +70,6 @@ export function ProfileEditor({ address, client, userEmail, tProfile }: any) {
 			} else {
 				// We need to implement the Alchemy Email Link step here if not linked
 				toast.info('SIWF pending: Needs Email link signature next. Check console.')
-				console.log('Pending SIWF Token:', data.pendingSiwfToken)
 			}
 
 		} catch (err: any) {
