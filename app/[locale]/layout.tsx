@@ -13,6 +13,7 @@ import { headers } from "next/headers"
 import { cookieToInitialState } from "@account-kit/core"
 import { getConfig } from "@/lib/config"
 import { MiniAppInit } from "@/components/MiniAppInit"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const notoSans = localFont({
 	src: [
@@ -134,6 +135,7 @@ export default async function LocaleLayout({ children, params }: Props) {
 						</AudioProvider>
 					</Providers>
 				</NextIntlClientProvider>
+				<SpeedInsights />
 			</body>
 		</html>
 	)
