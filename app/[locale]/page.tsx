@@ -73,7 +73,7 @@ function AlchemyDashboard() {
     () => getSmartAccountClient(accountConfig, config)
   )
 
-  const isConnected = !!(isSignerConnected && client)
+  const isAlchemyConnected = !!(isSignerConnected && client)
   const effectiveAddress = scaAddress || user?.address
 
   return <DashboardLayout />
@@ -83,7 +83,7 @@ function AlchemyDashboard() {
 // Farcaster Mini App Dashboard (Wagmi Only)
 // ------------------------------------------------------------------------------------------------
 function MiniAppDashboard() {
-  const { address, isConnected } = useWagmiAccount()
+  const { address, isConnected: isWagmiConnected } = useWagmiAccount()
   // Generate a mock LightAccount client that uses Wagmi strictly if needed by components, 
   // or pass null and have components fallback to Wagmi EOA
   return <DashboardLayout />
@@ -96,7 +96,7 @@ function DashboardLayout() {
   const [currentView, setCurrentView] = useState<ViewType>('home')
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false)
 
-  const { playerState, handlePlayTrack, client, effectiveAddress, isConnected, userEmail } = useAudio()
+  const { playerState, handlePlayTrack, client, effectiveAddress, isConnected: isPlayerConnected, userEmail } = useAudio()
 
   const tNav = useTranslations('nav')
   const tHome = useTranslations('home')
@@ -130,7 +130,7 @@ function DashboardLayout() {
             {/* Mobile Connect Header & Chain Switcher */}
             <ChainSwitcher />
             {/* Hamburger Menu - Only show when connected */}
-            {isConnected && (
+            {isPlayerConnected && (
               <button
                 onClick={() => setHeaderMenuOpen(!headerMenuOpen)}
                 className="p-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
@@ -353,7 +353,7 @@ function DashboardLayout() {
                     {tLibrary('subtitle')}
                   </p>
                 </div>
-                {isConnected ? (
+                {isPlayerConnected ? (
                   <MyStudioGrid
                     address={effectiveAddress || undefined}
                     client={client}
@@ -412,7 +412,7 @@ function DashboardLayout() {
             )}
 
             {currentView === 'upload' && (
-              isConnected ? (
+              isPlayerConnected ? (
                 <UploadView client={client} />
               ) : (
                 <div className="space-y-6">
@@ -440,7 +440,7 @@ function DashboardLayout() {
             )}
 
             {currentView === 'earnings' && (
-              <EarningsView isConnected={isConnected} client={client} address={effectiveAddress || undefined} />
+              <EarningsView isConnected={isPlayerConnected} client={client} address={effectiveAddress || undefined} />
             )}
 
             {currentView === 'analytics' && (
@@ -475,7 +475,7 @@ function DashboardLayout() {
                     {tProfile('subtitle')}
                   </p>
                 </div>
-                {isConnected && effectiveAddress ? (
+                {isPlayerConnected && effectiveAddress ? (
                   <ProfileEditor
                     address={effectiveAddress}
                     client={client}

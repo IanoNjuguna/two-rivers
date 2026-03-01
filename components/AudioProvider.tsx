@@ -7,6 +7,7 @@ import { useSignerStatus, useUser, useAccount, useAlchemyAccountContext, useAuth
 import { toast } from 'sonner'
 import { useAccount as useWagmiAccount } from 'wagmi'
 import { accountConfig } from '@/lib/config'
+import { sdk } from '@farcaster/miniapp-sdk'
 
 interface AudioContextType {
 	playerState: ReturnType<typeof useAudioPlayer>
@@ -28,13 +29,85 @@ export const useAudio = () => {
 export function AudioProvider({ children }: { children: React.ReactNode }) {
 	const playerState = useAudioPlayer()
 
-	// Alchemy / Web3 State for AudioPlayer
+	const [isMiniApp, setIsMiniApp] = React.useState<boolean | null>(null)
+	React.useEffect(() => {
+		sdk.isInMiniApp().then(setIsMiniApp).catch(() => setIsMiniApp(false))
+	}, [])
+
+	return (
+		<AudioProviderInner isMiniApp={isMiniApp} playerState={playerState}>
+			{children}
+		</AudioProviderInner>
+	)
+}
+
+function AudioProviderInner({ children, isMiniApp, playerState }: { children: React.ReactNode, isMiniApp: boolean | null, playerState: any }) {
+	// 1. Universal Wagmi State (Safe everywhere)
+	const { address: wagmiAddress, isConnected: isWagmiConnected } = useWagmiAccount()
+
+	// 2. Alchemy State (Only call hooks if NOT in Mini App to avoid context errors)
+	// hooks must be called at top level, so we use the Inner component pattern 
+	// but even here, they might throw if the Provider is absent.
+	// We'll use a safer approach: render a different Inner component for each mode.
+
+	if (isMiniApp === null) return <>{children}</> // Wait for detection
+
+	return isMiniApp ? (
+		<MiniAppAudioProvider playerState={playerState}>
+			{children}
+		</MiniAppAudioProvider>
+	) : (
+		<AlchemyAudioProvider playerState={playerState}>
+			{children}
+		</AlchemyAudioProvider>
+	)
+}
+
+function MiniAppAudioProvider({ children, playerState }: { children: React.ReactNode, playerState: any }) {
+	const { address, isConnected } = useWagmiAccount()
+
+	const handlePlayTrack = useCallback((track: Track, tracks?: any[]) => {
+		// In Mini App, we might not have the same AuthModal, so we just check connection
+		if (!isConnected) {
+			toast.error("Please connect your wallet to stream music")
+			return
+		}
+
+		if (playerState.currentTrack?.id === track.id) {
+			playerState.togglePlayPause()
+			return
+		}
+
+		if (playerState.audioRef.current) {
+			playerState.audioRef.current.src = track.url || ''
+		}
+		playerState.play(track, tracks)
+	}, [playerState, isConnected])
+
+	const value = useMemo(() => ({
+		playerState,
+		handlePlayTrack,
+		client: null,
+		effectiveAddress: address,
+		isConnected,
+		userEmail: undefined
+	}), [playerState, handlePlayTrack, address, isConnected])
+
+	return (
+		<AudioContext.Provider value={value}>
+			{children}
+			<AudioPlayer playerState={playerState} client={null} />
+		</AudioContext.Provider>
+	)
+}
+
+function AlchemyAudioProvider({ children, playerState }: { children: React.ReactNode, playerState: any }) {
 	const { isConnected: isSignerConnected } = useSignerStatus()
 	const user = useUser()
 	const { config } = useAlchemyAccountContext()
-
 	const { address: scaAddress } = useAccount(accountConfig)
 	const { address: wagmiAddress, isConnected: isWagmiConnected } = useWagmiAccount()
+	const { openAuthModal } = useAuthModal()
 
 	const { client } = React.useSyncExternalStore(
 		watchSmartAccountClient(accountConfig, config),
@@ -45,8 +118,6 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 	const effectiveAddress = scaAddress || user?.address || wagmiAddress
 	const isAuthenticated = !!user?.address
 	const isConnected = !!(isSignerConnected && client) || isWagmiConnected
-
-	const { openAuthModal } = useAuthModal()
 
 	const handlePlayTrack = useCallback((track: Track, tracks?: any[]) => {
 		if (!isAuthenticated) {
