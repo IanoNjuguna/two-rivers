@@ -19,5 +19,5 @@ cache/
 *.db-journal
 
 # API dependencies
-api/node_modules/
-api/dist/
+backend/node_modules/
+backend/dist/
