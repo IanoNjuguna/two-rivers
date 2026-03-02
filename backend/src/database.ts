@@ -202,8 +202,8 @@ export async function getAllTracks(artist?: string, chainId?: string): Promise<T
   const args: any[] = []
 
   if (artist) {
-    conditions.push('(artist = ? OR artist COLLATE NOCASE = ?)')
-    args.push(artist, artist)
+    conditions.push('(artist = ? OR artist COLLATE NOCASE = ? OR uploader_address = ? OR uploader_address COLLATE NOCASE = ?)')
+    args.push(artist, artist, artist, artist)
   }
 
   if (chainId) {
