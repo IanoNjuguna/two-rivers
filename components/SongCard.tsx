@@ -329,16 +329,18 @@ export default function SongCard({
         />
       </div>
 
-      {/* Centered Play Action - appears on hover */}
-      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none">
-        <div className="bg-cyber-pink/90 text-white p-3 rounded-full shadow-[0_0_20px_rgba(255,31,138,0.4)] transform transition-transform group-hover:scale-110">
-          {isPlaying ? (
-            <IconPlayerPause size={24} className="fill-white" />
-          ) : (
-            <IconPlayerPlay size={24} className="fill-white" />
-          )}
+      {/* Centered Play Action - appears on hover (only if not in navigation mode) */}
+      {!navigateOnClick && (
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none">
+          <div className="bg-cyber-pink/90 text-white p-3 rounded-full shadow-[0_0_20px_rgba(255,31,138,0.4)] transform transition-transform group-hover:scale-110">
+            {isPlaying ? (
+              <IconPlayerPause size={24} className="fill-white" />
+            ) : (
+              <IconPlayerPlay size={24} className="fill-white" />
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Genre Tag - top right */}
       <div className="absolute top-0 right-0 z-20">
