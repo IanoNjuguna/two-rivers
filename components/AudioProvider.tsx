@@ -15,6 +15,7 @@ interface AudioContextType {
 	client: any
 	effectiveAddress: string | undefined
 	isConnected: boolean
+	isAuthenticated: boolean
 	userEmail: string | undefined
 }
 
@@ -97,6 +98,7 @@ function MiniAppAudioProvider({ children, playerState }: { children: React.React
 		client: null,
 		effectiveAddress: address,
 		isConnected,
+		isAuthenticated: isConnected, // In Mini App, connection is our current auth
 		userEmail: undefined
 	}), [playerState, handlePlayTrack, address, isConnected])
 
@@ -150,8 +152,9 @@ function AlchemyAudioProvider({ children, playerState }: { children: React.React
 		client,
 		effectiveAddress,
 		isConnected,
+		isAuthenticated,
 		userEmail: user?.email
-	}), [playerState, handlePlayTrack, client, effectiveAddress, isConnected, user?.email])
+	}), [playerState, handlePlayTrack, client, effectiveAddress, isConnected, isAuthenticated, user?.email])
 
 	return (
 		<AudioContext.Provider value={value}>

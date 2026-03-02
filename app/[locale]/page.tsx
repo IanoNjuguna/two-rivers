@@ -96,7 +96,7 @@ function DashboardLayout() {
   const [currentView, setCurrentView] = useState<ViewType>('home')
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false)
 
-  const { playerState, handlePlayTrack, client, effectiveAddress, isConnected: isPlayerConnected, userEmail } = useAudio()
+  const { playerState, handlePlayTrack, client, effectiveAddress, isConnected: isPlayerConnected, isAuthenticated, userEmail } = useAudio()
 
   const tNav = useTranslations('nav')
   const tHome = useTranslations('home')
@@ -412,7 +412,7 @@ function DashboardLayout() {
             )}
 
             {currentView === 'upload' && (
-              isPlayerConnected ? (
+              isAuthenticated ? (
                 <UploadView client={client} />
               ) : (
                 <div className="space-y-6">
@@ -475,7 +475,7 @@ function DashboardLayout() {
                     {tProfile('subtitle')}
                   </p>
                 </div>
-                {isPlayerConnected && effectiveAddress ? (
+                {isAuthenticated && effectiveAddress ? (
                   <ProfileEditor
                     address={effectiveAddress}
                     client={client}
