@@ -44,6 +44,8 @@ export default function TrackDetailPage() {
 	const [loading, setLoading] = useState(true)
 	const [isMinting, setIsMinting] = useState(false)
 	const [hasOwned, setHasOwned] = useState(false)
+	const [mintedCount, setMintedCount] = useState<number>(0)
+	const [maxSupply, setMaxSupply] = useState<number>(0)
 
 	const { playerState, handlePlayTrack } = useAudio()
 	const isPlaying = playerState.currentTrack?.id === track?.token_id && playerState.isPlaying
@@ -84,6 +86,34 @@ export default function TrackDetailPage() {
 		fetchTrack()
 	}, [id])
 
+	// Fetch on-chain stats (minted count and max supply)
+	useEffect(() => {
+		if (!activeClient || !track) return
+		const fetchOnChainStats = async () => {
+			try {
+				const [minted, collectionInfo] = await Promise.all([
+					activeClient.readContract({
+						address: CURRENT_CONTRACT as `0x${string}`,
+						abi: CONTRACT_ABI,
+						functionName: 'collectionMinted',
+						args: [BigInt(track.token_id)],
+					}),
+					activeClient.readContract({
+						address: CURRENT_CONTRACT as `0x${string}`,
+						abi: CONTRACT_ABI,
+						functionName: 'collections',
+						args: [BigInt(track.token_id)],
+					})
+				])
+				setMintedCount(Number(minted))
+				setMaxSupply(Number(collectionInfo[4]))
+			} catch (e) {
+				console.error('Error fetching on-chain stats', e)
+			}
+		}
+		fetchOnChainStats()
+	}, [activeClient, track, CURRENT_CONTRACT])
+
 	// Check ownership
 	useEffect(() => {
 		if (!effectiveAddress || !activeClient || !track) return
@@ -101,7 +131,7 @@ export default function TrackDetailPage() {
 			}
 		}
 		check()
-	}, [effectiveAddress, activeClient, track])
+	}, [effectiveAddress, activeClient, track, CURRENT_CONTRACT])
 
 	const resolveIpfs = (url: string) =>
 		(url || '').replace('ipfs://', process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud/ipfs/')
@@ -305,11 +335,30 @@ export default function TrackDetailPage() {
 				</div>
 
 				{/* Price & Collect */}
-				<div className="space-y-3 mb-6">
-					<div className="flex items-center justify-between">
-						<span className="text-lg font-bold text-cyber-pink">{formatPrice(track.price)}</span>
-						{track.max_supply && (
-							<span className="text-[10px] text-white/30 font-mono">{track.max_supply} editions</span>
+				<div className="mb-6">
+					<div className="space-y-3 mb-4">
+						<div className="flex items-center justify-between">
+							<span className="text-lg font-bold text-cyber-pink">{formatPrice(track.price)}</span>
+							<div className="text-right">
+								<div className="text-[10px] font-mono flex items-center gap-1 justify-end">
+									<span className="text-white">{mintedCount.toLocaleString()}</span>
+									<span className="text-white/20">/</span>
+									<span className="text-white/50">{(maxSupply || parseInt(track.max_supply || '0')).toLocaleString()}</span>
+									<span className="text-white/20 ml-1 uppercase tracking-tighter">editions</span>
+								</div>
+							</div>
+						</div>
+
+						{/* Scarcity Progress Bar */}
+						{(maxSupply > 0 || track.max_supply) && (
+							<div className="w-full h-1 bg-white/5 rounded-full overflow-hidden border border-white/5">
+								<div
+									className="h-full bg-cyber-pink shadow-[0_0_10px_rgba(255,31,138,0.5)] transition-all duration-1000 ease-out"
+									style={{
+										width: `${Math.max(2, Math.min(100, (mintedCount / (maxSupply || parseInt(track.max_supply || '1'))) * 100))}%`
+									}}
+								/>
+							</div>
 						)}
 					</div>
 
