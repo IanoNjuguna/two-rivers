@@ -21,7 +21,7 @@ app.use('/*', cors({
   allowMethods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
 }))
 
-const SERVER_VERSION = '1.2.1-secure'
+const SERVER_VERSION = '1.2.2-fix-uploads'
 
 // Global Error Handler
 app.onError((err, c) => {
