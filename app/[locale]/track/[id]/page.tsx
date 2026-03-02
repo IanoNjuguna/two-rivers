@@ -362,41 +362,42 @@ export default function TrackDetailPage() {
 						)}
 					</div>
 
-					<button
-						onClick={handleMint}
-						disabled={isMinting || hasOwned}
-						className={cn(
-							"w-full py-3 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest transition-all rounded-sm",
-							hasOwned
-								? "bg-green-500/10 text-green-400 border border-green-500/20 cursor-default"
-								: "bg-[#B794F4] hover:bg-[#B794F4]/80 text-white border border-[#B794F4]/20",
-							isMinting && "opacity-50 cursor-not-allowed"
-						)}
-					>
-						{isMinting ? (
-							<IconLoader2 size={16} className="animate-spin" />
-						) : hasOwned ? (
-							<IconCheck size={16} />
-						) : (
-							<IconHeart size={16} />
-						)}
-						{isMinting ? 'Minting...' : hasOwned ? 'Collected' : 'Collect Song'}
-					</button>
+					<div className="flex items-center gap-2 h-11">
+						<button
+							onClick={handleMint}
+							disabled={isMinting || hasOwned}
+							className={cn(
+								"flex-[2] h-full flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-all rounded-sm",
+								hasOwned
+									? "bg-green-500/10 text-green-400 border border-green-500/20 cursor-default"
+									: "bg-[#B794F4] hover:bg-[#B794F4]/80 text-white border border-[#B794F4]/20",
+								isMinting && "opacity-50 cursor-not-allowed"
+							)}
+						>
+							{isMinting ? (
+								<IconLoader2 size={16} className="animate-spin" />
+							) : hasOwned ? (
+								<IconCheck size={16} />
+							) : (
+								<IconHeart size={16} />
+							)}
+							{isMinting ? 'Minting' : hasOwned ? 'Collected' : 'Collect'}
+						</button>
 
-					<div className="flex items-center gap-2">
 						<button
 							onClick={handleShare}
-							className="flex-1 py-2.5 flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-all bg-white/5 hover:bg-white/10 text-white/60 hover:text-white border border-white/10 rounded-sm"
+							className="flex-1 h-full flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-all bg-white/5 hover:bg-white/10 text-white/60 hover:text-white border border-white/10 rounded-sm"
 						>
 							<IconShare size={14} />
 							Share
 						</button>
+
 						<button
 							onClick={handleCopyLink}
 							title="Copy Link"
-							className="px-4 py-2.5 flex items-center justify-center transition-all bg-white/5 hover:bg-white/10 text-white/60 hover:text-white border border-white/10 rounded-sm"
+							className="aspect-square h-full flex items-center justify-center transition-all bg-white/5 hover:bg-white/10 text-white/60 hover:text-white border border-white/10 rounded-sm"
 						>
-							<IconCopy size={14} />
+							<IconCopy size={16} />
 						</button>
 					</div>
 				</div>
