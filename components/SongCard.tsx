@@ -26,6 +26,7 @@ interface SongCardProps {
   trackChainId?: string
   onPlay?: () => void
   isPlaying?: boolean
+  navigateOnClick?: boolean
 }
 
 const CHAIN_BADGE: Record<string, { logo: string; label: string }> = {
@@ -46,6 +47,7 @@ export default function SongCard({
   trackChainId,
   onPlay,
   isPlaying = false,
+  navigateOnClick = false,
 }: SongCardProps) {
   const chainId = useChainId()
   const router = useRouter()
@@ -284,7 +286,12 @@ export default function SongCard({
   }
 
   const handleClick = (e: React.MouseEvent) => {
-    // Single tap/click -> Play
+    // If navigateOnClick is true, we go to details
+    if (navigateOnClick) {
+      router.push(`/${locale}/track/${tokenId}`)
+      return
+    }
+    // Otherwise single tap/click -> Play
     onPlay?.()
   }
 
