@@ -11,8 +11,7 @@
 		"profile": "Profile",
 		"wallet": "Wallet",
 		"sendMoney": "Send Money",
-		"wallet": "Wallet",
-		"sendMoney": "Send Money"
+		"swap": "Swap"
 	},
 	"header": {
 		"loading": "Loading...",

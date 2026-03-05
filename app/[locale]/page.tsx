@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { IconMenu2 as Menu, IconHome as HomeIcon, IconBooks as Library, IconSearch as Search, IconCurrencyDollar as DollarSign, IconTrendingUp as TrendingUp, IconUser as User, IconLogout as LogOut, IconPlus, IconMusic as Music, IconCopy } from '@tabler/icons-react'
+import { IconMenu2 as Menu, IconHome as HomeIcon, IconBooks as Library, IconSearch as Search, IconCurrencyDollar as DollarSign, IconTrendingUp as TrendingUp, IconUser as User, IconLogout as LogOut, IconPlus, IconMusic as Music, IconCopy, IconArrowsExchange } from '@tabler/icons-react'
 import { Button } from '@/components/ui/button'
 import MarketplaceGrid from '@/components/MarketplaceGrid'
 import MyStudioGrid from '@/components/MyStudioGrid'
@@ -13,6 +13,7 @@ import UploadView from '@/components/UploadView'
 import ChainSwitcher from '@/components/ChainSwitcher'
 import { ProfileEditor } from '@/components/ProfileEditor'
 import { SendMoney } from '@/components/SendMoney'
+import { SwapComponent } from '@/components/SwapComponent'
 import { type Track } from '@/hooks/useAudioPlayer'
 import { useAudio } from '@/components/AudioProvider'
 import { useTranslations } from 'next-intl'
@@ -33,7 +34,7 @@ const formatAddress = (address: string, startChars: number = 6, endChars: number
   return `${address.slice(0, startChars)}...${address.slice(-endChars)}`
 }
 
-type ViewType = 'home' | 'library' | 'search' | 'upload' | 'profile' | 'earnings' | 'analytics' | 'send-money'
+type ViewType = 'home' | 'library' | 'search' | 'upload' | 'profile' | 'earnings' | 'analytics' | 'send-money' | 'swap'
 
 export default function Dashboard() {
   const [isMiniApp, setIsMiniApp] = useState<boolean>(false)
@@ -255,6 +256,17 @@ function DashboardLayout() {
               <span className="text-sm font-medium">{tNav('sendMoney')}</span>
             </button>
 
+            <button
+              onClick={() => {
+                setCurrentView('swap')
+                setHeaderMenuOpen(false)
+              }}
+              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+            >
+              <IconArrowsExchange size={18} className="text-[#FF1F8A] flex-shrink-0" />
+              <span className="text-sm font-medium">{tNav('swap')}</span>
+            </button>
+
           </nav >
         </div >
       )
@@ -341,6 +353,14 @@ function DashboardLayout() {
             >
               <DollarSign size={18} className="text-[#FF1F8A] flex-shrink-0" />
               <span className="text-sm font-medium">{tNav('sendMoney')}</span>
+            </button>
+
+            <button
+              onClick={() => setCurrentView('swap')}
+              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+            >
+              <IconArrowsExchange size={18} className="text-[#FF1F8A] flex-shrink-0" />
+              <span className="text-sm font-medium">{tNav('swap')}</span>
             </button>
           </nav>
 
@@ -540,6 +560,27 @@ function DashboardLayout() {
                 ) : (
                   <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
                     <DollarSign className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
+                    <h3 className="text-xl font-semibold mb-2">
+                      {tNav('connectWallet')}
+                    </h3>
+                    <p className="text-white/60">
+                      {tProfile('signInToView')}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {currentView === 'swap' && (
+              <div className="space-y-6 animate-fade-in">
+                <div>
+                  <h2 className="text-2xl font-bold mb-2">{tNav('swap')}</h2>
+                </div>
+                {isPlayerConnected ? (
+                  <SwapComponent />
+                ) : (
+                  <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
+                    <IconArrowsExchange className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
                     <h3 className="text-xl font-semibold mb-2">
                       {tNav('connectWallet')}
                     </h3>

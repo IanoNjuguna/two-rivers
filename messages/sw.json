@@ -8,7 +8,10 @@
 		"upload": "Pakia",
 		"earnings": "Mapato",
 		"analytics": "Uchambuzi",
-		"profile": "Wasifu"
+		"profile": "Wasifu",
+		"wallet": "Pochi",
+		"sendMoney": "Tuma Pesa",
+		"swap": "Badilishana"
 	},
 	"header": {
 		"loading": "Inapakia...",
@@ -72,7 +75,7 @@
 		"changeFile": "Badilisha Faili",
 		"changeCover": "Badilisha Jalada",
 		"collaborators": "Washiriki",
-        "collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
+		"collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
 		"addCollaborator": "Ongeza Mshiriki",
 		"collaboratorsHint": "Ongeza washiriki ili kugawana mapato kiotomatiki.",
 		"walletAddress": "Anwani ya Pochi",
