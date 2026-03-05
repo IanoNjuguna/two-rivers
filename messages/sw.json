@@ -11,7 +11,8 @@
 		"profile": "Wasifu",
 		"wallet": "Pochi",
 		"sendMoney": "Tuma Pesa",
-		"swap": "Badilishana"
+		"swap": "Badilishana",
+		"connectWallet": "Unganisha Pochi Yako"
 	},
 	"header": {
 		"loading": "Inapakia...",
