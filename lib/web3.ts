@@ -308,6 +308,13 @@ export const SPLITTER_ABI = [
   },
   {
     type: 'function',
+    name: 'totalReleasedERC20',
+    stateMutability: 'view',
+    inputs: [{ name: 'token', type: 'address' }],
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    type: 'function',
     name: 'releasedERC20',
     stateMutability: 'view',
     inputs: [
