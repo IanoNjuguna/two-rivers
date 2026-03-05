@@ -30,20 +30,26 @@ export function SwapComponent() {
 		address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
 		symbol: 'USDC',
 		decimals: 6,
-		image: 'https://wallet-api-production.s3.amazonaws.com/uploads/tokens/usdc_288.png',
+		image: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
 		chainId: 8453,
 	};
 
 	const swappableTokens: Token[] = [ETHToken, USDCToken];
 
 	return (
-		<div className="space-y-6 animate-fade-in max-w-md mx-auto p-6 glass rounded-xl text-white">
+	return (
+		<div
+			className="space-y-6 animate-fade-in max-w-md mx-auto p-6 glass text-white bg-[#0D0D12]/80 border-white/10 relative overflow-hidden"
+			style={{
+				clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%)'
+			}}
+		>
 			<div>
 				<h2 className="text-2xl font-bold mb-2">{t('swap') || 'Swap'}</h2>
 				<p className="text-white/60 text-sm mb-6">Swap your tokens seamlessly on the current network.</p>
 			</div>
 
-			<div className="onchainkit-swap-container p-4 bg-white/5 rounded-xl border border-white/10">
+			<div className="onchainkit-swap-container p-4 bg-white/5 border border-white/10">
 				<Swap
 					initialState={{
 						fromToken: USDCToken,
@@ -55,21 +61,24 @@ export function SwapComponent() {
 							label="Sell"
 							swappableTokens={swappableTokens}
 							type="from"
-							className="bg-transparent border-none text-white focus:ring-0"
+							className="bg-transparent border-none text-white focus:ring-0 !bg-white/5"
 						/>
 						<div className="flex justify-center -my-3 relative z-10">
-							<SwapToggleButton className="bg-[#1e1e24] border border-white/10 rounded-full p-2 hover:bg-[#2a2a32] transition-colors" />
+							<SwapToggleButton className="bg-[#1e1e24] border border-white/10 p-2 hover:bg-[#2a2a32] transition-colors" />
 						</div>
 						<SwapAmountInput
 							label="Buy"
 							swappableTokens={swappableTokens}
 							type="to"
-							className="bg-transparent border-none text-white focus:ring-0"
+							className="bg-transparent border-none text-white focus:ring-0 !bg-white/5"
 						/>
 					</div>
 
 					<div className="mt-6">
-						<SwapButton className="w-full bg-[#FF1F8A] hover:bg-[#FF1F8A]/90 text-white font-bold py-3 rounded-lg transition-all shadow-pink-glow" />
+						<SwapButton
+							className="w-full bg-[#FF1F8A] hover:bg-[#FF1F8A]/90 text-white font-bold py-3 transition-all shadow-pink-glow"
+							style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)' }}
+						/>
 					</div>
 
 					<SwapMessage className="mt-4 text-xs text-white/60 text-center" />
