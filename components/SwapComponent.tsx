@@ -21,7 +21,7 @@ export function SwapComponent() {
 		address: '',
 		symbol: 'ETH',
 		decimals: 18,
-		image: 'https://wallet-api-production.s3.amazonaws.com/uploads/tokens/eth_288.png',
+		image: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png', // WETH logo often used for ETH
 		chainId: 8453, // Default to Base, will be overridden by provider's chain if activeChain is different
 	};
 
@@ -38,49 +38,57 @@ export function SwapComponent() {
 
 	return (
 		<div
-			className="space-y-6 animate-fade-in max-w-md mx-auto p-6 glass text-white bg-[#0D0D12]/80 border-white/10 relative overflow-hidden"
+			className="space-y-6 animate-fade-in max-w-md mx-auto p-6 glass text-white bg-[#0D0D12]/90 border-white/10 relative overflow-hidden"
 			style={{
 				clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%)'
 			}}
 		>
-			<div>
-				<h2 className="text-2xl font-bold mb-2">{t('swap') || 'Swap'}</h2>
-				<p className="text-white/60 text-sm mb-6">Swap your tokens seamlessly on the current network.</p>
+			<div className="relative z-10">
+				<h2 className="text-2xl font-bold mb-1 uppercase tracking-tight">{t('swap') || 'Swap'}</h2>
+				<p className="text-white/40 text-[10px] uppercase font-bold tracking-widest mb-6">Seamless Cross-Asset Exchange</p>
 			</div>
 
-			<div className="onchainkit-swap-container p-4 bg-white/5 border border-white/10">
+			<div className="onchainkit-swap-container relative">
 				<Swap
 					initialState={{
 						fromToken: USDCToken,
 						toToken: ETHToken,
 					}}
 				>
-					<div className="space-y-2">
-						<SwapAmountInput
-							label="Sell"
-							swappableTokens={swappableTokens}
-							type="from"
-							className="bg-transparent border-none text-white focus:ring-0 !bg-white/5"
-						/>
-						<div className="flex justify-center -my-3 relative z-10">
-							<SwapToggleButton className="bg-[#1e1e24] border border-white/10 p-2 hover:bg-[#2a2a32] transition-colors" />
+					<div className="space-y-1">
+						<div className="bg-white/5 border border-white/5 p-1 transition-colors hover:border-white/10 group">
+							<SwapAmountInput
+								label="Sell"
+								swappableTokens={swappableTokens}
+								type="from"
+								className="!bg-transparent !border-none !text-white !ring-0 !outline-none py-4 px-2"
+							/>
 						</div>
-						<SwapAmountInput
-							label="Buy"
-							swappableTokens={swappableTokens}
-							type="to"
-							className="bg-transparent border-none text-white focus:ring-0 !bg-white/5"
-						/>
+
+						<div className="flex justify-center -my-4 relative z-20">
+							<div className="bg-[#0D0D12] border border-white/10 p-1 hover:border-[#FF1F8A]/50 transition-colors shadow-xl">
+								<SwapToggleButton className="!bg-white/5 !border-none !rounded-none p-2 hover:!bg-white/10 transition-all" />
+							</div>
+						</div>
+
+						<div className="bg-white/5 border border-white/5 p-1 transition-colors hover:border-white/10 group">
+							<SwapAmountInput
+								label="Buy"
+								swappableTokens={swappableTokens}
+								type="to"
+								className="!bg-transparent !border-none !text-white !ring-0 !outline-none py-4 px-2"
+							/>
+						</div>
 					</div>
 
-					<div className="mt-6">
+					<div className="mt-8">
 						<SwapButton
-							className="w-full bg-[#FF1F8A] hover:bg-[#FF1F8A]/90 text-white font-bold py-3 transition-all shadow-pink-glow"
-							style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)' }}
+							className="w-full bg-[#FF1F8A] hover:bg-[#FF1F8A]/90 text-white font-black py-4 uppercase tracking-[0.2em] transition-all shadow-pink-glow border-none"
+							style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%)' }}
 						/>
 					</div>
 
-					<SwapMessage className="mt-4 text-xs text-white/60 text-center" />
+					<SwapMessage className="mt-4 text-[10px] text-white/30 text-center uppercase tracking-widest font-bold" />
 					<SwapToast />
 				</Swap>
 			</div>
