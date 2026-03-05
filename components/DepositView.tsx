@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-// import { QRCodeSVG } from 'qrcode.react'
+import { QRCodeSVG } from 'qrcode.react'
 import { IconCopy, IconCheck, IconChevronDown, IconWallet } from '@tabler/icons-react'
 import { toast } from 'sonner'
 import { useAudio } from '@/components/AudioProvider'
@@ -40,19 +40,18 @@ export function DepositView() {
 					<p className="text-sm text-white/50">Scan or copy your wallet address to deposit</p>
 				</div>
 
-				{/* QR Code Section - Simplified for debugging */}
+				{/* QR Code Section */}
 				<div className="relative flex justify-center">
 					<div className="p-4 bg-white/[0.03] border border-white/10 rounded-2xl relative">
-						<div className="bg-white p-3 rounded-xl overflow-hidden shadow-[0_0_30px_rgba(255,255,255,0.05)] w-[220px] h-[220px] flex items-center justify-center text-black font-bold">
-							QR CODE HERE
-							{/* <QRCodeSVG
+						<div className="bg-white p-3 rounded-xl overflow-hidden shadow-[0_0_30px_rgba(255,255,255,0.05)]">
+							<QRCodeSVG
 								value={address}
 								size={220}
 								bgColor="#FFFFFF"
 								fgColor="#7C3AED"
 								level="H"
 								includeMargin={false}
-							/> */}
+							/>
 						</div>
 					</div>
 				</div>
@@ -74,7 +73,33 @@ export function DepositView() {
 							)}
 						</div>
 					</div>
+
+					<div className="pt-4 space-y-4">
+						<div className="flex items-center justify-center gap-3">
+							<span className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em]">Networks</span>
+							<div className="h-[1px] w-12 bg-white/10"></div>
+						</div>
+
+						<div className="flex items-center justify-center gap-4">
+							<div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center border border-blue-500/30 group cursor-help transition-transform hover:scale-110" title="Base">
+								<div className="w-4 h-4 rounded-full bg-blue-500"></div>
+							</div>
+							<div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center border border-purple-500/30 group cursor-help transition-transform hover:scale-110" title="Polygon">
+								<div className="w-4 h-4 rounded-full bg-purple-500 clip-hexagon"></div>
+							</div>
+							<div className="w-8 h-8 rounded-full bg-blue-400/20 flex items-center justify-center border border-blue-400/30 group cursor-help transition-transform hover:scale-110" title="Coinbase">
+								<div className="w-4 h-4 bg-blue-400"></div>
+							</div>
+							<div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/20 group cursor-help transition-transform hover:scale-110" title="Ethereum">
+								<div className="w-3 h-5 bg-white/40 clip-diamond"></div>
+							</div>
+						</div>
+					</div>
 				</div>
+
+				{/* Decorative Elements */}
+				<div className="absolute top-0 right-0 w-32 h-32 bg-purple-600/10 blur-[60px] pointer-events-none"></div>
+				<div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-600/10 blur-[60px] pointer-events-none"></div>
 			</div>
 		</div>
 	)
