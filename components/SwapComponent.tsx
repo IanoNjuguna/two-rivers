@@ -37,7 +37,6 @@ export function SwapComponent() {
 	const swappableTokens: Token[] = [ETHToken, USDCToken];
 
 	return (
-	return (
 		<div
 			className="space-y-6 animate-fade-in max-w-md mx-auto p-6 glass text-white bg-[#0D0D12]/80 border-white/10 relative overflow-hidden"
 			style={{
