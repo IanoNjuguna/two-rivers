@@ -67,7 +67,7 @@ const config: Config = {
           border: 'hsl(var(--sidebar-border))',
           ring: 'hsl(var(--sidebar-ring))',
         },
-        midnight: '#020617',
+        midnight: '#0D0D12',
         'cyber-pink': '#FF1F8A',
         lavender: '#B794F4',
       },

@@ -51,7 +51,7 @@ export default function Dashboard() {
       .finally(() => setMounted(true))
   }, [])
 
-  if (!mounted) return <div className="h-screen bg-midnight" />
+  if (!mounted) return <div className="h-screen bg-[#0D0D12]" />
 
   return isMiniApp ? <MiniAppDashboard /> : <AlchemyDashboard />
 }
@@ -109,9 +109,9 @@ function DashboardLayout() {
   // handlePlayTrack is now provided by AudioProvider
 
   return (
-    <div className="h-screen overflow-hidden text-white flex flex-col bg-midnight">
+    <div className="h-screen overflow-hidden text-white flex flex-col bg-[#0D0D12]">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-white/[0.08] bg-dark-primary-95 backdrop-blur-md">
+      <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-white/[0.08] bg-[rgba(13,13,18,0.95)] backdrop-blur-md">
         <div className="h-full px-4 lg:px-6 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-2">
@@ -243,7 +243,7 @@ function DashboardLayout() {
       {/* Main Layout */}
       <div className="flex flex-col lg:flex-row flex-1 mt-16 h-[calc(100vh-4rem)] overflow-hidden">
         {/* Sidebar */}
-        <aside className="hidden lg:flex w-64 border-r border-white/[0.08] flex-col bg-midnight overflow-y-auto">
+        <aside className="hidden lg:flex w-64 border-r border-white/[0.08] flex-col bg-[#0D0D12] overflow-y-auto">
           <nav className="flex flex-col p-4 overflow-y-auto flex-1 space-y-1">
             <div className="px-0 pt-0 pb-0 mb-1">
               <h2 className="text-sm font-semibold uppercase tracking-wider text-purple-400">
@@ -422,7 +422,7 @@ function DashboardLayout() {
                       {tUpload('subtitle')}
                     </p>
                   </div>
-                  <div className="border border-white/[0.08] p-12 text-center bg-dark-primary-30">
+                  <div className="border border-white/[0.08] p-12 text-center bg-[rgba(13,13,18,0.3)]">
                     <div className="w-16 h-16 mx-auto mb-4 bg-[rgba(183,148,244,0.1)]">
                       <div className="w-full h-full flex items-center justify-center text-[#B794F4]">
                         <Music size={32} />
@@ -451,7 +451,7 @@ function DashboardLayout() {
                     {tAnalytics('subtitle')}
                   </p>
                 </div>
-                <div className="border border-white/[0.08] rounded-xl p-12 text-center bg-dark-primary-30">
+                <div className="border border-white/[0.08] rounded-xl p-12 text-center bg-[rgba(13,13,18,0.3)]">
                   <div className="w-16 h-16 rounded-full mx-auto mb-4 bg-[rgba(183,148,244,0.1)]">
                     <div className="w-full h-full flex items-center justify-center text-[#B794F4]">
                       <Music size={32} />

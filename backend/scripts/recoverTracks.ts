@@ -1,15 +1,13 @@
 import { createPublicClient, http } from 'viem';
-import { avalanche } from 'viem/chains';
+import { arbitrum } from 'viem/chains';
 
-// Using public rpc for Avalanche
+// Using public rpc for Arbitrum
 const publicClient = createPublicClient({
-  chain: avalanche,
+  chain: arbitrum,
   transport: http()
 });
 
 const CONTRACT_ADDRESS = '0xfb01a9d4b8702DE192844356EFcc157f7C5B3507';
-
-
 
 const abi = [
   { "inputs": [], "name": "nextCollectionId", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
@@ -23,16 +21,7 @@ async function main() {
       abi,
       functionName: 'nextCollectionId'
     }) as bigint;
-
-    const owner = await publicClient.readContract({
-      address: CONTRACT_ADDRESS,
-      abi: [...abi, { "inputs": [], "name": "owner", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }],
-      functionName: 'owner'
-    }) as string;
-
-    console.log(`Contract Owner: ${owner}`);
-    console.log(`Total Collections on Base: ${nextId}\n`);
-
+    console.log(`Total Collections on Arbitrum: ${nextId}\n`);
 
     for (let i = 0n; i < nextId; i++) {
       const info = await publicClient.readContract({
