@@ -13,6 +13,7 @@ import UploadView from '@/components/UploadView'
 import ChainSwitcher from '@/components/ChainSwitcher'
 import { ProfileEditor } from '@/components/ProfileEditor'
 import { SendFunds } from '@/components/SendFunds'
+import { DepositView } from '@/components/DepositView'
 import { type Track } from '@/hooks/useAudioPlayer'
 import { useAudio } from '@/components/AudioProvider'
 import { useTranslations } from 'next-intl'
@@ -33,7 +34,7 @@ const formatAddress = (address: string, startChars: number = 6, endChars: number
   return `${address.slice(0, startChars)}...${address.slice(-endChars)}`
 }
 
-type ViewType = 'home' | 'library' | 'search' | 'upload' | 'profile' | 'earnings' | 'analytics' | 'send-money'
+type ViewType = 'home' | 'library' | 'search' | 'upload' | 'profile' | 'earnings' | 'analytics' | 'send-money' | 'deposit'
 
 export default function Dashboard() {
   const [isMiniApp, setIsMiniApp] = useState<boolean>(false)
@@ -254,6 +255,17 @@ function DashboardLayout() {
               <DollarSign size={18} className="text-[#FF1F8A] flex-shrink-0" />
               <span className="text-sm font-medium">{tNav('sendMoney')}</span>
             </button>
+
+            <button
+              onClick={() => {
+                setCurrentView('deposit')
+                setHeaderMenuOpen(false)
+              }}
+              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+            >
+              <IconPlus size={18} className="text-[#B794F4] flex-shrink-0" />
+              <span className="text-sm font-medium">{tNav('deposit')}</span>
+            </button>
           </nav>
         </div>
       )}
@@ -339,6 +351,13 @@ function DashboardLayout() {
             >
               <DollarSign size={18} className="text-[#FF1F8A] flex-shrink-0" />
               <span className="text-sm font-medium">{tNav('sendMoney')}</span>
+            </button>
+            <button
+              onClick={() => setCurrentView('deposit')}
+              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+            >
+              <IconPlus size={18} className="text-[#B794F4] flex-shrink-0" />
+              <span className="text-sm font-medium">{tNav('deposit')}</span>
             </button>
           </nav>
         </aside>
@@ -545,6 +564,10 @@ function DashboardLayout() {
                   </div>
                 )}
               </div>
+            )}
+
+            {currentView === 'deposit' && (
+              <DepositView />
             )}
           </div>
 

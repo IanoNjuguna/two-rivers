@@ -11,6 +11,7 @@
 		"profile": "Profile",
 		"wallet": "Wallet",
 		"sendMoney": "Send Funds",
+		"deposit": "Deposit",
 		"swap": "Swap",
 		"connectWallet": "Connect Your Wallet"
 	},
