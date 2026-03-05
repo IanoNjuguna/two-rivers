@@ -4,8 +4,9 @@ import React, { useState, useEffect } from "react";
 import { AlchemyAccountProvider, AlchemyAccountsProviderProps } from "@account-kit/react";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
-import { getConfig } from "@/lib/config";
+import { getConfig, activeChain } from "@/lib/config";
 import { sdk } from "@farcaster/miniapp-sdk";
+import { OnchainKitProvider } from "@coinbase/onchainkit";
 
 export function Providers({
 	children,
@@ -33,7 +34,12 @@ export function Providers({
 		<WagmiProvider config={(alchemyConfig as any)._internal.wagmiConfig}>
 			<QueryClientProvider client={queryClient}>
 				<AlchemyAccountProvider config={alchemyConfig} queryClient={queryClient} initialState={initialState}>
-					{children}
+					<OnchainKitProvider
+						apiKey={process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}
+						chain={activeChain}
+					>
+						{children}
+					</OnchainKitProvider>
 				</AlchemyAccountProvider>
 			</QueryClientProvider>
 		</WagmiProvider>

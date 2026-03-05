@@ -12,6 +12,7 @@ import Footer from '@/components/Footer'
 import UploadView from '@/components/UploadView'
 import ChainSwitcher from '@/components/ChainSwitcher'
 import { ProfileEditor } from '@/components/ProfileEditor'
+import { SendMoney } from '@/components/SendMoney'
 import { type Track } from '@/hooks/useAudioPlayer'
 import { useAudio } from '@/components/AudioProvider'
 import { useTranslations } from 'next-intl'
@@ -32,7 +33,7 @@ const formatAddress = (address: string, startChars: number = 6, endChars: number
   return `${address.slice(0, startChars)}...${address.slice(-endChars)}`
 }
 
-type ViewType = 'home' | 'library' | 'search' | 'upload' | 'profile' | 'earnings' | 'analytics'
+type ViewType = 'home' | 'library' | 'search' | 'upload' | 'profile' | 'earnings' | 'analytics' | 'send-money'
 
 export default function Dashboard() {
   const [isMiniApp, setIsMiniApp] = useState<boolean>(false)
@@ -235,6 +236,25 @@ function DashboardLayout() {
               <span className="text-sm font-medium">{tNav('profile')}</span>
             </button>
 
+            <div className="border-t border-white/[0.08]" />
+
+            <div className="px-0 py-2">
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-[#B794F4]">
+                {tNav('wallet')}
+              </h2>
+            </div>
+
+            <button
+              onClick={() => {
+                setCurrentView('send-money')
+                setHeaderMenuOpen(false)
+              }}
+              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+            >
+              <DollarSign size={18} className="text-[#FF1F8A] flex-shrink-0" />
+              <span className="text-sm font-medium">{tNav('sendMoney')}</span>
+            </button>
+
           </nav >
         </div >
       )
@@ -307,6 +327,20 @@ function DashboardLayout() {
             >
               <User size={18} className="text-[#B794F4] flex-shrink-0" />
               <span className="text-sm font-medium">{tNav('profile')}</span>
+            </button>
+
+            <div className="border-t border-white/[0.08] my-2" />
+
+            <div className="px-0 pt-3 pb-0 mb-1">
+              <h2 className="text-sm font-semibold text-[#B794F4] uppercase tracking-wider" style={{ letterSpacing: '0.04em' }}>{tNav('wallet')}</h2>
+            </div>
+
+            <button
+              onClick={() => setCurrentView('send-money')}
+              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+            >
+              <DollarSign size={18} className="text-[#FF1F8A] flex-shrink-0" />
+              <span className="text-sm font-medium">{tNav('sendMoney')}</span>
             </button>
           </nav>
 
@@ -495,6 +529,27 @@ function DashboardLayout() {
                 )}
               </div>
             )}
+
+            {currentView === 'send-money' && (
+              <div className="space-y-6 animate-fade-in">
+                <div>
+                  <h2 className="text-2xl font-bold mb-2">{tNav('sendMoney')}</h2>
+                </div>
+                {isPlayerConnected ? (
+                  <SendMoney />
+                ) : (
+                  <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
+                    <DollarSign className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
+                    <h3 className="text-xl font-semibold mb-2">
+                      {tNav('connectWallet')}
+                    </h3>
+                    <p className="text-white/60">
+                      {tProfile('signInToView')}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Footer */}
@@ -502,9 +557,7 @@ function DashboardLayout() {
             <Footer />
           </footer>
         </main>
-
       </div>
-
     </div>
   )
 }

@@ -8,7 +8,11 @@
 		"upload": "Upload",
 		"earnings": "Earnings",
 		"analytics": "Analytics",
-		"profile": "Profile"
+		"profile": "Profile",
+		"wallet": "Wallet",
+		"sendMoney": "Send Money",
+		"wallet": "Wallet",
+		"sendMoney": "Send Money"
 	},
 	"header": {
 		"loading": "Loading...",

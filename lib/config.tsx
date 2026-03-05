@@ -30,7 +30,7 @@ const getActiveChain = () => {
 	return arbitrum;
 };
 
-const activeChain = getActiveChain();
+export const activeChain = getActiveChain();
 
 export const chains = [arbitrum, base, avalancheChain];
 
