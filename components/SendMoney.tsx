@@ -56,7 +56,7 @@ export function SendMoney() {
 			name: 'USDC',
 			decimals: 6,
 			address: addresses.usdc,
-			image: 'https://wallet-api-production.s3.amazonaws.com/uploads/tokens/usdc_288.png',
+			image: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
 		},
 	}), [addresses.usdc]);
 
@@ -181,15 +181,20 @@ export function SendMoney() {
 					<div className="relative">
 						<Input
 							id="amount"
-							type="number"
-							step="0.0001"
+							type="text"
+							inputMode="decimal"
 							placeholder="0.0"
 							value={amount}
-							onChange={(e) => setAmount(e.target.value)}
+							onChange={(e) => {
+								const val = e.target.value;
+								if (val === '' || /^\d*\.?\d*$/.test(val)) {
+									setAmount(val);
+								}
+							}}
 							className="bg-white/5 border-white/10 text-lg h-14 pl-4 pr-12 text-white placeholder:text-white/30 focus:border-[#FF1F8A]/50 transition-colors"
 						/>
-						<div className="absolute right-4 top-1/2 -translate-y-1/2">
-							<img src={tokens[selectedToken].image} alt={selectedToken} className="w-6 h-6 rounded-full" />
+						<div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+							<img src={tokens[selectedToken].image} alt={selectedToken} className="w-6 h-6 rounded-full bg-white/10" />
 						</div>
 					</div>
 
