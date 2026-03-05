@@ -48,19 +48,19 @@
 
   /* Background colors */
   .bg-dark-primary {
-    background-color: #0d0d12;
+    background-color: #020617;
   }
 
   .bg-dark-primary-95 {
-    background-color: rgba(13, 13, 18, 0.95);
+    background-color: rgba(2, 6, 23, 0.95);
   }
 
   .bg-dark-primary-50 {
-    background-color: rgba(13, 13, 18, 0.5);
+    background-color: rgba(2, 6, 23, 0.5);
   }
 
   .bg-dark-primary-30 {
-    background-color: rgba(13, 13, 18, 0.3);
+    background-color: rgba(2, 6, 23, 0.3);
   }
 
   .bg-white-2 {
@@ -217,24 +217,24 @@
 
 @layer base {
   :root {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
+    --background: 222 47% 5%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 5%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 5%;
+    --popover-foreground: 210 40% 98%;
     --primary: 310 98% 51%;
     --primary-foreground: 0 0% 3%;
     --secondary: 270 93% 60%;
     --secondary-foreground: 0 0% 3%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 70%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
     --accent: 310 98% 51%;
-    --accent-foreground: 0 0% 98%;
+    --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 15%;
-    --input: 0 0% 10%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
     --ring: 310 98% 51%;
     --chart-1: 310 98% 51%;
     --chart-2: 270 93% 60%;
@@ -242,13 +242,13 @@
     --chart-4: 280 85% 55%;
     --chart-5: 340 75% 55%;
     --radius: 0;
-    --sidebar-background: 0 0% 3.9%;
-    --sidebar-foreground: 0 0% 98%;
+    --sidebar-background: 222 47% 5%;
+    --sidebar-foreground: 210 40% 98%;
     --sidebar-primary: 310 98% 51%;
-    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-primary-foreground: 210 40% 98%;
     --sidebar-accent: 270 93% 60%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 0 0% 15%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217.2 32.6% 17.5%;
     --sidebar-ring: 310 98% 51%;
   }
 }
@@ -263,7 +263,7 @@
   }
 
   body {
-    @apply bg-[#0D0D12] text-white;
+    @apply bg-midnight text-white;
   }
 
   /* Angular Scrollbar - Sharp corners, geometric design */
@@ -273,7 +273,7 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: rgba(13, 13, 18, 0.5);
+    background: rgba(2, 6, 23, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.08);
   }
 
@@ -306,7 +306,7 @@
 
   /* Firefox Angular Scrollbar */
   * {
-    scrollbar-color: rgba(183, 148, 244, 0.1) rgba(13, 13, 18, 0.05);
+    scrollbar-color: rgba(183, 148, 244, 0.1) rgba(2, 6, 23, 0.05);
     scrollbar-width: thin;
   }
 }

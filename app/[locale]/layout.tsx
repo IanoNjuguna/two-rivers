@@ -86,7 +86,7 @@ export const metadata: Metadata = {
 					name: 'doba',
 					url: process.env.NEXT_PUBLIC_SITE_URL || 'https://doba.world',
 					splashImageUrl: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://doba.world'}/doba-preview.png`,
-					splashBackgroundColor: '#0D0D12',
+					splashBackgroundColor: '#020617',
 				},
 			},
 		}),
@@ -98,7 +98,7 @@ export const viewport: Viewport = {
 	initialScale: 1,
 	maximumScale: 1,
 	userScalable: false,
-	themeColor: '#0D0D12',
+	themeColor: '#020617',
 }
 
 type Props = {
