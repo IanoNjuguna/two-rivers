@@ -64,6 +64,16 @@ export const LZ_SYNC_OPTIONS = "0x00030100110100000000000000000000000000030d40" 
 export const ERC20_ABI = [
   {
     type: 'function',
+    name: 'transfer',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: 'to', type: 'address' },
+      { name: 'amount', type: 'uint256' },
+    ],
+    outputs: [{ name: '', type: 'bool' }],
+  },
+  {
+    type: 'function',
     name: 'approve',
     stateMutability: 'nonpayable',
     inputs: [
