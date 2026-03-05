@@ -12,7 +12,7 @@ import Footer from '@/components/Footer'
 import UploadView from '@/components/UploadView'
 import ChainSwitcher from '@/components/ChainSwitcher'
 import { ProfileEditor } from '@/components/ProfileEditor'
-import { SendMoney } from '@/components/SendMoney'
+import { SendFunds } from '@/components/SendFunds'
 import { SwapComponent } from '@/components/SwapComponent'
 import { type Track } from '@/hooks/useAudioPlayer'
 import { useAudio } from '@/components/AudioProvider'
@@ -556,7 +556,7 @@ function DashboardLayout() {
                   <h2 className="text-2xl font-bold mb-2">{tNav('sendMoney')}</h2>
                 </div>
                 {isPlayerConnected ? (
-                  <SendMoney />
+                  <SendFunds />
                 ) : (
                   <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
                     <DollarSign className="w-12 h-12 mx-auto mb-4 text-lavender/40" />

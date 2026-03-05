@@ -31,7 +31,7 @@ type TokenOption = {
 	image: string;
 };
 
-export function SendMoney() {
+export function SendFunds() {
 	const [recipient, setRecipient] = useState<string>('');
 	const [amount, setAmount] = useState<string>('');
 	const [selectedToken, setSelectedToken] = useState<'ETH' | 'USDC'>('ETH');
