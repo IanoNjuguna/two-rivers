@@ -2,12 +2,12 @@
 
 import React, { useState } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
-import { useAccount } from 'wagmi'
 import { IconCopy, IconCheck, IconChevronDown, IconWallet } from '@tabler/icons-react'
 import { toast } from 'sonner'
+import { useAudio } from '@/components/AudioProvider'
 
 export const DepositView: React.FC = () => {
-	const { address } = useAccount()
+	const { effectiveAddress: address } = useAudio()
 	const [copied, setCopied] = useState(false)
 
 	const handleCopy = () => {
