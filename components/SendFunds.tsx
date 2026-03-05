@@ -135,22 +135,27 @@ export function SendFunds() {
 	const isValid = recipient.startsWith('0x') && recipient.length === 42 && amount && !isNaN(Number(amount)) && parseFloat(amount) > 0;
 
 	return (
-		<div className="space-y-6 animate-fade-in max-w-md mx-auto p-6 glass rounded-xl text-white">
+		<div
+			className="space-y-6 animate-fade-in max-w-md mx-auto p-6 glass text-white bg-[#0D0D12]/80 border-white/10 relative overflow-hidden"
+			style={{
+				clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%)'
+			}}
+		>
 			<div className="flex justify-between items-start">
 				<div>
 					<h2 className="text-2xl font-bold mb-1">{t('sendMoney')}</h2>
 					<p className="text-white/60 text-xs">Send funds safely on the current network.</p>
 				</div>
-				<div className="flex bg-white/5 p-1 rounded-lg border border-white/10">
+				<div className="flex bg-white/5 p-1 border border-white/10">
 					<button
 						onClick={() => setSelectedToken('ETH')}
-						className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${selectedToken === 'ETH' ? 'bg-[#FF1F8A] text-white' : 'text-white/40 hover:text-white'}`}
+						className={`px-3 py-1 text-xs font-bold transition-all ${selectedToken === 'ETH' ? 'bg-[#FF1F8A] text-white' : 'text-white/40 hover:text-white'}`}
 					>
 						ETH
 					</button>
 					<button
 						onClick={() => setSelectedToken('USDC')}
-						className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${selectedToken === 'USDC' ? 'bg-[#FF1F8A] text-white' : 'text-white/40 hover:text-white'}`}
+						className={`px-3 py-1 text-xs font-bold transition-all ${selectedToken === 'USDC' ? 'bg-[#FF1F8A] text-white' : 'text-white/40 hover:text-white'}`}
 					>
 						USDC
 					</button>
@@ -165,7 +170,7 @@ export function SendFunds() {
 						placeholder="0x..."
 						value={recipient}
 						onChange={(e) => setRecipient(e.target.value)}
-						className="bg-white/5 border-white/10 text-sm h-12 text-white placeholder:text-white/30 focus:border-[#FF1F8A]/50 transition-colors"
+						className="bg-white/5 border-white/10 text-sm h-12 text-white placeholder:text-white/30 focus:border-[#FF1F8A]/50 transition-colors rounded-none"
 					/>
 				</div>
 
@@ -194,28 +199,28 @@ export function SendFunds() {
 							className="bg-white/5 border-white/10 text-lg h-14 pl-4 pr-12 text-white placeholder:text-white/30 focus:border-[#FF1F8A]/50 transition-colors"
 						/>
 						<div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-							<img src={tokens[selectedToken].image} alt={selectedToken} className="w-6 h-6 rounded-full bg-white/10" />
+							<img src={tokens[selectedToken].image} alt={selectedToken} className="w-6 h-6 bg-white/10" />
 						</div>
 					</div>
 
 					<div className="grid grid-cols-3 gap-2 mt-2">
 						<Button
 							variant="outline"
-							className="bg-white/5 border-white/10 text-[10px] h-8 hover:bg-white/10 hover:text-white text-white/60"
+							className="bg-white/5 border-white/10 text-[10px] h-8 hover:bg-white/10 hover:text-white text-white/60 rounded-none"
 							onClick={() => handlePercentage(0.25)}
 						>
 							25%
 						</Button>
 						<Button
 							variant="outline"
-							className="bg-white/5 border-white/10 text-[10px] h-8 hover:bg-white/10 hover:text-white text-white/60"
+							className="bg-white/5 border-white/10 text-[10px] h-8 hover:bg-white/10 hover:text-white text-white/60 rounded-none"
 							onClick={() => handlePercentage(0.5)}
 						>
 							50%
 						</Button>
 						<Button
 							variant="outline"
-							className="bg-white/5 border-white/10 text-[10px] h-8 hover:bg-[#FF1F8A]/20 hover:text-[#FF1F8A] text-[#FF1F8A]/80 border-[#FF1F8A]/20"
+							className="bg-white/5 border-white/10 text-[10px] h-8 hover:bg-[#FF1F8A]/20 hover:text-[#FF1F8A] text-[#FF1F8A]/80 border-[#FF1F8A]/20 rounded-none"
 							onClick={() => handlePercentage(1)}
 						>
 							MAX
@@ -231,7 +236,7 @@ export function SendFunds() {
 						onSuccess={(response: TransactionResponseType) => console.log('Transaction successful', response)}
 						onError={(error) => console.error('Transaction failed', error)}
 					>
-						<TransactionButton className="w-full h-14 bg-[#FF1F8A] hover:bg-[#FF1F8A]/90 text-white font-bold text-lg rounded-xl transition-all shadow-pink-glow" />
+						<TransactionButton className="w-full h-14 bg-[#FF1F8A] hover:bg-[#FF1F8A]/90 text-white font-bold text-lg transition-all shadow-pink-glow rounded-none" style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)' }} />
 						<TransactionStatus>
 							<TransactionStatusLabel className="text-white/70" />
 							<TransactionStatusAction className="text-[#FF1F8A] hover:text-[#FF1F8A]/80" />
@@ -243,7 +248,7 @@ export function SendFunds() {
 						</TransactionToast>
 					</Transaction>
 				) : (
-					<Button disabled className="w-full h-14 bg-white/10 text-white/40 cursor-not-allowed rounded-xl font-bold text-lg">
+					<Button disabled className="w-full h-14 bg-white/10 text-white/40 cursor-not-allowed font-bold text-lg rounded-none" style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)' }}>
 						Enter Details
 					</Button>
 				)}
