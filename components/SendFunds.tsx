@@ -136,10 +136,7 @@ export function SendFunds() {
 
 	return (
 		<div
-			className="space-y-6 animate-fade-in max-w-md mx-auto p-6 glass text-white bg-[#0D0D12]/80 border-white/10 relative overflow-hidden"
-			style={{
-				clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%)'
-			}}
+			className="space-y-6 animate-fade-in max-w-md mx-auto p-6 glass text-white bg-[#0D0D12]/80 border-white/10 relative overflow-hidden clip-angular-br"
 		>
 			<div className="flex justify-between items-start">
 				<div>
@@ -236,7 +233,7 @@ export function SendFunds() {
 						onSuccess={(response: TransactionResponseType) => console.log('Transaction successful', response)}
 						onError={(error) => console.error('Transaction failed', error)}
 					>
-						<TransactionButton className="w-full h-14 bg-[#FF1F8A] hover:bg-[#FF1F8A]/90 text-white font-bold text-lg transition-all shadow-pink-glow rounded-none" style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)' }} />
+						<TransactionButton className="w-full h-14 bg-[#FF1F8A] hover:bg-[#FF1F8A]/90 text-white font-bold text-lg transition-all shadow-pink-glow clip-angular-br-sm" />
 						<TransactionStatus>
 							<TransactionStatusLabel className="text-white/70" />
 							<TransactionStatusAction className="text-[#FF1F8A] hover:text-[#FF1F8A]/80" />
@@ -248,7 +245,7 @@ export function SendFunds() {
 						</TransactionToast>
 					</Transaction>
 				) : (
-					<Button disabled className="w-full h-14 bg-white/10 text-white/40 cursor-not-allowed font-bold text-lg rounded-none" style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)' }}>
+					<Button disabled className="w-full h-14 bg-white/10 text-white/40 cursor-not-allowed font-bold text-lg clip-angular-br-sm">
 						Enter Details
 					</Button>
 				)}

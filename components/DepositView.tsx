@@ -32,12 +32,7 @@ export const DepositView: React.FC = () => {
 	return (
 		<div className="max-w-md mx-auto animate-fade-in">
 			<div
-				className="glass p-8 relative overflow-hidden text-center space-y-8"
-				style={{
-					clipPath: 'polygon(0% 0%, 100% 0%, 100% 90%, 95% 100%, 0% 100%)',
-					background: 'linear-gradient(135deg, rgba(13, 13, 18, 0.95) 0%, rgba(20, 20, 25, 0.95) 100%)',
-					border: '1px solid rgba(255, 255, 255, 0.08)'
-				}}
+				className="glass p-8 relative overflow-hidden text-center space-y-8 clip-angular-br bg-premium-gradient border border-white/08"
 			>
 				{/* Header */}
 				<div className="space-y-2">
@@ -73,8 +68,7 @@ export const DepositView: React.FC = () => {
 				<div className="space-y-4">
 					<div
 						onClick={handleCopy}
-						className="group flex items-center justify-between gap-4 p-4 bg-black/40 border border-white/10 hover:border-white/20 transition-all cursor-pointer overflow-hidden"
-						style={{ clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 5% 100%, 0% 80%)' }}
+						className="group flex items-center justify-between gap-4 p-4 bg-black/40 border border-white/10 hover:border-white/20 transition-all cursor-pointer overflow-hidden clip-angular-bl-sm"
 					>
 						<code className="text-[13px] font-mono text-white/80 truncate">
 							{address}
@@ -100,13 +94,13 @@ export const DepositView: React.FC = () => {
 								<div className="w-4 h-4 rounded-full bg-blue-500"></div>
 							</div>
 							<div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center border border-purple-500/30 group cursor-help transition-transform hover:scale-110" title="Polygon">
-								<div className="w-4 h-4 rounded-full bg-purple-500" style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' }}></div>
+								<div className="w-4 h-4 rounded-full bg-purple-500 clip-hexagon"></div>
 							</div>
 							<div className="w-8 h-8 rounded-full bg-blue-400/20 flex items-center justify-center border border-blue-400/30 group cursor-help transition-transform hover:scale-110" title="Coinbase">
 								<div className="w-4 h-4 bg-blue-400"></div>
 							</div>
 							<div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/20 group cursor-help transition-transform hover:scale-110" title="Ethereum">
-								<div className="w-3 h-5 bg-white/40" style={{ clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }}></div>
+								<div className="w-3 h-5 bg-white/40 clip-diamond"></div>
 							</div>
 						</div>
 					</div>

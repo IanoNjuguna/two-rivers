@@ -4,6 +4,30 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .clip-angular-br {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+  }
+  .clip-angular-br-sm {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+  }
+  .clip-angular-bl-sm {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 5% 100%, 0% 80%);
+  }
+  .clip-hexagon {
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  }
+  .clip-diamond {
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  }
+  .bg-premium-gradient {
+    background: linear-gradient(135deg, rgba(13, 13, 18, 0.95) 0%, rgba(20, 20, 25, 0.95) 100%);
+  }
+  .shadow-pink-glow {
+    box-shadow: 0 0 20px rgba(255, 31, 138, 0.3);
+  }
+}
+
 /* Force correct fonts for non-Latin scripts — Space Mono doesn't have these glyphs */
 :lang(ko) {
   font-family: var(--font-noto-sans-kr), "Noto Sans KR", system-ui, sans-serif !important;
