@@ -4,7 +4,7 @@ import { Calendar } from "@/components/ui/calendar"
 import { IconTrendingUp, IconCalendar, IconCurrencyDollar as DollarSign, IconCheck, IconExternalLink } from '@tabler/icons-react'
 import { useTranslations } from 'next-intl'
 import { useChainId } from "wagmi"
-import { SPLITTER_ABI, ERC20_ABI, formatAddress, fetchAllBalances, ChainBalances, getAddressesForChain } from '@/lib/web3'
+import { SPLITTER_ABI, ERC20_ABI, formatAddress, fetchAllBalances, ChainBalances, getAddressesForChain, publicClients } from '@/lib/web3'
 import { parseUnits, formatUnits } from 'viem'
 import { toast } from 'sonner'
 
@@ -19,6 +19,7 @@ interface Track {
   name: string
   artist: string
   splitter: string
+  chain_id: number
 }
 
 interface RoyaltyEntry {
@@ -27,6 +28,7 @@ interface RoyaltyEntry {
   splitter: string
   pending: string
   shares: number
+  chainId: number
 }
 
 const API_URL = '/api-backend'
@@ -59,9 +61,19 @@ export default function EarningsView({ isConnected, client, address }: EarningsV
       for (const track of tracks) {
         if (!track.splitter || track.splitter === '0x0000000000000000000000000000000000000000') continue
 
+        // Use the correct public client for the track's chain
+        const trackChainId = track.chain_id || 42161 // Default to Arbitrum if missing
+        const trackClient = publicClients[trackChainId as keyof typeof publicClients]
+        const trackUSDC = getAddressesForChain(trackChainId).usdc
+
+        if (!trackClient) {
+          console.warn(`No public client for chain ${trackChainId}`)
+          continue
+        }
+
         try {
           // Check shares
-          const userShares = await client.readContract({
+          const userShares = await trackClient.readContract({
             address: track.splitter as `0x${string}`,
             abi: SPLITTER_ABI,
             functionName: 'shares',
@@ -71,28 +83,28 @@ export default function EarningsView({ isConnected, client, address }: EarningsV
           if (userShares > 0n) {
             // Check pending payout
             const [balance, totalReleased, totalShares, releasedByMe] = await Promise.all([
-              client.readContract({
-                address: CURRENT_USDC as `0x${string}`,
+              trackClient.readContract({
+                address: trackUSDC as `0x${string}`,
                 abi: ERC20_ABI,
                 functionName: 'balanceOf',
                 args: [track.splitter as `0x${string}`],
               }),
-              client.readContract({
+              trackClient.readContract({
                 address: track.splitter as `0x${string}`,
                 abi: SPLITTER_ABI,
                 functionName: 'totalReleasedERC20',
-                args: [CURRENT_USDC as `0x${string}`],
+                args: [trackUSDC as `0x${string}`],
               }),
-              client.readContract({
+              trackClient.readContract({
                 address: track.splitter as `0x${string}`,
                 abi: SPLITTER_ABI,
                 functionName: 'totalShares',
               }),
-              client.readContract({
+              trackClient.readContract({
                 address: track.splitter as `0x${string}`,
                 abi: SPLITTER_ABI,
                 functionName: 'releasedERC20',
-                args: [CURRENT_USDC as `0x${string}`, address as `0x${string}`],
+                args: [trackUSDC as `0x${string}`, address as `0x${string}`],
               }),
             ])
 
@@ -106,13 +118,14 @@ export default function EarningsView({ isConnected, client, address }: EarningsV
                 tokenId: track.token_id,
                 splitter: track.splitter,
                 pending: formatUnits(pending, 6),
-                shares: Number(userShares) / 100
+                shares: Number(userShares) / 100,
+                chainId: trackChainId
               })
               total += pending
             }
           }
         } catch (e) {
-          console.warn(`Failed to fetch shares for splitter ${track.splitter}:`, e)
+          console.warn(`Failed to fetch shares for splitter ${track.splitter} on chain ${trackChainId}:`, e)
         }
       }
 
@@ -146,7 +159,7 @@ export default function EarningsView({ isConnected, client, address }: EarningsV
         data: encodeFunctionData({
           abi: SPLITTER_ABI,
           functionName: 'releaseERC20',
-          args: [CURRENT_USDC as `0x${string}`, address as `0x${string}`]
+          args: [getAddressesForChain(t.chainId).usdc as `0x${string}`, address as `0x${string}`]
         })
       }))
 
