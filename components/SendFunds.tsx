@@ -117,7 +117,7 @@ export function SendFunds() {
 		if (selectedToken === 'ETH') {
 			return [
 				{
-					to: recipient as Address,
+					target: recipient as Address,
 					value: parseEther(amount),
 					data: '0x' as `0x${string}`,
 				},
@@ -130,7 +130,7 @@ export function SendFunds() {
 			});
 			return [
 				{
-					to: addresses.usdc as Address,
+					target: addresses.usdc as Address,
 					data,
 				},
 			];
@@ -140,18 +140,7 @@ export function SendFunds() {
 	const isValid = recipient.startsWith('0x') && recipient.length === 42 && amount && !isNaN(Number(amount)) && parseFloat(amount) > 0;
 
 	const handleTransact = () => {
-		console.log('Transact Clicked!', { isValid, sendUserOperation: !!sendUserOperation, client: !!client, callsLength: calls.length });
-		if (!isValid) {
-			console.warn('Transaction invalid:', { recipient, amount });
-			return;
-		}
-		if (!sendUserOperation) {
-			console.error('No sendUserOperation found from hook!');
-			toast.error("Account not ready for transactions. Please try reconnecting.");
-			return;
-		}
-
-		console.log('Sending User Operation...', calls);
+		if (!isValid || !sendUserOperation) return;
 		sendUserOperation({ uo: calls });
 	};
 
