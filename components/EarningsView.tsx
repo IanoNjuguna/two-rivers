@@ -3,15 +3,13 @@ import { useEffect, useState } from 'react'
 import { Calendar } from "@/components/ui/calendar"
 import { IconTrendingUp, IconCalendar, IconCurrencyDollar as DollarSign, IconCheck, IconExternalLink } from '@tabler/icons-react'
 import { useTranslations } from 'next-intl'
-import { useChainId } from "wagmi"
+import { useChainId, useAccount, useWalletClient, usePublicClient } from "wagmi"
 import { SPLITTER_ABI, ERC20_ABI, formatAddress, fetchAllBalances, ChainBalances, getAddressesForChain, publicClients } from '@/lib/web3'
 import { parseUnits, formatUnits, encodeFunctionData } from 'viem'
 import { toast } from 'sonner'
 
 interface EarningsViewProps {
-  isConnected: boolean
-  client?: any
-  address?: string
+  // Props no longer strictly needed if we use hooks, but keeping for compatibility
 }
 
 interface Track {
@@ -33,8 +31,11 @@ interface RoyaltyEntry {
 
 const API_URL = '/api-backend'
 
-export default function EarningsView({ isConnected, client, address }: EarningsViewProps) {
+export default function EarningsView({ }: EarningsViewProps) {
   const t = useTranslations('earnings')
+  const { address, isConnected } = useAccount()
+  const { data: walletClient } = useWalletClient()
+  const publicClient = usePublicClient()
   const chainId = useChainId()
   const CURRENT_USDC = getAddressesForChain(chainId || 42161).usdc
   const [loading, setLoading] = useState(false)
@@ -44,7 +45,7 @@ export default function EarningsView({ isConnected, client, address }: EarningsV
   const [globalBalances, setGlobalBalances] = useState<ChainBalances[]>([])
 
   const fetchEarnings = async () => {
-    if (!isConnected || !client || !address) return
+    if (!isConnected || !address) return
     setLoading(true)
     try {
       // Fetch multi-chain balances
@@ -140,10 +141,10 @@ export default function EarningsView({ isConnected, client, address }: EarningsV
 
   useEffect(() => {
     fetchEarnings()
-  }, [isConnected, address, client])
+  }, [isConnected, address])
 
   const handleClaimAll = async () => {
-    if (!client || royaltyTracks.length === 0) return
+    if (!walletClient || !publicClient || royaltyTracks.length === 0) return
     setIsClaiming(true)
     const claimToast = toast.loading("Claiming royalties...")
 
@@ -154,19 +155,20 @@ export default function EarningsView({ isConnected, client, address }: EarningsV
         return
       }
 
-      const calls = pendingTracks.map(t => ({
-        target: t.splitter as `0x${string}`,
-        data: encodeFunctionData({
-          abi: SPLITTER_ABI,
-          functionName: 'releaseERC20',
-          args: [getAddressesForChain(t.chainId).usdc as `0x${string}`, address as `0x${string}`]
+      // Sequential claiming as fallback for smart wallet batching
+      for (const t of pendingTracks) {
+        toast.loading(`Claiming from ${t.track}...`, { id: claimToast })
+        const tx = await walletClient.sendTransaction({
+          to: t.splitter as `0x${string}`,
+          data: encodeFunctionData({
+            abi: SPLITTER_ABI,
+            functionName: 'releaseERC20',
+            args: [getAddressesForChain(t.chainId).usdc as `0x${string}`, address as `0x${string}`]
+          })
         })
-      }))
-
-      const { hash } = await client.sendUserOperation({ uo: calls })
-      await client.waitForUserOperationTransaction({ hash })
-
-      toast.success("Royalties claimed successfully!", { id: claimToast })
+        await publicClient.waitForTransactionReceipt({ hash: tx })
+      }
+      toast.success("All royalties claimed successfully!", { id: claimToast })
       fetchEarnings()
     } catch (e: any) {
       logger.error('Claim failed', e)

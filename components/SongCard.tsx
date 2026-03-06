@@ -9,7 +9,6 @@ import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain } from '@/lib/web3'
 import { useChainId, useWalletClient, usePublicClient, useAccount } from "wagmi"
 import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
-import { useAuthModal, useUser } from "@account-kit/react"
 import sdk from '@farcaster/miniapp-sdk'
 import { useRouter } from 'next/navigation'
 import { useLocale } from 'next-intl'
@@ -54,13 +53,11 @@ export default function SongCard({
   const locale = useLocale()
   const { data: walletClient } = useWalletClient()
   const publicClient = usePublicClient()
-  const { address } = useAccount()
-  const { openAuthModal } = useAuthModal()
-  const user = useUser()
-  const isAuthenticated = !!user?.address
+  const { address, isConnected } = useAccount()
+  const isAuthenticated = isConnected
 
   // Standardize the active address
-  const effectiveAddress = client?.account?.address || address
+  const effectiveAddress = address
 
   const {
     usdc: CURRENT_USDC,
@@ -72,7 +69,7 @@ export default function SongCard({
   const [hasOwned, setHasOwned] = React.useState(false)
 
   // Determine active reader for contracts
-  const activeClient = client || publicClient
+  const activeClient = publicClient
 
   // Check ownership
   const checkOwnership = React.useCallback(async () => {
@@ -99,8 +96,7 @@ export default function SongCard({
   const handleMint = async (e: React.MouseEvent) => {
     e.stopPropagation()
     if (!isAuthenticated) {
-      toast.error("Please sign in to collect this track")
-      openAuthModal()
+      toast.error("Please connect your wallet to collect this track")
       return
     }
 
@@ -118,9 +114,7 @@ export default function SongCard({
     try {
       // 0. Check Native Balance for Gas
       let nativeBalance = 0n;
-      if (client) {
-        nativeBalance = await client.getBalance({ address: effectiveAddress as `0x${string}` })
-      } else if (publicClient) {
+      if (publicClient) {
         nativeBalance = await publicClient.getBalance({ address: effectiveAddress as `0x${string}` })
       }
 
@@ -134,6 +128,7 @@ export default function SongCard({
       }
 
       // 1. Check Allowance
+      if (!activeClient) throw new Error("No web3 client available")
       const allowance = await activeClient.readContract({
         address: CURRENT_USDC as `0x${string}`,
         abi: ERC20_ABI,
@@ -150,17 +145,12 @@ export default function SongCard({
           args: [CURRENT_CONTRACT as `0x${string}`, 1000000000000n], // High allowance for better UX
         })
 
-        if (client) {
-          const { hash: approveHash } = await client.sendUserOperation({
-            uo: { target: CURRENT_USDC as `0x${string}`, data: approveData }
-          })
-          await client.waitForUserOperationTransaction({ hash: approveHash })
-        } else if (walletClient) {
+        if (walletClient && publicClient) {
           const tx = await walletClient.sendTransaction({
             to: CURRENT_USDC as `0x${string}`,
             data: approveData
           })
-          await publicClient?.waitForTransactionReceipt({ hash: tx })
+          await publicClient.waitForTransactionReceipt({ hash: tx })
         }
       }
 
@@ -174,17 +164,12 @@ export default function SongCard({
 
       let txReceipt;
 
-      if (client) {
-        const { hash: mintHash } = await client.sendUserOperation({
-          uo: { target: CURRENT_CONTRACT as `0x${string}`, data: mintData }
-        })
-        txReceipt = await client.waitForUserOperationTransaction({ hash: mintHash })
-      } else if (walletClient) {
+      if (walletClient && publicClient) {
         const tx = await walletClient.sendTransaction({
           to: CURRENT_CONTRACT as `0x${string}`,
           data: mintData
         })
-        const receipt = await publicClient?.waitForTransactionReceipt({ hash: tx })
+        const receipt = await publicClient.waitForTransactionReceipt({ hash: tx })
         txReceipt = receipt?.transactionHash || tx
       }
 

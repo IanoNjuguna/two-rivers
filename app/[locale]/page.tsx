@@ -11,18 +11,12 @@ import AudioPlayer from '@/components/AudioPlayer'
 import Footer from '@/components/Footer'
 import UploadView from '@/components/UploadView'
 import ChainSwitcher from '@/components/ChainSwitcher'
+import { getAddressesForChain, CONTRACT_ADDRESS } from "@/lib/web3"
+import { useTranslations } from 'next-intl'
+import { useAudio } from '@/components/AudioProvider'
 import { ProfileEditor } from '@/components/ProfileEditor'
 import { SendFunds } from '@/components/SendFunds'
-import { DepositView } from '@/components/DepositView'
-import { type Track } from '@/hooks/useAudioPlayer'
-import { useAudio } from '@/components/AudioProvider'
-import { useTranslations } from 'next-intl'
-import { watchSmartAccountClient, getSmartAccountClient } from "@account-kit/core"
-// We must dynamically import the Alchemy hooks or only use them in AlchemyDashboard!
-// BUT we can't dynamically import named exports easily. We rely on the generic Dashboard 
-// rendering AlchemyDashboard which then calls these hooks.
-import { useSignerStatus, useUser, useLogout, useAccount, useSmartAccountClient, useAlchemyAccountContext } from "@account-kit/react"
-import { getAddressesForChain, CONTRACT_ADDRESS } from "@/lib/web3"
+import DepositView from '@/components/DepositView'
 
 import { useAccount as useWagmiAccount } from 'wagmi'
 import { sdk } from "@farcaster/miniapp-sdk"
@@ -37,57 +31,22 @@ const formatAddress = (address: string, startChars: number = 6, endChars: number
 type ViewType = 'home' | 'library' | 'search' | 'upload' | 'profile' | 'earnings' | 'analytics' | 'send-money' | 'deposit'
 
 export default function Dashboard() {
-  const [isMiniApp, setIsMiniApp] = useState<boolean>(false)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     sdk.isInMiniApp()
       .then(res => {
-        setIsMiniApp(res)
         if (res) {
           // Ensure ready is called when we know we're rendering a Mini App Dashboard
           setTimeout(() => sdk.actions.ready(), 100)
         }
       })
-      .catch(() => setIsMiniApp(false))
+      .catch(() => { })
       .finally(() => setMounted(true))
   }, [])
 
   if (!mounted) return <div className="h-screen bg-[#0D0D12]" />
 
-  return isMiniApp ? <MiniAppDashboard /> : <AlchemyDashboard />
-}
-
-// ------------------------------------------------------------------------------------------------
-// Web (Alchemy) Dashboard
-// ------------------------------------------------------------------------------------------------
-function AlchemyDashboard() {
-  const { isConnected: isSignerConnected, isInitializing } = useSignerStatus()
-  const user = useUser()
-  const { config } = useAlchemyAccountContext()
-  const accountConfig = React.useMemo(() => ({ type: "LightAccount" as const }), [])
-
-  const { address: scaAddress } = useAccount(accountConfig)
-
-  const { client } = React.useSyncExternalStore(
-    watchSmartAccountClient(accountConfig, config),
-    () => getSmartAccountClient(accountConfig, config),
-    () => getSmartAccountClient(accountConfig, config)
-  )
-
-  const isAlchemyConnected = !!(isSignerConnected && client)
-  const effectiveAddress = scaAddress || user?.address
-
-  return <DashboardLayout />
-}
-
-// ------------------------------------------------------------------------------------------------
-// Farcaster Mini App Dashboard (Wagmi Only)
-// ------------------------------------------------------------------------------------------------
-function MiniAppDashboard() {
-  const { address, isConnected: isWagmiConnected } = useWagmiAccount()
-  // Generate a mock LightAccount client that uses Wagmi strictly if needed by components, 
-  // or pass null and have components fallback to Wagmi EOA
   return <DashboardLayout />
 }
 
@@ -98,7 +57,7 @@ function DashboardLayout() {
   const [currentView, setCurrentView] = useState<ViewType>('home')
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false)
 
-  const { playerState, handlePlayTrack, client, effectiveAddress, isConnected: isPlayerConnected, isAuthenticated, userEmail } = useAudio()
+  const { playerState, handlePlayTrack, effectiveAddress, isConnected: isPlayerConnected, isAuthenticated } = useAudio()
 
   const tNav = useTranslations('nav')
   const tHome = useTranslations('home')
@@ -371,7 +330,6 @@ function DashboardLayout() {
                   <h2 className="text-2xl font-bold mb-2">{tHome('discoverMusic')}</h2>
                 </div>
                 <MarketplaceGrid
-                  client={client}
                   currentTrackId={playerState.currentTrack?.id}
                   isPlaying={playerState.isPlaying}
                   onPlay={(track, tracks) => handlePlayTrack({
@@ -405,7 +363,6 @@ function DashboardLayout() {
                 {isPlayerConnected ? (
                   <MyStudioGrid
                     address={effectiveAddress || undefined}
-                    client={client}
                     currentTrackId={playerState.currentTrack?.id}
                     isPlaying={playerState.isPlaying}
                     onPlay={(track, tracks) => handlePlayTrack({
@@ -462,7 +419,7 @@ function DashboardLayout() {
 
             {currentView === 'upload' && (
               isAuthenticated ? (
-                <UploadView client={client} />
+                <UploadView />
               ) : (
                 <div className="space-y-6">
                   <div>
@@ -489,7 +446,7 @@ function DashboardLayout() {
             )}
 
             {currentView === 'earnings' && (
-              <EarningsView isConnected={isPlayerConnected} client={client} address={effectiveAddress || undefined} />
+              <EarningsView />
             )}
 
             {currentView === 'analytics' && (
@@ -527,8 +484,6 @@ function DashboardLayout() {
                 {isAuthenticated && effectiveAddress ? (
                   <ProfileEditor
                     address={effectiveAddress}
-                    client={client}
-                    userEmail={userEmail}
                     tProfile={tProfile}
                   />
                 ) : (

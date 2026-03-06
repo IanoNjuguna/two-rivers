@@ -8,8 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils"
 import { GENRES } from '@/constants/genres'
 
-import { useSendUserOperation, useSmartAccountClient, useAuthModal, useUser } from "@account-kit/react"
-import { useChainId, useAccount, useWalletClient, usePublicClient } from "wagmi"
+import { useChainId, useAccount, useWalletClient, usePublicClient, useSignMessage } from "wagmi"
 import { getAddressesForChain, getDstEid, CONTRACT_ABI, ERC20_ABI, LZ_SYNC_OPTIONS } from '@/lib/web3'
 import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
@@ -25,7 +24,7 @@ const API_URL = '/api-backend'
 export default function UploadView({ client: propClient }: { client?: any }) {
 	const t = useTranslations('upload')
 	const chainId = useChainId()
-	const { address: wagmiAddress } = useAccount()
+	const { address: wagmiAddress, isConnected } = useAccount()
 	const { data: walletClient } = useWalletClient()
 	const publicClient = usePublicClient()
 
@@ -34,11 +33,9 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 	const DST_EID = getDstEid(MathChain.id)
 
 	const client = propClient
-	const { openAuthModal } = useAuthModal()
 	const { accessToken, getValidToken } = useBackendAuth()
-	const user = useUser()
-	const isAuthenticated = !!user?.address
-	const effectiveAddress = client?.account?.address || wagmiAddress || user?.address
+	const isAuthenticated = isConnected
+	const effectiveAddress = wagmiAddress
 
 	const [isSending, setIsSending] = useState(false)
 	const [open, setOpen] = useState(false)
@@ -73,7 +70,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 			try {
 				let balance, nBalance;
 
-				const targetClient = (client?.chain?.id === chainId) ? client : publicClients[chainId as keyof typeof publicClients];
+				const targetClient = publicClient;
 
 				if (targetClient) {
 					balance = await targetClient.readContract({
@@ -104,14 +101,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 			try {
 				let balance;
-				if (client) {
-					balance = await client.readContract({
-						address: CONTRACT_ADDRESS as `0x${string}`,
-						abi: CONTRACT_ABI,
-						functionName: 'balanceOf',
-						args: [effectiveAddress, publishedSongId],
-					})
-				} else if (publicClient) {
+				if (publicClient) {
 					balance = await publicClient.readContract({
 						address: CONTRACT_ADDRESS as `0x${string}`,
 						abi: CONTRACT_ABI,
@@ -172,49 +162,38 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 	}, [audioFile, coverFile, title])
 
 	const sendUserOperation = async (params: { uo: any, useUSDC?: boolean }) => {
-		if (!client && !walletClient) {
+		if (!walletClient || !publicClient) {
 			toast.error("Wallet not initialized")
 			return null
 		}
 
 		setIsSending(true)
 		try {
-			if (client) {
-				// We have removed the ERC20 Paymaster (Sponsored Gas) for now
-				// users will pay with native ETH/AVAX
-				const { hash } = await client.sendUserOperation({
-					uo: params.uo
+			// Fallback to standard transactions via Wagmi
+			// If uo is an array, we execute them sequentially
+			const uoList = Array.isArray(params.uo) ? params.uo : [params.uo]
+			let lastReceipt = null
+
+			for (let i = 0; i < uoList.length; i++) {
+				const tx = uoList[i]
+				const hash = await walletClient.sendTransaction({
+					to: tx.target as `0x${string}`,
+					data: tx.data as `0x${string}`,
+					value: tx.value || 0n
 				})
 				setLastUserOpHash(hash)
-
-				toast.success(t('txSubmitted'))
-				const txHash = await client.waitForUserOperationTransaction({ hash })
-				const receipt = await client.getTransactionReceipt({ hash: txHash })
-				toast.success(t('uploadSuccess'))
-				return receipt
-			} else if (walletClient && publicClient) {
-				// Fallback to standard EOA transactions via Wagmi
-				// If uo is an array, we execute them sequentially
-				const uoList = Array.isArray(params.uo) ? params.uo : [params.uo]
-				let lastReceipt = null
-
-				for (let i = 0; i < uoList.length; i++) {
-					const tx = uoList[i]
-					const hash = await walletClient.sendTransaction({
-						to: tx.target as `0x${string}`,
-						data: tx.data as `0x${string}`,
-						value: tx.value || 0n
-					})
-					setLastUserOpHash(hash)
+				if (uoList.length > 1) {
 					toast.success(`Transaction ${i + 1}/${uoList.length} submitted`)
-					lastReceipt = await publicClient.waitForTransactionReceipt({ hash })
+				} else {
+					toast.success(t('txSubmitted'))
 				}
-
-				toast.success(t('uploadSuccess'))
-				return lastReceipt
+				lastReceipt = await publicClient.waitForTransactionReceipt({ hash })
 			}
+
+			toast.success(t('uploadSuccess'))
+			return lastReceipt
 		} catch (error: any) {
-			logger.error('UserOperation Error', error)
+			logger.error('Transaction Error', error)
 			toast.error(t('txFailed', { error: error.message || error }))
 			throw error
 		} finally {
@@ -255,8 +234,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		if (!isAuthenticated) {
-			toast.error("Please sign in to upload music")
-			openAuthModal()
+			toast.error("Please connect your wallet to upload music")
 			return
 		}
 
@@ -338,27 +316,26 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 			toast.loading("Checking permissions...", { id: mainToast })
 
-			const activeClient = client || publicClient
-			if (!activeClient) throw new Error("No web3 client available")
+			if (!publicClient) throw new Error("No web3 client available")
 
 			const [platformAllowance, contractOwner, botFee, mintPrice] = await Promise.all([
-				activeClient.readContract({
+				publicClient.readContract({
 					address: USDC_ADDRESS as `0x${string}`,
 					abi: ERC20_ABI,
 					functionName: 'allowance',
 					args: [effectiveAddress as `0x${string}`, CONTRACT_ADDRESS as `0x${string}`],
 				}),
-				activeClient.readContract({
+				publicClient.readContract({
 					address: CONTRACT_ADDRESS as `0x${string}`,
 					abi: CONTRACT_ABI,
 					functionName: 'owner',
 				}),
-				activeClient.readContract({
+				publicClient.readContract({
 					address: CONTRACT_ADDRESS as `0x${string}`,
 					abi: CONTRACT_ABI,
 					functionName: 'botFee',
 				}),
-				activeClient.readContract({
+				publicClient.readContract({
 					address: CONTRACT_ADDRESS as `0x${string}`,
 					abi: CONTRACT_ABI,
 					functionName: 'MINT_PRICE',
@@ -425,13 +402,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 			toast.loading("Preparing one-click publish batch...", { id: mainToast })
 
 			let nextId;
-			if (client) {
-				nextId = await client.readContract({
-					address: CONTRACT_ADDRESS as `0x${string}`,
-					abi: CONTRACT_ABI,
-					functionName: 'nextCollectionId',
-				})
-			} else if (publicClient) {
+			if (publicClient) {
 				nextId = await publicClient.readContract({
 					address: CONTRACT_ADDRESS as `0x${string}`,
 					abi: CONTRACT_ABI,
@@ -473,14 +444,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 			// C. LayerZero Sync Call
 			let messagingFee = 150000000000000n // 0.00015 ETH fallback
 			try {
-				if (client) {
-					messagingFee = await client.readContract({
-						address: CONTRACT_ADDRESS as `0x${string}`,
-						abi: CONTRACT_ABI,
-						functionName: 'quoteSyncSong',
-						args: [DST_EID, tokenId, LZ_SYNC_OPTIONS]
-					}) as bigint
-				} else if (publicClient) {
+				if (publicClient) {
 					messagingFee = await publicClient.readContract({
 						address: CONTRACT_ADDRESS as `0x${string}`,
 						abi: CONTRACT_ABI,
@@ -491,14 +455,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 			} catch (e) {
 				console.warn('[DEBUG] Quote for predicted ID failed (expected if it does not exist yet). Trying ID 0 as proxy...')
 				try {
-					if (client) {
-						messagingFee = await client.readContract({
-							address: CONTRACT_ADDRESS as `0x${string}`,
-							abi: CONTRACT_ABI,
-							functionName: 'quoteSyncSong',
-							args: [DST_EID, 0n, LZ_SYNC_OPTIONS]
-						}) as bigint
-					} else if (publicClient) {
+					if (publicClient) {
 						messagingFee = await publicClient.readContract({
 							address: CONTRACT_ADDRESS as `0x${string}`,
 							abi: CONTRACT_ABI,
@@ -639,18 +596,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 			// 1. Quote Fee
 			let messagingFee = 0n;
-			if (client) {
-				messagingFee = await client.readContract({
-					address: CONTRACT_ADDRESS as `0x${string}`,
-					abi: CONTRACT_ABI,
-					functionName: 'quoteSyncSong',
-					args: [
-						DST_EID,
-						publishedSongId,
-						LZ_SYNC_OPTIONS
-					]
-				}) as bigint
-			} else if (publicClient) {
+			if (publicClient) {
 				messagingFee = await publicClient.readContract({
 					address: CONTRACT_ADDRESS as `0x${string}`,
 					abi: CONTRACT_ABI,
@@ -667,11 +613,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 			// 2. Check Native Balance
 			let nativeBalance = 0n;
-			if (client) {
-				nativeBalance = await client.getBalance({
-					address: effectiveAddress as `0x${string}`
-				})
-			} else if (publicClient) {
+			if (publicClient) {
 				nativeBalance = await publicClient.getBalance({
 					address: effectiveAddress as `0x${string}`
 				})
@@ -778,7 +720,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 							Your balance: <strong>{(Number(usdcBalance) / 1e6).toFixed(2)} USDC</strong>.
 						</p>
 						<p className="text-[10px] text-white/40 italic">
-							Top up Wallet: <span className="text-amber-500/80 font-mono">{client?.account?.address}</span>
+							Top up Wallet: <span className="text-amber-500/80 font-mono">{effectiveAddress}</span>
 						</p>
 					</div>
 				</div>
@@ -796,7 +738,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 							Recommended: <strong>$1 - $2</strong>.
 						</p>
 						<p className="text-[10px] text-white/40 italic">
-							Fund Wallet: <span className="text-blue-500/80 font-mono">{client?.account?.address}</span>
+							Fund Wallet: <span className="text-blue-500/80 font-mono">{effectiveAddress}</span>
 						</p>
 					</div>
 				</div>

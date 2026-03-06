@@ -1,10 +1,9 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useChain as useAlchemyChain } from "@account-kit/react"
 import { useChainId, useSwitchChain } from "wagmi"
 import sdk from '@farcaster/miniapp-sdk'
-import { arbitrum, base, avalancheChain as avalanche } from "@/lib/config"
+import { arbitrum, base, avalanche } from "@/lib/config"
 import { Button } from "@/components/ui/button"
 import { IconChevronDown, IconCheck } from "@tabler/icons-react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"

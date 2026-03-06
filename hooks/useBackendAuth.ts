@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useCallback, useEffect } from 'react'
-import { useUser, useSmartAccountClient } from "@account-kit/react"
 import { useAccount, useSignMessage } from 'wagmi'
 import { toast } from 'sonner'
 import { logger } from '@/lib/logger'
@@ -20,19 +19,13 @@ export function useBackendAuth() {
 			.catch(() => setIsMiniApp(false))
 	}, [])
 
-	// Use hooks but handle their absence/usage carefully
-	// Note: We MUST call hooks at top level, but some might throw if Provider is missing.
-	// We'll wrap them or use proxies if needed, but for now let's just use them 
-	// and ensure downstream logic is guarded.
-	const user = useUser()
 	const { address: wagmiAddress } = useAccount()
-	const { client: smartAccountClient } = useSmartAccountClient({ type: "LightAccount" })
 	const { signMessageAsync } = useSignMessage()
 
 	const [accessToken, setAccessToken] = useState<string | null>(null)
 	const [isLoading, setIsLoading] = useState(false)
 
-	const effectiveAddress = (smartAccountClient?.account?.address || wagmiAddress || user?.address) as string | undefined
+	const effectiveAddress = wagmiAddress as string | undefined
 
 	// Load from localStorage on mount or address change
 	useEffect(() => {
@@ -64,14 +57,7 @@ export function useBackendAuth() {
 			const nonce = Math.random().toString(36).substring(2)
 			const message = `Login to Doba\n\nAddress: ${effectiveAddress}\nNonce: ${nonce}\nTimestamp: ${Date.now()}`
 
-			let signature: string
-			if (smartAccountClient) {
-				// Sign via Smart Account (ERC-1271 compatible)
-				signature = await smartAccountClient.signMessage({ message })
-			} else {
-				// Sign via EOA
-				signature = await signMessageAsync({ message })
-			}
+			const signature = await signMessageAsync({ message })
 
 			const res = await fetch(`${API_URL.replace(/\/$/, '')}/auth/login`, {
 				method: 'POST',
@@ -101,7 +87,7 @@ export function useBackendAuth() {
 		} finally {
 			setIsLoading(false)
 		}
-	}, [effectiveAddress, smartAccountClient, signMessageAsync])
+	}, [effectiveAddress, signMessageAsync])
 
 	const getValidToken = useCallback(async () => {
 		// If we have a token, return it

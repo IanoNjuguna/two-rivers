@@ -20,12 +20,10 @@ interface Track {
 const API_URL = '/api-backend'
 
 export default function MarketplaceGrid({
-  client,
   onPlay,
   currentTrackId,
   isPlaying
 }: {
-  client?: any,
   onPlay?: (track: Track, tracks: Track[]) => void,
   currentTrackId?: number | null,
   isPlaying?: boolean
@@ -86,7 +84,6 @@ export default function MarketplaceGrid({
           genre={track.genre}
           price={track.price}
           trackChainId={track.chain_id}
-          client={client}
           onPlay={onPlay ? () => onPlay(track, tracks) : undefined}
           isPlaying={isPlaying && currentTrackId === track.token_id}
         />

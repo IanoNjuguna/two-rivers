@@ -1,5 +1,4 @@
 import { useAccount as useWagmiAccount, useChainId } from "wagmi";
-import { useAccount as useAlchemyAccount } from "@account-kit/react";
 import sdk from '@farcaster/miniapp-sdk';
 import { useState, useEffect } from "react";
 
@@ -37,9 +36,10 @@ export function useSmartAccount() {
 export function useGasSponsorship() {
   const { address } = useSmartAccount();
 
+  // OnchainKit sponsorship is handled via the Transaction component
   return {
-    isSponsored: !!process.env.NEXT_PUBLIC_ALCHEMY_GAS_MANAGER_POLICY_ID,
-    policyId: process.env.NEXT_PUBLIC_ALCHEMY_GAS_MANAGER_POLICY_ID,
-    canSponsor: !!address && !!process.env.NEXT_PUBLIC_ALCHEMY_GAS_MANAGER_POLICY_ID,
+    isSponsored: !!process.env.NEXT_PUBLIC_CDP_API_KEY,
+    policyId: null,
+    canSponsor: !!address && !!process.env.NEXT_PUBLIC_CDP_API_KEY,
   };
 }

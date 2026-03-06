@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { IconEye, IconMusic, IconMicrophone, IconPlayerPause } from '@tabler/icons-react'
 import { CONTRACT_ABI, getAddressesForChain } from '@/lib/web3'
 import { useTranslations } from 'next-intl'
-import { useChainId } from "wagmi"
+import { useChainId, usePublicClient } from "wagmi"
 
 interface Track {
   token_id: number
@@ -22,7 +22,6 @@ interface Track {
 
 interface MyStudioGridProps {
   address?: string
-  client?: any // SmartAccountClient
   onPlay?: (track: Track, tracks: Track[]) => void
   currentTrackId?: number | null
   isPlaying?: boolean
@@ -30,9 +29,10 @@ interface MyStudioGridProps {
 
 const API_URL = '/api-backend'
 
-export default function MyStudioGrid({ address, client, onPlay, currentTrackId, isPlaying }: MyStudioGridProps) {
+export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlaying }: MyStudioGridProps) {
   const t = useTranslations('library')
   const chainId = useChainId()
+  const publicClient = usePublicClient()
   const { contract: CONTRACT_ADDRESS, explorer: EXPLORER_URL } = getAddressesForChain(chainId || 42161)
   const [ownedTracks, setOwnedTracks] = useState<Track[]>([])
   const [loading, setLoading] = useState(true)
@@ -41,7 +41,7 @@ export default function MyStudioGrid({ address, client, onPlay, currentTrackId, 
 
   useEffect(() => {
     const fetchOwnedTracks = async () => {
-      if (!address || !client) {
+      if (!address || !publicClient) {
         setLoading(false)
         return
       }
@@ -62,7 +62,7 @@ export default function MyStudioGrid({ address, client, onPlay, currentTrackId, 
         const tokenIds = allTracks.map(t => BigInt(t.token_id))
         const accounts = allTracks.map(() => address as `0x${string}`)
 
-        const balances = await client.readContract({
+        const balances = await publicClient.readContract({
           address: CONTRACT_ADDRESS as `0x${string}`,
           abi: CONTRACT_ABI,
           functionName: 'balanceOfBatch',
@@ -80,7 +80,7 @@ export default function MyStudioGrid({ address, client, onPlay, currentTrackId, 
     }
 
     fetchOwnedTracks()
-  }, [address, client])
+  }, [address, publicClient])
 
   if (loading) {
     return (

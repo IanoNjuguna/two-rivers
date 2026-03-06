@@ -1,5 +1,6 @@
 import { http, createConfig, cookieStorage, createStorage } from 'wagmi';
 import { base, arbitrum, avalanche } from 'wagmi/chains';
+export { base, arbitrum, avalanche };
 import { coinbaseWallet } from 'wagmi/connectors';
 import { farcasterMiniApp } from '@farcaster/miniapp-wagmi-connector';
 import { QueryClient } from '@tanstack/react-query';

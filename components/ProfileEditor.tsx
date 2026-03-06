@@ -23,7 +23,7 @@ const formatAddress = (addr: string) => {
 	return `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`
 }
 
-export function ProfileEditor({ address, client, userEmail, tProfile }: any) {
+export function ProfileEditor({ address, tProfile }: any) {
 	const [profile, setProfile] = useState<UserProfile | null>(null)
 	const [isEditing, setIsEditing] = useState(false)
 	const [isLinking, setIsLinking] = useState(false)
@@ -279,7 +279,6 @@ export function ProfileEditor({ address, client, userEmail, tProfile }: any) {
 					<h3 className="text-2xl font-bold text-white mb-1">
 						{profile?.username || 'Anonymous Artist'}
 					</h3>
-					{userEmail && <p className="text-white/60 text-sm mb-3">{userEmail}</p>}
 
 					{profile?.bio && (
 						<p className="text-white/70 text-sm mt-4 italic leading-relaxed">
