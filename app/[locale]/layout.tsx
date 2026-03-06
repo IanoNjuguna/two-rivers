@@ -10,8 +10,8 @@ import '../globals.css'
 import { Providers } from "@/components/Providers"
 import { AudioProvider } from "@/components/AudioProvider"
 import { headers } from "next/headers"
-import { cookieToInitialState } from "@account-kit/core"
-import { getConfig } from "@/lib/config"
+import { cookieToInitialState } from "wagmi"
+import { config } from "@/lib/config"
 import { MiniAppInit } from "@/components/MiniAppInit"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 
@@ -110,7 +110,7 @@ type Props = {
 export default async function LocaleLayout({ children, params }: Props) {
 	const { locale } = await params
 	const cookie = (await headers()).get("cookie")
-	const initialState = cookieToInitialState(getConfig(), cookie || undefined)
+	const initialState = cookieToInitialState(config, cookie || undefined)
 
 	if (!routing.locales.includes(locale as any)) {
 		notFound()

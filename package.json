@@ -10,8 +10,6 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@account-kit/infra": "^4.84.0",
-    "@account-kit/react": "^4.84.0",
     "@coinbase/onchainkit": "^1",
     "@farcaster/miniapp-sdk": "^0.2.3",
     "@farcaster/miniapp-wagmi-connector": "^1.1.1",

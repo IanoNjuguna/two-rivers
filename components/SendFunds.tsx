@@ -1,14 +1,20 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { useSendUserOperation } from "@account-kit/react";
+import {
+	Transaction,
+	TransactionButton,
+	TransactionSponsor,
+	TransactionStatus,
+	TransactionStatusAction,
+	TransactionStatusLabel,
+} from '@coinbase/onchainkit/transaction';
 import { type Address, parseEther, parseUnits, encodeFunctionData } from 'viem';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useTranslations } from 'next-intl';
-import { useAudio } from '@/components/AudioProvider';
-import { getAddressesForChain, ERC20_ABI, publicClients, formatAddress } from '@/lib/web3';
+import { useAccount } from 'wagmi';
+import { getAddressesForChain, ERC20_ABI, publicClients } from '@/lib/web3';
 import { formatUnits } from 'viem';
 import { toast } from 'sonner';
 
@@ -28,10 +34,10 @@ export function SendFunds() {
 	const [isLoadingBalance, setIsLoadingBalance] = useState(false);
 
 	const t = useTranslations('nav');
-	const { effectiveAddress, client } = useAudio();
+	const { address: effectiveAddress, chainId } = useAccount();
 
-	const chainId = client?.chain?.id || 8453;
-	const addresses = getAddressesForChain(chainId);
+	const activeChainId = chainId || 8453;
+	const addresses = getAddressesForChain(activeChainId);
 
 	const tokens: Record<'ETH' | 'USDC', TokenOption> = useMemo(() => ({
 		ETH: {
@@ -49,31 +55,13 @@ export function SendFunds() {
 		},
 	}), [addresses.usdc]);
 
-	const { sendUserOperation, isSendingUserOperation } = useSendUserOperation({
-		client,
-		onSuccess: ({ hash }) => {
-			toast.success("Transaction sent successfully!", {
-				description: `Transaction hash: ${hash.slice(0, 10)}...`,
-				action: {
-					label: "View",
-					onClick: () => window.open(addresses.explorer + "/tx/" + hash, "_blank")
-				}
-			});
-			setAmount('');
-		},
-		onError: (error) => {
-			console.error("Fund transfer failed:", error);
-			toast.error(`Transfer failed: ${error.message}`);
-		},
-	});
-
 	useEffect(() => {
 		async function fetchBalance() {
-			if (!effectiveAddress || !chainId) return;
+			if (!effectiveAddress || !activeChainId) return;
 
 			setIsLoadingBalance(true);
 			try {
-				const publicClient = publicClients[chainId as keyof typeof publicClients];
+				const publicClient = publicClients[activeChainId as keyof typeof publicClients];
 				if (!publicClient) return;
 
 				if (selectedToken === 'ETH') {
@@ -96,7 +84,7 @@ export function SendFunds() {
 		}
 
 		fetchBalance();
-	}, [effectiveAddress, chainId, selectedToken, addresses.usdc]);
+	}, [effectiveAddress, activeChainId, selectedToken, addresses.usdc]);
 
 	const handlePercentage = (percent: number) => {
 		const balNum = parseFloat(balance);
@@ -112,12 +100,12 @@ export function SendFunds() {
 	};
 
 	const calls = useMemo(() => {
-		if (!recipient || !amount || isNaN(Number(amount))) return [];
+		if (!recipient || !amount || isNaN(Number(amount)) || !recipient.startsWith('0x')) return [];
 
 		if (selectedToken === 'ETH') {
 			return [
 				{
-					target: recipient as Address,
+					to: recipient as Address,
 					value: parseEther(amount),
 					data: '0x' as `0x${string}`,
 				},
@@ -130,7 +118,7 @@ export function SendFunds() {
 			});
 			return [
 				{
-					target: addresses.usdc as Address,
+					to: addresses.usdc as Address,
 					data,
 				},
 			];
@@ -139,10 +127,11 @@ export function SendFunds() {
 
 	const isValid = recipient.startsWith('0x') && recipient.length === 42 && amount && !isNaN(Number(amount)) && parseFloat(amount) > 0;
 
-	const handleTransact = () => {
-		if (!isValid || !sendUserOperation) return;
-		sendUserOperation({ uo: calls });
-	};
+	const capabilities = useMemo(() => ({
+		paymasterService: {
+			url: `https://api.developer.coinbase.com/rpc/v1/base/${process.env.NEXT_PUBLIC_CDP_API_KEY}`,
+		},
+	}), []);
 
 	return (
 		<div
@@ -212,35 +201,46 @@ export function SendFunds() {
 
 					<div className="grid grid-cols-3 gap-2 mt-2">
 						{['25%', '50%', 'MAX'].map((label, idx) => (
-							<Button
+							<button
 								key={label}
-								variant="outline"
-								className={`bg-white/5 border-white/10 text-[10px] h-8 hover:bg-white/10 hover:text-white rounded-none ${idx === 2 ? 'text-[#FF1F8A]/80 border-[#FF1F8A]/20 hover:bg-[#FF1F8A]/20 hover:text-[#FF1F8A]' : 'text-white/60'}`}
+								className={`bg-white/5 border border-white/10 text-[10px] h-8 hover:bg-white/10 hover:text-white rounded-none flex items-center justify-center transition-colors ${idx === 2 ? 'text-[#FF1F8A]/80 border-[#FF1F8A]/20 hover:bg-[#FF1F8A]/20 hover:text-[#FF1F8A]' : 'text-white/60'}`}
 								onClick={() => handlePercentage([0.25, 0.5, 1][idx])}
 							>
 								{label}
-							</Button>
+							</button>
 						))}
 					</div>
 				</div>
 			</div>
 
 			<div className="pt-2">
-				<Button
-					disabled={!isValid || isSendingUserOperation}
-					onClick={handleTransact}
-					className={`w-full h-14 font-bold text-lg transition-all clip-angular-br-sm ${isValid
-						? 'bg-[#FF1F8A] text-white hover:bg-[#FF1F8A]/90 shadow-pink-glow'
-						: 'bg-white/10 text-white/40 cursor-not-allowed'
-						}`}
+				<Transaction
+					chainId={activeChainId}
+					calls={calls}
+					capabilities={capabilities}
+					onSuccess={(response) => {
+						toast.success("Transaction successful!");
+						setAmount('');
+					}}
+					onError={(error) => {
+						console.error("Transaction error:", error);
+						toast.error("Transaction failed: " + error.message);
+					}}
 				>
-					{isSendingUserOperation ? (
-						<div className="flex items-center gap-2">
-							<div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-							Processing...
-						</div>
-					) : isValid ? 'Transact' : 'Enter Details'}
-				</Button>
+					<TransactionButton
+						disabled={!isValid}
+						className={`w-full h-14 font-bold text-lg transition-all clip-angular-br-sm ${isValid
+							? 'bg-[#FF1F8A] text-white hover:bg-[#FF1F8A]/90 shadow-pink-glow'
+							: 'bg-white/10 text-white/40 cursor-not-allowed opacity-50'
+							}`}
+						text={isValid ? 'Transact' : 'Enter Details'}
+					/>
+					<TransactionSponsor />
+					<TransactionStatus className="mt-2">
+						<TransactionStatusLabel className="text-xs text-white/60" />
+						<TransactionStatusAction className="text-xs text-[#FF1F8A] hover:underline" />
+					</TransactionStatus>
+				</Transaction>
 			</div>
 		</div>
 	);

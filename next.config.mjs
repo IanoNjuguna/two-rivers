@@ -9,9 +9,6 @@ const nextConfig = {
     unoptimized: true,
   },
   transpilePackages: [
-    "@account-kit/react",
-    "@account-kit/infra",
-    "@account-kit/logging",
     "jose"
   ],
   // Disable experimental features that might cause issues

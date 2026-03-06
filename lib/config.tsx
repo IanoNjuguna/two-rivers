@@ -1,110 +1,33 @@
-import { AlchemyAccountsUIConfig, createConfig, cookieStorage } from "@account-kit/react";
-import { arbitrum, base, alchemy, defineAlchemyChain } from "@account-kit/infra";
-export { arbitrum, base, alchemy, defineAlchemyChain };
-import { avalanche as viemAvalanche } from "viem/chains";
-import { http } from "viem";
-import { QueryClient } from "@tanstack/react-query";
+import { http, createConfig, cookieStorage, createStorage } from 'wagmi';
+import { base, arbitrum, avalanche } from 'wagmi/chains';
+import { coinbaseWallet } from 'wagmi/connectors';
 import { farcasterMiniApp } from '@farcaster/miniapp-wagmi-connector';
+import { QueryClient } from '@tanstack/react-query';
 
-const uiConfig: AlchemyAccountsUIConfig = {
-	illustrationStyle: "outline",
-	auth: {
-		sections: [
-			[{ type: "email" }],
-		],
-		addPasskeyOnSignup: false,
-		header: <img src="/logo.png" alt="Logo" className="w-12 h-12" />,
-	},
-	supportUrl: "https://doba.world",
-};
-
-export const avalancheChain = defineAlchemyChain({
-	chain: viemAvalanche,
-	rpcBaseUrl: "https://avax-mainnet.g.alchemy.com/v2",
-});
-
-const getActiveChain = () => {
-	const chain = process.env.NEXT_PUBLIC_ACTIVE_CHAIN || 'base';
-	if (chain === 'base') return base;
-	if (chain === 'avalanche') return avalancheChain;
-	return arbitrum;
-};
-
-export const activeChain = getActiveChain();
-
-export const chains = [arbitrum, base, avalancheChain];
-
-const getPolicyId = (chainId: number) => {
-	if (chainId === 8453) return process.env.NEXT_PUBLIC_ALCHEMY_BASE_POLICY_ID;
-	if (chainId === 43114) return process.env.NEXT_PUBLIC_ALCHEMY_AVAX_POLICY_ID;
-	return process.env.NEXT_PUBLIC_ALCHEMY_ARB_POLICY_ID;
-};
-
-if (typeof window === 'undefined') {
-	// Mock indexedDB for server-side rendering to prevent WalletConnect/Wagmi from crashing
-	(global as any).indexedDB = {
-		open: () => ({ onupgradeneeded: null, onsuccess: null, onerror: null }),
-	};
-}
-
-import { injected } from "@wagmi/core";
-import { walletConnect } from "wagmi/connectors";
-
-const globalForConfig = globalThis as unknown as { _config: ReturnType<typeof createConfig> | undefined };
+export const activeChain = base;
+export const chains = [base, arbitrum, avalanche] as const;
 
 export const getConfig = () => {
-	if (globalForConfig._config) return globalForConfig._config;
-
-	const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
-	const apiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY!;
-
-	const getTransport = (chainId?: number) => {
-		const policyId = chainId === 8453 ? process.env.NEXT_PUBLIC_ALCHEMY_GAS_MANAGER_POLICY_ID : undefined;
-		return alchemy({
-			apiKey,
-			...(policyId ? { gasManagerConfig: { policyId } } : {})
-		});
-	};
-
-
-
-
-	const newConfig = createConfig({
-		transport: getTransport(),
-		chain: activeChain,
-		chains: [
-			{
-				chain: arbitrum,
-				transport: getTransport(42161),
-			},
-			{
-				chain: base,
-				transport: getTransport(8453),
-			},
-			{
-				chain: avalancheChain,
-				transport: getTransport(43114),
-			},
-		],
-		ssr: true,
-		storage: cookieStorage,
-		enablePopupOauth: false,
+	return createConfig({
+		chains,
 		connectors: [
-			farcasterMiniApp()
+			coinbaseWallet({
+				appName: 'doba',
+				preference: 'smartWalletOnly',
+			}),
+			farcasterMiniApp(),
 		],
-	}, uiConfig);
-
-
-
-	if (process.env.NODE_ENV !== "production") {
-		globalForConfig._config = newConfig;
-	}
-
-	return newConfig;
+		storage: createStorage({
+			storage: cookieStorage,
+		}),
+		ssr: true,
+		transports: {
+			[base.id]: http(),
+			[arbitrum.id]: http(),
+			[avalanche.id]: http(),
+		},
+	});
 };
 
-// NextJS expects this fallback `config` export for some Next pages
 export const config = getConfig();
-
 export const queryClient = new QueryClient();
-export const accountConfig = { type: "LightAccount" as const };

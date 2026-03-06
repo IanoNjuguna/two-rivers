@@ -1,10 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { AlchemyAccountProvider, AlchemyAccountsProviderProps } from "@account-kit/react";
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
-import { WagmiProvider } from "wagmi";
-import { getConfig, activeChain } from "@/lib/config";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { WagmiProvider, type State } from "wagmi";
+import { config, queryClient, activeChain } from "@/lib/config";
 import { sdk } from "@farcaster/miniapp-sdk";
 import { OnchainKitProvider } from "@coinbase/onchainkit";
 
@@ -13,11 +12,9 @@ export function Providers({
 	initialState
 }: {
 	children: React.ReactNode;
-	initialState?: AlchemyAccountsProviderProps["initialState"];
+	initialState?: State;
 }) {
 	const [isMiniApp, setIsMiniApp] = useState<boolean | null>(null);
-	const [queryClient] = useState(() => new QueryClient());
-	const [alchemyConfig] = useState(() => getConfig());
 
 	useEffect(() => {
 		sdk.isInMiniApp()
@@ -31,16 +28,20 @@ export function Providers({
 	}
 
 	return (
-		<WagmiProvider config={(alchemyConfig as any)._internal.wagmiConfig}>
+		<WagmiProvider config={config} initialState={initialState}>
 			<QueryClientProvider client={queryClient}>
-				<AlchemyAccountProvider config={alchemyConfig} queryClient={queryClient} initialState={initialState}>
-					<OnchainKitProvider
-						apiKey={process.env.NEXT_PUBLIC_CDP_API_KEY || process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}
-						chain={activeChain}
-					>
-						{children}
-					</OnchainKitProvider>
-				</AlchemyAccountProvider>
+				<OnchainKitProvider
+					apiKey={process.env.NEXT_PUBLIC_CDP_API_KEY}
+					chain={activeChain}
+					config={{
+						appearance: {
+							mode: 'dark',
+							theme: 'default',
+						}
+					}}
+				>
+					{children}
+				</OnchainKitProvider>
 			</QueryClientProvider>
 		</WagmiProvider>
 	);

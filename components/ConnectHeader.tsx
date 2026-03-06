@@ -7,7 +7,7 @@ import { sdk } from '@farcaster/miniapp-sdk'
 // Dynamically import the headers so Next.js doesn't execute their top-level hooks
 // until they are conditionally rendered. This prevents Alchemy Account Kit hooks
 // from crashing when its Provider is absent in Mini App mode.
-const AlchemyConnectHeader = dynamic(() => import('./AlchemyConnectHeader'), { ssr: false })
+const BaseConnectHeader = dynamic(() => import('./BaseConnectHeader'), { ssr: false })
 const MiniAppHeader = dynamic(() => import('./MiniAppHeader'), { ssr: false })
 
 export default function ConnectHeader({ address }: { address?: string }) {
@@ -22,6 +22,6 @@ export default function ConnectHeader({ address }: { address?: string }) {
 	return isMiniApp ? (
 		<MiniAppHeader address={address} />
 	) : (
-		<AlchemyConnectHeader address={address} />
+		<BaseConnectHeader address={address} />
 	)
 }
