@@ -7,6 +7,7 @@ import {
   WalletDropdown,
   WalletDropdownDisconnect,
   WalletDropdownLink,
+  WalletModal,
 } from '@coinbase/onchainkit/wallet'
 import {
   Address,
@@ -57,10 +58,14 @@ export default function BaseConnectHeader({ address: propAddress }: { address?: 
   return (
     <div className="flex items-center gap-3">
       <Wallet>
-        <ConnectWallet className="bg-cyber-pink hover:bg-cyber-pink/90 text-white font-semibold rounded-lg px-4 py-2 transition-all">
+        <ConnectWallet
+          text="Sign In"
+          className="bg-cyber-pink hover:bg-cyber-pink/90 text-white font-semibold rounded-lg px-4 py-2 transition-all"
+        >
           <Avatar className="h-6 w-6" />
           <Name className="text-white font-medium" />
         </ConnectWallet>
+        <WalletModal />
         <WalletDropdown className="glass border border-white/10 rounded-xl mt-2 overflow-hidden shadow-2xl min-w-[300px]">
           <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick>
             <Avatar />
