@@ -59,7 +59,11 @@ export const getConfig = () => {
 	const apiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY!;
 
 	const getTransport = (chainId?: number) => {
-		return alchemy({ apiKey });
+		const policyId = chainId === 8453 ? process.env.NEXT_PUBLIC_ALCHEMY_GAS_MANAGER_POLICY_ID : undefined;
+		return alchemy({
+			apiKey,
+			...(policyId ? { gasManagerConfig: { policyId } } : {})
+		});
 	};
 
 
