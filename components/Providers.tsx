@@ -35,7 +35,7 @@ export function Providers({
 			<QueryClientProvider client={queryClient}>
 				<AlchemyAccountProvider config={alchemyConfig} queryClient={queryClient} initialState={initialState}>
 					<OnchainKitProvider
-						apiKey={process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}
+						apiKey={process.env.NEXT_PUBLIC_CDP_API_KEY || process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}
 						chain={activeChain}
 					>
 						{children}
