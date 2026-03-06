@@ -38,10 +38,10 @@ export const getAddressesForChain = (chainId: number) => {
   return ADDRESSES[chainId as keyof typeof ADDRESSES] || ADDRESSES[42161]
 }
 
-export const CHAIN_ID = process.env.NEXT_PUBLIC_ACTIVE_CHAIN === 'base' ? 8453 :
-  process.env.NEXT_PUBLIC_ACTIVE_CHAIN === 'avalanche' ? 43114 : 42161
+export const CHAIN_ID = process.env.NEXT_PUBLIC_ACTIVE_CHAIN === 'avalanche' ? 43114 :
+  process.env.NEXT_PUBLIC_ACTIVE_CHAIN === 'arbitrum' ? 42161 : 8453
 
-export const CHAIN_NAME = process.env.NEXT_PUBLIC_ACTIVE_CHAIN?.toUpperCase() || 'ARBITRUM'
+export const CHAIN_NAME = (process.env.NEXT_PUBLIC_ACTIVE_CHAIN || 'base').toUpperCase()
 
 export const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`
 

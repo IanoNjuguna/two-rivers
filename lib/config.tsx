@@ -24,7 +24,7 @@ export const avalancheChain = defineAlchemyChain({
 });
 
 const getActiveChain = () => {
-	const chain = process.env.NEXT_PUBLIC_ACTIVE_CHAIN;
+	const chain = process.env.NEXT_PUBLIC_ACTIVE_CHAIN || 'base';
 	if (chain === 'base') return base;
 	if (chain === 'avalanche') return avalancheChain;
 	return arbitrum;
