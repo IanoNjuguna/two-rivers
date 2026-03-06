@@ -140,7 +140,18 @@ export function SendFunds() {
 	const isValid = recipient.startsWith('0x') && recipient.length === 42 && amount && !isNaN(Number(amount)) && parseFloat(amount) > 0;
 
 	const handleTransact = () => {
-		if (!isValid || !sendUserOperation) return;
+		console.log('Transact Clicked!', { isValid, sendUserOperation: !!sendUserOperation, client: !!client, callsLength: calls.length });
+		if (!isValid) {
+			console.warn('Transaction invalid:', { recipient, amount });
+			return;
+		}
+		if (!sendUserOperation) {
+			console.error('No sendUserOperation found from hook!');
+			toast.error("Account not ready for transactions. Please try reconnecting.");
+			return;
+		}
+
+		console.log('Sending User Operation...', calls);
 		sendUserOperation({ uo: calls });
 	};
 
@@ -230,8 +241,8 @@ export function SendFunds() {
 					disabled={!isValid || isSendingUserOperation}
 					onClick={handleTransact}
 					className={`w-full h-14 font-bold text-lg transition-all clip-angular-br-sm ${isValid
-							? 'bg-[#FF1F8A] text-white hover:bg-[#FF1F8A]/90 shadow-pink-glow'
-							: 'bg-white/10 text-white/40 cursor-not-allowed'
+						? 'bg-[#FF1F8A] text-white hover:bg-[#FF1F8A]/90 shadow-pink-glow'
+						: 'bg-white/10 text-white/40 cursor-not-allowed'
 						}`}
 				>
 					{isSendingUserOperation ? (
