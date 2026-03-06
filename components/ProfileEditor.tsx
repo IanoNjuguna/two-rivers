@@ -154,12 +154,12 @@ export function ProfileEditor({ address, client, userEmail, tProfile }: any) {
 	}
 
 	if (isLoading) {
-		return <div className="p-8 rounded-xl bg-white-2 border border-white/[0.08] animate-pulse h-64"></div>
+		return <div className="p-8 bg-white-2 border border-white/[0.08] animate-pulse h-64 clip-angular-card"></div>
 	}
 
 	if (isEditing) {
 		return (
-			<form onSubmit={handleSave} className="p-8 rounded-xl bg-[rgba(26,26,36,0.5)] border border-cyber-pink/30 space-y-6 animate-fade-in relative overflow-hidden">
+			<form onSubmit={handleSave} className="p-8 bg-[rgba(26,26,36,0.5)] border border-cyber-pink/30 space-y-6 animate-fade-in relative overflow-hidden clip-angular-card">
 				{/* Decorative elements to match premium design */}
 				<div className="absolute -top-24 -right-24 w-48 h-48 bg-cyber-pink/10 rounded-full blur-3xl pointer-events-none" />
 				<div className="absolute -bottom-24 -left-24 w-48 h-48 bg-lavender/10 rounded-full blur-3xl pointer-events-none" />

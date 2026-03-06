@@ -362,7 +362,7 @@ export default function SongCard({
 
       {/* Price Badge */}
       <div className="absolute top-2 right-2 z-20 mt-5">
-        <div className="text-[9px] text-white font-bold bg-black/60 backdrop-blur-sm border border-cyber-pink/30 px-1.5 py-0.5 rounded-sm">
+        <div className="text-[9px] text-white font-bold bg-black/60 backdrop-blur-sm border border-cyber-pink/30 px-1.5 py-0.5 clip-tag">
           {(() => {
             const currentPrice = price ? parseFloat(price) : 0.99;
             if (currentPrice === 0) return 'FREE';
@@ -395,7 +395,7 @@ export default function SongCard({
 
       {/* Owned Badge */}
       {hasOwned && (
-        <div className="absolute top-2 left-2 z-30 bg-green-500 text-white rounded-full p-1 shadow-lg">
+        <div className="absolute top-2 left-2 z-30 bg-green-500 text-white p-1 shadow-lg clip-tag">
           <IconCheck size={12} />
         </div>
       )}

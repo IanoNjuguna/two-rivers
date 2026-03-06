@@ -318,7 +318,7 @@ export default function AudioPlayer({ playerState, client }: AudioPlayerProps) {
               {[0, 1, 2].map((i) => (
                 <div
                   key={i}
-                  className="w-[3px] rounded-full bg-[#FF1F8A] equalizer-bar h-full"
+                  className="w-[3px] bg-[#FF1F8A] equalizer-bar h-full"
                   style={{ '--delay': `${i * 0.15}s` } as React.CSSProperties}
                 />
               ))}
@@ -333,11 +333,11 @@ export default function AudioPlayer({ playerState, client }: AudioPlayerProps) {
             {/* Shuffle */}
             <button
               onClick={() => setIsShuffle((s) => !s)}
-              className={`relative p-1.5 rounded-md transition-all hover:scale-110 ${isShuffle ? accentActive : 'text-white/40 hover:text-white/80'}`}
+              className={`relative p-1.5 transition-all hover:scale-110 ${isShuffle ? accentActive : 'text-white/40 hover:text-white/80'}`}
               aria-label="Shuffle"
             >
               <IconArrowsShuffle size={16} />
-              {isShuffle && <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#FF1F8A]" />}
+              {isShuffle && <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#FF1F8A]" />}
             </button>
 
             {/* Previous */}
@@ -352,7 +352,7 @@ export default function AudioPlayer({ playerState, client }: AudioPlayerProps) {
             {/* Play / Pause */}
             <button
               onClick={togglePlayPause}
-              className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all bg-cyber-pink hover:bg-cyber-pink/80 active:scale-95 active:brightness-75"
+              className="w-10 h-10 flex items-center justify-center flex-shrink-0 transition-all bg-cyber-pink hover:bg-cyber-pink/80 active:scale-95 active:brightness-75 clip-angular-br-sm"
               aria-label={isPlaying ? 'Pause' : 'Play'}
             >
               {isPlaying
@@ -373,11 +373,11 @@ export default function AudioPlayer({ playerState, client }: AudioPlayerProps) {
             {/* Repeat */}
             <button
               onClick={cycleRepeat}
-              className={`relative p-1.5 rounded-md transition-all hover:scale-110 ${repeatMode !== 'off' ? accentActive : 'text-white/40 hover:text-white/80'}`}
+              className={`relative p-1.5 transition-all hover:scale-110 ${repeatMode !== 'off' ? accentActive : 'text-white/40 hover:text-white/80'}`}
               aria-label="Repeat"
             >
               {repeatMode === 'one' ? <IconRepeatOnce size={16} /> : <IconRepeat size={16} />}
-              {repeatMode !== 'off' && <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#FF1F8A]" />}
+              {repeatMode !== 'off' && <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#FF1F8A]" />}
             </button>
           </div>
 
@@ -400,15 +400,15 @@ export default function AudioPlayer({ playerState, client }: AudioPlayerProps) {
               aria-valuetext={`${formatTime(currentTime)} of ${formatTime(duration)}`}
             >
               {/* Background track */}
-              <div className="absolute inset-y-0 my-auto h-[3px] w-full rounded-full bg-white/10" />
+              <div className="absolute inset-y-0 my-auto h-[3px] w-full bg-white/10" />
               {/* Filled */}
               <div
-                className="absolute inset-y-0 my-auto h-[3px] rounded-full bg-cyber-pink"
+                className="absolute inset-y-0 my-auto h-[3px] bg-cyber-pink"
                 style={{ width: `${progressPercent}%` }}
               />
               {/* Thumb */}
               <div
-                className="absolute w-3 h-3 rounded-full bg-white shadow-md transition-opacity -translate-x-1/2 opacity-0 group-hover:opacity-100"
+                className="absolute w-3 h-3 bg-white shadow-md transition-opacity -translate-x-1/2 opacity-0 group-hover:opacity-100 clip-diamond"
                 style={{ left: `${progressPercent}%` }}
               />
             </div>
@@ -462,7 +462,7 @@ export default function AudioPlayer({ playerState, client }: AudioPlayerProps) {
               step="0.01"
               value={isMuted ? 0 : volume}
               onChange={handleVolumeChange}
-              className="flex-1 accent-[#FF1F8A] h-[3px] bg-white/20 rounded-full cursor-pointer"
+              className="flex-1 accent-[#FF1F8A] h-[3px] bg-white/20 cursor-pointer"
               aria-label="Volume"
               title="Volume"
             />
@@ -478,7 +478,7 @@ export default function AudioPlayer({ playerState, client }: AudioPlayerProps) {
         >
           {/* Album Art */}
           <div
-            className="w-10 h-10 rounded-md flex-shrink-0 overflow-hidden bg-white/5 cursor-pointer"
+            className="w-10 h-10 flex-shrink-0 overflow-hidden bg-white/5 cursor-pointer clip-angular-br-sm"
             onClick={() => router.push(`/${locale}/track/${currentTrack.id}`)}
           >
             <img
@@ -527,7 +527,7 @@ export default function AudioPlayer({ playerState, client }: AudioPlayerProps) {
 
             <button
               onClick={togglePlayPause}
-              className="w-10 h-10 rounded-full flex items-center justify-center transition-all bg-white text-black active:scale-95 active:brightness-75"
+              className="w-10 h-10 flex items-center justify-center transition-all bg-white text-black active:scale-95 active:brightness-75 clip-angular-br-sm"
               aria-label={isPlaying ? 'Pause' : 'Play'}
               title={isPlaying ? 'Pause' : 'Play'}
             >
@@ -550,7 +550,7 @@ export default function AudioPlayer({ playerState, client }: AudioPlayerProps) {
           aria-valuenow={Math.round(currentTime)}
         >
           <div
-            className="h-full rounded-full bg-cyber-pink"
+            className="h-full bg-cyber-pink"
             style={{ width: `${progressPercent}%` }}
           />
         </div>

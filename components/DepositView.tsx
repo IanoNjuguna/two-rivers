@@ -42,8 +42,8 @@ export function DepositView() {
 
 				{/* QR Code Section */}
 				<div className="relative flex justify-center">
-					<div className="p-4 bg-white/[0.03] border border-white/10 rounded-2xl relative">
-						<div className="bg-[#0D0D12] p-4 rounded-xl overflow-hidden shadow-[0_0_30px_rgba(183,148,244,0.1)] border border-white/5">
+					<div className="p-4 bg-white/[0.03] border border-white/10 clip-angular-qr rounded-none relative">
+						<div className="bg-[#0D0D12] p-4 overflow-hidden shadow-[0_0_30px_rgba(183,148,244,0.1)] border border-white/5 clip-angular-qr rounded-none">
 							<QRCodeSVG
 								value={address}
 								size={220}

@@ -5,7 +5,7 @@ import { IconTrendingUp, IconCalendar, IconCurrencyDollar as DollarSign, IconChe
 import { useTranslations } from 'next-intl'
 import { useChainId } from "wagmi"
 import { SPLITTER_ABI, ERC20_ABI, formatAddress, fetchAllBalances, ChainBalances, getAddressesForChain, publicClients } from '@/lib/web3'
-import { parseUnits, formatUnits } from 'viem'
+import { parseUnits, formatUnits, encodeFunctionData } from 'viem'
 import { toast } from 'sonner'
 
 interface EarningsViewProps {
@@ -62,7 +62,7 @@ export default function EarningsView({ isConnected, client, address }: EarningsV
         if (!track.splitter || track.splitter === '0x0000000000000000000000000000000000000000') continue
 
         // Use the correct public client for the track's chain
-        const trackChainId = track.chain_id || 42161 // Default to Arbitrum if missing
+        const trackChainId = track.chain_id || chainId || 42161 // Try current chain before defaulting to Arbitrum
         const trackClient = publicClients[trackChainId as keyof typeof publicClients]
         const trackUSDC = getAddressesForChain(trackChainId).usdc
 
@@ -294,10 +294,4 @@ export default function EarningsView({ isConnected, client, address }: EarningsV
       </button>
     </div>
   )
-}
-
-// Helper for batch decoding in handleClaimAll
-async function encodeFunctionData({ abi, functionName, args }: any) {
-  const { encodeFunctionData } = await import('viem')
-  return encodeFunctionData({ abi, functionName, args })
 }

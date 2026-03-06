@@ -73,22 +73,16 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 			try {
 				let balance, nBalance;
 
-				if (client) {
-					balance = await client.readContract({
-						address: USDC_ADDRESS as `0x${string}`,
-						abi: ERC20_ABI,
-						functionName: 'balanceOf',
-						args: [effectiveAddress],
-					})
-					nBalance = await client.getBalance({ address: effectiveAddress })
-				} else if (publicClient) {
-					balance = await publicClient.readContract({
+				const targetClient = (client?.chain?.id === chainId) ? client : publicClients[chainId as keyof typeof publicClients];
+
+				if (targetClient) {
+					balance = await targetClient.readContract({
 						address: USDC_ADDRESS as `0x${string}`,
 						abi: ERC20_ABI,
 						functionName: 'balanceOf',
 						args: [effectiveAddress as `0x${string}`],
 					})
-					nBalance = await publicClient.getBalance({ address: effectiveAddress as `0x${string}` })
+					nBalance = await targetClient.getBalance({ address: effectiveAddress as `0x${string}` })
 				}
 
 				if (balance !== undefined) setUsdcBalance(balance as bigint)
@@ -721,7 +715,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 			// Detect common L0 / Balance issues
 			if (error.message?.includes('insufficient funds') || error.details?.includes('reverted')) {
-				toast.error(`Sync failed: Insufficient native funds for LayerZero cross-chain fees. Please add a small amount of ETH to your Smart Account: ${client.account.address}`, { id: syncToast, duration: 8000 })
+				toast.error(`Sync failed: Insufficient native funds for LayerZero cross-chain fees. Please add a small amount of ETH to your Smart Account: ${effectiveAddress}`, { id: syncToast, duration: 8000 })
 			} else {
 				toast.error(`Sync failed: ${error.message}`, { id: syncToast })
 			}
