@@ -1,27 +1,16 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import {
-	Transaction,
-	TransactionButton,
-	TransactionResponseType,
-	TransactionStatus,
-	TransactionStatusLabel,
-	TransactionStatusAction,
-	TransactionToast,
-	TransactionToastIcon,
-	TransactionToastLabel,
-	TransactionToastAction,
-} from '@coinbase/onchainkit/transaction';
+import { useSendUserOperation } from "@account-kit/react";
 import { type Address, parseEther, parseUnits, encodeFunctionData } from 'viem';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useTranslations } from 'next-intl';
 import { useAudio } from '@/components/AudioProvider';
-import { getAddressesForChain, ERC20_ABI, publicClients } from '@/lib/web3';
+import { getAddressesForChain, ERC20_ABI, publicClients, formatAddress } from '@/lib/web3';
 import { formatUnits } from 'viem';
-import { IconChevronDown } from '@tabler/icons-react';
+import { toast } from 'sonner';
 
 type TokenOption = {
 	symbol: string;
@@ -60,6 +49,24 @@ export function SendFunds() {
 		},
 	}), [addresses.usdc]);
 
+	const { sendUserOperation, isSendingUserOperation } = useSendUserOperation({
+		client,
+		onSuccess: ({ hash }) => {
+			toast.success("Transaction sent successfully!", {
+				description: `Transaction hash: ${hash.slice(0, 10)}...`,
+				action: {
+					label: "View",
+					onClick: () => window.open(addresses.explorer + "/tx/" + hash, "_blank")
+				}
+			});
+			setAmount('');
+		},
+		onError: (error) => {
+			console.error("Fund transfer failed:", error);
+			toast.error(`Transfer failed: ${error.message}`);
+		},
+	});
+
 	useEffect(() => {
 		async function fetchBalance() {
 			if (!effectiveAddress || !chainId) return;
@@ -96,7 +103,6 @@ export function SendFunds() {
 		if (isNaN(balNum)) return;
 
 		let calculated = (balNum * percent).toString();
-		// Round down to avoid insufficient funds due to floating point or tiny gas leftovers if ETH
 		if (selectedToken === 'ETH') {
 			calculated = Math.max(0, balNum * percent - 0.001).toString();
 			if (parseFloat(calculated) < 0) calculated = '0';
@@ -117,7 +123,6 @@ export function SendFunds() {
 				},
 			];
 		} else {
-			// USDC Transfer
 			const data = encodeFunctionData({
 				abi: ERC20_ABI,
 				functionName: 'transfer',
@@ -134,6 +139,11 @@ export function SendFunds() {
 
 	const isValid = recipient.startsWith('0x') && recipient.length === 42 && amount && !isNaN(Number(amount)) && parseFloat(amount) > 0;
 
+	const handleTransact = () => {
+		if (!isValid || !sendUserOperation) return;
+		sendUserOperation({ uo: calls });
+	};
+
 	return (
 		<div
 			className="space-y-6 animate-fade-in max-w-md mx-auto p-6 glass text-white bg-[#0D0D12]/80 border-white/10 relative overflow-hidden clip-angular-br"
@@ -141,7 +151,7 @@ export function SendFunds() {
 			<div className="flex justify-between items-start">
 				<div>
 					<h2 className="text-2xl font-bold mb-1">{t('sendMoney')}</h2>
-					<p className="text-white/60 text-xs">Send funds safely on the current network.</p>
+					<p className="text-white/60 text-xs">Send funds safely using your smart account.</p>
 				</div>
 				<div className="flex bg-white/5 p-1 border border-white/10">
 					<button
@@ -193,7 +203,7 @@ export function SendFunds() {
 									setAmount(val);
 								}
 							}}
-							className="bg-white/5 border-white/10 text-lg h-14 pl-4 pr-12 text-white placeholder:text-white/30 focus:border-[#FF1F8A]/50 transition-colors"
+							className="bg-white/5 border-white/10 text-lg h-14 pl-4 pr-12 text-white placeholder:text-white/30 focus:border-[#FF1F8A]/50 transition-colors rounded-none"
 						/>
 						<div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
 							<img src={tokens[selectedToken].image} alt={selectedToken} className="w-6 h-6 bg-white/10" />
@@ -201,54 +211,36 @@ export function SendFunds() {
 					</div>
 
 					<div className="grid grid-cols-3 gap-2 mt-2">
-						<Button
-							variant="outline"
-							className="bg-white/5 border-white/10 text-[10px] h-8 hover:bg-white/10 hover:text-white text-white/60 rounded-none"
-							onClick={() => handlePercentage(0.25)}
-						>
-							25%
-						</Button>
-						<Button
-							variant="outline"
-							className="bg-white/5 border-white/10 text-[10px] h-8 hover:bg-white/10 hover:text-white text-white/60 rounded-none"
-							onClick={() => handlePercentage(0.5)}
-						>
-							50%
-						</Button>
-						<Button
-							variant="outline"
-							className="bg-white/5 border-white/10 text-[10px] h-8 hover:bg-[#FF1F8A]/20 hover:text-[#FF1F8A] text-[#FF1F8A]/80 border-[#FF1F8A]/20 rounded-none"
-							onClick={() => handlePercentage(1)}
-						>
-							MAX
-						</Button>
+						{['25%', '50%', 'MAX'].map((label, idx) => (
+							<Button
+								key={label}
+								variant="outline"
+								className={`bg-white/5 border-white/10 text-[10px] h-8 hover:bg-white/10 hover:text-white rounded-none ${idx === 2 ? 'text-[#FF1F8A]/80 border-[#FF1F8A]/20 hover:bg-[#FF1F8A]/20 hover:text-[#FF1F8A]' : 'text-white/60'}`}
+								onClick={() => handlePercentage([0.25, 0.5, 1][idx])}
+							>
+								{label}
+							</Button>
+						))}
 					</div>
 				</div>
 			</div>
 
 			<div className="pt-2">
-				{isValid ? (
-					<Transaction
-						calls={calls}
-						onSuccess={(response: TransactionResponseType) => console.log('Transaction successful', response)}
-						onError={(error) => console.error('Transaction failed', error)}
-					>
-						<TransactionButton className="w-full h-14 bg-[#FF1F8A] hover:bg-[#FF1F8A]/90 text-white font-bold text-lg transition-all shadow-pink-glow clip-angular-br-sm" />
-						<TransactionStatus>
-							<TransactionStatusLabel className="text-white/70" />
-							<TransactionStatusAction className="text-[#FF1F8A] hover:text-[#FF1F8A]/80" />
-						</TransactionStatus>
-						<TransactionToast className="bg-[#1e1e24] border border-white/10">
-							<TransactionToastIcon />
-							<TransactionToastLabel className="text-white" />
-							<TransactionToastAction className="text-[#FF1F8A]" />
-						</TransactionToast>
-					</Transaction>
-				) : (
-					<Button disabled className="w-full h-14 bg-white/10 text-white/40 cursor-not-allowed font-bold text-lg clip-angular-br-sm">
-						Enter Details
-					</Button>
-				)}
+				<Button
+					disabled={!isValid || isSendingUserOperation}
+					onClick={handleTransact}
+					className={`w-full h-14 font-bold text-lg transition-all clip-angular-br-sm ${isValid
+							? 'bg-[#FF1F8A] text-white hover:bg-[#FF1F8A]/90 shadow-pink-glow'
+							: 'bg-white/10 text-white/40 cursor-not-allowed'
+						}`}
+				>
+					{isSendingUserOperation ? (
+						<div className="flex items-center gap-2">
+							<div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+							Processing...
+						</div>
+					) : isValid ? 'Transact' : 'Enter Details'}
+				</Button>
 			</div>
 		</div>
 	);
