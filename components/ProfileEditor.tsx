@@ -3,7 +3,7 @@ import { useSignMessage } from 'wagmi'
 import { logger } from '@/lib/logger'
 
 import React, { useState, useEffect } from 'react'
-import { IconCopy, IconEdit, IconCheck, IconX } from '@tabler/icons-react'
+import { IconCopy, IconEdit, IconCheck, IconX, IconLogout } from '@tabler/icons-react'
 import { toast } from 'sonner'
 import MyUploadsGrid from '@/components/MyUploadsGrid'
 import { useBackendAuth } from '@/hooks/useBackendAuth'
@@ -23,7 +23,7 @@ const formatAddress = (addr: string) => {
 	return `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`
 }
 
-export function ProfileEditor({ address, tProfile }: any) {
+export function ProfileEditor({ address, tProfile, logout }: any) {
 	const [profile, setProfile] = useState<UserProfile | null>(null)
 	const [isEditing, setIsEditing] = useState(false)
 	const [isLinking, setIsLinking] = useState(false)
@@ -333,12 +333,23 @@ export function ProfileEditor({ address, tProfile }: any) {
 			</div>
 
 			{/* Uploads Grid */}
-			<div className="pt-8 border-t border-white/10 relative z-10">
+			<div className="pt-8 border-t border-white/10 relative z-10 mb-12">
 				<h4 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
 					<span className="w-1 h-6 bg-cyber-pink rounded-none inline-block"></span>
 					My Uploads
 				</h4>
 				<MyUploadsGrid address={address} />
+			</div>
+
+			{/* Sign Out Section - Bottom of Profile */}
+			<div className="pt-8 border-t border-white/10 flex justify-center pb-4">
+				<button
+					onClick={logout}
+					className="flex items-center gap-3 px-8 py-3 rounded-none bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:border-red-500/50 transition-all font-bold uppercase tracking-widest text-xs clip-tag"
+				>
+					<IconLogout size={18} />
+					Sign Out
+				</button>
 			</div>
 		</div>
 	)

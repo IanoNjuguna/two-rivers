@@ -234,22 +234,7 @@ function DashboardLayout() {
               <IconPlus size={18} className="text-[#B794F4] flex-shrink-0" />
               <span className="text-sm font-medium">{tNav('deposit')}</span>
             </button>
-
-            {authenticated && (
-              <>
-                <div className="border-t border-white/[0.08] my-2" />
-                <button
-                  onClick={() => {
-                    logout()
-                    setHeaderMenuOpen(false)
-                  }}
-                  className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-red-400/80 hover:text-red-400 hover:bg-red-400/10"
-                >
-                  <LogOut size={18} className="flex-shrink-0" />
-                  <span className="text-sm font-medium">Sign Out</span>
-                </button>
-              </>
-            )}
+            {/* Sign Out removed from mobile menu - now in Profile */}
           </nav>
         </div>
       )}
@@ -351,15 +336,7 @@ function DashboardLayout() {
               <span className="text-sm font-medium">{tNav('deposit')}</span>
             </button>
 
-            {authenticated && (
-              <button
-                onClick={logout}
-                className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-red-400/80 hover:text-red-400 hover:bg-red-400/10 mt-auto border-t border-white/[0.08] pt-4"
-              >
-                <LogOut size={18} className="flex-shrink-0" />
-                <span className="text-sm font-medium">Sign Out</span>
-              </button>
-            )}
+            {/* Sign Out removed from sidebar - now in Profile */}
           </nav>
         </aside>
 
@@ -533,6 +510,7 @@ function DashboardLayout() {
                   <ProfileEditor
                     address={effectiveAddress}
                     tProfile={tProfile}
+                    logout={logout}
                   />
                 ) : (
                   <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
