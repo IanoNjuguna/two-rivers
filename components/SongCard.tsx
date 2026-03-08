@@ -314,14 +314,14 @@ export default function SongCard({
         />
       </div>
 
-      {/* Centered Play Action - appears on hover (only if not in navigation mode) */}
+      {/* Play Button - appears on hover in bottom right (Spotify Style) */}
       {!navigateOnClick && (
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none">
-          <div className="bg-cyber-pink/90 text-white p-3 rounded-full shadow-[0_0_20px_rgba(255,31,138,0.4)] transform transition-transform group-hover:scale-110">
+        <div className="absolute bottom-4 right-4 z-30 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] pointer-events-none">
+          <div className="bg-[#1DB954] text-black w-12 h-12 rounded-full shadow-[0_8px_16px_rgba(0,0,0,0.3)] flex items-center justify-center transform transition-transform hover:scale-105 active:scale-95">
             {isPlaying ? (
-              <IconPlayerPause size={24} className="fill-white" />
+              <IconPlayerPause size={24} className="fill-black" />
             ) : (
-              <IconPlayerPlay size={24} className="fill-white" />
+              <IconPlayerPlay size={24} className="fill-black ml-0.5" />
             )}
           </div>
         </div>
