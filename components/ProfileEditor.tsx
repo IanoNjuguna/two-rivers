@@ -3,7 +3,7 @@ import { useSignMessage } from 'wagmi'
 import { logger } from '@/lib/logger'
 
 import React, { useState, useEffect } from 'react'
-import { IconCopy, IconEdit, IconCheck, IconX, IconSettings } from '@tabler/icons-react'
+import { IconCopy, IconEdit, IconCheck, IconX } from '@tabler/icons-react'
 import { toast } from 'sonner'
 import MyUploadsGrid from '@/components/MyUploadsGrid'
 import { useBackendAuth } from '@/hooks/useBackendAuth'
@@ -328,12 +328,6 @@ export function ProfileEditor({ address, tProfile }: any) {
 								{isLinking ? 'Connecting...' : 'Link Account'}
 							</button>
 						)}
-						<button
-							className="p-2.5 bg-white/5 hover:bg-white/10 transition text-white/70 hover:text-white"
-							title="Farcaster Settings"
-						>
-							<IconSettings size={16} />
-						</button>
 					</div>
 				</div>
 			</div>
