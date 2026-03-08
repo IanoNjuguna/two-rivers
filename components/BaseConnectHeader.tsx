@@ -68,10 +68,8 @@ export default function BaseConnectHeader({ address: propAddress }: { address?: 
           {t('signIn') || 'Sign In'}
         </Button>
       ) : (
-        <div className="flex items-center justify-center p-0 h-9 w-9 bg-white/5 border border-white/10 rounded-lg overflow-hidden">
-          <div className="w-5 h-5 bg-[#0052ff] rounded-sm overflow-hidden">
-            <img src="/images/base.png" alt="Base" className="w-full h-full object-contain" />
-          </div>
+        <div className="flex items-center justify-center h-9 w-9 bg-white/5 border border-white/10 rounded-lg overflow-hidden">
+          <img src="/logo.png" alt="Base" className="w-6 h-6 object-contain rounded-sm" />
         </div>
       )}
     </div>
