@@ -82,8 +82,10 @@ export function DepositView() {
 
 						<div className="flex items-center justify-center">
 							<div className="flex items-center gap-3 px-4 py-2 bg-blue-500/10 border border-blue-500/30 rounded-none clip-tag group cursor-help transition-all hover:bg-blue-500/20" title="Base">
-								<div className="w-3 h-3 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
-								<span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Base</span>
+								<div className="w-4 h-4 bg-[#0052ff] rounded-sm overflow-hidden shadow-[0_0_15px_rgba(0,82,255,0.4)]">
+									<img src="/images/base.png" alt="Base Logo" className="w-full h-full object-contain p-0.5" />
+								</div>
+								<span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Base Network</span>
 							</div>
 						</div>
 					</div>
