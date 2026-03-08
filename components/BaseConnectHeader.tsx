@@ -63,7 +63,7 @@ export default function BaseConnectHeader({ address: propAddress }: { address?: 
       {!authenticated ? (
         <Button
           onClick={login}
-          className="glass border border-white/10 hover:bg-white/5 text-white/80 font-bold h-10 px-6 transition-all rounded-full"
+          className="bg-lavender hover:bg-lavender/90 text-midnight font-bold h-10 px-6 transition-all rounded-lg"
         >
           {t('signIn') || 'Sign In'}
         </Button>
