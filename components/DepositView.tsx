@@ -81,8 +81,9 @@ export function DepositView() {
 
 						<div className="flex items-center justify-center">
 							<div className="w-12 h-12 bg-white/5 border border-white/10 flex items-center justify-center clip-angular-br-sm shadow-[0_0_20px_rgba(0,82,255,0.15)]">
-								<div className="w-7 h-7 bg-[#0052ff] rounded-sm overflow-hidden shadow-[0_0_15px_rgba(0,82,255,0.4)]">
-									<img src="/images/base.png" alt="Base Logo" className="w-full h-full object-contain p-1" />
+								{/* Correct Base Logo: Blue circle with white inner ring */}
+								<div className="w-7 h-7 bg-[#0052FF] rounded-full flex items-center justify-center relative shadow-[0_0_15px_rgba(0,82,255,0.4)]">
+									<div className="w-[18px] h-[18px] border-[2.5px] border-white rounded-full"></div>
 								</div>
 							</div>
 						</div>
