@@ -28,11 +28,7 @@ interface SongCardProps {
   navigateOnClick?: boolean
 }
 
-const CHAIN_BADGE: Record<string, { logo: string; label: string }> = {
-  '42161': { logo: '/images/arbitrum.png', label: 'Arbitrum' },
-  '8453': { logo: '/images/base.png', label: 'Base' },
-  '43114': { logo: '/images/avalanche.png', label: 'Avalanche' },
-}
+const CHAIN_BADGE_REMOVED = true; // Placeholder for logic that used to depend on this
 
 export default function SongCard({
   tokenId,
