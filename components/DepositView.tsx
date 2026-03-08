@@ -75,9 +75,8 @@ export function DepositView() {
 					</div>
 
 					<div className="pt-4 space-y-4">
-						<div className="flex items-center justify-center gap-3">
+						<div className="flex items-center justify-center">
 							<span className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em]">Supported Network</span>
-							<div className="h-[1px] w-12 bg-white/10"></div>
 						</div>
 
 						<div className="flex items-center justify-center">
