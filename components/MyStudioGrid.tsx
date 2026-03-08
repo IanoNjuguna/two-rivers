@@ -27,7 +27,7 @@ interface MyStudioGridProps {
   isPlaying?: boolean
 }
 
-const API_URL = '/api-backend'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '/api-backend'
 
 export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlaying }: MyStudioGridProps) {
   const t = useTranslations('library')
