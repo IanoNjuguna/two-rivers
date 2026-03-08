@@ -10,6 +10,7 @@ import EarningsView from '@/components/EarningsView'
 import AudioPlayer from '@/components/AudioPlayer'
 import Footer from '@/components/Footer'
 import UploadView from '@/components/UploadView'
+import { usePrivy } from '@privy-io/react-auth'
 import { getAddressesForChain, CONTRACT_ADDRESS } from "@/lib/web3"
 import { useTranslations } from 'next-intl'
 import { useAudio } from '@/components/AudioProvider'
@@ -57,6 +58,7 @@ function DashboardLayout() {
   const [currentView, setCurrentView] = useState<ViewType>('home')
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false)
 
+  const { logout, authenticated } = usePrivy()
   const { playerState, handlePlayTrack, effectiveAddress, isConnected: isPlayerConnected, isAuthenticated } = useAudio()
 
   const tNav = useTranslations('nav')
@@ -333,6 +335,16 @@ function DashboardLayout() {
               <IconPlus size={18} className="text-[#B794F4] flex-shrink-0" />
               <span className="text-sm font-medium">{tNav('deposit')}</span>
             </button>
+
+            {authenticated && (
+              <button
+                onClick={logout}
+                className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-red-400/80 hover:text-red-400 hover:bg-red-400/10 mt-auto border-t border-white/[0.08] pt-4"
+              >
+                <LogOut size={18} className="flex-shrink-0" />
+                <span className="text-sm font-medium">Sign Out</span>
+              </button>
+            )}
           </nav>
         </aside>
 
