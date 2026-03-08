@@ -63,19 +63,16 @@ export default function BaseConnectHeader({ address: propAddress }: { address?: 
       {!authenticated ? (
         <Button
           onClick={login}
-          className="bg-[#FF1F8A] hover:bg-[#FF1F8A]/90 text-white font-bold h-10 px-6 transition-all clip-angular-br-sm"
+          className="glass border border-white/10 hover:bg-white/5 text-white/80 font-bold h-10 px-6 transition-all rounded-full"
         >
           {t('signIn') || 'Sign In'}
         </Button>
       ) : (
         <Wallet>
           <ConnectWallet
-            className="bg-[#FF1F8A] hover:bg-[#FF1F8A]/90 text-white font-bold h-10 px-3 transition-all clip-angular-br-sm flex items-center gap-2"
+            className="flex items-center justify-center p-0 h-8 w-8 rounded-full border border-white/10 hover:border-white/20 transition-all overflow-hidden"
           >
-            <div className="w-6 h-6 rounded-full overflow-hidden flex items-center justify-center bg-white/10 p-1">
-              <img src="/images/base.png" alt="Base" className="w-full h-full object-contain" />
-            </div>
-            <Avatar className="h-6 w-6" />
+            <Avatar className="h-full w-full" />
           </ConnectWallet>
           <WalletDropdown className="absolute right-0 top-full glass border border-white/10 rounded-xl mt-2 overflow-hidden shadow-2xl min-w-[300px] z-[100]">
             <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick>
