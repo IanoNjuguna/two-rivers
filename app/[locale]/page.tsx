@@ -106,8 +106,8 @@ function DashboardLayout() {
 
       {/* Mobile Menu */}
       {headerMenuOpen && (
-        <div className="lg:hidden fixed inset-0 top-16 z-40 animate-slide-in-down bg-midnight">
-          <nav className="flex flex-col p-4 space-y-2 h-full overflow-y-auto">
+        <div className="lg:hidden fixed inset-0 top-16 z-50 animate-slide-in-down bg-midnight">
+          <nav className="flex flex-col p-4 pb-[calc(2rem+env(safe-area-inset-bottom))] space-y-2 h-full overflow-y-auto">
             <div className="px-0 py-2">
               <h2 className="text-sm font-semibold uppercase tracking-wider text-purple-400">
                 {tNav('navigation')}
