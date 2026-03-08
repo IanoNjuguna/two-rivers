@@ -81,11 +81,10 @@ export function DepositView() {
 						</div>
 
 						<div className="flex items-center justify-center">
-							<div className="flex items-center gap-3 px-4 py-2 bg-blue-500/10 border border-blue-500/30 rounded-none clip-tag group cursor-help transition-all hover:bg-blue-500/20" title="Base">
-								<div className="w-4 h-4 bg-[#0052ff] rounded-sm overflow-hidden shadow-[0_0_15px_rgba(0,82,255,0.4)]">
-									<img src="/images/base.png" alt="Base Logo" className="w-full h-full object-contain p-0.5" />
+							<div className="w-12 h-12 bg-white/5 border border-white/10 flex items-center justify-center clip-angular-br-sm shadow-[0_0_20px_rgba(0,82,255,0.15)]">
+								<div className="w-7 h-7 bg-[#0052ff] rounded-sm overflow-hidden shadow-[0_0_15px_rgba(0,82,255,0.4)]">
+									<img src="/images/base.png" alt="Base Logo" className="w-full h-full object-contain p-1" />
 								</div>
-								<IconChevronDown size={14} className="text-blue-400 group-hover:text-blue-300 transition-colors" />
 							</div>
 						</div>
 					</div>
