@@ -137,11 +137,7 @@ export function SendFunds() {
 		<div
 			className="space-y-6 animate-fade-in max-w-md mx-auto p-6 glass text-white bg-[#0D0D12]/80 border-white/10 relative overflow-hidden clip-angular-br"
 		>
-			<div className="flex justify-between items-start">
-				<div>
-					<h2 className="text-2xl font-bold mb-1">{t('sendMoney')}</h2>
-					<p className="text-white/60 text-xs">Send funds safely using your smart account.</p>
-				</div>
+			<div className="flex justify-center items-start">
 				<div className="flex bg-white/5 p-1 border border-white/10">
 					<button
 						onClick={() => setSelectedToken('ETH')}
