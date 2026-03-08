@@ -78,7 +78,6 @@
   },
   "devDependencies": {
     "@layerzerolabs/lz-evm-v1-0.7": "^3.0.160",
-    "@tailwindcss/postcss": "^4.1.13",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",

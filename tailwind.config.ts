@@ -1,5 +1,4 @@
 import type { Config } from 'tailwindcss';
-import { withAccountKitUi, createColorSet } from "@account-kit/react/tailwind";
 import tailwindcssAnimate from 'tailwindcss-animate';
 
 const config: Config = {
@@ -110,7 +109,6 @@ const config: Config = {
     },
   },
   plugins: [tailwindcssAnimate],
-}
+};
 
-
-export default withAccountKitUi(config);
+export default config;
