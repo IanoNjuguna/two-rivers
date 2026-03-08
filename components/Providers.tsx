@@ -39,7 +39,9 @@ export function Providers({
 					showWalletLoginFirst: true,
 				},
 				embeddedWallets: {
-					createOnLogin: 'users-without-wallets',
+					ethereum: {
+						createOnLogin: 'users-without-wallets',
+					},
 				},
 			}}
 		>
@@ -53,9 +55,6 @@ export function Providers({
 								mode: 'dark',
 								theme: 'default',
 							},
-							wallet: {
-								display: 'modal',
-							}
 						}}
 					>
 						{children}

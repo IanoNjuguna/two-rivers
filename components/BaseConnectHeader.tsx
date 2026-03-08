@@ -59,7 +59,7 @@ export default function BaseConnectHeader({ address: propAddress }: { address?: 
   }, [address, chainId])
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3 relative">
       {!authenticated ? (
         <Button
           onClick={login}
@@ -75,7 +75,7 @@ export default function BaseConnectHeader({ address: propAddress }: { address?: 
             <Avatar className="h-6 w-6" />
             <Name className="text-white font-medium" />
           </ConnectWallet>
-          <WalletDropdown className="absolute right-0 top-[calc(100%+8px)] glass border border-white/10 rounded-xl overflow-hidden shadow-2xl min-w-[300px] z-[100] !block">
+          <WalletDropdown className="absolute right-0 top-full glass border border-white/10 rounded-xl mt-2 overflow-hidden shadow-2xl min-w-[300px] z-[100]">
             <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick>
               <Avatar />
               <Name />
