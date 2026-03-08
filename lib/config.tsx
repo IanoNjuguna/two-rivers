@@ -1,12 +1,12 @@
 import { http, createConfig, cookieStorage, createStorage } from 'wagmi';
-import { base, arbitrum, avalanche } from 'wagmi/chains';
-export { base, arbitrum, avalanche };
+import { base } from 'wagmi/chains';
+export { base };
 import { coinbaseWallet } from 'wagmi/connectors';
 import { farcasterMiniApp } from '@farcaster/miniapp-wagmi-connector';
 import { QueryClient } from '@tanstack/react-query';
 
 export const activeChain = base;
-export const chains = [base, arbitrum, avalanche] as const;
+export const chains = [base] as const;
 
 export const getConfig = () => {
 	return createConfig({
@@ -25,8 +25,6 @@ export const getConfig = () => {
 		ssr: true,
 		transports: {
 			[base.id]: http(),
-			[arbitrum.id]: http(),
-			[avalanche.id]: http(),
 		},
 	});
 };

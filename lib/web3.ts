@@ -11,51 +11,34 @@ import { arbitrum, base, avalanche } from 'viem/chains'
  */
 
 const ADDRESSES = {
-  42161: {
-    usdc: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
-    paymaster: '0x2cc0c7981D846b9F2a16276556f6e8cb52BfB633',
-    lzEid: 30110,
-    contract: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
-    explorer: 'https://arbiscan.io'
-  },
   8453: {
     usdc: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
     paymaster: '0x2cc0c7981D846b9F2a16276556f6e8cb52BfB633',
     lzEid: 30184,
     contract: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
     explorer: 'https://basescan.org'
-  },
-  43114: {
-    usdc: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E',
-    paymaster: '0x2cc0c7981D846b9F2a16276556f6e8cb52BfB633',
-    lzEid: 30106,
-    contract: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
-    explorer: 'https://snowscan.xyz'
   }
 }
 
 export const getAddressesForChain = (chainId: number) => {
-  return ADDRESSES[chainId as keyof typeof ADDRESSES] || ADDRESSES[42161]
+  return ADDRESSES[8453]
 }
 
-export const CHAIN_ID = process.env.NEXT_PUBLIC_ACTIVE_CHAIN === 'avalanche' ? 43114 :
-  process.env.NEXT_PUBLIC_ACTIVE_CHAIN === 'arbitrum' ? 42161 : 8453
+export const CHAIN_ID = 8453
 
-export const CHAIN_NAME = (process.env.NEXT_PUBLIC_ACTIVE_CHAIN || 'base').toUpperCase()
+export const CHAIN_NAME = 'BASE'
 
 export const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`
 
 // Legacy exports for components that don't support dynamic yet
-const currentAddresses = ADDRESSES[CHAIN_ID as keyof typeof ADDRESSES]
+const currentAddresses = ADDRESSES[8453]
 export const USDC_ADDRESS = getAddress(currentAddresses.usdc)
 export const PAYMASTER_ADDRESS = getAddress(currentAddresses.paymaster)
 export const LZ_EID = currentAddresses.lzEid
 
 // Logic to determine destination EID for sync
 export const getDstEid = (chainId: number) => {
-  if (chainId === 42161) return 30184 // Arb -> Base
-  if (chainId === 8453) return 30110  // Base -> Arbi
-  return 30110 // Default to Arbi from Avalanche
+  return 30110 // Default destination
 }
 
 export const DST_EID = getDstEid(CHAIN_ID)
@@ -367,17 +350,9 @@ export function formatEtherShort(wei: string | number): string {
 const ALCHEMY_KEY = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY!;
 
 const getTransport = (chainId: number) => {
-  const alchemyUrl = chainId === 42161 ? `https://arb-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}` :
-    chainId === 8453 ? `https://base-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}` :
-      `https://avax-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`;
+  const alchemyUrl = `https://base-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`;
+  const publicUrl = 'https://rpc.ankr.com/base';
 
-  const publicUrl = chainId === 42161 ? 'https://rpc.ankr.com/arbitrum' :
-    chainId === 8453 ? 'https://rpc.ankr.com/base' :
-      'https://rpc.ankr.com/avalanche';
-
-  // Use both transports in a fallback pattern (viem supports fallback)
-  // Actually, for simplicity and to avoid the 403 error entirely on localhost, 
-  // we can check if we are on localhost and use the public RPC.
   if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
     return http(publicUrl);
   }
@@ -386,9 +361,7 @@ const getTransport = (chainId: number) => {
 }
 
 export const publicClients = {
-  42161: createPublicClient({ chain: arbitrum, transport: http(`https://arb-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`) }),
   8453: createPublicClient({ chain: base, transport: http(`https://base-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`) }),
-  43114: createPublicClient({ chain: avalanche, transport: http(`https://avax-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`) }),
 }
 
 
@@ -402,14 +375,12 @@ export type ChainBalances = {
 
 export async function fetchAllBalances(address: string): Promise<ChainBalances[]> {
   const chains = [
-    { id: 42161, name: 'Arbitrum', symbol: 'ETH' },
-    { id: 8453, name: 'Base', symbol: 'ETH' },
-    { id: 43114, name: 'Avalanche', symbol: 'AVAX' }
+    { id: 8453, name: 'Base', symbol: 'ETH' }
   ];
 
   return Promise.all(chains.map(async (c) => {
-    const client = publicClients[c.id as keyof typeof publicClients];
-    const addrs = ADDRESSES[c.id as keyof typeof ADDRESSES];
+    const client = publicClients[8453];
+    const addrs = ADDRESSES[8453];
 
     try {
       const [nativeBalance, usdcBalance] = await Promise.all([
