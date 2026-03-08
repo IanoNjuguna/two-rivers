@@ -11,6 +11,7 @@ export const chains = [base, arbitrum, avalanche] as const;
 export const getConfig = () => {
 	return createConfig({
 		chains,
+		multiInjectedProviderDiscovery: true,
 		connectors: [
 			coinbaseWallet({
 				appName: 'doba',

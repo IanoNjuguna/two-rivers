@@ -6,6 +6,8 @@ import { WagmiProvider, type State } from "wagmi";
 import { config, queryClient, activeChain } from "@/lib/config";
 import { sdk } from "@farcaster/miniapp-sdk";
 import { OnchainKitProvider } from "@coinbase/onchainkit";
+import { PrivyProvider } from "@privy-io/react-auth";
+import { WagmiProvider as PrivyWagmiProvider } from "@privy-io/wagmi";
 
 export function Providers({
 	children,
@@ -28,24 +30,38 @@ export function Providers({
 	}
 
 	return (
-		<WagmiProvider config={config} initialState={initialState}>
-			<QueryClientProvider client={queryClient}>
-				<OnchainKitProvider
-					apiKey={process.env.NEXT_PUBLIC_CDP_API_KEY}
-					chain={activeChain}
-					config={{
-						appearance: {
-							mode: 'dark',
-							theme: 'default',
-						},
-						wallet: {
-							display: 'modal',
-						}
-					}}
-				>
-					{children}
-				</OnchainKitProvider>
-			</QueryClientProvider>
-		</WagmiProvider>
+		<PrivyProvider
+			appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID || "insert-your-privy-app-id-here"}
+			config={{
+				appearance: {
+					theme: 'dark',
+					accentColor: '#FF1F8A',
+					showWalletLoginFirst: true,
+				},
+				embeddedWallets: {
+					createOnLogin: 'users-without-wallets',
+				},
+			}}
+		>
+			<PrivyWagmiProvider config={config}>
+				<QueryClientProvider client={queryClient}>
+					<OnchainKitProvider
+						apiKey={process.env.NEXT_PUBLIC_CDP_API_KEY}
+						chain={activeChain}
+						config={{
+							appearance: {
+								mode: 'dark',
+								theme: 'default',
+							},
+							wallet: {
+								display: 'modal',
+							}
+						}}
+					>
+						{children}
+					</OnchainKitProvider>
+				</QueryClientProvider>
+			</PrivyWagmiProvider>
+		</PrivyProvider>
 	);
 }
