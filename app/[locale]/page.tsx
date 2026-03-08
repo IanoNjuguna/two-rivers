@@ -225,346 +225,356 @@ function DashboardLayout() {
               <span className="text-sm font-medium">{tNav('sendMoney')}</span>
             </button>
 
-            <button
-              onClick={() => {
-                setCurrentView('deposit')
-                setHeaderMenuOpen(false)
-              }}
-              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
-            >
-              <IconPlus size={18} className="text-[#B794F4] flex-shrink-0" />
-              <span className="text-sm font-medium">{tNav('deposit')}</span>
-            </button>
-          </nav>
-        </div>
-      )}
+            <IconPlus size={18} className="text-[#B794F4] flex-shrink-0" />
+            <span className="text-sm font-medium">{tNav('deposit')}</span>
+          </button>
 
-      {/* Main Layout */}
-      <div className="flex flex-col lg:flex-row flex-1 mt-16 h-[calc(100vh-4rem)] overflow-hidden">
-        {/* Sidebar */}
-        <aside className="hidden lg:flex w-64 border-r border-white/[0.08] flex-col bg-[#0D0D12] overflow-y-auto">
-          <nav className="flex flex-col p-4 overflow-y-auto flex-1 space-y-1">
-            <div className="px-0 pt-0 pb-0 mb-1">
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-purple-400">
-                {tNav('navigation')}
-              </h2>
-            </div>
-
-            <button
-              onClick={() => setCurrentView('home')}
-              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
-            >
-              <HomeIcon size={18} className="text-[#FF1F8A] flex-shrink-0" />
-              <span className="text-sm font-medium">{tNav('home')}</span>
-            </button>
-            <button
-              onClick={() => setCurrentView('library')}
-              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
-            >
-              <Library size={18} className="text-[#B794F4] flex-shrink-0" />
-              <span className="text-sm font-medium">{tNav('library')}</span>
-            </button>
-            <button
-              onClick={() => setCurrentView('search')}
-              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
-            >
-              <Search size={18} className="text-[#B794F4] flex-shrink-0" />
-              <span className="text-sm font-medium">{tNav('search')}</span>
-            </button>
-            <button
-              onClick={() => setCurrentView('collection')}
-              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
-            >
-              <Music size={18} className="text-[#FF1F8A] flex-shrink-0" />
-              <span className="text-sm font-medium">My Collection</span>
-            </button>
-
-            <div className="border-t border-white/[0.08] my-2" />
-
-            <div className="px-0 pt-3 pb-0 mb-1">
-              <h2 className="text-sm font-semibold text-[#B794F4] uppercase tracking-wider" style={{ letterSpacing: '0.04em' }}>{tNav('creator')}</h2>
-            </div>
-
-            <button
-              onClick={() => setCurrentView('upload')}
-              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
-            >
-              <Music size={18} className="text-[#FF1F8A] flex-shrink-0" />
-              <span className="text-sm font-medium">{tNav('upload')}</span>
-            </button>
-            <button
-              onClick={() => setCurrentView('earnings')}
-              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
-            >
-              <DollarSign size={18} className="text-[#B794F4] flex-shrink-0" />
-              <span className="text-sm font-medium">{tNav('earnings')}</span>
-            </button>
-            <button
-              onClick={() => setCurrentView('analytics')}
-              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
-            >
-              <TrendingUp size={18} className="text-[#B794F4] flex-shrink-0" />
-              <span className="text-sm font-medium">{tNav('analytics')}</span>
-            </button>
-
-            <button
-              onClick={() => setCurrentView('profile')}
-              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
-            >
-              <User size={18} className="text-[#B794F4] flex-shrink-0" />
-              <span className="text-sm font-medium">{tNav('profile')}</span>
-            </button>
-
-            <div className="border-t border-white/[0.08] my-2" />
-
-            <div className="px-0 pt-3 pb-0 mb-1">
-              <h2 className="text-sm font-semibold text-[#B794F4] uppercase tracking-wider" style={{ letterSpacing: '0.04em' }}>{tNav('wallet')}</h2>
-            </div>
-
-            <button
-              onClick={() => setCurrentView('send-money')}
-              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
-            >
-              <DollarSign size={18} className="text-[#FF1F8A] flex-shrink-0" />
-              <span className="text-sm font-medium">{tNav('sendMoney')}</span>
-            </button>
-            <button
-              onClick={() => setCurrentView('deposit')}
-              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
-            >
-              <IconPlus size={18} className="text-[#B794F4] flex-shrink-0" />
-              <span className="text-sm font-medium">{tNav('deposit')}</span>
-            </button>
-
-            {authenticated && (
+          {authenticated && (
+            <>
+              <div className="border-t border-white/[0.08] my-2" />
               <button
-                onClick={logout}
-                className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-red-400/80 hover:text-red-400 hover:bg-red-400/10 mt-auto border-t border-white/[0.08] pt-4"
+                onClick={() => {
+                  logout()
+                  setHeaderMenuOpen(false)
+                }}
+                className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-red-400/80 hover:text-red-400 hover:bg-red-400/10"
               >
                 <LogOut size={18} className="flex-shrink-0" />
                 <span className="text-sm font-medium">Sign Out</span>
               </button>
-            )}
-          </nav>
-        </aside>
+            </>
+          )}
+        </nav>
+        </div>
+  )
+}
 
-        {/* Content Area */}
-        <main className={`flex-1 overflow-y-auto ${playerState.currentTrack ? 'pb-[60px] md:pb-[90px]' : ''}`}>
-          <div className="p-6 max-w-7xl mx-auto">
-            {currentView === 'home' && (
-              <div className="space-y-6 animate-fade-in">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2">{tHome('discoverMusic')}</h2>
-                </div>
-                <MarketplaceGrid
-                  currentTrackId={playerState.currentTrack?.id}
-                  isPlaying={playerState.isPlaying}
-                  onPlay={(track, tracks) => handlePlayTrack({
-                    id: track.token_id,
-                    title: track.name,
-                    creator: track.artist,
-                    cover: track.image_url,
-                    url: track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
-                    collaborators: 0,
-                    price: track.price
-                  }, tracks.map(t => ({
-                    id: t.token_id,
-                    title: t.name,
-                    creator: t.artist,
-                    cover: t.image_url,
-                    url: t.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
-                    collaborators: 0,
-                    price: t.price
-                  })))} />
-              </div>
-            )}
-
-            {currentView === 'collection' && (
-              <div className="animate-fade-in">
-                <NFTGallery />
-              </div>
-            )}
-
-            {currentView === 'library' && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2">{tLibrary('title')}</h2>
-                  <p className="text-white/60">
-                    {tLibrary('subtitle')}
-                  </p>
-                </div>
-                {isPlayerConnected ? (
-                  <MyStudioGrid
-                    address={effectiveAddress || undefined}
-                    currentTrackId={playerState.currentTrack?.id}
-                    isPlaying={playerState.isPlaying}
-                    onPlay={(track, tracks) => handlePlayTrack({
-                      id: track.token_id,
-                      title: track.name,
-                      creator: track.artist,
-                      cover: track.image_url,
-                      url: track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
-                      collaborators: 0,
-                      price: track.price
-                    }, tracks.map(t => ({
-                      id: t.token_id,
-                      title: t.name,
-                      creator: t.artist,
-                      cover: t.image_url,
-                      url: t.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
-                      collaborators: 0,
-                      price: t.price
-                    })))}
-                  />
-                ) : (
-                  <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
-                    <Library className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
-                    <h3 className="text-xl font-semibold mb-2">
-                      {tLibrary('connectWallet')}
-                    </h3>
-                    <p className="text-white/60">
-                      {tLibrary('connectToView')}
-                    </p>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {currentView === 'search' && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2">{tSearch('title')}</h2>
-                  <p className="text-white/60">
-                    {tSearch('subtitle')}
-                  </p>
-                </div>
-                <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
-                  <Search className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
-                  <h3 className="text-xl font-semibold mb-2">
-                    {tSearch('comingSoon')}
-                  </h3>
-                  <p className="text-white/60">
-                    {tSearch('comingSoonDesc')}
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {currentView === 'upload' && (
-              isAuthenticated ? (
-                <UploadView />
-              ) : (
-                <div className="space-y-6">
-                  <div>
-                    <h2 className="text-2xl font-bold mb-2">{tUpload('title')}</h2>
-                    <p className="text-white/60">
-                      {tUpload('subtitle')}
-                    </p>
-                  </div>
-                  <div className="border border-white/[0.08] p-12 text-center bg-[rgba(13,13,18,0.3)]">
-                    <div className="w-16 h-16 mx-auto mb-4 bg-[rgba(183,148,244,0.1)]">
-                      <div className="w-full h-full flex items-center justify-center text-[#B794F4]">
-                        <Music size={32} />
-                      </div>
-                    </div>
-                    <h3 className="text-xl font-semibold mb-2">
-                      {tUpload('connectWallet')}
-                    </h3>
-                    <p className="text-white/60">
-                      {tUpload('connectToUpload')}
-                    </p>
-                  </div>
-                </div>
-              )
-            )}
-
-            {currentView === 'earnings' && (
-              <EarningsView />
-            )}
-
-            {currentView === 'analytics' && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2">{tAnalytics('title')}</h2>
-                  <p className="text-white/60">
-                    {tAnalytics('subtitle')}
-                  </p>
-                </div>
-                <div className="border border-white/[0.08] rounded-xl p-12 text-center bg-[rgba(13,13,18,0.3)]">
-                  <div className="w-16 h-16 rounded-full mx-auto mb-4 bg-[rgba(183,148,244,0.1)]">
-                    <div className="w-full h-full flex items-center justify-center text-[#B794F4]">
-                      <Music size={32} />
-                    </div>
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2">
-                    {tAnalytics('comingSoon')}
-                  </h3>
-                  <p className="text-white/60">
-                    {tAnalytics('comingSoonDesc')}
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {currentView === 'profile' && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2">{tProfile('title')}</h2>
-                  <p className="text-white/60">
-                    {tProfile('subtitle')}
-                  </p>
-                </div>
-                {isAuthenticated && effectiveAddress ? (
-                  <ProfileEditor
-                    address={effectiveAddress}
-                    tProfile={tProfile}
-                  />
-                ) : (
-                  <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
-                    <User className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
-                    <h3 className="text-xl font-semibold mb-2">
-                      {tProfile('connectWallet')}
-                    </h3>
-                    <p className="text-white/60">
-                      {tProfile('signInToView')}
-                    </p>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {currentView === 'send-money' && (
-              <div className="space-y-6 animate-fade-in">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2">{tNav('sendMoney')}</h2>
-                </div>
-                {isPlayerConnected ? (
-                  <SendFunds />
-                ) : (
-                  <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
-                    <DollarSign className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
-                    <h3 className="text-xl font-semibold mb-2">
-                      {tNav('connectWallet')}
-                    </h3>
-                    <p className="text-white/60">
-                      {tProfile('signInToView')}
-                    </p>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {currentView === 'deposit' && (
-              <DepositView />
-            )}
-          </div>
-
-          {/* Footer */}
-          <footer className="border-t border-white/[0.08] mt-12 py-10 flex justify-center">
-            <Footer />
-          </footer>
-        </main>
+{/* Main Layout */ }
+<div className="flex flex-col lg:flex-row flex-1 mt-16 h-[calc(100vh-4rem)] overflow-hidden">
+  {/* Sidebar */}
+  <aside className="hidden lg:flex w-64 border-r border-white/[0.08] flex-col bg-[#0D0D12] overflow-y-auto">
+    <nav className="flex flex-col p-4 overflow-y-auto flex-1 space-y-1">
+      <div className="px-0 pt-0 pb-0 mb-1">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-purple-400">
+          {tNav('navigation')}
+        </h2>
       </div>
+
+      <button
+        onClick={() => setCurrentView('home')}
+        className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+      >
+        <HomeIcon size={18} className="text-[#FF1F8A] flex-shrink-0" />
+        <span className="text-sm font-medium">{tNav('home')}</span>
+      </button>
+      <button
+        onClick={() => setCurrentView('library')}
+        className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+      >
+        <Library size={18} className="text-[#B794F4] flex-shrink-0" />
+        <span className="text-sm font-medium">{tNav('library')}</span>
+      </button>
+      <button
+        onClick={() => setCurrentView('search')}
+        className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+      >
+        <Search size={18} className="text-[#B794F4] flex-shrink-0" />
+        <span className="text-sm font-medium">{tNav('search')}</span>
+      </button>
+      <button
+        onClick={() => setCurrentView('collection')}
+        className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+      >
+        <Music size={18} className="text-[#FF1F8A] flex-shrink-0" />
+        <span className="text-sm font-medium">My Collection</span>
+      </button>
+
+      <div className="border-t border-white/[0.08] my-2" />
+
+      <div className="px-0 pt-3 pb-0 mb-1">
+        <h2 className="text-sm font-semibold text-[#B794F4] uppercase tracking-wider" style={{ letterSpacing: '0.04em' }}>{tNav('creator')}</h2>
+      </div>
+
+      <button
+        onClick={() => setCurrentView('upload')}
+        className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+      >
+        <Music size={18} className="text-[#FF1F8A] flex-shrink-0" />
+        <span className="text-sm font-medium">{tNav('upload')}</span>
+      </button>
+      <button
+        onClick={() => setCurrentView('earnings')}
+        className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+      >
+        <DollarSign size={18} className="text-[#B794F4] flex-shrink-0" />
+        <span className="text-sm font-medium">{tNav('earnings')}</span>
+      </button>
+      <button
+        onClick={() => setCurrentView('analytics')}
+        className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+      >
+        <TrendingUp size={18} className="text-[#B794F4] flex-shrink-0" />
+        <span className="text-sm font-medium">{tNav('analytics')}</span>
+      </button>
+
+      <button
+        onClick={() => setCurrentView('profile')}
+        className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+      >
+        <User size={18} className="text-[#B794F4] flex-shrink-0" />
+        <span className="text-sm font-medium">{tNav('profile')}</span>
+      </button>
+
+      <div className="border-t border-white/[0.08] my-2" />
+
+      <div className="px-0 pt-3 pb-0 mb-1">
+        <h2 className="text-sm font-semibold text-[#B794F4] uppercase tracking-wider" style={{ letterSpacing: '0.04em' }}>{tNav('wallet')}</h2>
+      </div>
+
+      <button
+        onClick={() => setCurrentView('send-money')}
+        className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+      >
+        <DollarSign size={18} className="text-[#FF1F8A] flex-shrink-0" />
+        <span className="text-sm font-medium">{tNav('sendMoney')}</span>
+      </button>
+      <button
+        onClick={() => setCurrentView('deposit')}
+        className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+      >
+        <IconPlus size={18} className="text-[#B794F4] flex-shrink-0" />
+        <span className="text-sm font-medium">{tNav('deposit')}</span>
+      </button>
+
+      {authenticated && (
+        <button
+          onClick={logout}
+          className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-red-400/80 hover:text-red-400 hover:bg-red-400/10 mt-auto border-t border-white/[0.08] pt-4"
+        >
+          <LogOut size={18} className="flex-shrink-0" />
+          <span className="text-sm font-medium">Sign Out</span>
+        </button>
+      )}
+    </nav>
+  </aside>
+
+  {/* Content Area */}
+  <main className={`flex-1 overflow-y-auto ${playerState.currentTrack ? 'pb-[60px] md:pb-[90px]' : ''}`}>
+    <div className="p-6 max-w-7xl mx-auto">
+      {currentView === 'home' && (
+        <div className="space-y-6 animate-fade-in">
+          <div>
+            <h2 className="text-2xl font-bold mb-2">{tHome('discoverMusic')}</h2>
+          </div>
+          <MarketplaceGrid
+            currentTrackId={playerState.currentTrack?.id}
+            isPlaying={playerState.isPlaying}
+            onPlay={(track, tracks) => handlePlayTrack({
+              id: track.token_id,
+              title: track.name,
+              creator: track.artist,
+              cover: track.image_url,
+              url: track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
+              collaborators: 0,
+              price: track.price
+            }, tracks.map(t => ({
+              id: t.token_id,
+              title: t.name,
+              creator: t.artist,
+              cover: t.image_url,
+              url: t.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
+              collaborators: 0,
+              price: t.price
+            })))} />
+        </div>
+      )}
+
+      {currentView === 'collection' && (
+        <div className="animate-fade-in">
+          <NFTGallery />
+        </div>
+      )}
+
+      {currentView === 'library' && (
+        <div className="space-y-6">
+          <div>
+            <h2 className="text-2xl font-bold mb-2">{tLibrary('title')}</h2>
+            <p className="text-white/60">
+              {tLibrary('subtitle')}
+            </p>
+          </div>
+          {isPlayerConnected ? (
+            <MyStudioGrid
+              address={effectiveAddress || undefined}
+              currentTrackId={playerState.currentTrack?.id}
+              isPlaying={playerState.isPlaying}
+              onPlay={(track, tracks) => handlePlayTrack({
+                id: track.token_id,
+                title: track.name,
+                creator: track.artist,
+                cover: track.image_url,
+                url: track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
+                collaborators: 0,
+                price: track.price
+              }, tracks.map(t => ({
+                id: t.token_id,
+                title: t.name,
+                creator: t.artist,
+                cover: t.image_url,
+                url: t.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
+                collaborators: 0,
+                price: t.price
+              })))}
+            />
+          ) : (
+            <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
+              <Library className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
+              <h3 className="text-xl font-semibold mb-2">
+                {tLibrary('connectWallet')}
+              </h3>
+              <p className="text-white/60">
+                {tLibrary('connectToView')}
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {currentView === 'search' && (
+        <div className="space-y-6">
+          <div>
+            <h2 className="text-2xl font-bold mb-2">{tSearch('title')}</h2>
+            <p className="text-white/60">
+              {tSearch('subtitle')}
+            </p>
+          </div>
+          <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
+            <Search className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
+            <h3 className="text-xl font-semibold mb-2">
+              {tSearch('comingSoon')}
+            </h3>
+            <p className="text-white/60">
+              {tSearch('comingSoonDesc')}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {currentView === 'upload' && (
+        isAuthenticated ? (
+          <UploadView />
+        ) : (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold mb-2">{tUpload('title')}</h2>
+              <p className="text-white/60">
+                {tUpload('subtitle')}
+              </p>
+            </div>
+            <div className="border border-white/[0.08] p-12 text-center bg-[rgba(13,13,18,0.3)]">
+              <div className="w-16 h-16 mx-auto mb-4 bg-[rgba(183,148,244,0.1)]">
+                <div className="w-full h-full flex items-center justify-center text-[#B794F4]">
+                  <Music size={32} />
+                </div>
+              </div>
+              <h3 className="text-xl font-semibold mb-2">
+                {tUpload('connectWallet')}
+              </h3>
+              <p className="text-white/60">
+                {tUpload('connectToUpload')}
+              </p>
+            </div>
+          </div>
+        )
+      )}
+
+      {currentView === 'earnings' && (
+        <EarningsView />
+      )}
+
+      {currentView === 'analytics' && (
+        <div className="space-y-6">
+          <div>
+            <h2 className="text-2xl font-bold mb-2">{tAnalytics('title')}</h2>
+            <p className="text-white/60">
+              {tAnalytics('subtitle')}
+            </p>
+          </div>
+          <div className="border border-white/[0.08] rounded-xl p-12 text-center bg-[rgba(13,13,18,0.3)]">
+            <div className="w-16 h-16 rounded-full mx-auto mb-4 bg-[rgba(183,148,244,0.1)]">
+              <div className="w-full h-full flex items-center justify-center text-[#B794F4]">
+                <Music size={32} />
+              </div>
+            </div>
+            <h3 className="text-xl font-semibold mb-2">
+              {tAnalytics('comingSoon')}
+            </h3>
+            <p className="text-white/60">
+              {tAnalytics('comingSoonDesc')}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {currentView === 'profile' && (
+        <div className="space-y-6">
+          <div>
+            <h2 className="text-2xl font-bold mb-2">{tProfile('title')}</h2>
+            <p className="text-white/60">
+              {tProfile('subtitle')}
+            </p>
+          </div>
+          {isAuthenticated && effectiveAddress ? (
+            <ProfileEditor
+              address={effectiveAddress}
+              tProfile={tProfile}
+            />
+          ) : (
+            <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
+              <User className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
+              <h3 className="text-xl font-semibold mb-2">
+                {tProfile('connectWallet')}
+              </h3>
+              <p className="text-white/60">
+                {tProfile('signInToView')}
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {currentView === 'send-money' && (
+        <div className="space-y-6 animate-fade-in">
+          <div>
+            <h2 className="text-2xl font-bold mb-2">{tNav('sendMoney')}</h2>
+          </div>
+          {isPlayerConnected ? (
+            <SendFunds />
+          ) : (
+            <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
+              <DollarSign className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
+              <h3 className="text-xl font-semibold mb-2">
+                {tNav('connectWallet')}
+              </h3>
+              <p className="text-white/60">
+                {tProfile('signInToView')}
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {currentView === 'deposit' && (
+        <DepositView />
+      )}
     </div>
+
+    {/* Footer */}
+    <footer className="border-t border-white/[0.08] mt-12 py-10 flex justify-center">
+      <Footer />
+    </footer>
+  </main>
+</div>
+    </div >
   )
 }
