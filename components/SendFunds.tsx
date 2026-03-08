@@ -135,7 +135,7 @@ export function SendFunds() {
 
 	return (
 		<div
-			className="space-y-6 animate-fade-in max-w-md mx-auto p-6 glass text-white bg-[#0D0D12]/80 border-white/10 relative overflow-hidden clip-angular-br"
+			className="space-y-6 animate-fade-in max-w-md mx-auto p-6 glass text-white bg-[#0D0D12]/80 border-white/10 relative overflow-hidden"
 		>
 			<div className="flex justify-center items-start">
 				<div className="flex bg-white/5 p-1 border border-white/10">
@@ -225,7 +225,7 @@ export function SendFunds() {
 				>
 					<TransactionButton
 						disabled={!isValid}
-						className={`w-full h-14 font-bold text-lg transition-all clip-angular-br-sm ${isValid
+						className={`w-full h-14 font-bold text-lg transition-all rounded-none ${isValid
 							? 'bg-[#FF1F8A] text-white hover:bg-[#FF1F8A]/90 shadow-pink-glow'
 							: 'bg-white/10 text-white/40 cursor-not-allowed opacity-50'
 							}`}

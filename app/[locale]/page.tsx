@@ -529,7 +529,7 @@ function DashboardLayout() {
 
               {currentView === 'send-money' && (
                 <div className="space-y-6 animate-fade-in">
-                  <div>
+                  <div className="text-center">
                     <h2 className="text-2xl font-bold mb-2">{tNav('sendMoney')}</h2>
                   </div>
                   {isPlayerConnected ? (
