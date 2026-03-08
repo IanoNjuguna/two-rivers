@@ -43,8 +43,8 @@ export function Providers({
 				},
 			}}
 		>
-			<PrivyWagmiProvider config={config}>
-				<QueryClientProvider client={queryClient}>
+			<QueryClientProvider client={queryClient}>
+				<PrivyWagmiProvider config={config}>
 					<OnchainKitProvider
 						apiKey={process.env.NEXT_PUBLIC_CDP_API_KEY}
 						chain={activeChain}
@@ -60,8 +60,8 @@ export function Providers({
 					>
 						{children}
 					</OnchainKitProvider>
-				</QueryClientProvider>
-			</PrivyWagmiProvider>
+				</PrivyWagmiProvider>
+			</QueryClientProvider>
 		</PrivyProvider>
 	);
 }
