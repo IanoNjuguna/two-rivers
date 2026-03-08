@@ -70,6 +70,7 @@ export default function BaseConnectHeader({ address: propAddress }: { address?: 
             'Sign In'
           )}
         </ConnectWallet>
+        <WalletModal />
         <WalletDropdown className="glass border border-white/10 rounded-xl mt-2 overflow-hidden shadow-2xl min-w-[300px]">
           <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick>
             <Avatar />

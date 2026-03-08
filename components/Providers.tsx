@@ -37,6 +37,9 @@ export function Providers({
 						appearance: {
 							mode: 'dark',
 							theme: 'default',
+						},
+						wallet: {
+							display: 'modal',
 						}
 					}}
 				>
