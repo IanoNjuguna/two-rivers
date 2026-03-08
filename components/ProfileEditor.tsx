@@ -26,7 +26,6 @@ const formatAddress = (addr: string) => {
 export function ProfileEditor({ address, tProfile, logout }: any) {
 	const [profile, setProfile] = useState<UserProfile | null>(null)
 	const [isEditing, setIsEditing] = useState(false)
-	const [isLinking, setIsLinking] = useState(false)
 	const [username, setUsername] = useState('')
 	const [bio, setBio] = useState('')
 	const [avatarUrl, setAvatarUrl] = useState('')
@@ -35,52 +34,6 @@ export function ProfileEditor({ address, tProfile, logout }: any) {
 	const [isSaving, setIsSaving] = useState(false)
 	const { signMessageAsync } = useSignMessage()
 	const { getValidToken } = useBackendAuth()
-
-	const handleLinkFarcaster = async () => {
-		try {
-			setIsLinking(true)
-			const nonce = Math.random().toString(36).substring(2) + Date.now().toString(36)
-			const message = `doba.world wants you to sign in with your Ethereum account:\n${address}\n\nLink your Farcaster account to doba.\n\nURI: https://doba.world\nVersion: 1\nChain ID: 8453\nNonce: ${nonce}\nIssued At: ${new Date().toISOString()}`
-
-			// Request signature from the connected wallet (Alchemy EOA)
-			const signature = await signMessageAsync({ message })
-
-			const res = await fetch(`${API_URL.replace(/\/$/, '')}/auth/siwf`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					message,
-					signature,
-					nonce,
-					skipLink: false
-				})
-			})
-
-			if (!res.ok) {
-				const errorData = await res.json()
-				throw new Error(errorData.message || errorData.error || 'SIWF Verification failed')
-			}
-
-			const data = await res.json()
-
-			if (data.linked) {
-				toast.success('Successfully linked Farcaster Account!')
-				// Refresh the profile page to show linked status
-				setTimeout(() => window.location.reload(), 1000)
-			} else {
-				// We need to implement the Alchemy Email Link step here if not linked
-				toast.info('SIWF pending: Needs Email link signature next. Check console.')
-			}
-
-		} catch (err: any) {
-			logger.error('Farcaster linking failed', err)
-			toast.error('Failed to link Farcaster account: ' + (err.message || 'Unknown error'))
-		} finally {
-			setIsLinking(false)
-		}
-	}
 
 	useEffect(() => {
 		const fetchProfile = async () => {
@@ -289,8 +242,8 @@ export function ProfileEditor({ address, tProfile, logout }: any) {
 			</div>
 
 			{/* Wallet Address Display */}
-			<div className="flex flex-col md:flex-row gap-4 mb-12">
-				<div className="flex-1 p-4 bg-black/40 border border-white/5 flex items-center justify-between clip-tag">
+			<div className="mb-12">
+				<div className="p-4 bg-black/40 border border-white/5 flex items-center justify-between clip-tag max-w-xl mx-auto">
 					<div>
 						<p className="text-white/40 text-[10px] uppercase tracking-widest font-bold mb-1">{tProfile('walletAddress')}</p>
 						<span className="text-sm font-mono text-white/90">{formatAddress(address)}</span>
@@ -305,30 +258,6 @@ export function ProfileEditor({ address, tProfile, logout }: any) {
 					>
 						<IconCopy size={16} />
 					</button>
-				</div>
-
-				<div className="flex-1 p-4 bg-black/40 border border-white/5 flex items-center justify-between clip-tag">
-					<div>
-						<p className="text-[#8a63d2]/60 text-[10px] uppercase tracking-widest font-bold mb-1">Farcaster</p>
-						<span className="text-sm font-mono text-white/90">
-							{profile?.farcaster_fid ? `FID: ${profile.farcaster_fid}` : 'Not Linked'}
-						</span>
-					</div>
-					<div className="flex items-center gap-2">
-						{profile?.farcaster_fid ? (
-							<div className="text-green-400 p-2.5 flex items-center gap-1 text-[10px] uppercase tracking-widest font-bold bg-white/5">
-								<IconCheck size={16} /> Linked
-							</div>
-						) : (
-							<button
-								onClick={handleLinkFarcaster}
-								disabled={isLinking}
-								className="text-xs px-4 py-2 border border-[#8a63d2] text-[#8a63d2] hover:bg-[#8a63d2] hover:text-white transition-all font-bold clip-tag disabled:opacity-50"
-							>
-								{isLinking ? 'Connecting...' : 'Link Account'}
-							</button>
-						)}
-					</div>
 				</div>
 			</div>
 
