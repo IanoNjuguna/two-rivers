@@ -8,7 +8,13 @@
 		"upload": "Загрузка",
 		"earnings": "Доходы",
 		"analytics": "Аналитика",
-		"profile": "Профиль"
+		"profile": "Профиль",
+		"wallet": "Кошелек",
+		"sendMoney": "Отправить средства на Base",
+		"deposit": "Внести средства на Base",
+		"depositDesc": "Отсканируйте или скопируйте адрес кошелька для пополнения",
+		"swap": "Обмен",
+		"connectWallet": "Подключить кошелек"
 	},
 	"header": {
 		"loading": "Загрузка...",
@@ -72,7 +78,7 @@
 		"changeFile": "Изменить Файл",
 		"changeCover": "Изменить Обложку",
 		"collaborators": "Соавторы",
-        "collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
+		"collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
 		"addCollaborator": "Добавить Соавтора",
 		"collaboratorsHint": "Добавьте соавторов для автоматического распределения дохода.",
 		"walletAddress": "Адрес Кошелька",

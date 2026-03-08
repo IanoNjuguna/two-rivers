@@ -8,7 +8,13 @@
 		"upload": "업로드",
 		"earnings": "수익",
 		"analytics": "분석",
-		"profile": "프로필"
+		"profile": "프로필",
+		"wallet": "지갑",
+		"sendMoney": "Base에서 자금 보내기",
+		"deposit": "Base에 자금 입금",
+		"depositDesc": "입금하려면 지갑 주소를 스캔하거나 복사하세요",
+		"swap": "스왑",
+		"connectWallet": "지갑 연결"
 	},
 	"header": {
 		"loading": "로딩 중...",
@@ -72,7 +78,7 @@
 		"changeFile": "파일 변경",
 		"changeCover": "커버 변경",
 		"collaborators": "협업자",
-        "collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
+		"collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
 		"addCollaborator": "협업자 추가",
 		"collaboratorsHint": "수익을 자동으로 분배할 협업자를 추가하세요.",
 		"walletAddress": "지갑 주소",

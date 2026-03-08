@@ -8,7 +8,13 @@
 		"upload": "アップロード",
 		"earnings": "収益",
 		"analytics": "アナリティクス",
-		"profile": "プロフィール"
+		"profile": "プロフィール",
+		"wallet": "ウォレット",
+		"sendMoney": "Baseで資金を送金",
+		"deposit": "Baseに資金を入金",
+		"depositDesc": "ウォレットアドレスをスキャンまたはコピーして入金してください",
+		"swap": "スワップ",
+		"connectWallet": "ウォレットを接続"
 	},
 	"header": {
 		"loading": "読み込み中...",
@@ -72,7 +78,7 @@
 		"changeFile": "ファイルを変更",
 		"changeCover": "カバーを変更",
 		"collaborators": "コラボレーター",
-        "collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
+		"collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
 		"addCollaborator": "コラボレーターを追加",
 		"collaboratorsHint": "コラボレーターを追加して収益を自動分配します。",
 		"walletAddress": "ウォレットアドレス",

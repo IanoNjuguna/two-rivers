@@ -8,7 +8,13 @@
 		"upload": "上传",
 		"earnings": "收益",
 		"analytics": "数据分析",
-		"profile": "个人资料"
+		"profile": "个人资料",
+		"wallet": "钱包",
+		"sendMoney": "在 Base 上发送资金",
+		"deposit": "在 Base 上存入资金",
+		"depositDesc": "扫描或复制您的钱包地址进行存款",
+		"swap": "交换",
+		"connectWallet": "连接钱包"
 	},
 	"header": {
 		"loading": "加载中...",
@@ -72,7 +78,7 @@
 		"changeFile": "更改文件",
 		"changeCover": "更改封面",
 		"collaborators": "合作者",
-        "collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
+		"collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
 		"addCollaborator": "添加合作者",
 		"collaboratorsHint": "添加合作者以自动分配收益。",
 		"walletAddress": "钱包地址",
