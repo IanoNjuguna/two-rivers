@@ -3,7 +3,7 @@ import { useSignMessage } from 'wagmi'
 import { logger } from '@/lib/logger'
 
 import React, { useState, useEffect } from 'react'
-import { IconCopy, IconEdit, IconCheck, IconX } from '@tabler/icons-react'
+import { IconCopy, IconEdit, IconCheck, IconX, IconSettings } from '@tabler/icons-react'
 import { toast } from 'sonner'
 import MyUploadsGrid from '@/components/MyUploadsGrid'
 import { useBackendAuth } from '@/hooks/useBackendAuth'
@@ -314,19 +314,27 @@ export function ProfileEditor({ address, tProfile }: any) {
 							{profile?.farcaster_fid ? `FID: ${profile.farcaster_fid}` : 'Not Linked'}
 						</span>
 					</div>
-					{profile?.farcaster_fid ? (
-						<div className="text-green-400 p-2.5 flex items-center gap-1 text-[10px] uppercase tracking-widest font-bold bg-white/5">
-							<IconCheck size={16} /> Linked
-						</div>
-					) : (
+					<div className="flex items-center gap-2">
+						{profile?.farcaster_fid ? (
+							<div className="text-green-400 p-2.5 flex items-center gap-1 text-[10px] uppercase tracking-widest font-bold bg-white/5">
+								<IconCheck size={16} /> Linked
+							</div>
+						) : (
+							<button
+								onClick={handleLinkFarcaster}
+								disabled={isLinking}
+								className="text-xs px-4 py-2 border border-[#8a63d2] text-[#8a63d2] hover:bg-[#8a63d2] hover:text-white transition-all font-bold clip-tag disabled:opacity-50"
+							>
+								{isLinking ? 'Connecting...' : 'Link Account'}
+							</button>
+						)}
 						<button
-							onClick={handleLinkFarcaster}
-							disabled={isLinking}
-							className="text-xs px-4 py-2 border border-[#8a63d2] text-[#8a63d2] hover:bg-[#8a63d2] hover:text-white transition-all font-bold clip-tag disabled:opacity-50"
+							className="p-2.5 bg-white/5 hover:bg-white/10 transition text-white/70 hover:text-white"
+							title="Farcaster Settings"
 						>
-							{isLinking ? 'Connecting...' : 'Link Account'}
+							<IconSettings size={16} />
 						</button>
-					)}
+					</div>
 				</div>
 			</div>
 

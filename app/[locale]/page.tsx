@@ -89,7 +89,7 @@ function DashboardLayout() {
 
           {/* Mobile/Tablet Controls */}
           <div className="lg:hidden flex items-center gap-2">
-            {/* Mobile Connect Header */}
+            <ConnectHeader address={effectiveAddress || undefined} />
             {/* Hamburger Menu - Only show when connected */}
             {isPlayerConnected && (
               <button
@@ -100,7 +100,6 @@ function DashboardLayout() {
                 <Menu size={24} />
               </button>
             )}
-            <ConnectHeader address={effectiveAddress || undefined} />
           </div>
         </div>
       </header>
