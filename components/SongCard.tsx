@@ -314,18 +314,7 @@ export default function SongCard({
         />
       </div>
 
-      {/* Play Button - appears on hover in bottom right (Doba Style) */}
-      {!navigateOnClick && (
-        <div className="absolute bottom-4 right-4 z-30 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300 ease-out pointer-events-none">
-          <div className="bg-lavender text-midnight w-12 h-12 rounded-none shadow-[0_8px_16px_rgba(0,0,0,0.3)] flex items-center justify-center transform transition-transform hover:scale-105 active:scale-95">
-            {isPlaying ? (
-              <IconPlayerPause size={24} className="fill-midnight" />
-            ) : (
-              <IconPlayerPlay size={24} className="fill-midnight ml-0.5" />
-            )}
-          </div>
-        </div>
-      )}
+      {/* Play Action - now combined with chain badge at top-left */}
 
       {/* Genre Tag - top right */}
       <div className="absolute top-0 right-0 z-20">
@@ -334,16 +323,38 @@ export default function SongCard({
         </div>
       </div>
 
-      {/* Chain Badge - top left */}
-      {trackChainId && CHAIN_BADGE[trackChainId] && (
-        <div className="absolute top-2 left-2 z-20" title={CHAIN_BADGE[trackChainId].label}>
+      {/* Top Left Action/Badge - Logo by default, Play on hover */}
+      <div className="absolute top-2 left-2 z-30 flex items-center justify-center pointer-events-none">
+        {!navigateOnClick && (
+          <div
+            className={cn(
+              "w-4 h-4 bg-lavender text-midnight shadow-lg flex items-center justify-center transition-all duration-200",
+              "opacity-0 group-hover:opacity-100",
+              isPlaying && "opacity-100"
+            )}
+          >
+            {isPlaying ? (
+              <IconPlayerPause size={10} className="fill-midnight" />
+            ) : (
+              <IconPlayerPlay size={10} className="fill-midnight ml-0.5" />
+            )}
+          </div>
+        )}
+
+        {/* Chain Logo - hidden when play button is shown */}
+        {trackChainId && CHAIN_BADGE[trackChainId] && (
           <img
             src={CHAIN_BADGE[trackChainId].logo}
             alt={CHAIN_BADGE[trackChainId].label}
-            className="w-5 h-5 rounded-full ring-1 ring-white/20 shadow-md"
+            className={cn(
+              "w-5 h-5 ring-1 ring-white/10 shadow-md transition-opacity duration-200 absolute inset-y-0 left-0",
+              !navigateOnClick && (isPlaying ? "opacity-0" : "group-hover:opacity-0"),
+              // If not playing and not hovering, we want the logo centered in the same target area
+              "m-auto"
+            )}
           />
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Price Badge */}
       <div className="absolute top-2 right-2 z-20 mt-5">
