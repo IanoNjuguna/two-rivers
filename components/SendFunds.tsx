@@ -235,7 +235,6 @@ export function SendFunds() {
 							}`}
 						text={isValid ? 'Transact' : 'Enter Details'}
 					/>
-					<TransactionSponsor />
 					<TransactionStatus className="mt-2">
 						<TransactionStatusLabel className="text-xs text-white/60" />
 						<TransactionStatusAction className="text-xs text-[#FF1F8A] hover:underline" />
