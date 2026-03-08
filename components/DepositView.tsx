@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
-import { IconCopy, IconCheck, IconWallet } from '@tabler/icons-react'
+import { IconCopy, IconCheck, IconWallet, IconExternalLink } from '@tabler/icons-react'
 import { toast } from 'sonner'
 import { useAudio } from '@/components/AudioProvider'
 
