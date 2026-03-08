@@ -32,18 +32,12 @@ export function DepositView() {
 	return (
 		<div className="max-w-md mx-auto animate-fade-in">
 			<div
-				className="glass p-8 relative overflow-hidden text-center space-y-8 clip-angular-br bg-premium-gradient border border-white/08"
+				className="glass p-8 relative overflow-hidden text-center space-y-8 bg-[#0D0D12]/80 border border-white/10"
 			>
-				{/* Header */}
-				<div className="space-y-2">
-					<h2 className="text-3xl font-bold tracking-tight text-white">Deposit USDC</h2>
-					<p className="text-sm text-white/50">Scan or copy your wallet address to deposit</p>
-				</div>
 
-				{/* QR Code Section */}
 				<div className="relative flex justify-center">
-					<div className="p-4 bg-white/[0.03] border border-white/10 clip-angular-qr rounded-none relative">
-						<div className="bg-[#0D0D12] p-4 overflow-hidden shadow-[0_0_30px_rgba(183,148,244,0.1)] border border-white/5 clip-angular-qr rounded-none">
+					<div className="p-4 bg-white/[0.03] border border-white/10 rounded-none relative">
+						<div className="bg-[#0D0D12] p-4 overflow-hidden shadow-[0_0_30px_rgba(183,148,244,0.1)] border border-white/5 rounded-none">
 							<QRCodeSVG
 								value={address}
 								size={220}
@@ -60,7 +54,7 @@ export function DepositView() {
 				<div className="space-y-4">
 					<div
 						onClick={handleCopy}
-						className="group flex items-center justify-between gap-4 p-4 bg-black/40 border border-white/10 hover:border-white/20 transition-all cursor-pointer overflow-hidden clip-angular-bl-sm"
+						className="group flex items-center justify-between gap-4 p-4 bg-black/40 border border-white/10 hover:border-white/20 transition-all cursor-pointer overflow-hidden rounded-none"
 					>
 						<code className="text-[13px] font-mono text-white/80 truncate">
 							{address}
@@ -80,7 +74,7 @@ export function DepositView() {
 						</div>
 
 						<div className="flex items-center justify-center">
-							<div className="w-12 h-12 bg-white/5 border border-white/10 flex items-center justify-center clip-angular-br-sm shadow-[0_0_20px_rgba(0,82,255,0.1)][]">
+							<div className="w-12 h-12 bg-white/5 border border-white/10 flex items-center justify-center rounded-none shadow-[0_0_20px_rgba(0,82,255,0.1)]">
 								<img src="/images/base.png" alt="Base Logo" className="w-8 h-8 object-contain" />
 							</div>
 						</div>

@@ -8,7 +8,13 @@
 		"upload": "Télécharger",
 		"earnings": "Revenus",
 		"analytics": "Analytique",
-		"profile": "Profil"
+		"profile": "Profil",
+		"wallet": "Portefeuille",
+		"sendMoney": "Envoyer des Fonds",
+		"deposit": "Déposer des Fonds",
+		"depositDesc": "Scannez ou copiez votre adresse de portefeuille pour déposer",
+		"swap": "Échanger",
+		"connectWallet": "Connectez Votre Portefeuille"
 	},
 	"header": {
 		"loading": "Chargement...",
@@ -72,7 +78,7 @@
 		"changeFile": "Modifier le Fichier",
 		"changeCover": "Modifier la Couverture",
 		"collaborators": "Collaborateurs",
-        "collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
+		"collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
 		"addCollaborator": "Ajouter un Collaborateur",
 		"collaboratorsHint": "Ajoutez des collaborateurs pour répartir les revenus automatiquement.",
 		"walletAddress": "Adresse du Portefeuille",

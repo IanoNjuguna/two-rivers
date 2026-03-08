@@ -8,7 +8,13 @@
 		"upload": "Subir",
 		"earnings": "Ganancias",
 		"analytics": "Analítica",
-		"profile": "Perfil"
+		"profile": "Perfil",
+		"wallet": "Billetera",
+		"sendMoney": "Enviar Fondos",
+		"deposit": "Depositar Fondos",
+		"depositDesc": "Escanea o copia la dirección de tu billetera para depositar",
+		"swap": "Intercambiar",
+		"connectWallet": "Conecta Tu Billetera"
 	},
 	"header": {
 		"loading": "Cargando...",
@@ -72,7 +78,7 @@
 		"changeFile": "Cambiar Archivo",
 		"changeCover": "Cambiar Portada",
 		"collaborators": "Colaboradores",
-        "collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
+		"collaboratorsWarning": "The royalty split shares cannot be changed once a song is published",
 		"addCollaborator": "Agregar Colaborador",
 		"collaboratorsHint": "Agrega colaboradores para dividir los ingresos automáticamente.",
 		"walletAddress": "Dirección de Billetera",

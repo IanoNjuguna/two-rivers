@@ -549,7 +549,13 @@ function DashboardLayout() {
               )}
 
               {currentView === 'deposit' && (
-                <DepositView />
+                <div className="space-y-6 animate-fade-in">
+                  <div className="text-center">
+                    <h2 className="text-2xl font-bold mb-1">{tNav('deposit')}</h2>
+                    <p className="text-white/60 text-xs">{tNav('depositDesc')}</p>
+                  </div>
+                  <DepositView />
+                </div>
               )}
             </div>
 

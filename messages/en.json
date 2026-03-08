@@ -11,7 +11,8 @@
 		"profile": "Profile",
 		"wallet": "Wallet",
 		"sendMoney": "Send Funds",
-		"deposit": "Deposit",
+		"deposit": "Deposit Funds",
+		"depositDesc": "Scan or copy your wallet address to deposit",
 		"swap": "Swap",
 		"connectWallet": "Connect Your Wallet"
 	},
