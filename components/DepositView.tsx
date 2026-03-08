@@ -81,7 +81,7 @@ export function DepositView() {
 
 						<div className="flex items-center justify-center">
 							<div className="w-12 h-12 bg-white/5 border border-white/10 flex items-center justify-center clip-angular-br-sm shadow-[0_0_20px_rgba(0,82,255,0.1)][]">
-								<img src="/logo.png" alt="Base Logo" className="w-8 h-8 object-contain rounded-sm" />
+								<img src="/images/base.png" alt="Base Logo" className="w-8 h-8 object-contain" />
 							</div>
 						</div>
 					</div>

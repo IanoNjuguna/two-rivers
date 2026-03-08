@@ -69,7 +69,7 @@ export default function BaseConnectHeader({ address: propAddress }: { address?: 
         </Button>
       ) : (
         <div className="flex items-center justify-center h-9 w-9 bg-white/5 border border-white/10 rounded-lg overflow-hidden">
-          <img src="/logo.png" alt="Base" className="w-6 h-6 object-contain rounded-sm" />
+          <img src="/images/base.png" alt="Base" className="w-6 h-6 object-contain" />
         </div>
       )}
     </div>
