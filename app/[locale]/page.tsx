@@ -10,7 +10,6 @@ import EarningsView from '@/components/EarningsView'
 import AudioPlayer from '@/components/AudioPlayer'
 import Footer from '@/components/Footer'
 import UploadView from '@/components/UploadView'
-import ChainSwitcher from '@/components/ChainSwitcher'
 import { getAddressesForChain, CONTRACT_ADDRESS } from "@/lib/web3"
 import { useTranslations } from 'next-intl'
 import { useAudio } from '@/components/AudioProvider'
@@ -83,14 +82,12 @@ function DashboardLayout() {
 
           {/* Desktop Connect Header & Chain Switcher */}
           <div className="hidden lg:flex items-center gap-3">
-            <ChainSwitcher />
             <ConnectHeader address={effectiveAddress || undefined} />
           </div>
 
           {/* Mobile/Tablet Controls */}
           <div className="lg:hidden flex items-center gap-2">
-            {/* Mobile Connect Header & Chain Switcher */}
-            <ChainSwitcher />
+            {/* Mobile Connect Header */}
             {/* Hamburger Menu - Only show when connected */}
             {isPlayerConnected && (
               <button
