@@ -70,9 +70,12 @@ export default function BaseConnectHeader({ address: propAddress }: { address?: 
       ) : (
         <Wallet>
           <ConnectWallet
-            className="flex items-center justify-center p-0 h-8 w-8 rounded-full border border-white/10 hover:border-white/20 transition-all overflow-hidden"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-cyber-pink/30 transition-all duration-300"
           >
-            <Avatar className="h-full w-full" />
+            <div className="w-4 h-4 rounded-full overflow-hidden bg-[#0052ff]">
+              <img src="/images/base.png" alt="Base" className="w-full h-full object-contain" />
+            </div>
+            <span className="text-[10px] font-bold uppercase tracking-tight text-white/60 group-hover:text-white">Base</span>
           </ConnectWallet>
           <WalletDropdown className="absolute right-0 top-full glass border border-white/10 rounded-xl mt-2 overflow-hidden shadow-2xl min-w-[300px] z-[100]">
             <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick>
