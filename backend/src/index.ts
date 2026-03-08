@@ -17,8 +17,9 @@ app.use('/*', cors({
     // If there's an origin, allow it explicitly. Otherwise default to * for non-browser clients.
     return origin ? origin : '*'
   },
-  allowHeaders: ['Content-Type', 'Authorization', 'X-API-Key', 'Accept', 'Origin'],
-  allowMethods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
+  allowHeaders: ['Content-Type', 'Authorization', 'X-API-Key', 'Accept', 'Origin', 'X-Requested-With'],
+  allowMethods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE', 'PATCH'],
+  credentials: true,
 }))
 
 const SERVER_VERSION = '1.2.2-fix-uploads'
@@ -66,11 +67,11 @@ app.use('*', async (c, next) => {
     if (c.req.path.startsWith('/auth/')) return await next()
 
     const apiKey = c.req.header('X-API-Key')
-    const validKey = process.env.ADMIN_API_KEY || process.env.API_SECRET_KEY
+    const validKey = process.env.API_SECRET_KEY || process.env.ADMIN_API_KEY
 
     // If a key is configured on the server, enforce it strictly
     if (validKey && apiKey !== validKey) {
-      logger.warn(`Unauthorized ${c.req.method} attempt to ${c.req.path} - Invalid API Key`)
+      logger.warn(`Unauthorized ${c.req.method} attempt to ${c.req.path} - Invalid or missing API Key`)
       return c.json({ error: 'Unauthorized. Invalid or missing X-API-Key.' }, 401)
     }
   }

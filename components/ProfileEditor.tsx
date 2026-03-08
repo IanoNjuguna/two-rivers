@@ -8,7 +8,7 @@ import { toast } from 'sonner'
 import MyUploadsGrid from '@/components/MyUploadsGrid'
 import { useBackendAuth } from '@/hooks/useBackendAuth'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || '/api-backend'
+const API_URL = '/api-backend'
 
 interface UserProfile {
 	address: string
