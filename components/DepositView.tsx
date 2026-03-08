@@ -56,8 +56,8 @@ export function DepositView() {
 						onClick={handleCopy}
 						className="group flex items-center justify-between gap-4 p-4 bg-black/40 border border-white/10 hover:border-white/20 transition-all cursor-pointer overflow-hidden rounded-none"
 					>
-						<code className="text-[13px] font-mono text-white/80 truncate">
-							{address}
+						<code className="text-[13px] font-mono text-white/80">
+							{address.slice(0, 6)}...{address.slice(-4)}
 						</code>
 						<div className="flex-shrink-0">
 							{copied ? (
