@@ -347,10 +347,8 @@ export default function SongCard({
             src={CHAIN_BADGE[trackChainId].logo}
             alt={CHAIN_BADGE[trackChainId].label}
             className={cn(
-              "w-5 h-5 ring-1 ring-white/10 shadow-md transition-opacity duration-200 absolute inset-y-0 left-0",
-              !navigateOnClick && (isPlaying ? "opacity-0" : "group-hover:opacity-0"),
-              // If not playing and not hovering, we want the logo centered in the same target area
-              "m-auto"
+              "w-4 h-4 ring-1 ring-white/10 shadow-md transition-opacity duration-200 absolute inset-0",
+              !navigateOnClick && (isPlaying ? "opacity-0" : "group-hover:opacity-0")
             )}
           />
         )}
