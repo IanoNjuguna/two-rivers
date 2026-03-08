@@ -16,8 +16,8 @@ import { useTranslations } from 'next-intl'
 import { useAudio } from '@/components/AudioProvider'
 import { ProfileEditor } from '@/components/ProfileEditor'
 import { SendFunds } from '@/components/SendFunds'
+import { SendFunds } from '@/components/SendFunds'
 import DepositView from '@/components/DepositView'
-import NFTGallery from '@/components/NFTGallery'
 
 import { useAccount as useWagmiAccount } from 'wagmi'
 import { sdk } from "@farcaster/miniapp-sdk"
@@ -29,7 +29,7 @@ const formatAddress = (address: string, startChars: number = 6, endChars: number
   return `${address.slice(0, startChars)}...${address.slice(-endChars)}`
 }
 
-type ViewType = 'home' | 'library' | 'search' | 'upload' | 'profile' | 'earnings' | 'analytics' | 'send-money' | 'deposit' | 'collection'
+type ViewType = 'home' | 'library' | 'search' | 'upload' | 'profile' | 'earnings' | 'analytics' | 'send-money' | 'deposit'
 
 export default function Dashboard() {
   const [mounted, setMounted] = useState(false)
@@ -143,16 +143,6 @@ function DashboardLayout() {
             >
               <Search size={18} className="text-purple-400 flex-shrink-0" />
               <span className="text-sm font-medium">{tNav('search')}</span>
-            </button>
-            <button
-              onClick={() => {
-                setCurrentView('collection')
-                setHeaderMenuOpen(false)
-              }}
-              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
-            >
-              <Library size={18} className="text-[#FF1F8A] flex-shrink-0" />
-              <span className="text-sm font-medium">My Collection</span>
             </button>
 
             <div className="border-t border-white/[0.08]" />
@@ -271,13 +261,6 @@ function DashboardLayout() {
               <Search size={18} className="text-[#B794F4] flex-shrink-0" />
               <span className="text-sm font-medium">{tNav('search')}</span>
             </button>
-            <button
-              onClick={() => setCurrentView('collection')}
-              className="flex items-center gap-3 px-4 py-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
-            >
-              <Music size={18} className="text-[#FF1F8A] flex-shrink-0" />
-              <span className="text-sm font-medium">My Collection</span>
-            </button>
 
             <div className="border-t border-white/[0.08] my-2" />
 
@@ -372,11 +355,6 @@ function DashboardLayout() {
                 </div>
               )}
 
-              {currentView === 'collection' && (
-                <div className="animate-fade-in">
-                  <NFTGallery />
-                </div>
-              )}
 
               {currentView === 'library' && (
                 <div className="space-y-6">
