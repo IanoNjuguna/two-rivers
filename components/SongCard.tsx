@@ -324,15 +324,15 @@ export default function SongCard({
         {!navigateOnClick && (
           <div
             className={cn(
-              "w-4 h-4 bg-lavender text-midnight shadow-lg flex items-center justify-center transition-all duration-200",
+              "w-4 h-4 bg-white text-black shadow-lg flex items-center justify-center transition-all duration-200 rounded-none",
               "opacity-0 group-hover:opacity-100",
               isPlaying && "opacity-100"
             )}
           >
             {isPlaying ? (
-              <IconPlayerPause size={10} className="fill-midnight" />
+              <IconPlayerPause size={10} className="fill-black" />
             ) : (
-              <IconPlayerPlay size={10} className="fill-midnight ml-0.5" />
+              <IconPlayerPlay size={10} className="fill-black ml-0.5" />
             )}
           </div>
         )}

@@ -309,9 +309,9 @@ export default function TrackDetailPage() {
 				{/* Play Button */}
 				<button
 					onClick={togglePlay}
-					className="absolute bottom-6 right-6 z-20 bg-cyber-pink hover:bg-cyber-pink/90 text-white p-4 rounded-full shadow-[0_0_30px_rgba(255,31,138,0.5)] transition-transform hover:scale-105 active:scale-95"
+					className="absolute bottom-6 right-6 z-20 bg-white hover:bg-white/90 text-black p-4 rounded-none shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-transform hover:scale-105 active:scale-95"
 				>
-					{isPlaying ? <IconPlayerPause size={24} className="fill-white" /> : <IconPlayerPlay size={24} className="fill-white" />}
+					{isPlaying ? <IconPlayerPause size={24} className="fill-black" /> : <IconPlayerPlay size={24} className="fill-black" />}
 				</button>
 			</div>
 

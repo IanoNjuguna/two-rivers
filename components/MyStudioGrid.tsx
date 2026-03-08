@@ -2,7 +2,7 @@ import { logger } from '@/lib/logger'
 import React, { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { IconEye, IconMusic, IconMicrophone, IconPlayerPause } from '@tabler/icons-react'
+import { IconEye, IconMusic, IconMicrophone, IconPlayerPause, IconPlayerPlay } from '@tabler/icons-react'
 import { CONTRACT_ABI, getAddressesForChain } from '@/lib/web3'
 import { useTranslations } from 'next-intl'
 import { useChainId, usePublicClient } from "wagmi"
@@ -129,12 +129,12 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
               {hoveredTrackId === track.token_id || (isPlaying && currentTrackId === track.token_id) ? (
                 <button
                   onClick={() => onPlay?.(track, ownedTracks)}
-                  className="text-white hover:text-purple-400 transition-colors"
+                  className="w-6 h-6 flex items-center justify-center bg-white text-black rounded-none shadow-sm transition-all active:scale-95"
                 >
                   {isPlaying && currentTrackId === track.token_id ? (
-                    <IconPlayerPause size={16} className="text-purple-400" />
+                    <IconPlayerPause size={12} className="fill-black" />
                   ) : (
-                    <IconMusic size={16} className="text-purple-400 animate-pulse" />
+                    <IconPlayerPlay size={12} className="fill-black ml-0.5" />
                   )}
                 </button>
               ) : (

@@ -99,6 +99,7 @@ export const viewport: Viewport = {
 	maximumScale: 1,
 	userScalable: false,
 	themeColor: '#0D0D12',
+	viewportFit: 'cover',
 }
 
 type Props = {

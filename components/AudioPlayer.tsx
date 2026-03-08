@@ -233,7 +233,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
   const accentActive = 'text-[#FF1F8A]'
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 z-40 bg-[#0D0D12]/95 backdrop-blur-xl border-t border-white/10 shadow-[0_-4px_30px_rgba(0,0,0,0.5)]">
+    <div className="absolute bottom-0 left-0 right-0 z-40 bg-[#0D0D12]/95 backdrop-blur-xl border-t border-white/10 shadow-[0_-4px_30px_rgba(0,0,0,0.5)] pb-[env(safe-area-inset-bottom)]">
       <audio
         ref={audioRef}
         preload="auto"
@@ -303,12 +303,12 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
 
             <button
               onClick={togglePlayPause}
-              className="w-10 h-10 flex items-center justify-center flex-shrink-0 transition-all bg-cyber-pink hover:bg-cyber-pink/80 active:scale-95 active:brightness-75 clip-angular-br-sm"
+              className="w-10 h-10 flex items-center justify-center flex-shrink-0 transition-all bg-white hover:bg-white/90 text-black active:scale-95 active:brightness-75 rounded-none"
               aria-label={isPlaying ? 'Pause' : 'Play'}
             >
               {isPlaying
-                ? <Pause size={18} className="text-white fill-white" />
-                : <Play size={18} className="text-white fill-white ml-0.5" />
+                ? <Pause size={18} className="fill-black" />
+                : <Play size={18} className="fill-black ml-0.5" />
               }
             </button>
 
@@ -454,11 +454,11 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
 
             <button
               onClick={togglePlayPause}
-              className="w-10 h-10 flex items-center justify-center transition-all bg-white text-black active:scale-95 active:brightness-75 clip-angular-br-sm"
+              className="w-10 h-10 flex items-center justify-center transition-all bg-white text-black active:scale-95 active:brightness-75 rounded-none"
             >
               {isPlaying
-                ? <Pause size={18} className="text-black fill-black" />
-                : <Play size={18} className="text-black fill-black ml-0.5" />
+                ? <Pause size={18} className="fill-black" />
+                : <Play size={18} className="fill-black ml-0.5" />
               }
             </button>
           </div>
