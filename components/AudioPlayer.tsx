@@ -228,261 +228,253 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
     setRepeatMode((m) => (m === 'off' ? 'all' : m === 'all' ? 'one' : 'off'))
   }
 
-  // We always return the container to reserve the bottom "shelf" space (Spotify style)
-  // but only show content if a track exists.
+  if (!currentTrack) return null
 
   const accentActive = 'text-[#FF1F8A]'
 
   return (
-    <div className={cn(
-      "w-full bg-[#0D0D12]/95 backdrop-blur-xl border-t border-white/10 shadow-[0_-4px_30px_rgba(0,0,0,0.5)] transition-all duration-300",
-      currentTrack ? "h-[74px] md:h-[90px] opacity-100" : "h-0 opacity-0 overflow-hidden"
-    )}>
-      {currentTrack && (
-        <>
-          <audio
-            ref={audioRef}
-            preload="auto"
-            onTimeUpdate={handleTimeUpdate}
-            onLoadedMetadata={handleLoadedMetadata}
-            onDurationChange={handleDurationChange}
-            onEnded={handleEnded}
-            onPlay={handleDurationChange}
-          />
+    <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#0D0D12]/95 backdrop-blur-xl border-t border-white/10 shadow-[0_-4px_30px_rgba(0,0,0,0.5)]">
+      <audio
+        ref={audioRef}
+        preload="auto"
+        onTimeUpdate={handleTimeUpdate}
+        onLoadedMetadata={handleLoadedMetadata}
+        onDurationChange={handleDurationChange}
+        onEnded={handleEnded}
+        onPlay={handleDurationChange}
+      />
 
-          {/* ─── DESKTOP LAYOUT (md+) ─── */}
-          <div className="hidden md:flex items-center gap-4 px-6 h-[90px] max-w-screen-2xl mx-auto">
-            <div
-              className="flex items-center gap-3 w-[25%] min-w-0 cursor-pointer hover:opacity-80 transition-opacity"
-              onClick={() => router.push(`/${locale}/track/${currentTrack.id}`)}
-            >
-              <div className="w-12 h-12 rounded-md flex-shrink-0 overflow-hidden bg-white/5 text-xs">
-                <img
-                  src={(currentTrack.cover || '').replace('ipfs://', process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud/ipfs/')}
-                  alt={currentTrack.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-
-              <div className="min-w-0 flex-1">
-                <div className="marquee-container">
-                  <div className="marquee-content">
-                    <span className="text-sm font-semibold text-white pr-12">{currentTrack.title}</span>
-                  </div>
-                </div>
-                <p className="text-xs text-white/50 truncate mt-0.5">
-                  {currentTrack.creator}
-                </p>
-              </div>
-
-              {isPlaying && (
-                <div className="flex items-end gap-[2px] h-3 flex-shrink-0 ml-1">
-                  {[0, 1, 2].map((i) => (
-                    <div
-                      key={i}
-                      className="w-[3px] bg-[#FF1F8A] equalizer-bar h-full"
-                      style={{ '--delay': `${i * 0.15}s` } as React.CSSProperties}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className="flex flex-col items-center gap-2 flex-1 min-w-0 py-3">
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={() => setIsShuffle((s) => !s)}
-                  className={`relative p-1.5 transition-all hover:scale-110 ${isShuffle ? accentActive : 'text-white/40 hover:text-white/80'}`}
-                  aria-label="Shuffle"
-                >
-                  <IconArrowsShuffle size={16} />
-                  {isShuffle && <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#FF1F8A]" />}
-                </button>
-
-                <button
-                  onClick={previous}
-                  className="p-1.5 text-white hover:text-white/70 transition-all hover:scale-110"
-                  aria-label="Previous"
-                >
-                  <SkipBack size={20} className="fill-white" />
-                </button>
-
-                <button
-                  onClick={togglePlayPause}
-                  className="w-10 h-10 flex items-center justify-center flex-shrink-0 transition-all bg-cyber-pink hover:bg-cyber-pink/80 active:scale-95 active:brightness-75 clip-angular-br-sm"
-                  aria-label={isPlaying ? 'Pause' : 'Play'}
-                >
-                  {isPlaying
-                    ? <Pause size={18} className="text-white fill-white" />
-                    : <Play size={18} className="text-white fill-white ml-0.5" />
-                  }
-                </button>
-
-                <button
-                  onClick={next}
-                  className="p-1.5 text-white hover:text-white/70 transition-all hover:scale-110"
-                  aria-label="Next"
-                >
-                  <SkipForward size={20} className="fill-white" />
-                </button>
-
-                <button
-                  onClick={cycleRepeat}
-                  className={`relative p-1.5 transition-all hover:scale-110 ${repeatMode !== 'off' ? accentActive : 'text-white/40 hover:text-white/80'}`}
-                  aria-label="Repeat"
-                >
-                  {repeatMode === 'one' ? <IconRepeatOnce size={16} /> : <IconRepeat size={16} />}
-                  {repeatMode !== 'off' && <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#FF1F8A]" />}
-                </button>
-              </div>
-
-              <div className="flex items-center gap-2 w-full max-w-[500px]">
-                <span className="text-[10px] text-white/40 tabular-nums w-8 text-right flex-shrink-0">
-                  {formatTime(currentTime)}
-                </span>
-
-                <div
-                  ref={progressBarRef}
-                  className="group relative flex-1 h-3 flex items-center cursor-pointer"
-                  onClick={handleProgressClick}
-                  role="slider"
-                  aria-label="Track Progress"
-                >
-                  <div className="absolute inset-y-0 my-auto h-[3px] w-full bg-white/10" />
-                  <div
-                    className="absolute inset-y-0 my-auto h-[3px] bg-cyber-pink"
-                    style={{ width: `${progressPercent}%` }}
-                  />
-                  <div
-                    className="absolute w-3 h-3 bg-white shadow-md transition-opacity -translate-x-1/2 opacity-0 group-hover:opacity-100 clip-diamond"
-                    style={{ left: `${progressPercent}%` }}
-                  />
-                </div>
-
-                <span className="text-[10px] text-white/40 tabular-nums w-8 flex-shrink-0">
-                  {formatTime(duration)}
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4 w-[25%] justify-end">
-              <button
-                onClick={!hasOwned ? handleMint : undefined}
-                disabled={isMinting}
-                className={cn(
-                  "p-2 transition-all hover:scale-110 active:scale-95 disabled:opacity-50 flex items-center justify-center flex-shrink-0 group/heart",
-                  hasOwned ? "text-cyber-pink" : "text-white/40 hover:text-white"
-                )}
-              >
-                {isMinting ? (
-                  <IconLoader2 size={22} className="animate-spin text-cyber-pink" />
-                ) : (
-                  <IconHeart
-                    size={22}
-                    className={cn(
-                      "transition-colors",
-                      hasOwned ? "fill-cyber-pink text-cyber-pink" : "fill-none"
-                    )}
-                  />
-                )}
-              </button>
-
-              <div className="flex items-center gap-2 min-w-[100px]">
-                <button
-                  onClick={() => setIsMuted((m) => !m)}
-                  className="p-1.5 text-white/40 hover:text-white/80 transition-colors flex-shrink-0"
-                  aria-label={isMuted ? 'Unmute' : 'Mute'}
-                >
-                  {isMuted || volume === 0
-                    ? <IconVolumeOff size={18} />
-                    : <IconVolume2 size={18} />
-                  }
-                </button>
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.01"
-                  value={isMuted ? 0 : volume}
-                  onChange={handleVolumeChange}
-                  className="flex-1 accent-[#FF1F8A] h-[3px] bg-white/20 cursor-pointer"
-                />
-              </div>
-            </div>
+      {/* ─── DESKTOP LAYOUT (md+) ─── */}
+      <div className="hidden md:flex items-center gap-4 px-6 h-[90px] max-w-screen-2xl mx-auto">
+        <div
+          className="flex items-center gap-3 w-[25%] min-w-0 cursor-pointer hover:opacity-80 transition-opacity"
+          onClick={() => router.push(`/${locale}/track/${currentTrack.id}`)}
+        >
+          <div className="w-12 h-12 rounded-md flex-shrink-0 overflow-hidden bg-white/5 text-xs">
+            <img
+              src={(currentTrack.cover || '').replace('ipfs://', process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud/ipfs/')}
+              alt={currentTrack.title}
+              className="w-full h-full object-cover"
+            />
           </div>
 
-          {/* ─── MOBILE LAYOUT (< md) ─── */}
-          <div className="flex md:hidden flex-col">
-            <div className="flex items-center gap-3 px-4 py-2.5">
-              <div
-                className="w-10 h-10 flex-shrink-0 overflow-hidden bg-white/5 cursor-pointer clip-angular-br-sm"
-                onClick={() => router.push(`/${locale}/track/${currentTrack.id}`)}
-              >
-                <img
-                  src={(currentTrack.cover || '').replace('ipfs://', process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud/ipfs/')}
-                  alt={currentTrack.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-
-              <div
-                className="flex-1 min-w-0 cursor-pointer"
-                onClick={() => router.push(`/${locale}/track/${currentTrack.id}`)}
-              >
-                <div className="marquee-container">
-                  <div className="marquee-content">
-                    <span className="text-sm font-semibold text-white pr-8">{currentTrack.title}</span>
-                  </div>
-                </div>
-                <p className="text-xs text-white/50 truncate mt-0.5">
-                  {currentTrack.creator}
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2 flex-shrink-0">
-                <button
-                  onClick={!hasOwned ? handleMint : undefined}
-                  disabled={isMinting}
-                  className={cn(
-                    "p-2 active:scale-90 transition-transform",
-                    hasOwned ? "text-cyber-pink" : "text-white/40"
-                  )}
-                >
-                  {isMinting ? (
-                    <IconLoader2 size={22} className="animate-spin text-cyber-pink" />
-                  ) : (
-                    <IconHeart
-                      size={22}
-                      className={cn(hasOwned && "fill-cyber-pink")}
-                    />
-                  )}
-                </button>
-
-                <button
-                  onClick={togglePlayPause}
-                  className="w-10 h-10 flex items-center justify-center transition-all bg-white text-black active:scale-95 active:brightness-75 clip-angular-br-sm"
-                >
-                  {isPlaying
-                    ? <Pause size={18} className="text-black fill-black" />
-                    : <Play size={18} className="text-black fill-black ml-0.5" />
-                  }
-                </button>
+          <div className="min-w-0 flex-1">
+            <div className="marquee-container">
+              <div className="marquee-content">
+                <span className="text-sm font-semibold text-white pr-12">{currentTrack.title}</span>
               </div>
             </div>
+            <p className="text-xs text-white/50 truncate mt-0.5">
+              {currentTrack.creator}
+            </p>
+          </div>
+
+          {isPlaying && (
+            <div className="flex items-end gap-[2px] h-3 flex-shrink-0 ml-1">
+              {[0, 1, 2].map((i) => (
+                <div
+                  key={i}
+                  className="w-[3px] bg-[#FF1F8A] equalizer-bar h-full"
+                  style={{ '--delay': `${i * 0.15}s` } as React.CSSProperties}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="flex flex-col items-center gap-2 flex-1 min-w-0 py-3">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setIsShuffle((s) => !s)}
+              className={`relative p-1.5 transition-all hover:scale-110 ${isShuffle ? accentActive : 'text-white/40 hover:text-white/80'}`}
+              aria-label="Shuffle"
+            >
+              <IconArrowsShuffle size={16} />
+              {isShuffle && <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#FF1F8A]" />}
+            </button>
+
+            <button
+              onClick={previous}
+              className="p-1.5 text-white hover:text-white/70 transition-all hover:scale-110"
+              aria-label="Previous"
+            >
+              <SkipBack size={20} className="fill-white" />
+            </button>
+
+            <button
+              onClick={togglePlayPause}
+              className="w-10 h-10 flex items-center justify-center flex-shrink-0 transition-all bg-cyber-pink hover:bg-cyber-pink/80 active:scale-95 active:brightness-75 clip-angular-br-sm"
+              aria-label={isPlaying ? 'Pause' : 'Play'}
+            >
+              {isPlaying
+                ? <Pause size={18} className="text-white fill-white" />
+                : <Play size={18} className="text-white fill-white ml-0.5" />
+              }
+            </button>
+
+            <button
+              onClick={next}
+              className="p-1.5 text-white hover:text-white/70 transition-all hover:scale-110"
+              aria-label="Next"
+            >
+              <SkipForward size={20} className="fill-white" />
+            </button>
+
+            <button
+              onClick={cycleRepeat}
+              className={`relative p-1.5 transition-all hover:scale-110 ${repeatMode !== 'off' ? accentActive : 'text-white/40 hover:text-white/80'}`}
+              aria-label="Repeat"
+            >
+              {repeatMode === 'one' ? <IconRepeatOnce size={16} /> : <IconRepeat size={16} />}
+              {repeatMode !== 'off' && <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#FF1F8A]" />}
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2 w-full max-w-[500px]">
+            <span className="text-[10px] text-white/40 tabular-nums w-8 text-right flex-shrink-0">
+              {formatTime(currentTime)}
+            </span>
 
             <div
-              className="h-[3px] w-full cursor-pointer relative bg-white/10"
+              ref={progressBarRef}
+              className="group relative flex-1 h-3 flex items-center cursor-pointer"
               onClick={handleProgressClick}
               role="slider"
+              aria-label="Track Progress"
             >
+              <div className="absolute inset-y-0 my-auto h-[3px] w-full bg-white/10" />
               <div
-                className="h-full bg-cyber-pink"
+                className="absolute inset-y-0 my-auto h-[3px] bg-cyber-pink"
                 style={{ width: `${progressPercent}%` }}
               />
+              <div
+                className="absolute w-3 h-3 bg-white shadow-md transition-opacity -translate-x-1/2 opacity-0 group-hover:opacity-100 clip-diamond"
+                style={{ left: `${progressPercent}%` }}
+              />
             </div>
+
+            <span className="text-[10px] text-white/40 tabular-nums w-8 flex-shrink-0">
+              {formatTime(duration)}
+            </span>
           </div>
-        </>
-      )}
+        </div>
+
+        <div className="flex items-center gap-4 w-[25%] justify-end">
+          <button
+            onClick={!hasOwned ? handleMint : undefined}
+            disabled={isMinting}
+            className={cn(
+              "p-2 transition-all hover:scale-110 active:scale-95 disabled:opacity-50 flex items-center justify-center flex-shrink-0 group/heart",
+              hasOwned ? "text-cyber-pink" : "text-white/40 hover:text-white"
+            )}
+          >
+            {isMinting ? (
+              <IconLoader2 size={22} className="animate-spin text-cyber-pink" />
+            ) : (
+              <IconHeart
+                size={22}
+                className={cn(
+                  "transition-colors",
+                  hasOwned ? "fill-cyber-pink text-cyber-pink" : "fill-none"
+                )}
+              />
+            )}
+          </button>
+
+          <div className="flex items-center gap-2 min-w-[100px]">
+            <button
+              onClick={() => setIsMuted((m) => !m)}
+              className="p-1.5 text-white/40 hover:text-white/80 transition-colors flex-shrink-0"
+              aria-label={isMuted ? 'Unmute' : 'Mute'}
+            >
+              {isMuted || volume === 0
+                ? <IconVolumeOff size={18} />
+                : <IconVolume2 size={18} />
+              }
+            </button>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={isMuted ? 0 : volume}
+              onChange={handleVolumeChange}
+              className="flex-1 accent-[#FF1F8A] h-[3px] bg-white/20 cursor-pointer"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* ─── MOBILE LAYOUT (< md) ─── */}
+      <div className="flex md:hidden flex-col">
+        <div className="flex items-center gap-3 px-4 py-2.5">
+          <div
+            className="w-10 h-10 flex-shrink-0 overflow-hidden bg-white/5 cursor-pointer clip-angular-br-sm"
+            onClick={() => router.push(`/${locale}/track/${currentTrack.id}`)}
+          >
+            <img
+              src={(currentTrack.cover || '').replace('ipfs://', process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud/ipfs/')}
+              alt={currentTrack.title}
+              className="w-full h-full object-cover"
+            />
+          </div>
+
+          <div
+            className="flex-1 min-w-0 cursor-pointer"
+            onClick={() => router.push(`/${locale}/track/${currentTrack.id}`)}
+          >
+            <div className="marquee-container">
+              <div className="marquee-content">
+                <span className="text-sm font-semibold text-white pr-8">{currentTrack.title}</span>
+              </div>
+            </div>
+            <p className="text-xs text-white/50 truncate mt-0.5">
+              {currentTrack.creator}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <button
+              onClick={!hasOwned ? handleMint : undefined}
+              disabled={isMinting}
+              className={cn(
+                "p-2 active:scale-90 transition-transform",
+                hasOwned ? "text-cyber-pink" : "text-white/40"
+              )}
+            >
+              {isMinting ? (
+                <IconLoader2 size={22} className="animate-spin text-cyber-pink" />
+              ) : (
+                <IconHeart
+                  size={22}
+                  className={cn(hasOwned && "fill-cyber-pink")}
+                />
+              )}
+            </button>
+
+            <button
+              onClick={togglePlayPause}
+              className="w-10 h-10 flex items-center justify-center transition-all bg-white text-black active:scale-95 active:brightness-75 clip-angular-br-sm"
+            >
+              {isPlaying
+                ? <Pause size={18} className="text-black fill-black" />
+                : <Play size={18} className="text-black fill-black ml-0.5" />
+              }
+            </button>
+          </div>
+        </div>
+
+        <div
+          className="h-[3px] w-full cursor-pointer relative bg-white/10"
+          onClick={handleProgressClick}
+          role="slider"
+        >
+          <div
+            className="h-full bg-cyber-pink"
+            style={{ width: `${progressPercent}%` }}
+          />
+        </div>
+      </div>
     </div>
   )
 }

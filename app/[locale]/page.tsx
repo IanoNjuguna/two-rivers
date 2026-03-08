@@ -72,7 +72,7 @@ function DashboardLayout() {
   // handlePlayTrack is now provided by AudioProvider
 
   return (
-    <div className="flex-1 flex flex-col pt-16 text-white bg-[#0D0D12]">
+    <div className="h-screen overflow-hidden text-white flex flex-col bg-[#0D0D12]">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-white/[0.08] bg-[rgba(13,13,18,0.95)] backdrop-blur-md">
         <div className="h-full px-4 lg:px-6 flex items-center justify-between">
@@ -364,7 +364,7 @@ function DashboardLayout() {
         </aside>
 
         {/* Content Area */}
-        <main className="flex-1 overflow-y-auto">
+        <main className={`flex-1 overflow-y-auto ${playerState.currentTrack ? 'pb-[60px] md:pb-[90px]' : ''}`}>
           <div className="p-6 max-w-7xl mx-auto">
             {currentView === 'home' && (
               <div className="space-y-6 animate-fade-in">

@@ -62,12 +62,8 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 
 	return (
 		<AudioContext.Provider value={value}>
-			<div className="flex flex-col h-screen overflow-hidden bg-[#0D0D12]">
-				<div className="flex-1 overflow-hidden relative">
-					{children}
-				</div>
-				<AudioPlayer playerState={playerState} />
-			</div>
+			{children}
+			<AudioPlayer playerState={playerState} />
 		</AudioContext.Provider>
 	)
 }
