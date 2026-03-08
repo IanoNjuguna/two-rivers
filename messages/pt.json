@@ -10,8 +10,10 @@
 		"analytics": "Análises",
 		"profile": "Perfil",
 		"wallet": "Carteira",
-		"sendMoney": "Enviar Fundos na Base",
-		"deposit": "Depositar Fundos na Base",
+		"sendMoney": "Enviar Fundos",
+		"deposit": "Depositar Fundos",
+		"sendMoneyOnBase": "Enviar Fundos na Base",
+		"depositOnBase": "Depositar Fundos na Base",
 		"depositDesc": "Escaneie ou copie o endereço da sua carteira para depositar",
 		"swap": "Trocar",
 		"connectWallet": "Conectar Carteira"

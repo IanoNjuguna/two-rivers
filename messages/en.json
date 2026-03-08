@@ -10,8 +10,10 @@
 		"analytics": "Analytics",
 		"profile": "Profile",
 		"wallet": "Wallet",
-		"sendMoney": "Send Funds on Base",
-		"deposit": "Deposit Funds on Base",
+		"sendMoney": "Send Funds",
+		"deposit": "Deposit Funds",
+		"sendMoneyOnBase": "Send Funds on Base",
+		"depositOnBase": "Deposit Funds on Base",
 		"depositDesc": "Scan or copy your wallet address to deposit",
 		"swap": "Swap",
 		"connectWallet": "Connect Your Wallet"

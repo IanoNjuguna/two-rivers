@@ -530,7 +530,7 @@ function DashboardLayout() {
               {currentView === 'send-money' && (
                 <div className="space-y-6 animate-fade-in">
                   <div className="text-center">
-                    <h2 className="text-2xl font-bold mb-2">{tNav('sendMoney')}</h2>
+                    <h2 className="text-2xl font-bold mb-2">{tNav('sendMoneyOnBase')}</h2>
                   </div>
                   {isPlayerConnected ? (
                     <SendFunds />
@@ -551,7 +551,7 @@ function DashboardLayout() {
               {currentView === 'deposit' && (
                 <div className="space-y-6 animate-fade-in">
                   <div className="text-center">
-                    <h2 className="text-2xl font-bold mb-1">{tNav('deposit')}</h2>
+                    <h2 className="text-2xl font-bold mb-1">{tNav('depositOnBase')}</h2>
                     <p className="text-white/60 text-xs">{tNav('depositDesc')}</p>
                   </div>
                   <DepositView />

@@ -10,8 +10,10 @@
 		"analytics": "アナリティクス",
 		"profile": "プロフィール",
 		"wallet": "ウォレット",
-		"sendMoney": "Baseで資金を送金",
-		"deposit": "Baseに資金を入金",
+		"sendMoney": "資金を送金",
+		"deposit": "資金を入金",
+		"sendMoneyOnBase": "Baseで資金を送金",
+		"depositOnBase": "Baseに資金を入金",
 		"depositDesc": "ウォレットアドレスをスキャンまたはコピーして入金してください",
 		"swap": "スワップ",
 		"connectWallet": "ウォレットを接続"

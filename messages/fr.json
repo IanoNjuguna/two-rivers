@@ -10,8 +10,10 @@
 		"analytics": "Analytique",
 		"profile": "Profil",
 		"wallet": "Portefeuille",
-		"sendMoney": "Envoyer des Fonds sur Base",
-		"deposit": "Déposer des Fonds sur Base",
+		"sendMoney": "Envoyer des Funds",
+		"deposit": "Déposer des Funds",
+		"sendMoneyOnBase": "Envoyer des Funds sur Base",
+		"depositOnBase": "Déposer des Funds sur Base",
 		"depositDesc": "Scannez ou copiez votre adresse de portefeuille pour déposer",
 		"swap": "Échanger",
 		"connectWallet": "Connectez Votre Portefeuille"

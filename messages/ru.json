@@ -10,8 +10,10 @@
 		"analytics": "Аналитика",
 		"profile": "Профиль",
 		"wallet": "Кошелек",
-		"sendMoney": "Отправить средства на Base",
-		"deposit": "Внести средства на Base",
+		"sendMoney": "Отправить средства",
+		"deposit": "Внести средства",
+		"sendMoneyOnBase": "Отправить средства на Base",
+		"depositOnBase": "Внести средства на Base",
 		"depositDesc": "Отсканируйте или скопируйте адрес кошелька для пополнения",
 		"swap": "Обмен",
 		"connectWallet": "Подключить кошелек"
