@@ -59,12 +59,24 @@ export function DepositView() {
 							<code className="text-[13px] font-mono text-white/80">
 								{truncatedAddress}
 							</code>
-							<div className="flex-shrink-0">
-								{copied ? (
-									<IconCheck className="w-4 h-4 text-green-400" />
-								) : (
-									<IconCopy className="w-4 h-4 text-white/40 group-hover:text-white transition-colors" />
-								)}
+							<div className="flex items-center gap-2">
+								<div className="flex-shrink-0">
+									{copied ? (
+										<IconCheck className="w-4 h-4 text-green-400" />
+									) : (
+										<IconCopy className="w-4 h-4 text-white/40 group-hover:text-white transition-colors" />
+									)}
+								</div>
+								<a
+									href={`https://basescan.org/address/${address}`}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="flex-shrink-0 text-white/40 hover:text-white transition-colors"
+									onClick={(e) => e.stopPropagation()}
+									title="View on BaseScan"
+								>
+									<IconExternalLink className="w-4 h-4" />
+								</a>
 							</div>
 						</div>
 						<div className="flex-shrink-0">

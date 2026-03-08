@@ -3,7 +3,7 @@ import { useSignMessage } from 'wagmi'
 import { logger } from '@/lib/logger'
 
 import React, { useState, useEffect } from 'react'
-import { IconCopy, IconEdit, IconCheck, IconX, IconLogout } from '@tabler/icons-react'
+import { IconCopy, IconEdit, IconCheck, IconX, IconLogout, IconExternalLink } from '@tabler/icons-react'
 import { toast } from 'sonner'
 import MyUploadsGrid from '@/components/MyUploadsGrid'
 import { useBackendAuth } from '@/hooks/useBackendAuth'
@@ -248,16 +248,27 @@ export function ProfileEditor({ address, tProfile, logout }: any) {
 						<p className="text-white/40 text-[10px] uppercase tracking-widest font-bold mb-1">{tProfile('walletAddress')}</p>
 						<span className="text-sm font-mono text-white/90">{formatAddress(address)}</span>
 					</div>
-					<button
-						onClick={() => {
-							navigator.clipboard.writeText(address)
-							toast.success('Address copied!')
-						}}
-						className="p-2.5 bg-white/5 hover:bg-white/10 transition text-white/70 hover:text-white"
-						title={tProfile('copyFull')}
-					>
-						<IconCopy size={16} />
-					</button>
+					<div className="flex gap-2">
+						<a
+							href={`https://basescan.org/address/${address}`}
+							target="_blank"
+							rel="noopener noreferrer"
+							className="p-2.5 bg-white/5 hover:bg-white/10 transition text-white/70 hover:text-white"
+							title="View on BaseScan"
+						>
+							<IconExternalLink size={16} />
+						</a>
+						<button
+							onClick={() => {
+								navigator.clipboard.writeText(address)
+								toast.success('Address copied!')
+							}}
+							className="p-2.5 bg-white/5 hover:bg-white/10 transition text-white/70 hover:text-white"
+							title={tProfile('copyFull')}
+						>
+							<IconCopy size={16} />
+						</button>
+					</div>
 				</div>
 			</div>
 
