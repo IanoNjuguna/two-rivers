@@ -56,27 +56,18 @@ export function DepositView() {
 						onClick={handleCopy}
 						className="group flex items-center justify-between gap-4 p-4 bg-black/40 border border-white/10 hover:border-white/20 transition-all cursor-pointer overflow-hidden rounded-none"
 					>
-						<code className="text-[13px] font-mono text-white/80">
-							{address.slice(0, 6)}...{address.slice(-4)}
-						</code>
+						<div className="flex items-center gap-2">
+							<code className="text-[13px] font-mono text-white/80">
+								{address.slice(0, 6)}...{address.slice(-4)}
+							</code>
+							<img src="/images/base.png" alt="Base" className="w-4 h-4 object-contain" />
+						</div>
 						<div className="flex-shrink-0">
 							{copied ? (
 								<IconCheck className="w-5 h-5 text-green-400" />
 							) : (
 								<IconCopy className="w-5 h-5 text-white/40 group-hover:text-white transition-colors" />
 							)}
-						</div>
-					</div>
-
-					<div className="pt-4 space-y-4">
-						<div className="flex items-center justify-center">
-							<span className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em]">Supported Network</span>
-						</div>
-
-						<div className="flex items-center justify-center">
-							<div className="w-12 h-12 bg-white/5 border border-white/10 flex items-center justify-center rounded-none shadow-[0_0_20px_rgba(0,82,255,0.1)]">
-								<img src="/images/base.png" alt="Base Logo" className="w-8 h-8 object-contain" />
-							</div>
 						</div>
 					</div>
 				</div>
