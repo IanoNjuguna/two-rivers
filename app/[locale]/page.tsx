@@ -78,6 +78,12 @@ function DashboardLayout() {
           <div className="flex items-center gap-2">
             <img src="/logo.png" alt="doba logo" className="w-8 h-8 rounded-lg object-cover" />
             <span className="font-bold text-lg tracking-wide tracking-wider">doba</span>
+            <div className="ml-2 flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white/5 border border-white/10">
+              <div className="w-3 h-3 rounded-full overflow-hidden bg-[#0052ff]">
+                <img src="/images/base.png" alt="Base" className="w-full h-full object-contain" />
+              </div>
+              <span className="text-[10px] font-bold uppercase tracking-tight text-white/40">Base</span>
+            </div>
           </div>
 
           {/* Desktop Connect Header & Chain Switcher */}
