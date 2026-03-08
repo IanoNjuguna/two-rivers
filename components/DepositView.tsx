@@ -85,7 +85,7 @@ export function DepositView() {
 								<div className="w-4 h-4 bg-[#0052ff] rounded-sm overflow-hidden shadow-[0_0_15px_rgba(0,82,255,0.4)]">
 									<img src="/images/base.png" alt="Base Logo" className="w-full h-full object-contain p-0.5" />
 								</div>
-								<span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Base Network</span>
+								<IconChevronDown size={14} className="text-blue-400 group-hover:text-blue-300 transition-colors" />
 							</div>
 						</div>
 					</div>
