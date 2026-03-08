@@ -16,7 +16,6 @@ import { useTranslations } from 'next-intl'
 import { useAudio } from '@/components/AudioProvider'
 import { ProfileEditor } from '@/components/ProfileEditor'
 import { SendFunds } from '@/components/SendFunds'
-import { SendFunds } from '@/components/SendFunds'
 import DepositView from '@/components/DepositView'
 
 import { useAccount as useWagmiAccount } from 'wagmi'

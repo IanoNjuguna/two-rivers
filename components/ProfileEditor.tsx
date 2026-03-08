@@ -91,7 +91,11 @@ export function ProfileEditor({ address, tProfile, logout }: any) {
 				})
 			})
 
-			if (!res.ok) throw new Error('Failed to save profile')
+			if (!res.ok) {
+				const errorData = await res.json().catch(() => ({}))
+				logger.error('Failed to save profile', { status: res.status, error: errorData })
+				throw new Error(errorData.message || 'Failed to save profile')
+			}
 
 			setProfile({ address, username, bio, avatar_url: avatarUrl, farcaster_fid: profile?.farcaster_fid || null })
 			setIsEditing(false)
