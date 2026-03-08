@@ -340,54 +340,16 @@ function DashboardLayout() {
           </nav>
         </aside>
 
-        {/* Content Area */}
-        <main className={`flex-1 overflow-y-auto ${playerState.currentTrack ? 'pb-[60px] md:pb-[90px]' : ''}`}>
-          <div className="p-6 max-w-7xl mx-auto">
-            {currentView === 'home' && (
-              <div className="space-y-6 animate-fade-in">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2">{tHome('discoverMusic')}</h2>
-                </div>
-                <MarketplaceGrid
-                  currentTrackId={playerState.currentTrack?.id}
-                  isPlaying={playerState.isPlaying}
-                  onPlay={(track, tracks) => handlePlayTrack({
-                    id: track.token_id,
-                    title: track.name,
-                    creator: track.artist,
-                    cover: track.image_url,
-                    url: track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
-                    collaborators: 0,
-                    price: track.price
-                  }, tracks.map(t => ({
-                    id: t.token_id,
-                    title: t.name,
-                    creator: t.artist,
-                    cover: t.image_url,
-                    url: t.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
-                    collaborators: 0,
-                    price: t.price
-                  })))} />
-              </div>
-            )}
-
-            {currentView === 'collection' && (
-              <div className="animate-fade-in">
-                <NFTGallery />
-              </div>
-            )}
-
-            {currentView === 'library' && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2">{tLibrary('title')}</h2>
-                  <p className="text-white/60">
-                    {tLibrary('subtitle')}
-                  </p>
-                </div>
-                {isPlayerConnected ? (
-                  <MyStudioGrid
-                    address={effectiveAddress || undefined}
+        {/* Content Area wrapper */}
+        <div className="flex-1 flex flex-col min-w-0 relative h-full">
+          <main className={`flex-1 overflow-y-auto ${playerState.currentTrack ? 'pb-[90px]' : ''}`}>
+            <div className="p-6 max-w-7xl mx-auto">
+              {currentView === 'home' && (
+                <div className="space-y-6 animate-fade-in">
+                  <div>
+                    <h2 className="text-2xl font-bold mb-2">{tHome('discoverMusic')}</h2>
+                  </div>
+                  <MarketplaceGrid
                     currentTrackId={playerState.currentTrack?.id}
                     isPlaying={playerState.isPlaying}
                     onPlay={(track, tracks) => handlePlayTrack({
@@ -406,158 +368,201 @@ function DashboardLayout() {
                       url: t.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
                       collaborators: 0,
                       price: t.price
-                    })))}
-                  />
-                ) : (
-                  <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
-                    <Library className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
-                    <h3 className="text-xl font-semibold mb-2">
-                      {tLibrary('connectWallet')}
-                    </h3>
-                    <p className="text-white/60">
-                      {tLibrary('connectToView')}
-                    </p>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {currentView === 'search' && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2">{tSearch('title')}</h2>
-                  <p className="text-white/60">
-                    {tSearch('subtitle')}
-                  </p>
+                    })))} />
                 </div>
-                <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
-                  <Search className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
-                  <h3 className="text-xl font-semibold mb-2">
-                    {tSearch('comingSoon')}
-                  </h3>
-                  <p className="text-white/60">
-                    {tSearch('comingSoonDesc')}
-                  </p>
-                </div>
-              </div>
-            )}
+              )}
 
-            {currentView === 'upload' && (
-              isAuthenticated ? (
-                <UploadView />
-              ) : (
+              {currentView === 'collection' && (
+                <div className="animate-fade-in">
+                  <NFTGallery />
+                </div>
+              )}
+
+              {currentView === 'library' && (
                 <div className="space-y-6">
                   <div>
-                    <h2 className="text-2xl font-bold mb-2">{tUpload('title')}</h2>
+                    <h2 className="text-2xl font-bold mb-2">{tLibrary('title')}</h2>
                     <p className="text-white/60">
-                      {tUpload('subtitle')}
+                      {tLibrary('subtitle')}
                     </p>
                   </div>
-                  <div className="border border-white/[0.08] p-12 text-center bg-[rgba(13,13,18,0.3)]">
-                    <div className="w-16 h-16 mx-auto mb-4 bg-[rgba(183,148,244,0.1)]">
+                  {isPlayerConnected ? (
+                    <MyStudioGrid
+                      address={effectiveAddress || undefined}
+                      currentTrackId={playerState.currentTrack?.id}
+                      isPlaying={playerState.isPlaying}
+                      onPlay={(track, tracks) => handlePlayTrack({
+                        id: track.token_id,
+                        title: track.name,
+                        creator: track.artist,
+                        cover: track.image_url,
+                        url: track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
+                        collaborators: 0,
+                        price: track.price
+                      }, tracks.map(t => ({
+                        id: t.token_id,
+                        title: t.name,
+                        creator: t.artist,
+                        cover: t.image_url,
+                        url: t.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
+                        collaborators: 0,
+                        price: t.price
+                      })))}
+                    />
+                  ) : (
+                    <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
+                      <Library className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
+                      <h3 className="text-xl font-semibold mb-2">
+                        {tLibrary('connectWallet')}
+                      </h3>
+                      <p className="text-white/60">
+                        {tLibrary('connectToView')}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {currentView === 'search' && (
+                <div className="space-y-6">
+                  <div>
+                    <h2 className="text-2xl font-bold mb-2">{tSearch('title')}</h2>
+                    <p className="text-white/60">
+                      {tSearch('subtitle')}
+                    </p>
+                  </div>
+                  <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
+                    <Search className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
+                    <h3 className="text-xl font-semibold mb-2">
+                      {tSearch('comingSoon')}
+                    </h3>
+                    <p className="text-white/60">
+                      {tSearch('comingSoonDesc')}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {currentView === 'upload' && (
+                isAuthenticated ? (
+                  <UploadView />
+                ) : (
+                  <div className="space-y-6">
+                    <div>
+                      <h2 className="text-2xl font-bold mb-2">{tUpload('title')}</h2>
+                      <p className="text-white/60">
+                        {tUpload('subtitle')}
+                      </p>
+                    </div>
+                    <div className="border border-white/[0.08] p-12 text-center bg-[rgba(13,13,18,0.3)]">
+                      <div className="w-16 h-16 mx-auto mb-4 bg-[rgba(183,148,244,0.1)]">
+                        <div className="w-full h-full flex items-center justify-center text-[#B794F4]">
+                          <Music size={32} />
+                        </div>
+                      </div>
+                      <h3 className="text-xl font-semibold mb-2">
+                        {tUpload('connectWallet')}
+                      </h3>
+                      <p className="text-white/60">
+                        {tUpload('connectToUpload')}
+                      </p>
+                    </div>
+                  </div>
+                )
+              )}
+
+              {currentView === 'earnings' && (
+                <EarningsView />
+              )}
+
+              {currentView === 'analytics' && (
+                <div className="space-y-6">
+                  <div>
+                    <h2 className="text-2xl font-bold mb-2">{tAnalytics('title')}</h2>
+                    <p className="text-white/60">
+                      {tAnalytics('subtitle')}
+                    </p>
+                  </div>
+                  <div className="border border-white/[0.08] rounded-xl p-12 text-center bg-[rgba(13,13,18,0.3)]">
+                    <div className="w-16 h-16 rounded-full mx-auto mb-4 bg-[rgba(183,148,244,0.1)]">
                       <div className="w-full h-full flex items-center justify-center text-[#B794F4]">
                         <Music size={32} />
                       </div>
                     </div>
                     <h3 className="text-xl font-semibold mb-2">
-                      {tUpload('connectWallet')}
+                      {tAnalytics('comingSoon')}
                     </h3>
                     <p className="text-white/60">
-                      {tUpload('connectToUpload')}
+                      {tAnalytics('comingSoonDesc')}
                     </p>
                   </div>
                 </div>
-              )
-            )}
+              )}
 
-            {currentView === 'earnings' && (
-              <EarningsView />
-            )}
-
-            {currentView === 'analytics' && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2">{tAnalytics('title')}</h2>
-                  <p className="text-white/60">
-                    {tAnalytics('subtitle')}
-                  </p>
-                </div>
-                <div className="border border-white/[0.08] rounded-xl p-12 text-center bg-[rgba(13,13,18,0.3)]">
-                  <div className="w-16 h-16 rounded-full mx-auto mb-4 bg-[rgba(183,148,244,0.1)]">
-                    <div className="w-full h-full flex items-center justify-center text-[#B794F4]">
-                      <Music size={32} />
+              {currentView === 'profile' && (
+                <div className="space-y-6">
+                  <div>
+                    <h2 className="text-2xl font-bold mb-2">{tProfile('title')}</h2>
+                    <p className="text-white/60">
+                      {tProfile('subtitle')}
+                    </p>
+                  </div>
+                  {isAuthenticated && effectiveAddress ? (
+                    <ProfileEditor
+                      address={effectiveAddress}
+                      tProfile={tProfile}
+                      logout={logout}
+                    />
+                  ) : (
+                    <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
+                      <User className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
+                      <h3 className="text-xl font-semibold mb-2">
+                        {tProfile('connectWallet')}
+                      </h3>
+                      <p className="text-white/60">
+                        {tProfile('signInToView')}
+                      </p>
                     </div>
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2">
-                    {tAnalytics('comingSoon')}
-                  </h3>
-                  <p className="text-white/60">
-                    {tAnalytics('comingSoonDesc')}
-                  </p>
+                  )}
                 </div>
-              </div>
-            )}
+              )}
 
-            {currentView === 'profile' && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2">{tProfile('title')}</h2>
-                  <p className="text-white/60">
-                    {tProfile('subtitle')}
-                  </p>
-                </div>
-                {isAuthenticated && effectiveAddress ? (
-                  <ProfileEditor
-                    address={effectiveAddress}
-                    tProfile={tProfile}
-                    logout={logout}
-                  />
-                ) : (
-                  <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
-                    <User className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
-                    <h3 className="text-xl font-semibold mb-2">
-                      {tProfile('connectWallet')}
-                    </h3>
-                    <p className="text-white/60">
-                      {tProfile('signInToView')}
-                    </p>
+              {currentView === 'send-money' && (
+                <div className="space-y-6 animate-fade-in">
+                  <div>
+                    <h2 className="text-2xl font-bold mb-2">{tNav('sendMoney')}</h2>
                   </div>
-                )}
-              </div>
-            )}
-
-            {currentView === 'send-money' && (
-              <div className="space-y-6 animate-fade-in">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2">{tNav('sendMoney')}</h2>
+                  {isPlayerConnected ? (
+                    <SendFunds />
+                  ) : (
+                    <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
+                      <DollarSign className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
+                      <h3 className="text-xl font-semibold mb-2">
+                        {tNav('connectWallet')}
+                      </h3>
+                      <p className="text-white/60">
+                        {tProfile('signInToView')}
+                      </p>
+                    </div>
+                  )}
                 </div>
-                {isPlayerConnected ? (
-                  <SendFunds />
-                ) : (
-                  <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
-                    <DollarSign className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
-                    <h3 className="text-xl font-semibold mb-2">
-                      {tNav('connectWallet')}
-                    </h3>
-                    <p className="text-white/60">
-                      {tProfile('signInToView')}
-                    </p>
-                  </div>
-                )}
-              </div>
-            )}
+              )}
 
-            {currentView === 'deposit' && (
-              <DepositView />
-            )}
-          </div>
+              {currentView === 'deposit' && (
+                <DepositView />
+              )}
+            </div>
 
-          {/* Footer */}
-          <footer className="border-t border-white/[0.08] mt-12 py-10 flex justify-center">
-            <Footer />
-          </footer>
-        </main>
+            {/* Footer */}
+            <footer className="border-t border-white/[0.08] mt-12 py-10 flex justify-center">
+              <Footer />
+            </footer>
+          </main>
+
+          {/* Audio Player constrained to content area */}
+          <AudioPlayer playerState={playerState} />
+        </div>
       </div>
-    </div >
+    </div>
   )
 }

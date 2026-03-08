@@ -11,6 +11,7 @@ import { toast } from 'sonner'
 import sdk from '@farcaster/miniapp-sdk'
 import { useAudio } from '@/components/AudioProvider'
 import { type Track as PlayerTrack } from '@/hooks/useAudioPlayer'
+import AudioPlayer from '@/components/AudioPlayer'
 
 const CHAIN_BADGE: Record<string, { logo: string; label: string }> = {
 	'42161': { logo: '/images/arbitrum.png', label: 'Arbitrum' },
@@ -406,6 +407,7 @@ export default function TrackDetailPage() {
 					</div>
 				)}
 			</div>
+			<AudioPlayer playerState={playerState} />
 		</div>
 	)
 }
