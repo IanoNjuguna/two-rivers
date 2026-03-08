@@ -337,17 +337,6 @@ export default function SongCard({
           </div>
         )}
 
-        {/* Chain Logo - hidden when play button is shown */}
-        {trackChainId && CHAIN_BADGE[trackChainId] && (
-          <img
-            src={CHAIN_BADGE[trackChainId].logo}
-            alt={CHAIN_BADGE[trackChainId].label}
-            className={cn(
-              "w-4 h-4 ring-1 ring-white/10 shadow-md transition-opacity duration-200 absolute inset-0",
-              !navigateOnClick && (isPlaying ? "opacity-0" : "group-hover:opacity-0")
-            )}
-          />
-        )}
       </div>
 
       {/* Price Badge */}
