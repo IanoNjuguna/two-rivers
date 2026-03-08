@@ -304,7 +304,10 @@
   }
 
   body {
-    @apply bg-[#0D0D12] text-white;
+    @apply bg-[#0D0D12] text-white selection:bg-lavender/30 selection:text-white relative min-h-screen overflow-x-hidden;
+    background: radial-gradient(circle at top right, rgba(183, 148, 244, 0.05), transparent 40%),
+                radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.05), transparent 40%),
+                linear-gradient(135deg, #0D0D12 0%, #141419 100%);
   }
 
   /* Angular Scrollbar - Sharp corners, geometric design */
