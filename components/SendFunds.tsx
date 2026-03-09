@@ -237,6 +237,10 @@ export function SendFunds() {
 					</TransactionStatus>
 				</Transaction>
 			</div>
+
+			<div className="flex justify-center pt-2">
+				<img src="/images/base.png" alt="Base Logo" className="w-16 h-4 object-contain opacity-50" />
+			</div>
 		</div>
 	);
 }
