@@ -79,9 +79,8 @@ export function DepositView() {
 						</div>
 					</div>
 
-					<div className="flex items-center gap-2 text-white/60 text-xs font-medium uppercase tracking-wider justify-center">
-						<img src="/images/base.png" alt="Base" className="w-4 h-4 object-contain" />
-						<span>Send Funds on Base</span>
+					<div className="flex items-center justify-center">
+						<img src="/images/base.png" alt="Base" className="w-5 h-5 object-contain" />
 					</div>
 				</div>
 			</div>
