@@ -218,8 +218,9 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
     [seek, duration, audioRef]
   )
 
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = parseFloat(e.target.value)
+  const handleVolumeClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const val = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width))
     setVolume(val)
     if (val > 0) setIsMuted(false)
   }
@@ -392,15 +393,22 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
                 : <IconVolume2 size={18} />
               }
             </button>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              value={isMuted ? 0 : volume}
-              onChange={handleVolumeChange}
-              className="flex-1 accent-[#FF1F8A] h-[3px] bg-white/20 cursor-pointer"
-            />
+            <div
+              className="group relative flex-1 h-3 flex items-center cursor-pointer"
+              onClick={handleVolumeClick}
+              role="slider"
+              aria-label="Volume"
+            >
+              <div className="absolute inset-y-0 my-auto h-[3px] w-full bg-white/20" />
+              <div
+                className="absolute inset-y-0 my-auto h-[3px] bg-[#FF1F8A]"
+                style={{ width: `${(isMuted ? 0 : volume) * 100}%` }}
+              />
+              <div
+                className="absolute w-3 h-3 bg-white shadow-md transition-opacity -translate-x-1/2 opacity-0 group-hover:opacity-100 clip-diamond"
+                style={{ left: `${(isMuted ? 0 : volume) * 100}%` }}
+              />
+            </div>
           </div>
         </div>
       </div>
