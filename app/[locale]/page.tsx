@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { IconMenu2 as Menu, IconHome as HomeIcon, IconBooks as Library, IconSearch as Search, IconCurrencyDollar as DollarSign, IconTrendingUp as TrendingUp, IconUser as User, IconLogout as LogOut, IconPlus, IconMusic as Music, IconCopy, IconArrowsExchange } from '@tabler/icons-react'
+import { IconMenu2 as Menu, IconHome as HomeIcon, IconBooks as Library, IconSearch as Search, IconCurrencyDollar as DollarSign, IconTrendingUp as TrendingUp, IconUser as User, IconLogout as LogOut, IconPlus, IconMusic as Music, IconCopy, IconArrowsExchange, IconCheck, IconExternalLink } from '@tabler/icons-react'
 import { Button } from '@/components/ui/button'
 import MarketplaceGrid from '@/components/MarketplaceGrid'
 import MyStudioGrid from '@/components/MyStudioGrid'
@@ -26,6 +26,43 @@ const formatAddress = (address: string, startChars: number = 6, endChars: number
     return address
   }
   return `${address.slice(0, startChars)}...${address.slice(-endChars)}`
+}
+
+function AddressPill({ address }: { address: string }) {
+  const [copied, setCopied] = React.useState(false)
+  const short = formatAddress(address)
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(address)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  return (
+    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.05] border border-white/[0.08] hover:border-white/20 transition-all group">
+      <span className="text-xs font-mono text-white/70 group-hover:text-white/90 transition-colors select-all">
+        {short}
+      </span>
+      <button
+        onClick={handleCopy}
+        className="p-0.5 rounded text-white/40 hover:text-white/80 transition-colors"
+        title="Copy address"
+      >
+        {copied
+          ? <IconCheck size={13} className="text-green-400" />
+          : <IconCopy size={13} />}
+      </button>
+      <a
+        href={`https://basescan.org/address/${address}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="p-0.5 rounded text-white/40 hover:text-white/80 transition-colors"
+        title="View on Basescan"
+      >
+        <IconExternalLink size={13} />
+      </a>
+    </div>
+  )
 }
 
 type ViewType = 'home' | 'library' | 'search' | 'upload' | 'profile' | 'earnings' | 'analytics' | 'send-money' | 'deposit'
@@ -74,26 +111,28 @@ function DashboardLayout() {
     <div className="h-screen overflow-hidden text-white flex flex-col bg-[#0D0D12]">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-white/[0.08] bg-[rgba(13,13,18,0.95)] backdrop-blur-md">
-        <div className="h-full px-4 lg:px-6 flex items-center justify-between">
-          {/* Logo */}
+        <div className="h-full px-4 lg:px-6 grid grid-cols-[auto_1fr_auto] items-center gap-4">
+          {/* Logo - Left */}
           <div className="flex items-center gap-2">
             <img src="/logo.png" alt="doba logo" className="w-8 h-8 rounded-lg object-cover" />
             <span className="font-bold text-lg tracking-wide tracking-wider">doba</span>
           </div>
 
-          {/* Desktop Connect Header & Chain Switcher */}
-          <div className="hidden lg:flex items-center gap-3">
-            <ConnectHeader address={effectiveAddress || undefined} />
+          {/* Center - Address pill (desktop only) */}
+          <div className="hidden lg:flex justify-center">
+            {effectiveAddress && (
+              <AddressPill address={effectiveAddress} />
+            )}
           </div>
 
-          {/* Mobile/Tablet Controls */}
-          <div className="lg:hidden flex items-center gap-2">
+          {/* Right - Connect Header (Base icon) + Mobile controls */}
+          <div className="flex items-center gap-2 justify-end">
             <ConnectHeader address={effectiveAddress || undefined} />
-            {/* Hamburger Menu - Only show when connected */}
+            {/* Hamburger Menu - Only show when connected on mobile */}
             {isPlayerConnected && (
               <button
                 onClick={() => setHeaderMenuOpen(!headerMenuOpen)}
-                className="p-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
+                className="lg:hidden p-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
                 aria-label="Toggle menu"
               >
                 <Menu size={24} />
