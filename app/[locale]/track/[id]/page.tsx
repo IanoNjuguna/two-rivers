@@ -320,10 +320,10 @@ export default function TrackDetailPage() {
 				{/* Title & Artist */}
 				<div className="mb-6">
 					<div className="flex items-center gap-2 mb-1">
-						<span className="text-[9px] font-bold text-cyber-pink bg-cyber-pink/10 border border-cyber-pink/20 px-2 py-0.5 uppercase tracking-widest rounded-sm">
+						<span className="text-[9px] font-bold text-cyber-pink bg-cyber-pink/10 border border-cyber-pink/20 px-2 py-0.5 uppercase tracking-widest rounded-none">
 							{track.genre || 'RARE'}
 						</span>
-						<span className="text-[9px] font-bold text-white/30 bg-white/5 border border-white/10 px-2 py-0.5 uppercase tracking-widest rounded-sm">
+						<span className="text-[9px] font-bold text-white/30 bg-white/5 border border-white/10 px-2 py-0.5 uppercase tracking-widest rounded-none">
 							#{track.token_id}
 						</span>
 					</div>

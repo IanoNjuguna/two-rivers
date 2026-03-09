@@ -314,7 +314,7 @@ export default function SongCard({
 
       {/* Genre Tag - top right */}
       <div className="absolute top-0 right-0 z-20">
-        <div className="bg-cyber-pink text-[8px] font-bold px-2 py-0.5 text-white tracking-widest uppercase clip-tag">
+        <div className="bg-cyber-pink text-[8px] font-bold px-2 py-0.5 text-white tracking-widest uppercase">
           {genre || 'RARE'}
         </div>
       </div>
@@ -341,7 +341,7 @@ export default function SongCard({
 
       {/* Price Badge */}
       <div className="absolute top-2 right-2 z-20 mt-5">
-        <div className="text-[9px] text-white font-bold bg-black/60 backdrop-blur-sm border border-cyber-pink/30 px-1.5 py-0.5 clip-tag">
+        <div className="text-[9px] text-white font-bold bg-black/60 backdrop-blur-sm border border-cyber-pink/30 px-1.5 py-0.5">
           {(() => {
             const currentPrice = price ? parseFloat(price) : 0.99;
             if (currentPrice === 0) return 'FREE';
@@ -374,7 +374,7 @@ export default function SongCard({
 
       {/* Owned Badge */}
       {hasOwned && (
-        <div className="absolute top-2 left-2 z-30 bg-green-500 text-white p-1 shadow-lg clip-tag">
+        <div className="absolute top-2 left-2 z-30 bg-green-500 text-white p-1 shadow-lg">
           <IconCheck size={12} />
         </div>
       )}
