@@ -105,10 +105,10 @@
 		"syncOnchain": "Sync On-Chain",
 		"syncing": "Syncing...",
 		"syncedOnchain": "Synced On-Chain",
-		"minting": "Minting...",
+		"minting": "Collecting...",
 		"alreadyCollected": "Already Collected",
 		"mintFirstCopy": "Mint Your First Copy",
-		"mintingFailed": "Minting failed: {error}"
+		"mintingFailed": "Collection failed: {error}"
 	},
 	"earnings": {
 		"title": "Your Earnings",

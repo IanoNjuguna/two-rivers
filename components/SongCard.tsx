@@ -105,7 +105,7 @@ export default function SongCard({
 
     const priceInUnits = price ? parseUnits(price, 6) : 990000n // Default to 0.99 for legacy
     setIsMinting(true)
-    const mainToast = toast.loading(`Minting "${name}"...`)
+    const mainToast = toast.loading(`Collecting "${name}"...`)
 
     try {
       // 0. Check Native Balance for Gas
@@ -368,7 +368,7 @@ export default function SongCard({
       {isMinting && (
         <div className="absolute inset-0 z-40 bg-black/40 backdrop-blur-[2px] flex flex-col items-center justify-center gap-2">
           <IconLoader2 size={32} className="text-cyber-pink animate-spin" />
-          <span className="text-[10px] font-bold text-white uppercase tracking-tighter">Minting...</span>
+          <span className="text-[10px] font-bold text-white uppercase tracking-tighter">Collecting...</span>
         </div>
       )}
 

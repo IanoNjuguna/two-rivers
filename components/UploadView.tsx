@@ -670,7 +670,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 		if (!effectiveAddress || publishedSongId === null) return
 
 		setIsMinting(true)
-		const mintToast = toast.loading("Minting your first copy...")
+		const mintToast = toast.loading("Collecting your first copy...")
 
 		try {
 			const mintData = encodeFunctionData({
