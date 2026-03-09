@@ -114,7 +114,7 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <p className="text-white/40 text-xs">
-          © {new Date().getFullYear()} doba
+          © {new Date().getFullYear()} - Doba Protocol
         </p>
         <div className="flex items-center gap-2 text-xs text-white/50">
           <span>{t('language')}:</span>
