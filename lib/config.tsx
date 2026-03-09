@@ -1,12 +1,12 @@
 import { http, createConfig, cookieStorage, createStorage } from 'wagmi';
-import { base } from 'wagmi/chains';
-export { base };
+import { base, baseSepolia } from 'wagmi/chains';
+export { base, baseSepolia };
 import { coinbaseWallet } from 'wagmi/connectors';
 import { farcasterMiniApp } from '@farcaster/miniapp-wagmi-connector';
 import { QueryClient } from '@tanstack/react-query';
 
-export const activeChain = base;
-export const chains = [base] as const;
+export const activeChain = process.env.NEXT_PUBLIC_CHAIN_ID === '84532' ? baseSepolia : base;
+export const chains = [base, baseSepolia] as const;
 
 export const getConfig = () => {
 	return createConfig({
@@ -25,6 +25,7 @@ export const getConfig = () => {
 		ssr: true,
 		transports: {
 			[base.id]: http(),
+			[baseSepolia.id]: http(),
 		},
 	});
 };
