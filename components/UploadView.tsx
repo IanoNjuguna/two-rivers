@@ -441,7 +441,8 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 				})
 			})
 
-			// C. LayerZero Sync Call
+			/* 
+			// C. LayerZero Sync Call (Disabled for now - Base only)
 			let messagingFee = 150000000000000n // 0.00015 ETH fallback
 			try {
 				if (publicClient) {
@@ -468,8 +469,6 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 				}
 			}
 
-
-
 			calls.push({
 				target: CONTRACT_ADDRESS as `0x${string}`,
 				data: encodeFunctionData({
@@ -479,6 +478,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 				}),
 				value: messagingFee
 			})
+			*/
 
 			// 5. SEND BATCH USER OPERATION
 
