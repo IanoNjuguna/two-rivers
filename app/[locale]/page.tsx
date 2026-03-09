@@ -542,8 +542,6 @@ function DashboardLayout() {
             </footer>
           </main>
 
-          {/* Audio Player constrained to content area */}
-          <AudioPlayer playerState={playerState} />
         </div>
       </div>
     </div>

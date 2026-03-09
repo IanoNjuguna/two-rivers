@@ -63,6 +63,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 	return (
 		<AudioContext.Provider value={value}>
 			{children}
+			{playerState.currentTrack && <AudioPlayer playerState={playerState} />}
 		</AudioContext.Provider>
 	)
 }

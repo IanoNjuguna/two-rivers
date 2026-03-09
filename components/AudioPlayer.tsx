@@ -23,7 +23,7 @@ import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain } from '@/lib/web3'
 import { useChainId, usePublicClient, useAccount, useWriteContract } from 'wagmi'
 import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
-
+import { AngularHeartIcon } from '@/components/icons/AngularHeartIcon'
 
 interface AudioPlayerProps {
   playerState: ReturnType<typeof useAudioPlayer>
@@ -257,7 +257,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
   const accentActive = 'text-[#FF1F8A]'
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 z-40 bg-[#0D0D12] border-t border-white/10 pb-[env(safe-area-inset-bottom)]">
+    <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#0D0D12] border-t border-white/10 pb-[env(safe-area-inset-bottom)]">
       <audio
         ref={audioRef}
         preload="auto"
@@ -395,7 +395,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
             {isMinting ? (
               <IconLoader2 size={22} className="animate-spin text-cyber-pink" />
             ) : (
-              <IconHeart
+              <AngularHeartIcon
                 size={22}
                 className={cn(
                   "transition-colors",
@@ -476,7 +476,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
               {isMinting ? (
                 <IconLoader2 size={22} className="animate-spin text-cyber-pink" />
               ) : (
-                <IconHeart
+                <AngularHeartIcon
                   size={22}
                   className={cn(hasOwned ? "fill-cyber-pink text-cyber-pink" : "text-white/40 fill-none")}
                 />

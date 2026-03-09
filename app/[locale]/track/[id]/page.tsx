@@ -407,7 +407,6 @@ export default function TrackDetailPage() {
 					</div>
 				)}
 			</div>
-			<AudioPlayer playerState={playerState} />
 		</div>
 	)
 }
