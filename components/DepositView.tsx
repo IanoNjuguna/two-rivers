@@ -50,38 +50,38 @@ export function DepositView() {
 				</div>
 
 				{/* Address Section */}
-				<div className="space-y-4">
+				<div className="space-y-4 flex flex-col items-center">
 					<div
 						onClick={handleCopy}
-						className="group flex items-center justify-between gap-4 p-4 bg-black/40 border border-white/10 hover:border-white/20 transition-all cursor-pointer overflow-hidden rounded-none"
+						className="group flex items-center justify-center gap-4 p-4 bg-black/40 border border-white/10 hover:border-white/20 transition-all cursor-pointer overflow-hidden rounded-none w-full"
 					>
-						<div className="flex items-center gap-3">
-							<code className="text-[13px] font-mono text-white/80">
-								{truncatedAddress}
-							</code>
-							<div className="flex items-center gap-2">
-								<div className="flex-shrink-0">
-									{copied ? (
-										<IconCheck className="w-4 h-4 text-green-400" />
-									) : (
-										<IconCopy className="w-4 h-4 text-white/40 group-hover:text-white transition-colors" />
-									)}
-								</div>
-								<a
-									href={`https://basescan.org/address/${address}`}
-									target="_blank"
-									rel="noopener noreferrer"
-									className="flex-shrink-0 text-white/40 hover:text-white transition-colors"
-									onClick={(e) => e.stopPropagation()}
-									title="View on BaseScan"
-								>
-									<IconExternalLink className="w-4 h-4" />
-								</a>
+						<code className="text-[13px] font-mono text-white/80">
+							{truncatedAddress}
+						</code>
+						<div className="flex items-center gap-2">
+							<div className="flex-shrink-0">
+								{copied ? (
+									<IconCheck className="w-4 h-4 text-green-400" />
+								) : (
+									<IconCopy className="w-4 h-4 text-white/40 group-hover:text-white transition-colors" />
+								)}
 							</div>
+							<a
+								href={`https://basescan.org/address/${address}`}
+								target="_blank"
+								rel="noopener noreferrer"
+								className="flex-shrink-0 text-white/40 hover:text-white transition-colors"
+								onClick={(e) => e.stopPropagation()}
+								title="View on BaseScan"
+							>
+								<IconExternalLink className="w-4 h-4" />
+							</a>
 						</div>
-						<div className="flex-shrink-0">
-							<img src="/images/base.png" alt="Base" className="w-5 h-5 object-contain" />
-						</div>
+					</div>
+
+					<div className="flex items-center gap-2 text-white/60 text-xs font-medium uppercase tracking-wider justify-center">
+						<img src="/images/base.png" alt="Base" className="w-4 h-4 object-contain" />
+						<span>Send Funds on Base</span>
 					</div>
 				</div>
 			</div>

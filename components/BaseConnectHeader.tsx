@@ -23,6 +23,14 @@ import { formatUnits } from "viem"
 import { logger } from '@/lib/logger'
 import { usePrivy } from '@privy-io/react-auth'
 import { Button } from './ui/button'
+import { IconCopy, IconCheck, IconExternalLink } from '@tabler/icons-react'
+
+const formatAddress = (address: string, startChars: number = 6, endChars: number = 4): string => {
+  if (!address || address.length <= startChars + endChars) {
+    return address
+  }
+  return `${address.slice(0, startChars)}...${address.slice(-endChars)}`
+}
 
 export default function BaseConnectHeader({ address: propAddress }: { address?: string }) {
   const t = useTranslations('header')
@@ -58,6 +66,15 @@ export default function BaseConnectHeader({ address: propAddress }: { address?: 
     return () => clearInterval(interval)
   }, [address, chainId])
 
+  const [copied, setCopied] = React.useState(false)
+
+  const handleCopy = () => {
+    if (!address) return
+    navigator.clipboard.writeText(address)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
   return (
     <div className="flex items-center gap-3 relative">
       {!authenticated ? (
@@ -68,8 +85,28 @@ export default function BaseConnectHeader({ address: propAddress }: { address?: 
           {t('signIn') || 'Sign In'}
         </Button>
       ) : (
-        <div className="flex items-center justify-center h-9 w-9 bg-white/5 border border-white/10 rounded-lg overflow-hidden">
-          <img src="/images/base.png" alt="Base" className="w-6 h-6 object-contain" />
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.05] border border-white/[0.08] hover:border-white/20 transition-all group">
+          <span className="text-xs font-mono text-white/70 group-hover:text-white/90 transition-colors select-all">
+            {formatAddress(address || '')}
+          </span>
+          <button
+            onClick={handleCopy}
+            className="p-0.5 rounded text-white/40 hover:text-white/80 transition-colors"
+            title="Copy address"
+          >
+            {copied
+              ? <IconCheck size={13} className="text-green-400" />
+              : <IconCopy size={13} />}
+          </button>
+          <a
+            href={`https://basescan.org/address/${address}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-0.5 rounded text-white/40 hover:text-white/80 transition-colors"
+            title="View on Basescan"
+          >
+            <IconExternalLink size={13} />
+          </a>
         </div>
       )}
     </div>
