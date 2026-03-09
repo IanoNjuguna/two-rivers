@@ -23,6 +23,7 @@ import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain } from '@/lib/web3'
 import { useChainId, usePublicClient, useAccount, useWriteContract } from 'wagmi'
 import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
+import { AngularHeartIcon } from '@/components/icons/AngularHeartIcon'
 
 interface AudioPlayerProps {
   playerState: ReturnType<typeof useAudioPlayer>
@@ -394,11 +395,11 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
             {isMinting ? (
               <IconLoader2 size={22} className="animate-spin text-cyber-pink" />
             ) : (
-              <IconHeart
+              <AngularHeartIcon
                 size={22}
                 className={cn(
                   "transition-colors",
-                  hasOwned ? "fill-cyber-pink text-cyber-pink" : "fill-none"
+                  hasOwned ? "fill-cyber-pink text-cyber-pink" : "text-white/40"
                 )}
               />
             )}
@@ -475,9 +476,9 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
               {isMinting ? (
                 <IconLoader2 size={22} className="animate-spin text-cyber-pink" />
               ) : (
-                <IconHeart
+                <AngularHeartIcon
                   size={22}
-                  className={cn(hasOwned && "fill-cyber-pink")}
+                  className={cn(hasOwned ? "fill-cyber-pink text-cyber-pink" : "text-white/40 fill-none")}
                 />
               )}
             </button>
