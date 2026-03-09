@@ -21,16 +21,17 @@ contract Doba is ERC1155, Ownable, ReentrancyGuard, OApp {
     
     IERC20 public usdc;
     address public splitterImplementation;
+
+    uint256 public constant MAX_BOT_FEE = 10_000_000; // 10 USDC cap
     
-    // Revenue splits: 93% Artist Splitter, 7% platform (owner)
-    uint256 public constant PRIMARY_ARTIST_BPS = 9300;
+    // Revenue splits: 90% Artist Splitter, 10% platform (owner)
+    uint256 public constant PRIMARY_ARTIST_BPS = 9000;
     uint256 public constant BPS_DENOMINATOR = 10000;
     
-    uint256 public constant MINT_PRICE = 990000; // 0.99 USDC (6 decimals)
-    uint256 public botFee = 990000; // Default 0.99 USDC
+    uint256 public constant MINT_PRICE = 500_000; // 0.50 USDC (6 decimals)
+    uint256 public botFee = 500_000; // Default 0.50 USDC
 
     struct Collection {
-        uint256 id;
         address artist;
         address splitter;
         string baseUri;
@@ -39,12 +40,13 @@ contract Doba is ERC1155, Ownable, ReentrancyGuard, OApp {
     }
 
     mapping(uint256 => Collection) public collections;
-    mapping(uint256 => uint256) public tokenToCollection; // tokenId => collectionId
     mapping(uint256 => uint256) public collectionMinted; // collectionId => total minted
 
     event CollectionPublished(uint256 indexed collectionId, address indexed artist, address splitter, uint256 price);
     event SongMinted(uint256 indexed collectionId, uint256 indexed tokenId, address indexed buyer);
     event SongSynced(uint32 dstEid, uint256 collectionId, bytes32 guid);
+    event BotFeeUpdated(uint256 oldFee, uint256 newFee);
+    event SplitterImplementationUpdated(address oldImpl, address newImpl);
 
     constructor(
         address _usdc,
@@ -60,6 +62,7 @@ contract Doba is ERC1155, Ownable, ReentrancyGuard, OApp {
      */
     function updateSplitterImplementation(address _implementation) external onlyOwner {
         require(_implementation != address(0), "Zero address");
+        emit SplitterImplementationUpdated(splitterImplementation, _implementation);
         splitterImplementation = _implementation;
     }
 
@@ -67,6 +70,8 @@ contract Doba is ERC1155, Ownable, ReentrancyGuard, OApp {
      * @notice Updates the bot fee for publishing
      */
     function setBotFee(uint256 _fee) external onlyOwner {
+        require(_fee <= MAX_BOT_FEE, "Fee too high");
+        emit BotFeeUpdated(botFee, _fee);
         botFee = _fee;
     }
 
@@ -79,6 +84,9 @@ contract Doba is ERC1155, Ownable, ReentrancyGuard, OApp {
         address[] memory _collaborators,
         uint256[] memory _shares
     ) external nonReentrant returns (uint256) {
+        require(bytes(_baseUri).length > 0, "Empty URI");
+        require(_collaborators.length <= 20, "Too many collaborators");
+
         if (msg.sender != owner() && botFee > 0) {
             usdc.safeTransferFrom(msg.sender, owner(), botFee);
         }
@@ -89,15 +97,12 @@ contract Doba is ERC1155, Ownable, ReentrancyGuard, OApp {
         DobaSplitter(payable(splitter)).initialize(_collaborators, _shares);
         
         collections[collectionId] = Collection({
-            id: collectionId,
             artist: msg.sender,
             splitter: splitter,
             baseUri: _baseUri,
             maxSupply: _maxSupply,
             exists: true
         });
-
-        tokenToCollection[collectionId] = collectionId;
 
         emit CollectionPublished(collectionId, msg.sender, splitter, MINT_PRICE);
         return collectionId;
@@ -116,7 +121,9 @@ contract Doba is ERC1155, Ownable, ReentrancyGuard, OApp {
         uint256 artistShare = MINT_PRICE - platformShare;
 
         usdc.safeTransferFrom(msg.sender, owner(), platformShare);
-        usdc.safeTransferFrom(msg.sender, collection.splitter, artistShare);
+        
+        address recipient = collection.splitter == address(0) ? collection.artist : collection.splitter;
+        usdc.safeTransferFrom(msg.sender, recipient, artistShare);
 
         collectionMinted[_collectionId]++;
         _mint(msg.sender, _collectionId, 1, "");
@@ -138,7 +145,7 @@ contract Doba is ERC1155, Ownable, ReentrancyGuard, OApp {
         require(collection.exists, "Collection does not exist");
         
         bytes memory payload = abi.encode(
-            collection.id,
+            _collectionId,
             collection.artist,
             collection.maxSupply,
             collection.baseUri
@@ -161,7 +168,7 @@ contract Doba is ERC1155, Ownable, ReentrancyGuard, OApp {
         require(msg.sender == collection.artist, "Not the artist");
         
         bytes memory payload = abi.encode(
-            collection.id,
+            _collectionId,
             collection.artist,
             collection.maxSupply,
             collection.baseUri
@@ -188,35 +195,32 @@ contract Doba is ERC1155, Ownable, ReentrancyGuard, OApp {
         address /*_executor*/,
         bytes calldata /*_extraData*/
     ) internal override {
-        (uint256 id, address artist, uint256 maxSupply, string memory baseUri) = abi.decode(
+        (, address artist, uint256 maxSupply, string memory baseUri) = abi.decode(
             _message,
             (uint256, address, uint256, string)
         );
-        
-        if (!collections[id].exists) {
-            collections[id] = Collection({
-                id: id,
-                artist: artist,
-                splitter: address(0), // No local splitter for remote songs
-                baseUri: baseUri,
-                maxSupply: maxSupply,
-                exists: true
-            });
-            
-            if (id >= nextCollectionId) {
-                nextCollectionId = id + 1;
-            }
-            
-            tokenToCollection[id] = id;
-            emit CollectionPublished(id, artist, address(0), MINT_PRICE);
-        }
+
+        // Use local counter to prevent cross-chain ID collisions (F01)
+        uint256 syncedId = nextCollectionId++;
+
+        collections[syncedId] = Collection({
+            artist: artist,
+            splitter: address(0), // No local splitter for remote songs
+            baseUri: baseUri,
+            maxSupply: maxSupply,
+            exists: true
+        });
+
+        emit CollectionPublished(syncedId, artist, address(0), MINT_PRICE);
     }
 
     function uri(uint256 tokenId) public view override returns (string memory) {
-        uint256 collectionId = tokenToCollection[tokenId];
-        if (!collections[collectionId].exists || tokenId != collectionId) {
+        if (!collections[tokenId].exists) {
             return super.uri(tokenId);
         }
-        return collections[collectionId].baseUri;
+        return collections[tokenId].baseUri;
     }
+
+    /// @dev Accept ETH refunds from LayerZero (F10)
+    receive() external payable {}
 }

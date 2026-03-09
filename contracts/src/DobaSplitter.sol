@@ -5,6 +5,7 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { SafeERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import { Initializable } from "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import { ReentrancyGuard } from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import { Math } from "@openzeppelin/contracts/utils/math/Math.sol";
 
 /**
  * @title DobaSplitter
@@ -45,9 +46,11 @@ contract DobaSplitter is Initializable, ReentrancyGuard {
     function initialize(address[] memory _payees, uint256[] memory _shares) external initializer {
         require(_payees.length == _shares.length, "Length mismatch");
         require(_payees.length > 0, "No payees");
+        require(_payees.length <= 50, "Too many payees");
 
-        for (uint256 i = 0; i < _payees.length; i++) {
+        for (uint256 i = 0; i < _payees.length; ) {
             _addPayee(_payees[i], _shares[i]);
+            unchecked { ++i; }
         }
     }
 
@@ -62,7 +65,7 @@ contract DobaSplitter is Initializable, ReentrancyGuard {
         require(shares[account] > 0, "No shares");
 
         uint256 totalReceived = address(this).balance + totalReleased;
-        uint256 payment = (totalReceived * shares[account]) / totalShares - released[account];
+        uint256 payment = Math.mulDiv(totalReceived, shares[account], totalShares) - released[account];
 
         require(payment > 0, "Not due payment");
 
@@ -82,7 +85,7 @@ contract DobaSplitter is Initializable, ReentrancyGuard {
         require(shares[account] > 0, "No shares");
 
         uint256 totalReceived = token.balanceOf(address(this)) + totalReleasedERC20[token];
-        uint256 payment = (totalReceived * shares[account]) / totalShares - releasedERC20[token][account];
+        uint256 payment = Math.mulDiv(totalReceived, shares[account], totalShares) - releasedERC20[token][account];
 
         require(payment > 0, "Not due payment");
 

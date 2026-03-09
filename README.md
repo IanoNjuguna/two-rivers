@@ -1,12 +1,31 @@
-# 📚 Documentation Index
+# Doba Protocol
 
-Welcome to the doba documentation! Here's your guide to all available resources.
+Here's your guide to all available resources.
 
-## 🚀 Getting Started
+**Project:** Doba Protocol
+**Status:** Mainnet
+**Version:** 1.0.0
+
+## Inheritance Graph
+
+```mermaid
+graph TD
+    A["Doba"] --> B["ERC1155"]
+    A --> C["Ownable"]
+    A --> D["ReentrancyGuard"]
+    A --> E["OApp"]
+    E --> F["OAppSender"]
+    E --> G["OAppReceiver"]
+    E --> C
+    H["DobaSplitter"] --> I["Initializable"]
+    H --> D
+```
+
+## Get Started
 
 **New to this project?** Start here:
 
-1. **[QUICK_START.md](./QUICK_START.md)** ⭐
+1. **[QUICK_START.md](./QUICK_START.md)**
    - 5-minute setup guide
    - Installation steps
    - First time running the app
@@ -18,7 +37,7 @@ Welcome to the doba documentation! Here's your guide to all available resources.
    - Quick reference
    - Deployment options
 
-## 🎨 Design & Styling
+## Design & Styling
 
 Understand the visual design and styling system:
 
@@ -36,7 +55,7 @@ Understand the visual design and styling system:
    - Fallback options
    - Troubleshooting font issues
 
-## 🛠️ Development
+## Development
 
 Learn how to use and customize components:
 
@@ -58,7 +77,7 @@ Learn how to use and customize components:
    - Web3 functions
    - Future integration checklist
 
-## 📋 Project Info
+## Project Info
 
 Get insights about the project structure and build:
 
@@ -72,7 +91,7 @@ Get insights about the project structure and build:
 
 ---
 
-## 📖 Documentation Map
+## Documentation Map
 
 ### By Use Case
 
@@ -82,7 +101,7 @@ Get insights about the project structure and build:
 |------|----------|---------|
 | Run the app locally | QUICK_START.md | Installation |
 | Understand the design | DESIGN_SYSTEM.md | All sections |
-| Add Neue Machina fonts | FONT_SETUP.md | All sections |
+| Understand the font system | FONT_SETUP.md | All sections |
 | Use a component | COMPONENT_USAGE.md | Component guides |
 | Connect to blockchain | WEB3_IMPLEMENTATION_GUIDE.md | All sections |
 | Deploy to production | QUICK_START.md | Building for Production |
@@ -198,7 +217,7 @@ Code/
 
 ---
 
-## 🎓 Learning Path
+## Learning Path
 
 ### Beginner (5 min)
 
@@ -220,7 +239,7 @@ Code/
 
 ---
 
-## 🚀 Common Tasks
+## Common Tasks
 
 ### "How do I...?"
 
@@ -254,7 +273,7 @@ Code/
 
 ---
 
-## 📞 Support & Help
+## Support & Help
 
 ### Issue Troubleshooting
 
@@ -281,18 +300,7 @@ Code/
 
 ---
 
-## 📊 Documentation Stats
-
-- **Total Documents:** 8
-- **Total Pages:** ~50+
-- **Code Examples:** 100+
-- **Components Documented:** 4
-- **Features Listed:** 50+
-- **Customization Examples:** 15+
-
----
-
-## ✅ Checklist
+## Checklist
 
 Before you start:
 
@@ -306,7 +314,7 @@ Before you start:
 
 ---
 
-## 🎯 Next Steps
+## Next Steps
 
 1. **Explore:** Run the app and test features
 2. **Customize:** Update colors, fonts, content
@@ -316,7 +324,7 @@ Before you start:
 
 ---
 
-## 📝 Document Versions
+## Document Versions
 
 | Document | Version | Last Updated |
 |----------|---------|--------------|
@@ -343,8 +351,4 @@ Everything is ready to go. Start with [QUICK_START.md](./QUICK_START.md) and exp
 
 ---
 
-*Created with ❤️ for the doba community*
-
-**Project:** doba  
-**Status:** Production Ready  
-**Version:** 1.0.0
+   *Created with ❤️ for the doba community*
