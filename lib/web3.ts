@@ -1,5 +1,5 @@
 import { logger } from './logger'
-import { getAddress, createPublicClient, http } from 'viem'
+import { getAddress, createPublicClient, http, fallback } from 'viem'
 import { arbitrum, base, avalanche, baseSepolia } from 'viem/chains'
 
 /**
@@ -372,8 +372,20 @@ const getTransport = (chainId: number) => {
 }
 
 export const publicClients: Record<number, any> = {
-  8453: createPublicClient({ chain: base, transport: http(`https://base-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`) }),
-  84532: createPublicClient({ chain: baseSepolia, transport: http(`https://base-sepolia.g.alchemy.com/v2/${ALCHEMY_KEY}`) }),
+  8453: createPublicClient({
+    chain: base,
+    transport: fallback([
+      http(`https://base-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`),
+      http('https://mainnet.base.org')
+    ])
+  }),
+  84532: createPublicClient({
+    chain: baseSepolia,
+    transport: fallback([
+      http(`https://base-sepolia.g.alchemy.com/v2/${ALCHEMY_KEY}`),
+      http('https://sepolia.base.org')
+    ])
+  }),
 }
 
 

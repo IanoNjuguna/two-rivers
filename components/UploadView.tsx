@@ -98,10 +98,12 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 			}
 		}
 
-		if (effectiveAddress && (client || publicClient)) {
+		if (effectiveAddress && (client || publicClients[chainId || CHAIN_ID])) {
 			fetchBalance()
+			const interval = setInterval(fetchBalance, 10000) // Poll every 10s
+			return () => clearInterval(interval)
 		}
-	}, [effectiveAddress, client, publicClient, USDC_ADDRESS])
+	}, [effectiveAddress, client, chainId, USDC_ADDRESS])
 
 	// Background Fetch NFT Balance (to detect if already collected)
 	React.useEffect(() => {
@@ -749,6 +751,26 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 						<p className="text-[10px] text-white/40 italic">
 							Fund Wallet: <span className="text-blue-500/80 font-mono">{effectiveAddress}</span>
 						</p>
+					</div>
+				</div>
+			)}
+
+			{chainId !== CHAIN_ID && (
+				<div className="bg-red-500/10 border border-red-500/50 p-6 flex items-start gap-4 animate-fade-in group mb-4">
+					<div className="text-red-500 mt-1">
+						<IconX size={24} />
+					</div>
+					<div className="flex-1">
+						<h4 className="text-sm font-bold text-red-500 uppercase tracking-tight mb-1">Wrong Network</h4>
+						<p className="text-xs text-white/70 leading-relaxed mb-3">
+							You are connected to the wrong network. Please switch to <strong>{CHAIN_NAME}</strong> to see your balance and publish.
+						</p>
+						<Button
+							onClick={() => switchChain?.({ chainId: CHAIN_ID })}
+							className="bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-4 py-2 rounded-none"
+						>
+							Switch to {CHAIN_NAME}
+						</Button>
 					</div>
 				</div>
 			)}
