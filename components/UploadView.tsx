@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils"
 import { GENRES } from '@/constants/genres'
 
 import { useChainId, useAccount, useWalletClient, usePublicClient, useSignMessage } from "wagmi"
-import { getAddressesForChain, getDstEid, CONTRACT_ABI, ERC20_ABI, LZ_SYNC_OPTIONS, CHAIN_ID, CHAIN_NAME } from '@/lib/web3'
+import { getAddressesForChain, getDstEid, CONTRACT_ABI, ERC20_ABI, LZ_SYNC_OPTIONS, CHAIN_ID, CHAIN_NAME, publicClients } from '@/lib/web3'
 import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
 import { useBackendAuth } from '@/hooks/useBackendAuth'
@@ -70,9 +70,12 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 			try {
 				let balance, nBalance;
 
-				const targetClient = publicClient;
+				// Use our explicit clients to ensure we check the correct network
+				const targetChainId = chainId || CHAIN_ID;
+				const targetClient = publicClients[targetChainId];
 
 				if (targetClient) {
+					logger.info(`UploadView: Fetching balances for ${effectiveAddress} on chain ${targetChainId} (USDC: ${USDC_ADDRESS})`)
 					balance = await targetClient.readContract({
 						address: USDC_ADDRESS as `0x${string}`,
 						abi: ERC20_ABI,
@@ -80,6 +83,8 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 						args: [effectiveAddress as `0x${string}`],
 					})
 					nBalance = await targetClient.getBalance({ address: effectiveAddress as `0x${string}` })
+
+					logger.info(`UploadView: Results - USDC: ${balance}, Native: ${nBalance}`)
 				}
 
 				if (balance !== undefined) setUsdcBalance(balance as bigint)
@@ -717,7 +722,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 						<h4 className="text-sm font-bold text-amber-500 uppercase tracking-tight mb-1">USDC Balance Required</h4>
 						<p className="text-xs text-white/70 leading-relaxed mb-3">
 							To publish on <strong>Doba</strong>, you need <strong>1 USDC</strong>.
-							Your balance: <strong>{(Number(usdcBalance) / 1e6).toFixed(2)} USDC</strong>.
+							Your balance: <strong>{usdcBalance !== null ? `${(Number(usdcBalance) / 1e6).toFixed(2)} USDC` : 'Loading...'}</strong>.
 						</p>
 						<p className="text-[10px] text-white/40 italic">
 							Top up Wallet: <span className="text-amber-500/80 font-mono">{effectiveAddress}</span>
