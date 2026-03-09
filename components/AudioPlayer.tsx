@@ -54,7 +54,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
     usdc: CURRENT_USDC,
     contract: CURRENT_CONTRACT,
     explorer: EXPLORER_URL
-  } = getAddressesForChain(chainId || 8453)
+  } = getAddressesForChain(chainId || Number(process.env.NEXT_PUBLIC_CHAIN_ID || 84532))
 
   // Local UI & Web3 state
   const [volume, setVolume] = useState(0.8)

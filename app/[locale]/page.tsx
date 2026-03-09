@@ -67,6 +67,25 @@ function DashboardLayout() {
   const tUpload = useTranslations('upload')
   const tAnalytics = useTranslations('analytics')
   const tProfile = useTranslations('profile')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedGenre, setSelectedGenre] = useState('All')
+  const [selectedChain, setSelectedChain] = useState('All')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
+
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery)
+    }, 500)
+    return () => clearTimeout(timer)
+  }, [searchQuery])
+
+  const GENRES = ["All", "Afrobeat", "AfroHouse", "Alternative", "Ambient", "Blues", "Classical", "Country", "Dancehall", "Disco", "EDM", "Electronic", "Folk", "Funk", "Hip Hop", "House", "Indie", "Jazz", "Latin", "Lo-Fi", "Pop", "R&B", "Rap", "Reggae", "Rock", "Soul", "Techno", "Trap"]
+  const CHAINS = [
+    { id: 'All', label: 'All Chains', logo: null },
+    { id: '42161', label: 'Arbitrum', logo: '/images/arbitrum.png' },
+    { id: '8453', label: 'Base', logo: '/images/base.png' }
+  ]
 
   // handlePlayTrack is now provided by AudioProvider
 
@@ -401,22 +420,82 @@ function DashboardLayout() {
               )}
 
               {currentView === 'search' && (
-                <div className="space-y-6">
-                  <div>
-                    <h2 className="text-2xl font-bold mb-2">{tSearch('title')}</h2>
-                    <p className="text-white/60">
-                      {tSearch('subtitle')}
-                    </p>
+                <div className="space-y-8 animate-fade-in pb-20">
+                  <div className="space-y-4">
+                    <h2 className="text-2xl font-bold">{tSearch('title')}</h2>
+
+                    {/* Search Bar */}
+                    <div className="relative group">
+                      <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-cyber-pink transition-colors" size={20} />
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder={tSearch('placeholder') || "Search by title or artist..."}
+                        className="w-full bg-white/5 border border-white/10 rounded-none pl-12 pr-4 py-4 text-white focus:outline-none focus:border-cyber-pink focus:ring-1 focus:ring-cyber-pink/50 transition-all placeholder:text-white/20 text-lg"
+                      />
+                    </div>
+
+                    {/* Chain Filters */}
+                    <div className="flex flex-wrap gap-2">
+                      {CHAINS.map((chain) => (
+                        <button
+                          key={chain.id}
+                          onClick={() => setSelectedChain(chain.id)}
+                          className={`flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-widest transition-all clip-tag border ${selectedChain === chain.id
+                              ? "bg-cyber-pink border-cyber-pink text-white"
+                              : "bg-white/5 border-white/10 text-white/40 hover:text-white hover:bg-white/10"
+                            }`}
+                        >
+                          {chain.logo && <img src={chain.logo} alt={chain.label} className="w-4 h-4 rounded-full" />}
+                          {chain.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Genre Filters Scroll */}
+                    <div className="relative">
+                      <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar mask-fade-right">
+                        {GENRES.map((g) => (
+                          <button
+                            key={g}
+                            onClick={() => setSelectedGenre(g)}
+                            className={`whitespace-nowrap px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest transition-all border ${selectedGenre === g
+                                ? "bg-white/10 border-white/30 text-white"
+                                : "bg-transparent border-white/5 text-white/30 hover:text-white/60 hover:border-white/10"
+                              }`}
+                          >
+                            {g}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                  <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">
-                    <Search className="w-12 h-12 mx-auto mb-4 text-lavender/40" />
-                    <h3 className="text-xl font-semibold mb-2">
-                      {tSearch('comingSoon')}
-                    </h3>
-                    <p className="text-white/60">
-                      {tSearch('comingSoonDesc')}
-                    </p>
-                  </div>
+
+                  <MarketplaceGrid
+                    searchQuery={debouncedSearch}
+                    genre={selectedGenre}
+                    chainId={selectedChain}
+                    currentTrackId={playerState.currentTrack?.id}
+                    isPlaying={playerState.isPlaying}
+                    onPlay={(track, tracks) => handlePlayTrack({
+                      id: track.token_id,
+                      title: track.name,
+                      creator: track.artist,
+                      cover: track.image_url,
+                      url: track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
+                      collaborators: 0,
+                      price: track.price
+                    }, tracks.map(t => ({
+                      id: t.token_id,
+                      title: t.name,
+                      creator: t.artist,
+                      cover: t.image_url,
+                      url: t.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
+                      collaborators: 0,
+                      price: t.price
+                    })))}
+                  />
                 </div>
               )}
 

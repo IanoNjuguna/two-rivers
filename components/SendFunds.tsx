@@ -36,7 +36,7 @@ export function SendFunds() {
 	const t = useTranslations('nav');
 	const { address: effectiveAddress, chainId } = useAccount();
 
-	const activeChainId = chainId || 8453;
+	const activeChainId = chainId || Number(process.env.NEXT_PUBLIC_CHAIN_ID || 84532);
 	const addresses = getAddressesForChain(activeChainId);
 
 	const tokens: Record<'ETH' | 'USDC', TokenOption> = useMemo(() => ({

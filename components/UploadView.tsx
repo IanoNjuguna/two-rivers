@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils"
 import { GENRES } from '@/constants/genres'
 
 import { useChainId, useAccount, useWalletClient, usePublicClient, useSignMessage } from "wagmi"
-import { getAddressesForChain, getDstEid, CONTRACT_ABI, ERC20_ABI, LZ_SYNC_OPTIONS } from '@/lib/web3'
+import { getAddressesForChain, getDstEid, CONTRACT_ABI, ERC20_ABI, LZ_SYNC_OPTIONS, CHAIN_ID, CHAIN_NAME } from '@/lib/web3'
 import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
 import { useBackendAuth } from '@/hooks/useBackendAuth'
@@ -28,8 +28,8 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 	const { data: walletClient } = useWalletClient()
 	const publicClient = usePublicClient()
 
-	const { usdc: USDC_ADDRESS, contract: CONTRACT_ADDRESS, paymaster: PAYMASTER_ADDRESS } = getAddressesForChain(chainId || 42161)
-	const MathChain = { id: chainId || 42161, name: chainId === 8453 ? 'Base' : 'Arbitrum' }
+	const { usdc: USDC_ADDRESS, contract: CONTRACT_ADDRESS, paymaster: PAYMASTER_ADDRESS } = getAddressesForChain(chainId || CHAIN_ID)
+	const MathChain = { id: chainId || CHAIN_ID, name: chainId === (CHAIN_ID === 8453 ? 8453 : 84532) ? CHAIN_NAME : (CHAIN_ID === 8453 ? 'Base' : 'Base Sepolia') }
 	const DST_EID = getDstEid(MathChain.id)
 
 	const client = propClient

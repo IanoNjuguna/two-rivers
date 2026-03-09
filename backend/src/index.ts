@@ -394,7 +394,19 @@ app.post('/upload-metadata', authMiddleware, async (c) => {
 app.get('/tracks', async (c) => {
   const artist = c.req.query('artist')
   const chainId = c.req.query('chain_id')
-  const tracks = await getAllTracks(artist, chainId)
+  const genre = c.req.query('genre')
+  const search = c.req.query('search')
+  const limit = c.req.query('limit') ? parseInt(c.req.query('limit')!) : undefined
+  const offset = c.req.query('offset') ? parseInt(c.req.query('offset')!) : undefined
+
+  const tracks = await getAllTracks({
+    artist,
+    chainId,
+    genre,
+    search,
+    limit,
+    offset
+  })
   return c.json(tracks)
 })
 

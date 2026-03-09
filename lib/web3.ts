@@ -1,6 +1,6 @@
 import { logger } from './logger'
 import { getAddress, createPublicClient, http } from 'viem'
-import { arbitrum, base, avalanche } from 'viem/chains'
+import { arbitrum, base, avalanche, baseSepolia } from 'viem/chains'
 
 /**
  * Web3 Contract Configuration
@@ -10,31 +10,42 @@ import { arbitrum, base, avalanche } from 'viem/chains'
  * Chain: Multi-chain (On-chain)
  */
 
-const ADDRESSES = {
+const ADDRESSES: Record<number, any> = {
   8453: {
+    name: 'Base',
     usdc: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
     paymaster: '0x2cc0c7981D846b9F2a16276556f6e8cb52BfB633',
     lzEid: 30184,
     contract: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
     explorer: 'https://basescan.org'
+  },
+  84532: {
+    name: 'Base Sepolia',
+    usdc: '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
+    paymaster: '0x2cc0c7981D846b9F2a16276556f6e8cb52BfB633', // Fallback or update if needed
+    lzEid: 40245,
+    contract: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+    explorer: 'https://sepolia.basescan.org'
   }
 }
 
+export const CHAIN_ID = Number(process.env.NEXT_PUBLIC_CHAIN_ID || 84532)
+
 export const getAddressesForChain = (chainId: number) => {
-  return ADDRESSES[8453]
+  return ADDRESSES[chainId] || ADDRESSES[84532]
 }
 
-export const CHAIN_ID = 8453
+const currentConfig = getAddressesForChain(CHAIN_ID)
 
-export const CHAIN_NAME = 'BASE'
+export const CHAIN_NAME = currentConfig.name
 
-export const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`
+export const CONTRACT_ADDRESS = currentConfig.contract
 
 // Legacy exports for components that don't support dynamic yet
-const currentAddresses = ADDRESSES[8453]
-export const USDC_ADDRESS = getAddress(currentAddresses.usdc)
-export const PAYMASTER_ADDRESS = getAddress(currentAddresses.paymaster)
-export const LZ_EID = currentAddresses.lzEid
+// Legacy exports for components that don't support dynamic yet
+export const USDC_ADDRESS = getAddress(currentConfig.usdc)
+export const PAYMASTER_ADDRESS = getAddress(currentConfig.paymaster)
+export const LZ_EID = currentConfig.lzEid
 
 // Logic to determine destination EID for sync
 export const getDstEid = (chainId: number) => {
@@ -360,8 +371,9 @@ const getTransport = (chainId: number) => {
   return http(alchemyUrl);
 }
 
-export const publicClients = {
+export const publicClients: Record<number, any> = {
   8453: createPublicClient({ chain: base, transport: http(`https://base-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`) }),
+  84532: createPublicClient({ chain: baseSepolia, transport: http(`https://base-sepolia.g.alchemy.com/v2/${ALCHEMY_KEY}`) }),
 }
 
 
@@ -375,12 +387,12 @@ export type ChainBalances = {
 
 export async function fetchAllBalances(address: string): Promise<ChainBalances[]> {
   const chains = [
-    { id: 8453, name: 'Base', symbol: 'ETH' }
+    { id: CHAIN_ID, name: CHAIN_NAME, symbol: 'ETH' }
   ];
 
   return Promise.all(chains.map(async (c) => {
-    const client = publicClients[8453];
-    const addrs = ADDRESSES[8453];
+    const client = publicClients[c.id];
+    const addrs = getAddressesForChain(c.id);
 
     try {
       const [nativeBalance, usdcBalance] = await Promise.all([

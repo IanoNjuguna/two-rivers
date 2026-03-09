@@ -197,7 +197,17 @@ export async function addTrack(track: Track): Promise<void> {
   })
 }
 
-export async function getAllTracks(artist?: string, chainId?: string): Promise<Track[]> {
+export interface TrackFilters {
+  artist?: string
+  chainId?: string
+  genre?: string
+  search?: string
+  limit?: number
+  offset?: number
+}
+
+export async function getAllTracks(filters: TrackFilters = {}): Promise<Track[]> {
+  const { artist, chainId, genre, search, limit, offset } = filters
   const conditions: string[] = []
   const args: any[] = []
 
@@ -211,8 +221,28 @@ export async function getAllTracks(artist?: string, chainId?: string): Promise<T
     args.push(chainId)
   }
 
+  if (genre) {
+    conditions.push('genre = ?')
+    args.push(genre)
+  }
+
+  if (search) {
+    conditions.push('(name LIKE ? OR artist LIKE ?)')
+    const searchPattern = `%${search}%`
+    args.push(searchPattern, searchPattern)
+  }
+
   const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : ''
-  const sql = `SELECT * FROM tracks ${where} ORDER BY token_id DESC`
+  let sql = `SELECT * FROM tracks ${where} ORDER BY token_id DESC`
+
+  if (limit !== undefined) {
+    sql += ` LIMIT ?`
+    args.push(limit)
+    if (offset !== undefined) {
+      sql += ` OFFSET ?`
+      args.push(offset)
+    }
+  }
 
   const rs = await db.execute({ sql, args })
   return rs.rows as unknown as Track[]
