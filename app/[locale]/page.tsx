@@ -21,11 +21,11 @@ import DepositView from '@/components/DepositView'
 import { useAccount as useWagmiAccount } from 'wagmi'
 import { sdk } from "@farcaster/miniapp-sdk"
 
-const formatAddress = (address: string, startChars: number = 6, endChars: number = 4): string => {
-  if (!address || address.length <= startChars + endChars) {
+const formatAddress = (address: string, chars: number = 10): string => {
+  if (!address || address.length <= chars) {
     return address
   }
-  return `${address.slice(0, startChars)}...${address.slice(-endChars)}`
+  return address.slice(0, chars)
 }
 
 type ViewType = 'home' | 'library' | 'search' | 'upload' | 'profile' | 'earnings' | 'analytics' | 'send-money' | 'deposit'

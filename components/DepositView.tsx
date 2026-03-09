@@ -29,7 +29,7 @@ export function DepositView() {
 		)
 	}
 
-	const truncatedAddress = `${address.slice(0, 6)}...${address.slice(-4)}`
+	const truncatedAddress = address.length > 10 ? address.slice(0, 10) : address
 
 	return (
 		<div className="max-w-md mx-auto animate-fade-in">

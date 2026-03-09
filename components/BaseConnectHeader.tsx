@@ -25,11 +25,11 @@ import { usePrivy } from '@privy-io/react-auth'
 import { Button } from './ui/button'
 import { IconCopy, IconCheck, IconExternalLink } from '@tabler/icons-react'
 
-const formatAddress = (address: string, startChars: number = 6, endChars: number = 4): string => {
-  if (!address || address.length <= startChars + endChars) {
+const formatAddress = (address: string, chars: number = 10): string => {
+  if (!address || address.length <= chars) {
     return address
   }
-  return `${address.slice(0, startChars)}...${address.slice(-endChars)}`
+  return address.slice(0, chars)
 }
 
 export default function BaseConnectHeader({ address: propAddress }: { address?: string }) {
