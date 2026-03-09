@@ -194,6 +194,28 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
     }
   }, [isPlaying, currentTrack, audioRef, setCurrentTime, setDuration])
 
+  // Global Spacebar shortcut
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if typing in an input, textarea, etc.
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement ||
+        (e.target as HTMLElement).isContentEditable
+      ) {
+        return
+      }
+
+      if (e.code === 'Space') {
+        e.preventDefault()
+        togglePlayPause()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [togglePlayPause])
+
   const formatTime = (time: number) => {
     if (!time || isNaN(time) || time === Infinity) return '0:00'
     const minutes = Math.floor(time / 60)
