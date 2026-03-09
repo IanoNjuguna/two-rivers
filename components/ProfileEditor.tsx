@@ -19,8 +19,8 @@ interface UserProfile {
 }
 
 const formatAddress = (addr: string) => {
-	if (!addr || addr.length <= 10) return addr
-	return addr.substring(0, 10)
+	if (!addr || addr.length <= 19) return addr
+	return `${addr.substring(0, 10)}...${addr.substring(addr.length - 9)}`
 }
 
 export function ProfileEditor({ address, tProfile, logout }: any) {

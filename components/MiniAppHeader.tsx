@@ -73,8 +73,8 @@ export default function MiniAppHeader({ address: propAddress }: { address?: stri
 	}, [])
 
 	const formatAddress = (addr: string) => {
-		if (!addr || addr.length <= 10) return addr
-		return addr.slice(0, 10)
+		if (!addr || addr.length <= 19) return addr
+		return `${addr.slice(0, 10)}...${addr.slice(-9)}`
 	}
 
 	// Display Name logic: use Farcaster username/displayName if available, else format address
