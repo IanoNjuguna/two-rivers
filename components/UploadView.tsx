@@ -45,7 +45,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 	const [artistName, setArtistName] = useState('')
 	const [description, setDescription] = useState('')
 	const [genre, setGenre] = useState('')
-	const [price, setPrice] = useState('0.99')
+	const [price, setPrice] = useState('0.50')
 	const [supply, setSupply] = useState('5000')
 	const [audioFile, setAudioFile] = useState<File | null>(null)
 	const [coverFile, setCoverFile] = useState<File | null>(null)
