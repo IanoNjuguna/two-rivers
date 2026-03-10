@@ -757,7 +757,26 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 				</div>
 			)}
 
-
+			{chainId !== CHAIN_ID && (
+				<div className="bg-red-500/10 border border-red-500/50 p-6 flex items-start gap-4 animate-fade-in group mb-4">
+					<div className="text-red-500 mt-1">
+						<IconX size={24} />
+					</div>
+					<div className="flex-1">
+						<h4 className="text-sm font-bold text-red-500 uppercase tracking-tight mb-1">Wrong Network</h4>
+						<p className="text-xs text-white/70 leading-relaxed mb-3">
+							You are connected to the wrong network. Please switch to <strong>{CHAIN_NAME}</strong> to see your balance and publish.
+						</p>
+						<button
+							type="button"
+							onClick={() => walletClient?.switchChain({ id: CHAIN_ID }).catch(() => { })}
+							className="bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-4 py-2 rounded-none cursor-pointer"
+						>
+							Switch to {CHAIN_NAME}
+						</button>
+					</div>
+				</div>
+			)}
 
 			<form onSubmit={handleSubmit} className="space-y-10">
 				{/* Track Details */}

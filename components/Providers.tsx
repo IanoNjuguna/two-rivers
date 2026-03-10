@@ -33,8 +33,6 @@ export function Providers({
 		<PrivyProvider
 			appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID || "insert-your-privy-app-id-here"}
 			config={{
-				defaultChain: activeChain,
-				supportedChains: [activeChain],
 				appearance: {
 					theme: 'dark',
 					accentColor: '#FF1F8A',
