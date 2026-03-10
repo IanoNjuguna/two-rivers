@@ -194,14 +194,39 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 				})
 				setLastUserOpHash(hash)
 				if (uoList.length > 1) {
-					toast.success(`Transaction ${i + 1}/${uoList.length} submitted`)
+					toast.success(
+						<div className="flex flex-col gap-1">
+							<span>Transaction {i + 1}/{uoList.length} submitted</span>
+							<a href={`https://sepolia.basescan.org/tx/${hash}`} target="_blank" rel="noreferrer" className="text-xs text-blue-400 hover:text-blue-300 underline underline-offset-2">
+								View on Basescan
+							</a>
+						</div>
+					)
 				} else {
-					toast.success(t('txSubmitted'))
+					toast.success(
+						<div className="flex flex-col gap-1">
+							<span>{t('txSubmitted')}</span>
+							<a href={`https://sepolia.basescan.org/tx/${hash}`} target="_blank" rel="noreferrer" className="text-xs text-blue-400 hover:text-blue-300 underline underline-offset-2">
+								View on Basescan
+							</a>
+						</div>
+					)
 				}
 				lastReceipt = await publicClient.waitForTransactionReceipt({ hash })
 			}
 
-			toast.success(t('uploadSuccess'))
+			if (lastReceipt) {
+				toast.success(
+					<div className="flex flex-col gap-1">
+						<span>{t('uploadSuccess')}</span>
+						<a href={`https://sepolia.basescan.org/tx/${lastReceipt.transactionHash}`} target="_blank" rel="noreferrer" className="text-xs text-blue-400 hover:text-blue-300 underline underline-offset-2">
+							View final transaction
+						</a>
+					</div>
+				)
+			} else {
+				toast.success(t('uploadSuccess'))
+			}
 			return lastReceipt
 		} catch (error: any) {
 			logger.error('Transaction Error', error)
