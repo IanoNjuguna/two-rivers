@@ -301,7 +301,7 @@ function DashboardLayout() {
       )}
 
       {/* Main Layout */}
-      <div className="flex flex-col lg:flex-row flex-1 mt-16 h-[calc(100vh-4rem)] overflow-hidden">
+      <div className="flex flex-col lg:flex-row flex-1 mt-16 overflow-hidden">
         {/* Sidebar */}
         <aside className="hidden lg:flex w-64 border-r border-white/[0.08] flex-col bg-[#0D0D12] overflow-y-auto">
           <nav className="flex flex-col p-4 overflow-y-auto flex-1 space-y-1">
@@ -395,7 +395,7 @@ function DashboardLayout() {
         </aside>
 
         {/* Content Area wrapper */}
-        <div className="flex-1 flex flex-row min-w-0 relative h-full">
+        <div className="flex-1 flex flex-row min-w-0 relative">
           <main className="flex-1 overflow-y-auto outline-none">
             <div className="p-6 max-w-7xl mx-auto">
               {currentView === 'home' && (
