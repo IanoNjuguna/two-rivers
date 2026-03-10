@@ -3,7 +3,8 @@
 import { logger } from '@/lib/logger'
 
 import React from 'react'
-import { IconPlayerPlay, IconPlayerPause, IconMusic, IconLoader2, IconHeart, IconCheck, IconShare, IconCopy } from '@tabler/icons-react'
+import { IconPlayerPlay, IconPlayerPause, IconLoader2, IconHeart, IconCheck, IconShare, IconCopy } from '@tabler/icons-react'
+import { DobaVisualizer } from '@/components/icons/DobaVisualizer'
 import { cn } from '@/lib/utils'
 import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain } from '@/lib/web3'
 import { useChainId, useWalletClient, usePublicClient, useAccount } from "wagmi"
@@ -397,7 +398,7 @@ export default function SongCard({
       {/* Sold Out Overlay */}
       {!hasOwned && !isMinting && mintData.max > 0 && mintData.minted >= mintData.max && (
         <div className="absolute inset-0 z-40 bg-black/60 backdrop-blur-[1px] flex flex-col items-center justify-center gap-2">
-          <IconMusic size={32} className="text-white/40" />
+          <DobaVisualizer size={32} className="text-white/40" />
           <span className="text-[10px] font-bold text-white/60 uppercase tracking-widest">Sold Out</span>
         </div>
       )}

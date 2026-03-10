@@ -13,8 +13,8 @@ import {
   IconHeart,
   IconLoader2,
   IconLayoutSidebarRight,
-  IconMusic,
 } from '@tabler/icons-react'
+import { DobaVisualizer } from '@/components/icons/DobaVisualizer'
 import { logger } from '@/lib/logger'
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
@@ -448,7 +448,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
                 className="fill-cyber-pink text-cyber-pink"
               />
             ) : (mintData.max > 0 && mintData.minted >= mintData.max) ? (
-              <IconMusic size={22} className="text-white/20" />
+              <DobaVisualizer size={22} className="text-white/20" />
             ) : (
               <IconHeart
                 size={22}

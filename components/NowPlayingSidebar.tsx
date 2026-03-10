@@ -1,7 +1,8 @@
 'use client'
 
 import React from 'react'
-import { IconX, IconMicrophone, IconExternalLink, IconShare, IconCopy, IconHeart, IconCheck, IconLoader2, IconMusic } from '@tabler/icons-react'
+import { IconX, IconMicrophone, IconExternalLink, IconShare, IconCopy, IconHeart, IconCheck, IconLoader2 } from '@tabler/icons-react'
+import { DobaVisualizer } from '@/components/icons/DobaVisualizer'
 import { Button } from '@/components/ui/button'
 import { getAddressesForChain, CONTRACT_ABI, ERC20_ABI, CHAIN_ID } from '@/lib/web3'
 import { useChainId, usePublicClient, useAccount, useWriteContract } from 'wagmi'
@@ -221,7 +222,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 							) : hasOwned ? (
 								<IconCheck size={16} className="mr-2" />
 							) : (mintData.max > 0 && mintData.minted >= mintData.max) ? (
-								<IconMusic size={16} className="mr-2" />
+								<DobaVisualizer size={16} className="mr-2" />
 							) : null}
 							{hasOwned ? 'Collected' : (mintData.max > 0 && mintData.minted >= mintData.max) ? 'Sold Out' : 'Collect'}
 						</Button>
