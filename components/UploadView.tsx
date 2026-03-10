@@ -767,12 +767,13 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 						<p className="text-xs text-white/70 leading-relaxed mb-3">
 							You are connected to the wrong network. Please switch to <strong>{CHAIN_NAME}</strong> to see your balance and publish.
 						</p>
-						<Button
+						<button
+							type="button"
 							onClick={() => switchChain?.({ chainId: CHAIN_ID })}
-							className="bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-4 py-2 rounded-none"
+							className="bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-4 py-2 rounded-none cursor-pointer"
 						>
 							Switch to {CHAIN_NAME}
-						</Button>
+						</button>
 					</div>
 				</div>
 			)}
