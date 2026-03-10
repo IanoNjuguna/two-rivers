@@ -345,8 +345,7 @@ export default function SongCard({
           {(() => {
             const currentPrice = price ? parseFloat(price) : 0.50;
             if (currentPrice === 0) return 'FREE';
-            if (currentPrice < 1) return `${Math.round(currentPrice * 100)}¢`;
-            return `$${currentPrice.toFixed(2)}`;
+            return '50¢';
           })()}
         </div>
       </div>
