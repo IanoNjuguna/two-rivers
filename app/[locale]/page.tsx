@@ -18,6 +18,13 @@ import { useAudio } from '@/components/AudioProvider'
 import { ProfileEditor } from '@/components/ProfileEditor'
 import { SendFunds } from '@/components/SendFunds'
 import DepositView from '@/components/DepositView'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 import { useAccount as useWagmiAccount, useDisconnect } from 'wagmi'
 import { sdk } from "@farcaster/miniapp-sdk"
@@ -470,36 +477,33 @@ function DashboardLayout() {
                   <div className="space-y-4">
                     <h2 className="text-2xl font-bold">{tSearch('title')}</h2>
 
-                    {/* Search Bar */}
-                    <div className="relative group">
-                      <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-cyber-pink transition-colors" size={20} />
-                      <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="I want to listen to ..."
-                        className="w-full bg-white/5 border border-white/10 rounded-none pl-12 pr-4 py-4 text-white focus:outline-none focus:border-cyber-pink focus:ring-1 focus:ring-cyber-pink/50 transition-all placeholder:text-white/20 text-lg"
-                      />
-                    </div>
-
-
-                    {/* Genre Filters Scroll */}
-                    <div className="relative">
-                      <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar mask-fade-right">
-                        {GENRES.map((g) => (
-                          <button
-                            key={g}
-                            onClick={() => setSelectedGenre(g)}
-                            className={`whitespace-nowrap px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest transition-all border ${selectedGenre === g
-                              ? "bg-white/10 border-white/30 text-white"
-                              : "bg-transparent border-white/5 text-white/30 hover:text-white/60 hover:border-white/10"
-                              }`}
-                          >
-                            {g}
-                          </button>
-                        ))}
+                    {/* Search & Filter Bar */}
+                    <div className="flex gap-2">
+                      <div className="relative group flex-1">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-cyber-pink transition-colors" size={20} />
+                        <input
+                          type="text"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          placeholder="I want to listen to ..."
+                          className="w-full bg-white/5 border border-white/10 rounded-none pl-12 pr-4 py-[14px] text-white focus:outline-none focus:border-cyber-pink focus:ring-1 focus:ring-cyber-pink/50 transition-all placeholder:text-white/20 text-lg"
+                        />
                       </div>
+                      <Select value={selectedGenre} onValueChange={setSelectedGenre}>
+                        <SelectTrigger className="w-[180px] bg-white/5 border border-white/10 rounded-none h-auto py-4 font-bold uppercase tracking-widest text-[10px] text-white/60 focus:ring-0 focus:ring-offset-0">
+                          <SelectValue placeholder="Genre" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-[#1A1A22] border-white/10 rounded-none text-white/80">
+                          {GENRES.map((g) => (
+                            <SelectItem key={g} value={g} className="font-bold uppercase tracking-widest text-[10px] focus:bg-white/10 focus:text-white">
+                              {g}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
+
+
                   </div>
 
                   <MarketplaceGrid
