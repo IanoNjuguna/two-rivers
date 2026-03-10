@@ -52,8 +52,11 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 	const [collaborators, setCollaborators] = useState<Collaborator[]>([])
 	const [isUploading, setIsUploading] = useState(false)
 	const [assetsCid, setAssetsCid] = useState<string | null>(null)
-	const [audioName, setAudioName] = useState<string>('')
-	const [imageName, setImageName] = useState<string>('')
+	const [audioHash, setAudioHash] = useState<string>('')
+	const [imageHash, setImageHash] = useState<string>('')
+	const [audioFilename, setAudioFilename] = useState<string>('')
+	const [imageFilename, setImageFilename] = useState<string>('')
+	const [streamingUrl, setStreamingUrl] = useState<string>('')
 	const [isAssetsUploading, setIsAssetsUploading] = useState(false)
 	const [publishedSongId, setPublishedSongId] = useState<bigint | null>(null)
 	const [isSyncing, setIsSyncing] = useState(false)
@@ -156,8 +159,11 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 				if (response.ok) {
 					const data = await response.json()
-					setAudioName(data.audioHash) // Store the hash
-					setImageName(data.imageHash) // Store the hash
+					setAudioHash(data.audioHash)
+					setImageHash(data.imageHash)
+					setAudioFilename(data.audioName || '')
+					setImageFilename(data.imageName || '')
+					setStreamingUrl(data.streamingUrl || '')
 
 					// Use a separate state to flag that background is done
 					setAssetsCid("READY")
@@ -290,14 +296,14 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 		const mainToast = toast.loading("Initiating upload process...")
 
 		try {
-			let currentAudioHash = audioName || ''
-			let currentImageHash = imageName || ''
-			let currentAudioName = ''
-			let currentImageName = ''
-			let currentStreamingUrl = ''
+			let currentAudioHash = audioHash || ''
+			let currentImageHash = imageHash || ''
+			let currentAudioName = audioFilename || (audioHash ? `audio_${audioHash}.mp3` : '')
+			let currentImageName = imageFilename || (imageHash ? `cover_${imageHash}.jpg` : '')
+			let currentStreamingUrl = streamingUrl || ''
 
+			// If background upload isn't ready or hash is missing, wait/re-upload
 			if (!assetsCid || assetsCid !== "READY" || !currentAudioHash) {
-
 				toast.loading("Uploading media to IPFS...", { id: mainToast })
 				const formData = new FormData()
 				formData.append('audio', audioFile)
@@ -321,7 +327,6 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 				currentAudioName = assetData.audioName
 				currentImageName = assetData.imageName
 				currentStreamingUrl = assetData.streamingUrl
-
 			}
 
 			// 2. Upload Metadata
@@ -335,7 +340,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 					'Authorization': `Bearer ${token}`
 				},
 				body: JSON.stringify({
-					title: currentAudioName.replace('audio_', '').replace('.mp3', ''),
+					title: title,
 					description,
 					artist: artistName || 'Unknown Artist',
 					genre,
@@ -531,22 +536,27 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 			// Extract Splitter from logs
 			let splitterAddress = ''
 			try {
-				const { decodeEventLog } = await import('viem')
+				const { parseEventLogs } = await import('viem')
 				if (receipt?.logs) {
-					const log = receipt.logs.find((l: any) => l.address.toLowerCase() === CONTRACT_ADDRESS.toLowerCase())
-					if (log) {
-						const event = decodeEventLog({
-							abi: CONTRACT_ABI,
-							data: log.data,
-							topics: log.topics,
-						})
-						if (event.eventName === 'CollectionPublished') {
-							splitterAddress = (event.args as any).splitter
+					const events = parseEventLogs({
+						abi: CONTRACT_ABI,
+						logs: receipt.logs,
+						eventName: 'CollectionPublished',
+					})
+
+					if (events.length > 0) {
+						const eventArgs = (events[0].args as any)
+						splitterAddress = eventArgs.splitter
+						if (eventArgs.collectionId) {
+							tokenId = BigInt(eventArgs.collectionId)
 						}
+						logger.info(`Successfully decoded CollectionPublished event. Splitter: ${splitterAddress}, ID: ${tokenId}`)
+					} else {
+						logger.warn('No CollectionPublished event found in logs.')
 					}
 				}
 			} catch (e) {
-				logger.warn('Failed to decode logs for splitter', e)
+				logger.error('Failed to decode logs for splitter', e)
 			}
 
 			setPublishedSongId(tokenId)
@@ -568,8 +578,8 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 						description,
 						artist: artistName || 'Unknown Artist',
 						genre,
-						image_url: `ipfs://${imageName}`,
-						audio_url: `ipfs://${audioName}`,
+						image_url: `ipfs://${currentImageHash}`,
+						audio_url: `ipfs://${currentAudioHash}`,
 						streaming_url: currentStreamingUrl,
 						external_url: `https://doba.world/songs/${tokenId}`,
 						price: price || '0.99',
@@ -1172,7 +1182,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 					) : (
 						<button
 							type="submit"
-							disabled={isUploading || isSending || !audioFile || !coverFile || !effectiveAddress}
+							disabled={isUploading || isSending || isAssetsUploading || !audioFile || !coverFile || !effectiveAddress}
 							className="w-full bg-cyber-pink hover:bg-cyber-pink/90 text-white font-medium py-4 px-6 rounded-none flex items-center justify-center gap-2 transition-all transform active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed group"
 						>
 							{isUploading ? (
