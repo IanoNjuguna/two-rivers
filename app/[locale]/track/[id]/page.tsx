@@ -371,7 +371,7 @@ export default function TrackDetailPage() {
 									? "bg-green-500/10 text-green-400 border border-green-500/20 cursor-default"
 									: (maxSupply > 0 && mintedCount >= maxSupply)
 										? "bg-white/5 border border-white/10 cursor-not-allowed"
-										: "bg-[#B794F4] hover:bg-[#B794F4]/80 text-white border border-[#B794F4]/20",
+										: "bg-[#B794F4] hover:bg-[#B794F4]/80 text-black border border-[#B794F4]/20",
 								isMinting && "opacity-50 cursor-not-allowed"
 							)}
 						>
