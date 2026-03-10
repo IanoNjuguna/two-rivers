@@ -282,18 +282,22 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 						Open Original File
 					</Button>
 
-					{track.token_id !== undefined && (
-						<Button
-							variant="outline"
-							className="w-full border-white/10 hover:bg-white/5 text-[10px] uppercase font-bold text-white/60 tracking-widest py-4 rounded-none h-auto"
-							onClick={() => {
-								window.open(`${EXPLORER_URL}/nft/${CONTRACT_ADDRESS}/${track.token_id}`, '_blank')
-							}}
-						>
-							<IconExternalLink size={14} className="mr-2" />
-							Provenance
-						</Button>
-					)}
+					{(() => {
+						const tokenId = track.id !== undefined ? track.id : track.token_id;
+						if (tokenId === undefined) return null;
+						return (
+							<Button
+								variant="outline"
+								className="w-full border-white/10 hover:bg-white/5 text-[10px] uppercase font-bold text-white/60 tracking-widest py-4 rounded-none h-auto"
+								onClick={() => {
+									window.open(`${EXPLORER_URL}/nft/${CONTRACT_ADDRESS}/${tokenId}`, '_blank')
+								}}
+							>
+								<IconExternalLink size={14} className="mr-2" />
+								Provenance
+							</Button>
+						);
+					})()}
 				</div>
 			</div>
 		</aside>
