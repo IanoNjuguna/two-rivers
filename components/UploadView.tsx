@@ -10,7 +10,7 @@ import { GENRES } from '@/constants/genres'
 
 import { useChainId, useAccount, useWalletClient, usePublicClient, useSignMessage } from "wagmi"
 import { getAddressesForChain, getDstEid, CONTRACT_ABI, ERC20_ABI, LZ_SYNC_OPTIONS, CHAIN_ID, CHAIN_NAME, publicClients } from '@/lib/web3'
-import { useSwitchChain } from 'wagmi'
+// switchChain is done via walletClient.switchChain directly
 import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
 import { useBackendAuth } from '@/hooks/useBackendAuth'
@@ -28,7 +28,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 	const { address: wagmiAddress, isConnected } = useAccount()
 	const { data: walletClient } = useWalletClient()
 	const publicClient = usePublicClient()
-	const { switchChain } = useSwitchChain()
+	
 
 	const { usdc: USDC_ADDRESS, contract: CONTRACT_ADDRESS, paymaster: PAYMASTER_ADDRESS } = getAddressesForChain(chainId || CHAIN_ID)
 	const MathChain = { id: chainId || CHAIN_ID, name: chainId === (CHAIN_ID === 8453 ? 8453 : 84532) ? CHAIN_NAME : (CHAIN_ID === 8453 ? 'Base' : 'Base Sepolia') }
@@ -769,7 +769,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 						</p>
 						<button
 							type="button"
-							onClick={() => switchChain?.({ chainId: CHAIN_ID })}
+							onClick={() => walletClient?.switchChain({ id: CHAIN_ID }).catch(() => {})}
 							className="bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-4 py-2 rounded-none cursor-pointer"
 						>
 							Switch to {CHAIN_NAME}
