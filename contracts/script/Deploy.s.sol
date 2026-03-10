@@ -30,6 +30,7 @@ contract DeployDoba is Script {
         vm.startBroadcast();
 
         Doba doba = new Doba(usdc, lzEndpoint, msg.sender);
+        doba.setContractURI("ipfs://QmT3nxzTYNXDRmh2xAx8uRtCyiQS8F9rkaozzrNmaBECfE");
         
         vm.stopBroadcast();
 

@@ -21,6 +21,11 @@ contract Doba is ERC1155, Ownable, ReentrancyGuard, OApp {
     
     IERC20 public usdc;
     address public splitterImplementation;
+    
+    // Metadata for wallets/explorers
+    string public name = "Doba Originals";
+    string public symbol = "DOBA";
+    string public contractURI;
 
     uint256 public constant MAX_BOT_FEE = 10_000_000; // 10 USDC cap
     
@@ -73,6 +78,13 @@ contract Doba is ERC1155, Ownable, ReentrancyGuard, OApp {
         require(_fee <= MAX_BOT_FEE, "Fee too high");
         emit BotFeeUpdated(botFee, _fee);
         botFee = _fee;
+    }
+
+    /**
+     * @notice Updates the collection metadata URI
+     */
+    function setContractURI(string calldata _uri) external onlyOwner {
+        contractURI = _uri;
     }
 
     /**
