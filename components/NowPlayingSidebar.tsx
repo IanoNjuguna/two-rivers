@@ -17,14 +17,34 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 	const chainId = useChainId()
 	const { contract: CONTRACT_ADDRESS, explorer: EXPLORER_URL } = getAddressesForChain(chainId || 84532)
 
+	React.useEffect(() => {
+		const handleEsc = (e: KeyboardEvent) => {
+			if (e.key === 'Escape') onClose()
+		}
+		window.addEventListener('keydown', handleEsc)
+		return () => window.removeEventListener('keydown', handleEsc)
+	}, [onClose])
+
 	if (!isVisible || !track) return null
 
 	const imageUrl = (track.image_url || track.cover || '').replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/')
 	const audioUrl = track.streaming_url || (track.audio_url || track.url || '').replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/')
 
 	return (
-		<aside className="hidden lg:flex flex-col w-80 border-l border-white/[0.08] bg-[#0D0D12] overflow-hidden animate-slide-in-right h-full">
-			<div className="flex-1 overflow-y-auto no-scrollbar p-6 space-y-6">
+		<aside className="hidden lg:flex flex-col w-80 border-l border-white/[0.08] bg-[#0D0D12] overflow-hidden animate-slide-in-right h-full border-t border-white/[0.08]">
+			<div className="flex-1 overflow-y-auto no-scrollbar p-6 space-y-6 relative">
+				{/* Top Label & Close Button */}
+				<div className="flex items-center justify-between mb-2">
+					<p className="text-[10px] uppercase tracking-widest text-white/40 font-bold">Explore</p>
+					<button
+						onClick={onClose}
+						className="p-1.5 hover:bg-white/10 rounded-full transition-colors text-white/40 hover:text-white"
+						title="Close"
+					>
+						<IconX size={16} />
+					</button>
+				</div>
+
 				{/* Large Album Art */}
 				<div className="aspect-square w-full rounded-none overflow-hidden border border-white/10 shadow-2xl group">
 					<img
@@ -37,7 +57,6 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 				{/* Track Info */}
 				<div className="space-y-4">
 					<div className="space-y-1">
-						<p className="text-[10px] uppercase tracking-widest text-white/40 font-bold mb-2">Explore</p>
 						<h2 className="text-2xl font-bold text-white tracking-tight leading-tight">
 							{track.name || track.title}
 						</h2>
