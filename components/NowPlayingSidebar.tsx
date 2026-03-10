@@ -32,7 +32,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 
 	return (
 		<aside className="hidden lg:flex flex-col w-80 border-l border-white/[0.08] bg-[#0D0D12] overflow-hidden animate-slide-in-right h-full border-t border-white/[0.08]">
-			<div className="flex-1 overflow-y-auto no-scrollbar p-6 space-y-6 relative">
+			<div className="flex-1 overflow-y-auto no-scrollbar p-6 space-y-6 relative pb-[100px]">
 				{/* Top Label & Close Button */}
 				<div className="flex items-center justify-between mb-2">
 					<p className="text-[10px] uppercase tracking-widest text-white/40 font-bold">Explore</p>
