@@ -8,7 +8,13 @@ import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
 
 interface Track {
+  id?: number
   token_id: number
+  title?: string
+  cover?: string
+  creator?: string
+  url?: string
+  collaborators?: number
   name: string
   artist: string
   image_url: string

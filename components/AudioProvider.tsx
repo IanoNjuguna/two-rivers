@@ -42,7 +42,11 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 	React.useEffect(() => {
 		if (playerState.currentTrack && isSidebarOpen) {
 			// Always sync if sidebar is open and doesn't match current track
-			if (!sidebarTrack || sidebarTrack.id !== playerState.currentTrack.id) {
+			const sidebarId = sidebarTrack?.id ?? sidebarTrack?.token_id
+			const currentTrack = playerState.currentTrack as any
+			const currentId = currentTrack?.id ?? currentTrack?.token_id
+
+			if (!sidebarTrack || sidebarId !== currentId) {
 				setSidebarTrack(playerState.currentTrack)
 			}
 		}

@@ -8,7 +8,13 @@ import { useChainId, usePublicClient } from "wagmi"
 import { useAudio } from './AudioProvider'
 
 interface Track {
+  id?: number
   token_id: number
+  title?: string
+  cover?: string
+  creator?: string
+  url?: string
+  collaborators?: number
   name: string
   artist: string
   image_url: string
