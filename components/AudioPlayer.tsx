@@ -97,12 +97,22 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
       return
     }
 
-    const priceInUnits = currentTrack.price ? parseUnits(currentTrack.price, 6) : 990000n
     setIsMinting(true)
-    const mainToast = toast.loading(`Collecting "${currentTrack.title}"...`)
+    const mainToast = toast.loading(`Preparing to collect "${currentTrack.title}"...`)
 
     try {
+      logger.info('AudioPlayer: Starting mint for track', { id: currentTrack.id, price: currentTrack.price })
+
       if (!publicClient) throw new Error("Public client not found")
+
+      // Use a safe price calculation
+      let priceInUnits: bigint
+      try {
+        priceInUnits = currentTrack.price ? parseUnits(currentTrack.price, 6) : 990000n
+      } catch (err) {
+        logger.error('AudioPlayer: Invalid price format', { price: currentTrack.price })
+        throw new Error("Invalid track price format")
+      }
 
       // 1. Check Allowance
       const allowance = await publicClient.readContract({
