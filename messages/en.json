@@ -2,7 +2,7 @@
 	"nav": {
 		"navigation": "Navigation",
 		"home": "Home",
-		"library": "Library",
+		"library": "Playlist",
 		"search": "Search",
 		"creator": "Creator",
 		"upload": "Upload",
@@ -28,10 +28,10 @@
 		"discoverMusic": "Discover Music"
 	},
 	"library": {
-		"title": "My Library",
+		"title": "My Playlist",
 		"subtitle": "Your saved tracks and NFTs",
 		"connectWallet": "Connect Your Wallet",
-		"connectToView": "Connect your wallet to view your library",
+		"connectToView": "Connect your wallet to view your playlist",
 		"noSongs": "No songs found",
 		"noSongsDesc": "You don't own any songs yet. Head to the marketplace to discover music!"
 	},

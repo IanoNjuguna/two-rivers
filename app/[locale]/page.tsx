@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { IconMenu2 as Menu, IconHome as HomeIcon, IconBooks as Library, IconSearch as Search, IconCurrencyDollar as DollarSign, IconTrendingUp as TrendingUp, IconUser as User, IconLogout as LogOut, IconPlus, IconMusic as Music, IconCopy, IconArrowsExchange } from '@tabler/icons-react'
+import { IconMenu2 as Menu, IconHome as HomeIcon, IconPlaylistAdd as Library, IconSearch as Search, IconCurrencyDollar as DollarSign, IconTrendingUp as TrendingUp, IconUser as User, IconLogout as LogOut, IconPlus, IconMusic as Music, IconCopy, IconArrowsExchange } from '@tabler/icons-react'
 import { Button } from '@/components/ui/button'
 import MarketplaceGrid from '@/components/MarketplaceGrid'
 import MyStudioGrid from '@/components/MyStudioGrid'
