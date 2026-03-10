@@ -343,7 +343,7 @@ export default function SongCard({
       <div className="absolute top-2 right-2 z-20 mt-5">
         <div className="text-[9px] text-white font-bold bg-black/60 backdrop-blur-sm border border-cyber-pink/30 px-1.5 py-0.5">
           {(() => {
-            const currentPrice = price ? parseFloat(price) : 0.99;
+            const currentPrice = price ? parseFloat(price) : 0.50;
             if (currentPrice === 0) return 'FREE';
             if (currentPrice < 1) return `${Math.round(currentPrice * 100)}¢`;
             return `$${currentPrice.toFixed(2)}`;
