@@ -38,18 +38,15 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 		sdk.isInMiniApp().then(setIsMiniApp).catch(() => setIsMiniApp(false))
 	}, [])
 
-	// Sync sidebar track with current player track if sidebar is open and follows player
+	// Sync sidebar track with current player track if sidebar is open
 	React.useEffect(() => {
 		if (playerState.currentTrack && isSidebarOpen) {
-			// Only update if we aren't explicitly viewing a different track from library
-			if (!sidebarTrack || sidebarTrack.id === playerState.currentTrack.id) {
-				// We need to map player track to full track info if possible
-				// For now, just use player track but note it might lack some details like description
-				// Actually, we'll handle this in the sidebar component by fetching full info if needed
+			// Always sync if sidebar is open and doesn't match current track
+			if (!sidebarTrack || sidebarTrack.id !== playerState.currentTrack.id) {
 				setSidebarTrack(playerState.currentTrack)
 			}
 		}
-	}, [playerState.currentTrack, isSidebarOpen])
+	}, [playerState.currentTrack?.id, isSidebarOpen])
 
 	const handleOpenSidebar = useCallback((track: any) => {
 		setSidebarTrack(track)
@@ -75,7 +72,12 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 			playerState.audioRef.current.src = track.url || ''
 		}
 		playerState.play(track, tracks)
-	}, [playerState, isConnected])
+
+		// If sidebar is open, update it to the track being played
+		if (isSidebarOpen) {
+			setSidebarTrack(track)
+		}
+	}, [playerState, isConnected, isSidebarOpen])
 
 	const value = useMemo(() => ({
 		playerState,

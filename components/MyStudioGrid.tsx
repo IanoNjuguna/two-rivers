@@ -129,7 +129,15 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
             <div className="flex justify-center items-center">
               {hoveredTrackId === track.token_id || (isPlaying && currentTrackId === track.token_id) ? (
                 <button
-                  onClick={() => onPlay?.(track, ownedTracks)}
+                  onClick={() => onPlay?.({
+                    ...track,
+                    id: track.token_id,
+                    title: track.name,
+                    creator: track.artist,
+                    cover: track.image_url,
+                    url: track.streaming_url || track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
+                    collaborators: 0,
+                  }, ownedTracks)}
                   className="w-6 h-6 flex items-center justify-center bg-white text-black rounded-none shadow-sm transition-all active:scale-95"
                 >
                   {isPlaying && currentTrackId === track.token_id ? (
@@ -146,7 +154,15 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
             {/* Track Info (Title + Artist) */}
             <div
               className="flex items-center gap-3 min-w-0 cursor-pointer"
-              onClick={() => onPlay?.(track, ownedTracks)}
+              onClick={() => onPlay?.({
+                ...track,
+                id: track.token_id,
+                title: track.name,
+                creator: track.artist,
+                cover: track.image_url,
+                url: track.streaming_url || track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
+                collaborators: 0,
+              }, ownedTracks)}
             >
               <div className="w-10 h-10 rounded overflow-hidden flex-shrink-0 border border-white/10">
                 <img

@@ -515,21 +515,21 @@ function DashboardLayout() {
                     currentTrackId={playerState.currentTrack?.id}
                     isPlaying={playerState.isPlaying}
                     onPlay={(track, tracks) => handlePlayTrack({
+                      ...track,
                       id: track.token_id,
                       title: track.name,
                       creator: track.artist,
                       cover: track.image_url,
                       url: track.streaming_url || track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
                       collaborators: 0,
-                      price: track.price
                     }, tracks.map(t => ({
+                      ...t,
                       id: t.token_id,
                       title: t.name,
                       creator: t.artist,
                       cover: t.image_url,
                       url: t.streaming_url || t.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
                       collaborators: 0,
-                      price: t.price
                     })))}
                   />
                 </div>
