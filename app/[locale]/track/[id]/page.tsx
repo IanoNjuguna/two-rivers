@@ -106,7 +106,7 @@ export default function TrackDetailPage() {
 					})
 				])
 				setMintedCount(Number(minted))
-				setMaxSupply(Number(collectionInfo[4]))
+				setMaxSupply(Number(collectionInfo[3]))
 			} catch (e) {
 				console.error('Error fetching on-chain stats', e)
 			}
@@ -253,10 +253,8 @@ export default function TrackDetailPage() {
 	}
 
 	const formatPrice = (p?: string) => {
-		const v = p ? parseFloat(p) : 0.50
-		if (v === 0) return 'FREE'
-		if (v < 1) return `${Math.round(v * 100)}¢`
-		return `$${v.toFixed(2)}`
+		// Hardcoded to 50c to match global standard
+		return '50¢'
 	}
 
 	if (loading) {
@@ -337,7 +335,7 @@ export default function TrackDetailPage() {
 				<div className="mb-6">
 					<div className="space-y-3 mb-4">
 						<div className="flex items-center justify-between">
-							<span className="text-lg font-bold text-cyber-pink">{formatPrice(track.price)}</span>
+							<span className="text-lg font-bold text-cyber-pink">50¢</span>
 							<div className="text-right">
 								<div className="text-[10px] font-mono flex items-center gap-1 justify-end">
 									<span className="text-white">{mintedCount.toLocaleString()}</span>
