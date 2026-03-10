@@ -380,7 +380,7 @@ export default function TrackDetailPage() {
 							) : hasOwned ? (
 								<IconCheck size={16} />
 							) : (maxSupply > 0 && mintedCount >= maxSupply) ? (
-								<DobaVisualizer size={16} />
+								<DobaVisualizer size={16} className="text-[#FF1F8A]/60" />
 							) : (
 								<IconHeart size={16} />
 							)}

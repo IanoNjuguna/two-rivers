@@ -398,7 +398,7 @@ export default function SongCard({
       {/* Sold Out Overlay */}
       {!hasOwned && !isMinting && mintData.max > 0 && mintData.minted >= mintData.max && (
         <div className="absolute inset-0 z-40 bg-black/60 backdrop-blur-[1px] flex flex-col items-center justify-center gap-2">
-          <DobaVisualizer size={32} className="text-white/40" />
+          <DobaVisualizer size={32} className="text-[#FF1F8A]/60" />
           <span className="text-[10px] font-bold text-white/60 uppercase tracking-widest">Sold Out</span>
         </div>
       )}

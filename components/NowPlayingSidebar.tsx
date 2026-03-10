@@ -222,7 +222,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 							) : hasOwned ? (
 								<IconCheck size={16} className="mr-2" />
 							) : (mintData.max > 0 && mintData.minted >= mintData.max) ? (
-								<DobaVisualizer size={16} className="mr-2" />
+								<DobaVisualizer size={16} className="mr-2 text-[#FF1F8A]/60" />
 							) : null}
 							{hasOwned ? 'Collected' : (mintData.max > 0 && mintData.minted >= mintData.max) ? 'Sold Out' : 'Collect'}
 						</Button>
