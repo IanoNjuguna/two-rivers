@@ -477,27 +477,11 @@ function DashboardLayout() {
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder={tSearch('placeholder') || "Search by title or artist..."}
+                        placeholder="I want to listen to ..."
                         className="w-full bg-white/5 border border-white/10 rounded-none pl-12 pr-4 py-4 text-white focus:outline-none focus:border-cyber-pink focus:ring-1 focus:ring-cyber-pink/50 transition-all placeholder:text-white/20 text-lg"
                       />
                     </div>
 
-                    {/* Chain Filters */}
-                    <div className="flex flex-wrap gap-2">
-                      {CHAINS.map((chain) => (
-                        <button
-                          key={chain.id}
-                          onClick={() => setSelectedChain(chain.id)}
-                          className={`flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-widest transition-all clip-tag border ${selectedChain === chain.id
-                            ? "bg-cyber-pink border-cyber-pink text-white"
-                            : "bg-white/5 border-white/10 text-white/40 hover:text-white hover:bg-white/10"
-                            }`}
-                        >
-                          {chain.logo && <img src={chain.logo} alt={chain.label} className="w-4 h-4 rounded-full" />}
-                          {chain.label}
-                        </button>
-                      ))}
-                    </div>
 
                     {/* Genre Filters Scroll */}
                     <div className="relative">
