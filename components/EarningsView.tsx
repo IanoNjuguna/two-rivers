@@ -292,7 +292,7 @@ export default function EarningsView({ }: EarningsViewProps) {
       <button
         disabled={isClaiming || parseFloat(totalPending) === 0}
         onClick={handleClaimAll}
-        className="w-full py-4 rounded-lg font-bold transition bg-[#FF1F8A] text-white hover:bg-[#E01A73] shadow-lg shadow-[#FF1F8A]/20 disabled:opacity-50 disabled:grayscale"
+        className="w-full py-4 rounded-lg font-bold transition bg-[#B794F4] text-black hover:bg-[#A080E0] disabled:opacity-50 disabled:grayscale"
       >
         {isClaiming ? 'Processing Claims...' : t('claimEarnings')}
       </button>
