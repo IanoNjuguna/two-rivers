@@ -6,7 +6,7 @@ import { farcasterMiniApp } from '@farcaster/miniapp-wagmi-connector';
 import { QueryClient } from '@tanstack/react-query';
 
 export const activeChain = process.env.NEXT_PUBLIC_CHAIN_ID === '84532' ? baseSepolia : base;
-export const chains = [baseSepolia, base] as const;
+export const chains = [activeChain] as const;
 
 export const getConfig = () => {
 	return createConfig({
