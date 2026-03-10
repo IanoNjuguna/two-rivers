@@ -14,6 +14,7 @@ import { cookieToInitialState } from "wagmi"
 import { config } from "@/lib/config"
 import { MiniAppInit } from "@/components/MiniAppInit"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/next"
 
 const notoSans = localFont({
 	src: [
@@ -137,6 +138,7 @@ export default async function LocaleLayout({ children, params }: Props) {
 					</Providers>
 				</NextIntlClientProvider>
 				<SpeedInsights />
+				<Analytics />
 			</body>
 		</html>
 	)
