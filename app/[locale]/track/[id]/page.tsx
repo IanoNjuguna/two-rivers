@@ -370,7 +370,7 @@ export default function TrackDetailPage() {
 								hasOwned
 									? "bg-green-500/10 text-green-400 border border-green-500/20 cursor-default"
 									: (maxSupply > 0 && mintedCount >= maxSupply)
-										? "bg-white/5 border border-white/10 cursor-not-allowed"
+										? "bg-white/5 border border-white/10 cursor-not-allowed disabled:opacity-100"
 										: "bg-[#B794F4] hover:bg-[#B794F4]/80 text-black border border-[#B794F4]/20",
 								isMinting && "opacity-50 cursor-not-allowed"
 							)}
@@ -380,7 +380,7 @@ export default function TrackDetailPage() {
 							) : hasOwned ? (
 								<IconCheck size={16} />
 							) : (maxSupply > 0 && mintedCount >= maxSupply) ? (
-								<DobaVisualizer size={16} className="text-[#FF1F8A]" />
+								<DobaVisualizer size={16} className="text-[#FF1F8A] drop-shadow-[0_0_8px_rgba(255,31,138,0.5)]" />
 							) : (
 								<IconHeart size={16} />
 							)}
