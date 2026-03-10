@@ -141,6 +141,8 @@ export default function EarningsView({ }: EarningsViewProps) {
 
   useEffect(() => {
     fetchEarnings()
+    const interval = setInterval(fetchEarnings, 30000) // Auto-refresh every 30s
+    return () => clearInterval(interval)
   }, [isConnected, address])
 
   const handleClaimAll = async () => {

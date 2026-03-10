@@ -457,12 +457,34 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 			}
 			const tokenId = BigInt(nextId as any)
 
-			let collaboratorsList = collaborators.map(c => c.address).filter(a => a !== '')
-			let sharesList = collaborators.filter(c => c.address !== '').map(c => BigInt(Math.floor((Number(c.split) || 0) * 100)))
+			// Calculate splits including the uploader
+			let collaboratorsList: `0x${string}`[] = []
+			let sharesList: bigint[] = []
 
-			if (collaboratorsList.length === 0) {
-				collaboratorsList = [effectiveAddress]
+			const otherCollabs = collaborators.filter(c => c.address !== '' && c.address.toLowerCase() !== effectiveAddress?.toLowerCase())
+			const otherSharesSum = otherCollabs.reduce((sum, c) => sum + (Number(c.split) || 0), 0)
+
+			// Uploader gets the remainder (capped at 100, min 0)
+			const uploaderShare = Math.max(0, 100 - otherSharesSum)
+
+			// 1. Add uploader first
+			collaboratorsList.push(effectiveAddress as `0x${string}`)
+			sharesList.push(BigInt(Math.floor(uploaderShare * 100)))
+
+			// 2. Add other collaborators
+			otherCollabs.forEach(c => {
+				collaboratorsList.push(c.address as `0x${string}`)
+				sharesList.push(BigInt(Math.floor((Number(c.split) || 0) * 100)))
+			})
+
+			// 3. Final validation/safety: if for some reason we have 0 shares total (shouldn't happen), default to 100% uploader
+			const totalShares = sharesList.reduce((a, b) => a + b, 0n)
+			if (totalShares === 0n) {
+				collaboratorsList = [effectiveAddress as `0x${string}`]
 				sharesList = [10000n]
+			} else if (totalShares < 10000n) {
+				// Add rounding residue to uploader
+				sharesList[0] = sharesList[0] + (10000n - totalShares)
 			}
 
 			const calls = []
@@ -1073,6 +1095,24 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 					</div>
 
 					<div className="space-y-3">
+						{/* Uploader Share (Read-only) */}
+						<div className="flex gap-3 items-start p-3 bg-purple-400/5 border border-purple-400/20 rounded-none mb-4">
+							<div className="flex-1 flex items-center gap-2">
+								<div className="w-8 h-8 rounded-full bg-purple-400/20 flex items-center justify-center text-purple-400 uppercase font-bold text-xs">Me</div>
+								<div>
+									<p className="text-sm font-medium text-white/90">You (Uploader)</p>
+									<p className="text-[10px] text-white/40 font-mono truncate">{effectiveAddress}</p>
+								</div>
+							</div>
+							<div className="w-28 relative">
+								<div className="w-full bg-white/5 border border-white/10 rounded-none px-4 py-3 text-white text-sm text-center font-bold">
+									{Math.max(0, 100 - collaborators.reduce((sum, c) => sum + (Number(c.split) || 0), 0))}
+								</div>
+								<div className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 text-xs font-bold">%</div>
+							</div>
+							<div className="w-[44px]"></div> {/* Spacer to match trash button */}
+						</div>
+
 						{collaborators.map((collaborator, index) => (
 							<div key={index} className="flex gap-3 items-start animate-fade-in group">
 								<div className="flex-1">
