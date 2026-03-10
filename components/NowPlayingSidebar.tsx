@@ -1,11 +1,14 @@
 'use client'
 
 import React from 'react'
-import { IconX, IconMicrophone, IconExternalLink } from '@tabler/icons-react'
+import { IconX, IconMicrophone, IconExternalLink, IconShare, IconCopy, IconHeart, IconCheck, IconLoader2 } from '@tabler/icons-react'
 import { Button } from '@/components/ui/button'
-import { getAddressesForChain } from '@/lib/web3'
-import { useChainId } from 'wagmi'
+import { getAddressesForChain, CONTRACT_ABI, ERC20_ABI } from '@/lib/web3'
+import { useChainId, usePublicClient, useAccount, useWriteContract } from 'wagmi'
 import { cn } from '@/lib/utils'
+import { parseUnits, encodeFunctionData } from 'viem'
+import { toast } from 'sonner'
+import { useAudio } from '@/components/AudioProvider'
 
 interface NowPlayingSidebarProps {
 	track: any | null
@@ -15,7 +18,119 @@ interface NowPlayingSidebarProps {
 
 export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlayingSidebarProps) {
 	const chainId = useChainId()
-	const { contract: CONTRACT_ADDRESS, explorer: EXPLORER_URL } = getAddressesForChain(chainId || 84532)
+	const { address } = useAccount()
+	const publicClient = usePublicClient()
+	const { writeContractAsync } = useWriteContract()
+	const { contract: CONTRACT_ADDRESS, explorer: EXPLORER_URL, usdc: USDC_ADDRESS } = getAddressesForChain(chainId || 84532)
+
+	const [mintData, setMintData] = React.useState<{ minted: number, max: number }>({ minted: 0, max: 0 })
+	const [hasOwned, setHasOwned] = React.useState(false)
+	const [isMinting, setIsMinting] = React.useState(false)
+
+	const fetchMintData = React.useCallback(async () => {
+		if (!publicClient || !track || track.token_id === undefined) return
+		try {
+			const [minted, collectionInfo] = await Promise.all([
+				publicClient.readContract({
+					address: CONTRACT_ADDRESS as `0x${string}`,
+					abi: CONTRACT_ABI,
+					functionName: 'collectionMinted',
+					args: [BigInt(track.token_id)],
+				}),
+				publicClient.readContract({
+					address: CONTRACT_ADDRESS as `0x${string}`,
+					abi: CONTRACT_ABI,
+					functionName: 'collections',
+					args: [BigInt(track.token_id)],
+				})
+			])
+			setMintData({ minted: Number(minted), max: Number(collectionInfo[4]) })
+
+			if (address) {
+				const balance = await publicClient.readContract({
+					address: CONTRACT_ADDRESS as `0x${string}`,
+					abi: CONTRACT_ABI,
+					functionName: 'balanceOf',
+					args: [address as `0x${string}`, BigInt(track.token_id)],
+				})
+				setHasOwned(Number(balance) > 0)
+			}
+		} catch (err) {
+			console.error('Sidebar: Error fetching mint data', err)
+		}
+	}, [publicClient, track, CONTRACT_ADDRESS, address])
+
+	React.useEffect(() => {
+		fetchMintData()
+	}, [fetchMintData])
+
+	const handleMint = async () => {
+		if (!address || !track) {
+			toast.error("Please connect your wallet")
+			return
+		}
+
+		const priceInUnits = track.price ? parseUnits(track.price, 6) : 990000n
+		setIsMinting(true)
+		const mainToast = toast.loading(`Collecting "${track.name || track.title}"...`)
+
+		try {
+			if (!publicClient) throw new Error("Public client not found")
+
+			const allowance = await publicClient.readContract({
+				address: USDC_ADDRESS as `0x${string}`,
+				abi: ERC20_ABI,
+				functionName: 'allowance',
+				args: [address as `0x${string}`, CONTRACT_ADDRESS as `0x${string}`],
+			}) as bigint
+
+			if (allowance < priceInUnits) {
+				toast.info("Approving USDC...", { id: mainToast })
+				const tx = await writeContractAsync({
+					address: USDC_ADDRESS as `0x${string}`,
+					abi: ERC20_ABI,
+					functionName: 'approve',
+					args: [CONTRACT_ADDRESS as `0x${string}`, 1000000000000n],
+				})
+				await publicClient.waitForTransactionReceipt({ hash: tx })
+			}
+
+			toast.loading(`Confirming purchase...`, { id: mainToast })
+			const tx = await writeContractAsync({
+				address: CONTRACT_ADDRESS as `0x${string}`,
+				abi: CONTRACT_ABI,
+				functionName: 'mint',
+				args: [BigInt(track.token_id)],
+			})
+			await publicClient.waitForTransactionReceipt({ hash: tx })
+
+			setHasOwned(true)
+			fetchMintData()
+			toast.success(`"${track.name || track.title}" collected!`, { id: mainToast })
+		} catch (error: any) {
+			toast.error(error.message || "Collection failed", { id: mainToast })
+		} finally {
+			setIsMinting(false)
+		}
+	}
+
+	const handleShare = () => {
+		if (navigator.share) {
+			navigator.share({
+				title: track.name || track.title,
+				text: `Check out ${track.name || track.title} by ${track.artist || track.creator} on doba`,
+				url: window.location.href,
+			})
+		} else {
+			navigator.clipboard.writeText(window.location.href)
+			toast.success("Link copied to clipboard!")
+		}
+	}
+
+	const handleCopyLink = () => {
+		navigator.clipboard.writeText(window.location.href)
+		toast.success("Link copied to clipboard!")
+	}
 
 	React.useEffect(() => {
 		const handleEsc = (e: KeyboardEvent) => {
@@ -32,7 +147,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 
 	return (
 		<aside className="fixed inset-0 z-[100] bg-[#0D0D12] lg:static lg:z-0 lg:flex flex-col lg:w-80 border-l border-white/[0.08] overflow-hidden animate-slide-in-right h-full border-t lg:border-t-0 border-white/[0.08]">
-			<div className="flex-1 overflow-y-auto no-scrollbar p-6 space-y-6 relative pb-[100px]">
+			<div className="flex-1 overflow-y-auto no-scrollbar p-6 space-y-6 relative pb-[120px]">
 				{/* Top Label & Close Button */}
 				<div className="flex items-center justify-between mb-2">
 					<p className="text-[10px] uppercase tracking-widest text-white/40 font-bold">Explore</p>
@@ -66,9 +181,62 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 						</div>
 					</div>
 
+					{/* Price & Mint Info */}
+					<div className="space-y-2 pt-2">
+						<div className="flex items-center justify-between">
+							<span className="text-cyber-pink font-bold text-lg">99¢</span>
+							<span className="text-[10px] text-white/40 font-bold uppercase tracking-widest">
+								{mintData.minted} / {mintData.max} Edition
+							</span>
+						</div>
+						<div className="h-[2px] w-full bg-white/5 relative overflow-hidden">
+							<div
+								className="absolute inset-y-0 left-0 bg-cyber-pink transition-all duration-1000"
+								style={{ width: `${(mintData.minted / (mintData.max || 1)) * 100}%` }}
+							/>
+						</div>
+					</div>
+
+					{/* Action Buttons */}
+					<div className="flex gap-2 pt-2">
+						<Button
+							className={cn(
+								"flex-1 h-12 rounded-none font-bold uppercase tracking-widest text-xs transition-all duration-300",
+								hasOwned
+									? "bg-[#1DB954]/10 border border-[#1DB954]/20 text-[#1DB954] hover:bg-[#1DB954]/20"
+									: "bg-white/[0.03] border border-white/10 text-white hover:bg-white/10"
+							)}
+							onClick={!hasOwned && !isMinting ? handleMint : undefined}
+							disabled={isMinting}
+						>
+							{isMinting ? (
+								<IconLoader2 size={16} className="animate-spin mr-2" />
+							) : hasOwned ? (
+								<IconCheck size={16} className="mr-2" />
+							) : null}
+							{hasOwned ? 'Collected' : 'Collect'}
+						</Button>
+
+						<Button
+							variant="outline"
+							className="w-12 h-12 p-0 border-white/10 hover:bg-white/5 rounded-none"
+							onClick={handleShare}
+						>
+							<IconShare size={18} className="text-white/60" />
+						</Button>
+
+						<Button
+							variant="outline"
+							className="w-12 h-12 p-0 border-white/10 hover:bg-white/5 rounded-none"
+							onClick={handleCopyLink}
+						>
+							<IconCopy size={18} className="text-white/60" />
+						</Button>
+					</div>
+
 					{/* Lyrics Section */}
 					{(track.description || track.lyrics) && (
-						<div className="space-y-3 pt-4 border-t border-white/5">
+						<div className="space-y-3 pt-6 border-t border-white/5">
 							<p className="text-[10px] uppercase tracking-widest text-white/40 font-bold">Lyrics</p>
 							<div className="bg-white/[0.03] p-4 border border-white/5 rounded-none">
 								<p className="text-white/80 text-sm leading-relaxed whitespace-pre-line">
@@ -96,7 +264,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 				{/* Actions */}
 				<div className="flex flex-col gap-3 pt-6">
 					<Button
-						className="w-full bg-[#FF1F8A] hover:bg-[#FF1F8A]/90 text-white font-bold py-6 rounded-none shadow-[0_0_20px_rgba(255,31,138,0.2)] transition-all duration-300"
+						className="w-full bg-[#FF1F8A] hover:bg-[#FF1F8A]/90 text-white font-bold py-6 rounded-none transition-all duration-300"
 						onClick={() => window.open(audioUrl, '_blank')}
 					>
 						Open Original File
