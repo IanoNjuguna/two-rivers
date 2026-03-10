@@ -32,7 +32,7 @@ interface AudioPlayerProps {
 }
 
 export default function AudioPlayer({ playerState }: AudioPlayerProps) {
-  const { address: effectiveAddress, isConnected: isAuthenticated, toggleSidebar, isSidebarOpen } = useAudio()
+  const { effectiveAddress, isConnected: isAuthenticated, toggleSidebar, isSidebarOpen, handleOpenSidebar } = useAudio()
   const {
     currentTrack,
     isPlaying,
@@ -284,7 +284,15 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
       <div className="hidden md:flex items-center gap-4 px-6 h-[90px] max-w-screen-2xl mx-auto">
         <div
           className="flex items-center gap-3 w-[25%] min-w-0 cursor-pointer hover:opacity-80 transition-opacity"
-          onClick={() => router.push(`/${locale}/track/${currentTrack.id}`)}
+          onClick={() => {
+            handleOpenSidebar({
+              ...currentTrack,
+              token_id: currentTrack.id, // Ensure token_id is available for mint counter
+              name: currentTrack.title,
+              artist: currentTrack.creator,
+              image_url: currentTrack.cover
+            })
+          }}
         >
           <div className="w-12 h-12 rounded-md flex-shrink-0 overflow-hidden bg-white/5 text-xs">
             <img
@@ -464,7 +472,15 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
         <div className="flex items-center gap-3 px-4 py-2.5">
           <div
             className="w-10 h-10 flex-shrink-0 overflow-hidden bg-white/5 cursor-pointer clip-angular-br-sm"
-            onClick={() => router.push(`/${locale}/track/${currentTrack.id}`)}
+            onClick={() => {
+              handleOpenSidebar({
+                ...currentTrack,
+                token_id: currentTrack.id,
+                name: currentTrack.title,
+                artist: currentTrack.creator,
+                image_url: currentTrack.cover
+              })
+            }}
           >
             <img
               src={(currentTrack.cover || '').replace('ipfs://', process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud/ipfs/')}
@@ -475,7 +491,15 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
 
           <div
             className="flex-1 min-w-0 cursor-pointer"
-            onClick={() => router.push(`/${locale}/track/${currentTrack.id}`)}
+            onClick={() => {
+              handleOpenSidebar({
+                ...currentTrack,
+                token_id: currentTrack.id,
+                name: currentTrack.title,
+                artist: currentTrack.creator,
+                image_url: currentTrack.cover
+              })
+            }}
           >
             <div className="marquee-container">
               <div className="marquee-content">

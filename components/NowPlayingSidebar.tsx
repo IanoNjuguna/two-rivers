@@ -225,6 +225,15 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 						<Button
 							variant="outline"
 							className="w-12 h-12 p-0 border-white/10 hover:bg-white/5 rounded-none"
+							onClick={handleShare}
+							title="Share"
+						>
+							<IconShare size={18} className="text-white/60" />
+						</Button>
+
+						<Button
+							variant="outline"
+							className="w-12 h-12 p-0 border-white/10 hover:bg-white/5 rounded-none"
 							onClick={handleCopyLink}
 							title="Copy Link"
 						>
