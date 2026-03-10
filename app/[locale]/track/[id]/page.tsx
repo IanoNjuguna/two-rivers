@@ -278,13 +278,25 @@ export default function TrackDetailPage() {
 		<div className="min-h-screen bg-[#0D0D12] text-white">
 
 			{/* Hero Section */}
-			<div className="relative w-full aspect-square max-h-[60vh] overflow-hidden">
+			<div className="relative w-full h-[50vh] min-h-[300px] overflow-hidden bg-black/50">
+				{/* Background Layer (Blurred) */}
 				<img
 					src={resolveIpfs(track.image_url)}
-					alt={track.name}
-					className="w-full h-full object-cover"
+					alt=""
+					className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-110"
+					aria-hidden="true"
 				/>
-				<div className="absolute inset-0 bg-gradient-to-t from-[#0D0D12] via-[#0D0D12]/40 to-transparent" />
+
+				{/* Foreground Layer (Un-cropped) */}
+				<div className="absolute inset-0 flex items-center justify-center p-8">
+					<img
+						src={resolveIpfs(track.image_url)}
+						alt={track.name}
+						className="relative z-10 h-full w-auto max-w-full object-contain shadow-2xl"
+					/>
+				</div>
+
+				<div className="absolute inset-0 bg-gradient-to-t from-[#0D0D12] via-transparent to-transparent z-20" />
 
 				{/* Back Button */}
 				<button
