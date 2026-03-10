@@ -226,7 +226,7 @@ export function SendFunds() {
 					<TransactionButton
 						disabled={!isValid}
 						className={`w-full h-14 font-bold text-lg transition-all rounded-none ${isValid
-							? 'bg-[#FF1F8A] text-white hover:bg-[#FF1F8A]/90 shadow-pink-glow'
+							? 'bg-[#B794F4] text-black hover:bg-[#A080E0]'
 							: 'bg-white/10 text-white/40 cursor-not-allowed opacity-50'
 							}`}
 						text={isValid ? 'Transact' : 'Enter Details'}

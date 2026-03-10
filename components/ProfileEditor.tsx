@@ -198,7 +198,7 @@ export function ProfileEditor({ address, tProfile, logout }: any) {
 					<button
 						type="submit"
 						disabled={isSaving}
-						className="bg-cyber-pink hover:bg-cyber-pink/90 text-white font-medium py-2 px-8 flex items-center justify-center gap-2 transition-all disabled:opacity-50 clip-tag"
+						className="bg-[#B794F4] hover:bg-[#A080E0] text-black font-bold py-2 px-8 flex items-center justify-center gap-2 transition-all disabled:opacity-50 clip-tag"
 					>
 						{isSaving ? 'Saving...' : (
 							<>
@@ -279,7 +279,7 @@ export function ProfileEditor({ address, tProfile, logout }: any) {
 			{/* Uploads Grid */}
 			<div className="pt-8 border-t border-white/10 relative z-10 mb-12">
 				<h4 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-					<span className="w-1 h-6 bg-cyber-pink rounded-none inline-block"></span>
+					<span className="w-1 h-6 bg-lavender rounded-none inline-block"></span>
 					My Uploads
 				</h4>
 				<MyUploadsGrid address={address} />

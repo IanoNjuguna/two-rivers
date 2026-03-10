@@ -209,7 +209,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 								"flex-1 h-12 rounded-none font-bold uppercase tracking-widest text-xs transition-all duration-300",
 								hasOwned
 									? "bg-[#1DB954]/10 border border-[#1DB954]/20 text-[#1DB954] hover:bg-[#1DB954]/20"
-									: "bg-cyber-pink hover:bg-cyber-pink/90 text-black"
+									: "bg-[#B794F4] hover:bg-[#A080E0] text-black"
 							)}
 							onClick={!hasOwned && !isMinting ? handleMint : undefined}
 							disabled={isMinting}

@@ -455,7 +455,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 					functionName: 'nextCollectionId',
 				})
 			}
-			const tokenId = BigInt(nextId as any)
+			let tokenId = BigInt(nextId as any)
 
 			// Calculate splits including the uploader
 			let collaboratorsList: `0x${string}`[] = []
@@ -1185,11 +1185,11 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 								type="button"
 								disabled={isMinting || hasCollected}
 								onClick={handleMint}
-								className={`flex-1 ${hasCollected ? 'bg-green-500/20 text-green-400 border border-green-500/30 font-bold' : 'bg-cyber-pink hover:bg-cyber-pink/90 text-white font-medium'} py-4 px-6 rounded-none flex items-center justify-center gap-2 transition-all transform active:scale-[0.99] disabled:opacity-50`}
+								className={`flex-1 ${hasCollected ? 'bg-green-500/20 text-green-400 border border-green-500/30 font-bold' : 'bg-[#B794F4] hover:bg-[#A080E0] text-black font-bold'} py-4 px-6 rounded-none flex items-center justify-center gap-2 transition-all transform active:scale-[0.99] disabled:opacity-50`}
 							>
 								{isMinting ? (
 									<>
-										<div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+										<div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
 										{t('minting')}
 									</>
 								) : hasCollected ? (
@@ -1214,11 +1214,11 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 							onClick={handleSync}
 							type="button"
 							disabled={isSyncing}
-							className="w-full bg-[#3498db] hover:bg-[#3498db]/90 text-white font-medium py-4 px-6 rounded-none flex items-center justify-center gap-2 transition-all transform active:scale-[0.99] disabled:opacity-50"
+							className="w-full bg-[#B794F4] hover:bg-[#A080E0] text-black font-bold py-4 px-6 rounded-none flex items-center justify-center gap-2 transition-all transform active:scale-[0.99] disabled:opacity-50"
 						>
 							{isSyncing ? (
 								<>
-									<div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+									<div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
 									{t('syncing', { defaultMessage: "SYNCING..." })}
 								</>
 							) : (
@@ -1232,16 +1232,16 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 						<button
 							type="submit"
 							disabled={isUploading || isSending || isAssetsUploading || !audioFile || !coverFile || !effectiveAddress}
-							className="w-full bg-cyber-pink hover:bg-cyber-pink/90 text-white font-medium py-4 px-6 rounded-none flex items-center justify-center gap-2 transition-all transform active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed group"
+							className="w-full bg-[#B794F4] hover:bg-[#A080E0] text-black font-bold py-4 px-6 rounded-none flex items-center justify-center gap-2 transition-all transform active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed group"
 						>
 							{isUploading ? (
 								<>
-									<div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+									<div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
 									{t('uploadingMedia')}
 								</>
 							) : isSending ? (
 								<>
-									<div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+									<div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
 									{t('confirmingTx', { defaultMessage: "Confirming Transaction..." })}
 								</>
 							) : (
