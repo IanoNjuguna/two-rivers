@@ -373,8 +373,16 @@ export default function SongCard({
 
       {/* Price Badge */}
       <div className="absolute top-2 right-2 z-20 mt-5">
-        <div className="text-[9px] text-white font-bold bg-black/60 backdrop-blur-sm border border-cyber-pink/30 px-1.5 py-0.5">
+        <div className={cn(
+          "text-[9px] font-bold bg-black/60 backdrop-blur-sm border px-1.5 py-0.5 flex items-center justify-center min-h-[20px]",
+          (mintData.max > 0 && mintData.minted >= mintData.max)
+            ? "border-[#FF1F8A]/50 text-[#FF1F8A]"
+            : "border-cyber-pink/30 text-white"
+        )}>
           {(() => {
+            if (mintData.max > 0 && mintData.minted >= mintData.max) {
+              return <DobaVisualizer size={14} className="text-[#FF1F8A]" />;
+            }
             const currentPrice = price ? parseFloat(price) : 0.50;
             if (currentPrice === 0) return 'FREE';
             return '50¢';

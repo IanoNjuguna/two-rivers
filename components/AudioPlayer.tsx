@@ -448,7 +448,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
                 className="fill-cyber-pink text-cyber-pink"
               />
             ) : (mintData.max > 0 && mintData.minted >= mintData.max) ? (
-              <DobaVisualizer size={22} className="text-[#FF1F8A]/40" />
+              <DobaVisualizer size={22} className="text-[#FF1F8A]" />
             ) : (
               <IconHeart
                 size={22}
