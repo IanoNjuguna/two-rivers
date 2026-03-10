@@ -404,6 +404,7 @@ function DashboardLayout() {
                     <h2 className="text-2xl font-bold mb-2">{tHome('discoverMusic')}</h2>
                   </div>
                   <MarketplaceGrid
+                    isSidebarOpen={isSidebarOpen}
                     currentTrackId={playerState.currentTrack?.id}
                     isPlaying={playerState.isPlaying}
                     onPlay={(track, tracks) => handlePlayTrack({
@@ -507,6 +508,7 @@ function DashboardLayout() {
                   </div>
 
                   <MarketplaceGrid
+                    isSidebarOpen={isSidebarOpen}
                     searchQuery={debouncedSearch}
                     genre={selectedGenre}
                     chainId={selectedChain}

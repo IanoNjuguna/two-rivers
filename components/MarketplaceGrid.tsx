@@ -5,6 +5,7 @@ import { logger } from '@/lib/logger'
 import React, { useEffect, useState } from 'react'
 import SongCard from './SongCard'
 import { useTranslations } from 'next-intl'
+import { cn } from '@/lib/utils'
 
 interface Track {
   token_id: number
@@ -27,7 +28,8 @@ export default function MarketplaceGrid({
   searchQuery = '',
   genre = '',
   chainId = '',
-  limit = 24
+  limit = 24,
+  isSidebarOpen = false
 }: {
   onPlay?: (track: Track, tracks: Track[]) => void,
   currentTrackId?: number | null,
@@ -35,7 +37,8 @@ export default function MarketplaceGrid({
   searchQuery?: string,
   genre?: string,
   chainId?: string,
-  limit?: number
+  limit?: number,
+  isSidebarOpen?: boolean
 }) {
   const t = useTranslations('marketplace')
   const [tracks, setTracks] = useState<Track[]>([])
@@ -86,7 +89,12 @@ export default function MarketplaceGrid({
 
   if (loading) {
     return (
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+      <div className={cn(
+        "grid gap-6",
+        isSidebarOpen
+          ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+          : "grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
+      )}>
         {[...Array(12)].map((_, i) => (
           <div key={i} className="aspect-square bg-white/5 animate-pulse" />
         ))}
@@ -104,7 +112,12 @@ export default function MarketplaceGrid({
 
   return (
     <div className="space-y-8">
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+      <div className={cn(
+        "grid gap-6",
+        isSidebarOpen
+          ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+          : "grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
+      )}>
         {tracks.map((track) => (
           <SongCard
             key={`${track.token_id}-${track.chain_id}`}
