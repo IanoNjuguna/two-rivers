@@ -24,6 +24,7 @@ async function init() {
       image_url TEXT,
       audio_url TEXT,
       external_url TEXT,
+      streaming_url TEXT,
       price TEXT,
       max_supply TEXT,
       splitter TEXT,
@@ -71,7 +72,7 @@ async function init() {
   `)
 
   // Simple migrations
-  const trackColumns = ['price', 'max_supply', 'splitter', 'tx_hash', 'uploader_address', 'chain_id']
+  const trackColumns = ['price', 'max_supply', 'splitter', 'tx_hash', 'uploader_address', 'chain_id', 'streaming_url']
   for (const col of trackColumns) {
     try {
       await db.execute(`ALTER TABLE tracks ADD COLUMN ${col} TEXT`)
@@ -112,6 +113,7 @@ export interface Track {
   release_date?: string
   image_url?: string
   audio_url?: string
+  streaming_url?: string
   external_url?: string
   price?: string
   max_supply?: string
@@ -157,8 +159,8 @@ export async function getTrack(tokenId: number): Promise<Track | null> {
 export async function addTrack(track: Track): Promise<void> {
   await db.execute({
     sql: `
-      INSERT INTO tracks (token_id, name, description, artist, genre, duration, release_date, image_url, audio_url, external_url, price, max_supply, splitter, tx_hash, uploader_address, chain_id)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO tracks (token_id, name, description, artist, genre, duration, release_date, image_url, audio_url, streaming_url, external_url, price, max_supply, splitter, tx_hash, uploader_address, chain_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(token_id) DO UPDATE SET
         name = excluded.name,
         description = excluded.description,
@@ -168,6 +170,7 @@ export async function addTrack(track: Track): Promise<void> {
         release_date = excluded.release_date,
         image_url = excluded.image_url,
         audio_url = excluded.audio_url,
+        streaming_url = excluded.streaming_url,
         external_url = excluded.external_url,
         price = excluded.price,
         max_supply = excluded.max_supply,
@@ -186,6 +189,7 @@ export async function addTrack(track: Track): Promise<void> {
       track.release_date ?? null,
       track.image_url ?? null,
       track.audio_url ?? null,
+      track.streaming_url ?? null,
       track.external_url ?? null,
       track.price ?? null,
       track.max_supply ?? null,

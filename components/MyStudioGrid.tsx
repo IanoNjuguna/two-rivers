@@ -13,6 +13,7 @@ interface Track {
   artist: string
   image_url: string
   audio_url: string
+  streaming_url?: string
   description?: string
   genre?: string
   tx_hash?: string
@@ -237,7 +238,7 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
               <Button
                 className="w-full bg-[#FF1F8A] hover:bg-[#FF1F8A]/90 text-white font-bold py-6 rounded-xl shadow-[0_0_20px_rgba(255,31,138,0.3)] transition-all duration-300"
                 onClick={() => {
-                  window.open((selectedTrack?.audio_url || '').replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'), '_blank')
+                  window.open(selectedTrack?.streaming_url || (selectedTrack?.audio_url || '').replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'), '_blank')
                 }}
               >
                 Open File

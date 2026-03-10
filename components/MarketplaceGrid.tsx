@@ -12,6 +12,7 @@ interface Track {
   artist: string
   image_url: string
   audio_url: string
+  streaming_url?: string
   genre?: string
   price?: string
   chain_id?: string

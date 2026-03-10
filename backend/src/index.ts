@@ -8,7 +8,9 @@ import axios from 'axios'
 import FormData from 'form-data'
 import { Buffer } from 'buffer'
 import { jwt } from 'hono/jwt'
+import { Storage } from '@google-cloud/storage'
 
+const storage = new Storage()
 const app = new Hono()
 
 // Enable CORS
@@ -129,12 +131,26 @@ app.post('/upload-assets', authMiddleware, async (c) => {
     const imageHash = imageRes.data.IpfsHash
     logger.info(`[IPFS] Image Success: ${imageHash}`)
 
+    // 3. UPLOAD AUDIO TO GCS
+    const bucketName = process.env.GCS_BUCKET_NAME || 'doba-music-streaming'
+    const bucket = storage.bucket(bucketName)
+    const gcsFile = bucket.file(audioEntryName)
+    logger.debug(`[GCS] Uploading audio...`)
+    await gcsFile.save(audioBuffer, {
+      metadata: {
+        contentType: audio.type || 'audio/mpeg'
+      }
+    })
+    const streamingUrl = `https://storage.googleapis.com/${bucketName}/${audioEntryName}`
+    logger.info(`[GCS] Audio Success: ${streamingUrl}`)
+
     return c.json({
       success: true,
       audioHash,
       imageHash,
       audioName: audioEntryName,
-      imageName: imageEntryName
+      imageName: imageEntryName,
+      streamingUrl
     })
   } catch (error: any) {
     logger.error(`[IPFS] Assets upload failed`, error.response?.data || error.message)

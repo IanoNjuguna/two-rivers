@@ -27,6 +27,7 @@ interface Track {
 	artist: string
 	image_url: string
 	audio_url: string
+	streaming_url?: string
 	genre?: string
 	price?: string
 	description?: string
@@ -141,7 +142,7 @@ export default function TrackDetailPage() {
 			title: track.name,
 			creator: track.artist,
 			cover: track.image_url,
-			url: track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
+			url: track.streaming_url || track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
 			collaborators: 0,
 			price: track.price
 		})

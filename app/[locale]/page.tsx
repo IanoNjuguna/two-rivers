@@ -358,7 +358,7 @@ function DashboardLayout() {
                       title: track.name,
                       creator: track.artist,
                       cover: track.image_url,
-                      url: track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
+                      url: track.streaming_url || track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
                       collaborators: 0,
                       price: track.price
                     }, tracks.map(t => ({
@@ -366,7 +366,7 @@ function DashboardLayout() {
                       title: t.name,
                       creator: t.artist,
                       cover: t.image_url,
-                      url: t.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
+                      url: t.streaming_url || t.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
                       collaborators: 0,
                       price: t.price
                     })))} />
@@ -392,7 +392,7 @@ function DashboardLayout() {
                         title: track.name,
                         creator: track.artist,
                         cover: track.image_url,
-                        url: track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
+                        url: track.streaming_url || track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
                         collaborators: 0,
                         price: track.price
                       }, tracks.map(t => ({
@@ -400,7 +400,7 @@ function DashboardLayout() {
                         title: t.name,
                         creator: t.artist,
                         cover: t.image_url,
-                        url: t.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
+                        url: t.streaming_url || t.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
                         collaborators: 0,
                         price: t.price
                       })))}
@@ -443,8 +443,8 @@ function DashboardLayout() {
                           key={chain.id}
                           onClick={() => setSelectedChain(chain.id)}
                           className={`flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-widest transition-all clip-tag border ${selectedChain === chain.id
-                              ? "bg-cyber-pink border-cyber-pink text-white"
-                              : "bg-white/5 border-white/10 text-white/40 hover:text-white hover:bg-white/10"
+                            ? "bg-cyber-pink border-cyber-pink text-white"
+                            : "bg-white/5 border-white/10 text-white/40 hover:text-white hover:bg-white/10"
                             }`}
                         >
                           {chain.logo && <img src={chain.logo} alt={chain.label} className="w-4 h-4 rounded-full" />}
@@ -461,8 +461,8 @@ function DashboardLayout() {
                             key={g}
                             onClick={() => setSelectedGenre(g)}
                             className={`whitespace-nowrap px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest transition-all border ${selectedGenre === g
-                                ? "bg-white/10 border-white/30 text-white"
-                                : "bg-transparent border-white/5 text-white/30 hover:text-white/60 hover:border-white/10"
+                              ? "bg-white/10 border-white/30 text-white"
+                              : "bg-transparent border-white/5 text-white/30 hover:text-white/60 hover:border-white/10"
                               }`}
                           >
                             {g}
@@ -483,7 +483,7 @@ function DashboardLayout() {
                       title: track.name,
                       creator: track.artist,
                       cover: track.image_url,
-                      url: track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
+                      url: track.streaming_url || track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
                       collaborators: 0,
                       price: track.price
                     }, tracks.map(t => ({
@@ -491,7 +491,7 @@ function DashboardLayout() {
                       title: t.name,
                       creator: t.artist,
                       cover: t.image_url,
-                      url: t.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
+                      url: t.streaming_url || t.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
                       collaborators: 0,
                       price: t.price
                     })))}

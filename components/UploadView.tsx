@@ -268,6 +268,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 			let currentImageHash = imageName || ''
 			let currentAudioName = ''
 			let currentImageName = ''
+			let currentStreamingUrl = ''
 
 			if (!assetsCid || assetsCid !== "READY" || !currentAudioHash) {
 
@@ -293,7 +294,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 				currentImageHash = assetData.imageHash
 				currentAudioName = assetData.audioName
 				currentImageName = assetData.imageName
-
+				currentStreamingUrl = assetData.streamingUrl
 
 			}
 
@@ -542,6 +543,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 						genre,
 						image_url: `ipfs://${imageName}`,
 						audio_url: `ipfs://${audioName}`,
+						streaming_url: currentStreamingUrl,
 						external_url: `https://doba.world/songs/${tokenId}`,
 						price: price || '0.99',
 						max_supply: supply || '5000',
