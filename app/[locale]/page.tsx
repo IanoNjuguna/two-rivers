@@ -388,7 +388,7 @@ function DashboardLayout() {
         </aside>
 
         {/* Content Area wrapper */}
-        <div className="flex-1 flex flex-col min-w-0 relative h-full">
+        <div className="flex-1 flex flex-row min-w-0 relative h-full">
           <main className={`flex-1 overflow-y-auto ${playerState.currentTrack ? 'pb-[90px]' : ''}`}>
             <div className="p-6 max-w-7xl mx-auto">
               {currentView === 'home' && (
