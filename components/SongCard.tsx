@@ -138,7 +138,7 @@ export default function SongCard({
         const approveData = encodeFunctionData({
           abi: ERC20_ABI,
           functionName: 'approve',
-          args: [CURRENT_CONTRACT as `0x${string}`, 1000000000000n], // High allowance for better UX
+          args: [CURRENT_CONTRACT as `0x${string}`, priceInUnits], // Exact allowance for better security
         })
 
         if (walletClient && publicClient) {

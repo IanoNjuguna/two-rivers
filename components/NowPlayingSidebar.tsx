@@ -91,7 +91,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 					address: USDC_ADDRESS as `0x${string}`,
 					abi: ERC20_ABI,
 					functionName: 'approve',
-					args: [CONTRACT_ADDRESS as `0x${string}`, 1000000000000n],
+					args: [CONTRACT_ADDRESS as `0x${string}`, priceInUnits],
 				})
 				await publicClient.waitForTransactionReceipt({ hash: tx })
 			}

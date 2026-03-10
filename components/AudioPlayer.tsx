@@ -129,7 +129,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
           address: CURRENT_USDC as `0x${string}`,
           abi: ERC20_ABI,
           functionName: 'approve',
-          args: [CURRENT_CONTRACT as `0x${string}`, 1000000000000n],
+          args: [CURRENT_CONTRACT as `0x${string}`, priceInUnits],
         })
         await publicClient.waitForTransactionReceipt({ hash: tx })
       }
