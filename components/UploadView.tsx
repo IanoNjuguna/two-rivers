@@ -189,7 +189,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 			// Fallback to standard transactions via Wagmi
 			// If uo is an array, we execute them sequentially
 			const uoList = Array.isArray(params.uo) ? params.uo : [params.uo]
-			let lastReceipt = null
+			const receipts = []
 
 			for (let i = 0; i < uoList.length; i++) {
 				const tx = uoList[i]
@@ -218,10 +218,12 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 						</div>
 					)
 				}
-				lastReceipt = await publicClient.waitForTransactionReceipt({ hash })
+				const receipt = await publicClient.waitForTransactionReceipt({ hash })
+				receipts.push(receipt)
 			}
 
-			if (lastReceipt) {
+			if (receipts.length > 0) {
+				const lastReceipt = receipts[receipts.length - 1]
 				toast.success(
 					<div className="flex flex-col gap-1">
 						<span>{t('uploadSuccess')}</span>
@@ -233,7 +235,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 			} else {
 				toast.success(t('uploadSuccess'))
 			}
-			return lastReceipt
+			return receipts
 		} catch (error: any) {
 			logger.error('Transaction Error', error)
 			toast.error(t('txFailed', { error: error.message || error }))
@@ -528,7 +530,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 			toast.loading("Sending one-click publish batch...", { id: mainToast })
 
-			const receipt = await sendUserOperation({
+			const receipts = await sendUserOperation({
 				uo: calls,
 				useUSDC: false // Initial publish is sponsored
 			})
@@ -537,27 +539,34 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 			let splitterAddress = ''
 			try {
 				const { parseEventLogs } = await import('viem')
-				if (receipt?.logs) {
-					const events = parseEventLogs({
-						abi: CONTRACT_ABI,
-						logs: receipt.logs,
-						eventName: 'CollectionPublished',
-					})
+				if (receipts && Array.isArray(receipts)) {
+					for (const receipt of receipts) {
+						const events = parseEventLogs({
+							abi: CONTRACT_ABI,
+							logs: receipt.logs,
+							eventName: 'CollectionPublished',
+						})
 
-					if (events.length > 0) {
-						const eventArgs = (events[0].args as any)
-						splitterAddress = eventArgs.splitter
-						if (eventArgs.collectionId) {
-							tokenId = BigInt(eventArgs.collectionId)
+						if (events.length > 0) {
+							const eventArgs = (events[0].args as any)
+							splitterAddress = eventArgs.splitter
+							if (eventArgs.collectionId) {
+								tokenId = BigInt(eventArgs.collectionId)
+							}
+							logger.info(`Successfully decoded CollectionPublished event from batch. Splitter: ${splitterAddress}, ID: ${tokenId}`)
+							break; // Found it
 						}
-						logger.info(`Successfully decoded CollectionPublished event. Splitter: ${splitterAddress}, ID: ${tokenId}`)
-					} else {
-						logger.warn('No CollectionPublished event found in logs.')
+					}
+
+					if (!splitterAddress) {
+						logger.warn('No CollectionPublished event found in any of the batch logs.')
 					}
 				}
 			} catch (e) {
 				logger.error('Failed to decode logs for splitter', e)
 			}
+
+			const finalReceipt = Array.isArray(receipts) ? receipts[receipts.length - 1] : null;
 
 			setPublishedSongId(tokenId)
 			setSyncDone(true)
@@ -585,7 +594,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 						price: price || '0.99',
 						max_supply: supply || '5000',
 						splitter: splitterAddress,
-						tx_hash: receipt?.transactionHash || '',
+						tx_hash: finalReceipt?.transactionHash || '',
 						uploader_address: effectiveAddress,
 						chain_id: String(chainId)
 					}),
