@@ -24,16 +24,6 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 
 	return (
 		<aside className="hidden lg:flex flex-col w-80 border-l border-white/[0.08] bg-[#0D0D12] overflow-hidden animate-slide-in-right h-full">
-			<div className="flex items-center justify-between p-4 border-b border-white/[0.08]">
-				<h3 className="font-bold text-sm uppercase tracking-widest text-white/60">Now Playing</h3>
-				<button
-					onClick={onClose}
-					className="p-1 hover:bg-white/10 rounded transition-colors text-white/40 hover:text-white"
-				>
-					<IconX size={20} />
-				</button>
-			</div>
-
 			<div className="flex-1 overflow-y-auto no-scrollbar p-6 space-y-6">
 				{/* Large Album Art */}
 				<div className="aspect-square w-full rounded-none overflow-hidden border border-white/10 shadow-2xl group">
@@ -47,6 +37,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 				{/* Track Info */}
 				<div className="space-y-4">
 					<div className="space-y-1">
+						<p className="text-[10px] uppercase tracking-widest text-white/40 font-bold mb-2">Explore</p>
 						<h2 className="text-2xl font-bold text-white tracking-tight leading-tight">
 							{track.name || track.title}
 						</h2>
