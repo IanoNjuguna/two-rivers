@@ -10,7 +10,7 @@ import { sdk } from '@farcaster/miniapp-sdk'
 const BaseConnectHeader = dynamic(() => import('./BaseConnectHeader'), { ssr: false })
 const MiniAppHeader = dynamic(() => import('./MiniAppHeader'), { ssr: false })
 
-export default function ConnectHeader({ address }: { address?: string }) {
+export default function ConnectHeader({ address, logout }: { address?: string, logout?: () => void }) {
 	const [isMiniApp, setIsMiniApp] = useState<boolean | null>(null)
 
 	useEffect(() => {
@@ -20,8 +20,8 @@ export default function ConnectHeader({ address }: { address?: string }) {
 	if (isMiniApp === null) return null // Wait for context
 
 	return isMiniApp ? (
-		<MiniAppHeader address={address} />
+		<MiniAppHeader address={address} logout={logout} />
 	) : (
-		<BaseConnectHeader address={address} />
+		<BaseConnectHeader address={address} logout={logout} />
 	)
 }

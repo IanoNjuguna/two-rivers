@@ -32,9 +32,9 @@ const formatAddress = (address: string, startChars: number = 10, endChars: numbe
   return `${address.slice(0, startChars)}...${address.slice(-endChars)}`
 }
 
-export default function BaseConnectHeader({ address: propAddress }: { address?: string }) {
+export default function BaseConnectHeader({ address: propAddress, logout }: { address?: string, logout?: () => void }) {
   const t = useTranslations('header')
-  const { login, logout, authenticated, user } = usePrivy()
+  const { login, logout: privyLogout, authenticated, user } = usePrivy()
   const { address: wagmiAddress, chainId, isConnected } = useAccount()
   const address = propAddress || wagmiAddress || user?.wallet?.address
 

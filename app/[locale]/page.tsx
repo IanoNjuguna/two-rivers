@@ -18,8 +18,9 @@ import { ProfileEditor } from '@/components/ProfileEditor'
 import { SendFunds } from '@/components/SendFunds'
 import DepositView from '@/components/DepositView'
 
-import { useAccount as useWagmiAccount } from 'wagmi'
+import { useAccount as useWagmiAccount, useDisconnect } from 'wagmi'
 import { sdk } from "@farcaster/miniapp-sdk"
+import { useBackendAuth } from '@/hooks/useBackendAuth'
 
 const formatAddress = (address: string, startChars: number = 10, endChars: number = 9): string => {
   if (!address || address.length <= startChars + endChars) {
@@ -57,8 +58,36 @@ function DashboardLayout() {
   const [currentView, setCurrentView] = useState<ViewType>('home')
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false)
 
-  const { logout, authenticated } = usePrivy()
+  const { logout: privyLogout, authenticated } = usePrivy()
+  const { disconnect } = useDisconnect()
+  const { logout: backendLogout } = useBackendAuth()
   const { playerState, handlePlayTrack, effectiveAddress, isConnected: isPlayerConnected, isAuthenticated } = useAudio()
+
+  const handleLogout = React.useCallback(async () => {
+    try {
+      // 1. Backend Logout (Clear JWT)
+      backendLogout()
+
+      // 2. Privy Logout
+      await privyLogout()
+
+      // 3. Wagmi Disconnect
+      disconnect()
+
+      // 4. Close Farcaster Mini App if applicable
+      const isMini = await sdk.isInMiniApp()
+      if (isMini) {
+        sdk.actions.close()
+      }
+
+      // 5. Reset View
+      setCurrentView('home')
+    } catch (e) {
+      console.error('Logout failed', e)
+      // Fallback reset
+      setCurrentView('home')
+    }
+  }, [privyLogout, disconnect, backendLogout])
 
   const tNav = useTranslations('nav')
   const tHome = useTranslations('home')
@@ -102,12 +131,18 @@ function DashboardLayout() {
 
           {/* Desktop Connect Header & Chain Switcher */}
           <div className="hidden lg:flex items-center gap-3">
-            <ConnectHeader address={effectiveAddress || undefined} />
+            <ConnectHeader
+              address={effectiveAddress || undefined}
+              logout={handleLogout}
+            />
           </div>
 
           {/* Mobile/Tablet Controls */}
           <div className="lg:hidden flex items-center gap-2">
-            <ConnectHeader address={effectiveAddress || undefined} />
+            <ConnectHeader
+              address={effectiveAddress || undefined}
+              logout={handleLogout}
+            />
             {/* Hamburger Menu - Only show when connected */}
             {isPlayerConnected && (
               <button
@@ -567,7 +602,7 @@ function DashboardLayout() {
                     <ProfileEditor
                       address={effectiveAddress}
                       tProfile={tProfile}
-                      logout={logout}
+                      logout={handleLogout}
                     />
                   ) : (
                     <div className="p-12 text-center rounded-xl bg-white-2 border border-white/[0.08]">

@@ -10,7 +10,7 @@ import { getAddressesForChain, ERC20_ABI } from "@/lib/web3"
 import { sdk } from '@farcaster/miniapp-sdk'
 import { formatUnits } from "viem"
 
-export default function MiniAppHeader({ address: propAddress }: { address?: string }) {
+export default function MiniAppHeader({ address: propAddress, logout }: { address?: string, logout?: () => void }) {
 	const t = useTranslations('header')
 	const [mounted, setMounted] = useState(false)
 	const [farcasterUser, setFarcasterUser] = useState<any>(null)
@@ -125,8 +125,12 @@ export default function MiniAppHeader({ address: propAddress }: { address?: stri
 							</button>
 							<button
 								onClick={() => {
-									disconnect()
-									sdk.actions.close()
+									if (logout) {
+										logout()
+									} else {
+										disconnect()
+										sdk.actions.close()
+									}
 								}}
 								className="p-1 hover:bg-white/[0.1] rounded transition ml-1"
 								aria-label={t('disconnect') || 'Disconnect'}
