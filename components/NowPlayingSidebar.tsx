@@ -3,7 +3,7 @@
 import React from 'react'
 import { IconX, IconMicrophone, IconExternalLink, IconShare, IconCopy, IconHeart, IconCheck, IconLoader2 } from '@tabler/icons-react'
 import { Button } from '@/components/ui/button'
-import { getAddressesForChain, CONTRACT_ABI, ERC20_ABI } from '@/lib/web3'
+import { getAddressesForChain, CONTRACT_ABI, ERC20_ABI, CHAIN_ID } from '@/lib/web3'
 import { useChainId, usePublicClient, useAccount, useWriteContract } from 'wagmi'
 import { cn } from '@/lib/utils'
 import { parseUnits, encodeFunctionData } from 'viem'
@@ -19,9 +19,9 @@ interface NowPlayingSidebarProps {
 export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlayingSidebarProps) {
 	const chainId = useChainId()
 	const { address } = useAccount()
-	const publicClient = usePublicClient()
+	const publicClient = usePublicClient({ chainId: CHAIN_ID })
 	const { writeContractAsync } = useWriteContract()
-	const { contract: CONTRACT_ADDRESS, explorer: EXPLORER_URL, usdc: USDC_ADDRESS } = getAddressesForChain(chainId || 84532)
+	const { contract: CONTRACT_ADDRESS, explorer: EXPLORER_URL, usdc: USDC_ADDRESS } = getAddressesForChain(CHAIN_ID)
 
 	const [mintData, setMintData] = React.useState<{ minted: number, max: number }>({ minted: 0, max: 0 })
 	const [hasOwned, setHasOwned] = React.useState(false)
@@ -45,7 +45,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 					args: [BigInt(tokenId)],
 				})
 			])
-			setMintData({ minted: Number(minted), max: Number(collectionInfo[4]) })
+			setMintData({ minted: Number(minted), max: Number(collectionInfo[3]) })
 
 			if (address) {
 				const balance = await publicClient.readContract({

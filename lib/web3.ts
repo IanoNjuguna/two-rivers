@@ -151,7 +151,6 @@ export const CONTRACT_ABI = [
     stateMutability: 'view',
     inputs: [{ name: 'collectionId', type: 'uint256' }],
     outputs: [
-      { name: 'id', type: 'uint256' },
       { name: 'artist', type: 'address' },
       { name: 'splitter', type: 'address' },
       { name: 'baseUri', type: 'string' },
