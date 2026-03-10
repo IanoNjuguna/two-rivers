@@ -25,6 +25,7 @@ interface Track {
   tx_hash?: string
   price?: string
   created_at?: string
+  is_owned?: boolean
 }
 
 interface MyStudioGridProps {
@@ -77,8 +78,25 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
         }) as bigint[]
 
         // 3. Filter tracks where balance > 0
-        const owned = allTracks.filter((_, index) => balances[index] > 0n)
+        const owned = allTracks.filter((_, index) => balances[index] > 0n).map(t => ({ ...t, is_owned: true }))
         setOwnedTracks(owned)
+
+        // 4. Heal database if we found owned tracks
+        if (owned.length > 0) {
+          const authData = localStorage.getItem('doba_auth_data')
+          if (authData) {
+            const { accessToken } = JSON.parse(authData)
+            const mintsToSync = owned.map(t => ({ track_id: t.token_id }))
+            fetch(`${API_URL.replace(/\/$/, '')}/mints/sync`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+              },
+              body: JSON.stringify({ mints: mintsToSync })
+            }).catch(err => logger.error('Library: Ownership sync reporting failed', err))
+          }
+        }
       } catch (error) {
         logger.error('Library: Error fetching owned tracks', error)
       } finally {
