@@ -11,9 +11,9 @@ const db = createClient({
 async function main() {
 	await db.execute({
 		sql: 'UPDATE tracks SET price = ? WHERE token_id = ?',
-		args: ['0.99', 0]
+		args: ['0.50', 0]
 	});
-	console.log(`Successfully updated the price of track 0 to 0.99`);
+	console.log(`Successfully updated the price of track 0 to 0.50`);
 }
 
 main().catch(console.error);

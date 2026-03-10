@@ -159,7 +159,7 @@ export default function TrackDetailPage() {
 		}
 		if (!track) return
 
-		const priceInUnits = track.price ? parseUnits(track.price, 6) : 990000n
+		const priceInUnits = track.price ? parseUnits(track.price, 6) : 500000n
 		setIsMinting(true)
 		const mainToast = toast.loading(`Minting "${track.name}"...`)
 
@@ -178,7 +178,7 @@ export default function TrackDetailPage() {
 				const approveData = encodeFunctionData({
 					abi: ERC20_ABI,
 					functionName: 'approve',
-					args: [CURRENT_CONTRACT as `0x${string}`, 1000000000000n],
+					args: [CURRENT_CONTRACT as `0x${string}`, priceInUnits],
 				})
 				const tx = await walletClient.sendTransaction({
 					to: CURRENT_USDC as `0x${string}`,
@@ -252,7 +252,7 @@ export default function TrackDetailPage() {
 	}
 
 	const formatPrice = (p?: string) => {
-		const v = p ? parseFloat(p) : 0.99
+		const v = p ? parseFloat(p) : 0.50
 		if (v === 0) return 'FREE'
 		if (v < 1) return `${Math.round(v * 100)}¢`
 		return `$${v.toFixed(2)}`
