@@ -19,7 +19,7 @@ const CHAIN_BADGE: Record<string, { logo: string; label: string }> = {
 	'43114': { logo: '/images/avalanche.png', label: 'Avalanche' },
 }
 
-const API_URL = '/api-backend'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://doba-api-494043112081.us-central1.run.app'
 
 interface Track {
 	token_id: number

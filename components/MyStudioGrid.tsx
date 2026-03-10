@@ -28,7 +28,7 @@ interface MyStudioGridProps {
   isPlaying?: boolean
 }
 
-const API_URL = '/api-backend'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://doba-api-494043112081.us-central1.run.app'
 
 export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlaying }: MyStudioGridProps) {
   const t = useTranslations('library')

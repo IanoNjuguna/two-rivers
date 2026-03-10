@@ -5,7 +5,7 @@ import { useAccount, useSignMessage } from 'wagmi'
 import { toast } from 'sonner'
 import { logger } from '@/lib/logger'
 
-const API_URL = '/api-backend'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://doba-api-494043112081.us-central1.run.app'
 
 import { sdk } from '@farcaster/miniapp-sdk'
 
