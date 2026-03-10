@@ -354,26 +354,27 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 			toast.loading("Checking permissions...", { id: mainToast })
 
-			if (!publicClient) throw new Error("No web3 client available")
+			const activePublicClient = publicClients[chainId || CHAIN_ID];
+			if (!activePublicClient) throw new Error("No web3 client available for the target chain");
 
 			const [platformAllowance, contractOwner, botFee, mintPrice] = await Promise.all([
-				publicClient.readContract({
+				activePublicClient.readContract({
 					address: USDC_ADDRESS as `0x${string}`,
 					abi: ERC20_ABI,
 					functionName: 'allowance',
 					args: [effectiveAddress as `0x${string}`, CONTRACT_ADDRESS as `0x${string}`],
 				}),
-				publicClient.readContract({
+				activePublicClient.readContract({
 					address: CONTRACT_ADDRESS as `0x${string}`,
 					abi: CONTRACT_ABI,
 					functionName: 'owner',
 				}),
-				publicClient.readContract({
+				activePublicClient.readContract({
 					address: CONTRACT_ADDRESS as `0x${string}`,
 					abi: CONTRACT_ABI,
 					functionName: 'botFee',
 				}),
-				publicClient.readContract({
+				activePublicClient.readContract({
 					address: CONTRACT_ADDRESS as `0x${string}`,
 					abi: CONTRACT_ABI,
 					functionName: 'MINT_PRICE',
@@ -440,8 +441,8 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 			toast.loading("Preparing one-click publish batch...", { id: mainToast })
 
 			let nextId;
-			if (publicClient) {
-				nextId = await publicClient.readContract({
+			if (activePublicClient) {
+				nextId = await activePublicClient.readContract({
 					address: CONTRACT_ADDRESS as `0x${string}`,
 					abi: CONTRACT_ABI,
 					functionName: 'nextCollectionId',
@@ -633,10 +634,13 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 		try {
 
+			const activePublicClient = publicClients[chainId || CHAIN_ID];
+			if (!activePublicClient) throw new Error("No web3 client available for the target chain");
+
 			// 1. Quote Fee
 			let messagingFee = 0n;
-			if (publicClient) {
-				messagingFee = await publicClient.readContract({
+			if (activePublicClient) {
+				messagingFee = await activePublicClient.readContract({
 					address: CONTRACT_ADDRESS as `0x${string}`,
 					abi: CONTRACT_ABI,
 					functionName: 'quoteSyncSong',
@@ -652,8 +656,8 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 			// 2. Check Native Balance
 			let nativeBalance = 0n;
-			if (publicClient) {
-				nativeBalance = await publicClient.getBalance({
+			if (activePublicClient) {
+				nativeBalance = await activePublicClient.getBalance({
 					address: effectiveAddress as `0x${string}`
 				})
 			}
