@@ -527,6 +527,30 @@ app.post('/mints', authMiddleware, async (c) => {
   }
 })
 
+app.post('/mints/sync', authMiddleware, async (c) => {
+  const { mints } = await c.req.json() // Expects { mints: [{ track_id, tx_hash? }, ...] }
+  const payload = c.get('jwtPayload')
+  const userAddress = payload.sub
+
+  if (!Array.isArray(mints)) return c.json({ error: 'mints array is required' }, 400)
+
+  try {
+    // Current addMint is idempotent, so we can just loop. 
+    // In a more complex scenario, we'd use a transaction, but for this simple record logging, this is fine.
+    await Promise.all(mints.map(m =>
+      addMint({
+        user_address: userAddress,
+        track_id: m.track_id,
+        tx_hash: m.tx_hash ?? null
+      })
+    ))
+    return c.json({ success: true, count: mints.length })
+  } catch (error: any) {
+    logger.error('db sync mints failed', error)
+    return c.json({ error: 'Failed to sync mints' }, 500)
+  }
+})
+
 app.delete('/songs/:id', authMiddleware, async (c) => {
   const id = parseInt(c.req.param('id'))
   if (isNaN(id)) return c.json({ error: 'Invalid ID' }, 400)

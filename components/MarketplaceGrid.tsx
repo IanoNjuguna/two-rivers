@@ -98,9 +98,84 @@ export default function MarketplaceGrid({
     }
   }
 
+  const syncOwnershipOnChain = async (tracksToSync: Track[]) => {
+    const authData = localStorage.getItem('doba_auth_data')
+    const walletAddress = authData ? JSON.parse(authData).address : null
+
+    if (!walletAddress || !tracksToSync.length) return
+
+    try {
+      const chainId = Number(process.env.NEXT_PUBLIC_CHAIN_ID || 84532)
+      const client = publicClients[chainId]
+      if (!client) return
+
+      const tokenIds = tracksToSync.map(t => BigInt(t.token_id))
+      const addresses = Array(tokenIds.length).fill(walletAddress)
+
+      // Use balanceOfBatch for efficiency
+      const balances = await client.readContract({
+        address: CONTRACT_ADDRESS as `0x${string}`,
+        abi: CONTRACT_ABI,
+        functionName: 'balanceOfBatch',
+        args: [addresses, tokenIds]
+      }) as bigint[]
+
+      const discoveredMints: { track_id: number }[] = []
+      const updatedTracks = [...tracksToSync]
+      let hasChanges = false
+
+      balances.forEach((balance, index) => {
+        const isOwnedOnChain = Number(balance) > 0
+        const track = updatedTracks[index]
+
+        if (isOwnedOnChain && !track.is_owned) {
+          track.is_owned = true
+          discoveredMints.push({ track_id: track.token_id })
+          hasChanges = true
+        }
+      })
+
+      if (hasChanges) {
+        setTracks(prev => {
+          // Map across previous state to update ownership flags
+          return prev.map(pt => {
+            const syncMatch = discoveredMints.find(m => m.track_id === pt.token_id)
+            if (syncMatch) return { ...pt, is_owned: true }
+            return pt
+          })
+        })
+
+        // Heal database
+        if (discoveredMints.length > 0) {
+          const { accessToken } = JSON.parse(authData)
+          fetch(`${process.env.NEXT_PUBLIC_API_URL || '/api-backend'}/mints/sync`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${accessToken}`
+            },
+            body: JSON.stringify({ mints: discoveredMints })
+          }).catch(err => logger.error('Ownership sync reporting failed', err))
+        }
+      }
+    } catch (err) {
+      logger.error('On-chain ownership sync failed', err)
+    }
+  }
+
   useEffect(() => {
-    fetchTracks()
+    fetchTracks().then(() => {
+      // Logic for syncing ownership should only run if we have tracks and user is potentially logged in
+      // fetchTracks already updates state, so we can use its result or just wait and read state
+    })
   }, [searchQuery, genre, chainId])
+
+  // Separate effect to trigger sync after tracks load
+  useEffect(() => {
+    if (tracks.length > 0) {
+      syncOwnershipOnChain(tracks)
+    }
+  }, [tracks.length, searchQuery, genre, chainId])
 
   if (loading) {
     return (
