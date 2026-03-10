@@ -396,7 +396,11 @@ export default function SongCard({
 
       {/* Status/Price Badge */}
       <div className="absolute top-2 right-2 z-20 mt-5">
-        {mintData.max > 0 && mintData.minted >= mintData.max ? (
+        {hasOwned ? (
+          <div className="flex items-center justify-center min-w-[24px] min-h-[20px] bg-[#1DB954]/20 border border-[#1DB954]/40 px-1.5 rounded-sm">
+            <IconCheck size={14} className="text-[#1DB954]" />
+          </div>
+        ) : (mintData.max > 0 && mintData.minted >= mintData.max) ? (
           <div className="flex items-center justify-center min-w-[24px] min-h-[20px]">
             <DobaVisualizer size={18} className="text-[#FF1F8A]" />
           </div>
@@ -421,12 +425,6 @@ export default function SongCard({
       </div>
 
 
-      {/* Owned Badge */}
-      {hasOwned && (
-        <div className="absolute top-2 left-2 z-30 bg-green-500 text-white p-1 shadow-lg">
-          <IconCheck size={12} />
-        </div>
-      )}
     </div>
   )
 }

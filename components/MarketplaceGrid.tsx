@@ -17,6 +17,7 @@ interface Track {
   genre?: string
   price?: string
   chain_id?: string
+  is_owned?: boolean
 }
 
 const API_URL = '/api-backend'
@@ -61,7 +62,15 @@ export default function MarketplaceGrid({
       params.append('offset', currentOffset.toString())
 
       const fetchUrl = `${API_URL.replace(/\/$/, '')}/songs?${params.toString()}`
-      const res = await fetch(fetchUrl)
+
+      const headers: Record<string, string> = {}
+      const authData = localStorage.getItem('doba_auth_data')
+      if (authData) {
+        const { accessToken } = JSON.parse(authData)
+        headers['Authorization'] = `Bearer ${accessToken}`
+      }
+
+      const res = await fetch(fetchUrl, { headers })
       if (res.ok) {
         const data = await res.json()
         if (isLoadMore) {
@@ -131,6 +140,7 @@ export default function MarketplaceGrid({
             trackChainId={track.chain_id}
             onPlay={onPlay ? () => onPlay(track, tracks) : undefined}
             isPlaying={isPlaying && currentTrackId === track.token_id}
+            is_owned={track.is_owned}
           />
         ))}
       </div>
