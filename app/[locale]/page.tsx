@@ -8,6 +8,7 @@ import MyStudioGrid from '@/components/MyStudioGrid'
 import ConnectHeader from '@/components/ConnectHeader'
 import EarningsView from '@/components/EarningsView'
 import AudioPlayer from '@/components/AudioPlayer'
+import NowPlayingSidebar from '@/components/NowPlayingSidebar'
 import Footer from '@/components/Footer'
 import UploadView from '@/components/UploadView'
 import { usePrivy } from '@privy-io/react-auth'
@@ -61,7 +62,17 @@ function DashboardLayout() {
   const { logout: privyLogout, authenticated } = usePrivy()
   const { disconnect } = useDisconnect()
   const { logout: backendLogout } = useBackendAuth()
-  const { playerState, handlePlayTrack, effectiveAddress, isConnected: isPlayerConnected, isAuthenticated } = useAudio()
+  const {
+    playerState,
+    handlePlayTrack,
+    effectiveAddress,
+    isConnected: isPlayerConnected,
+    isAuthenticated,
+    sidebarTrack,
+    isSidebarOpen,
+    handleOpenSidebar,
+    toggleSidebar
+  } = useAudio()
 
   const handleLogout = React.useCallback(async () => {
     try {
@@ -656,6 +667,12 @@ function DashboardLayout() {
             </footer>
           </main>
 
+          {/* Right Sidebar */}
+          <NowPlayingSidebar
+            track={sidebarTrack}
+            isVisible={isSidebarOpen}
+            onClose={toggleSidebar}
+          />
         </div>
       </div>
     </div>

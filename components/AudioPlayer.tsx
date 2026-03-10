@@ -12,6 +12,7 @@ import {
   IconRepeatOnce,
   IconHeart,
   IconLoader2,
+  IconLayoutSidebarRight,
 } from '@tabler/icons-react'
 import { logger } from '@/lib/logger'
 import { useEffect, useState, useRef, useCallback } from 'react'
@@ -23,6 +24,7 @@ import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain } from '@/lib/web3'
 import { useChainId, usePublicClient, useAccount, useWriteContract } from 'wagmi'
 import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
+import { useAudio } from './AudioProvider'
 
 
 interface AudioPlayerProps {
@@ -30,7 +32,7 @@ interface AudioPlayerProps {
 }
 
 export default function AudioPlayer({ playerState }: AudioPlayerProps) {
-  const { address: effectiveAddress, isConnected: isAuthenticated } = useAccount()
+  const { address: effectiveAddress, isConnected: isAuthenticated, toggleSidebar, isSidebarOpen } = useAudio()
   const {
     currentTrack,
     isPlaying,
@@ -433,6 +435,17 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
               />
             </div>
           </div>
+
+          <button
+            onClick={toggleSidebar}
+            className={cn(
+              "p-1.5 transition-all hover:scale-110",
+              isSidebarOpen ? "text-[#FF1F8A]" : "text-white/40 hover:text-white"
+            )}
+            title="Now Playing View"
+          >
+            <IconLayoutSidebarRight size={18} />
+          </button>
         </div>
       </div>
 

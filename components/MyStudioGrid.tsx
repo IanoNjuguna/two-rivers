@@ -1,11 +1,11 @@
 import { logger } from '@/lib/logger'
 import React, { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { IconEye, IconMusic, IconMicrophone, IconPlayerPause, IconPlayerPlay } from '@tabler/icons-react'
 import { CONTRACT_ABI, getAddressesForChain } from '@/lib/web3'
 import { useTranslations } from 'next-intl'
 import { useChainId, usePublicClient } from "wagmi"
+import { useAudio } from './AudioProvider'
 
 interface Track {
   token_id: number
@@ -37,8 +37,8 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
   const { contract: CONTRACT_ADDRESS, explorer: EXPLORER_URL } = getAddressesForChain(chainId || 42161)
   const [ownedTracks, setOwnedTracks] = useState<Track[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedTrack, setSelectedTrack] = useState<Track | null>(null)
   const [hoveredTrackId, setHoveredTrackId] = useState<number | null>(null)
+  const { handleOpenSidebar } = useAudio()
 
   useEffect(() => {
     const fetchOwnedTracks = async () => {
@@ -182,7 +182,7 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
                 size="sm"
                 variant="ghost"
                 className="h-8 w-8 p-0 hover:bg-purple-500/20 text-white/40 hover:text-purple-400"
-                onClick={() => setSelectedTrack(track)}
+                onClick={() => handleOpenSidebar(track)}
               >
                 <IconEye size={18} />
               </Button>
@@ -190,88 +190,6 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
           </div>
         ))}
       </div>
-
-      <Dialog open={!!selectedTrack} onOpenChange={() => setSelectedTrack(null)}>
-        <DialogContent className="bg-[#0D0D12] border border-white/[0.1] text-white max-w-[380px] p-0 overflow-hidden">
-          <div className="overflow-y-auto max-h-[90vh]">
-            <div className="p-6 space-y-6">
-              <DialogHeader className="p-0">
-                <DialogTitle className="text-xl font-bold bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
-                  {selectedTrack?.name}
-                </DialogTitle>
-              </DialogHeader>
-
-              <div className="space-y-6 py-2">
-                <div className="aspect-square w-full max-w-[280px] mx-auto rounded-none overflow-hidden border border-white/10 shadow-2xl">
-                  <img
-                    src={(selectedTrack?.image_url || '').replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/')}
-                    alt={selectedTrack?.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-
-                <div className="space-y-4">
-                  <div className="space-y-1">
-                    <p className="text-[10px] uppercase tracking-widest text-[#B794F4] font-bold">Artist</p>
-                    <p className="text-white text-lg font-medium">{selectedTrack?.artist}</p>
-                  </div>
-
-                  {selectedTrack?.description && (
-                    <div className="space-y-1">
-                      <p className="text-[10px] uppercase tracking-widest text-white/40 font-bold">Lyrics</p>
-                      <p className="text-white/70 text-sm leading-relaxed line-clamp-4">{selectedTrack.description}</p>
-                    </div>
-                  )}
-
-                  <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
-                    <div>
-                      <p className="text-[10px] uppercase tracking-widest text-white/40 font-bold">Genre</p>
-                      <p className="text-white text-sm">{selectedTrack?.genre || 'Ambient'}</p>
-                    </div>
-                    <div>
-                      <p className="text-[10px] uppercase tracking-widest text-white/40 font-bold">Token ID</p>
-                      <p className="text-white text-sm font-mono">#{selectedTrack?.token_id}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-2 pt-2">
-                  <Button
-                    className="w-full bg-[#FF1F8A] hover:bg-[#FF1F8A]/90 text-white font-bold py-6 rounded-xl shadow-[0_0_20px_rgba(255,31,138,0.3)] transition-all duration-300"
-                    onClick={() => {
-                      window.open(selectedTrack?.streaming_url || (selectedTrack?.audio_url || '').replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'), '_blank')
-                    }}
-                  >
-                    Open File
-                  </Button>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      className="flex-1 border-white/10 hover:bg-white/5 text-[10px] uppercase font-bold text-white/60"
-                      onClick={() => {
-                        window.open(`${EXPLORER_URL}/nft/${CONTRACT_ADDRESS}/${selectedTrack?.token_id}`, '_blank')
-                      }}
-                    >
-                      View Provenance
-                    </Button>
-                    {selectedTrack?.tx_hash && (
-                      <Button
-                        variant="outline"
-                        className="flex-1 border-white/10 hover:bg-white/5 text-[10px] uppercase font-bold text-white/60"
-                        onClick={() => {
-                          window.open(`${EXPLORER_URL}/tx/${selectedTrack.tx_hash}`, '_blank')
-                        }}
-                      >
-                        Original Publish
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }
