@@ -56,7 +56,23 @@ export default function SongCard({
   const isAuthenticated = isConnected
 
   // Standardize the active address
-  const effectiveAddress = address
+  const [effectiveAddress, setEffectiveAddress] = React.useState<string | undefined>(address)
+
+  React.useEffect(() => {
+    if (address) {
+      setEffectiveAddress(address)
+    } else {
+      const authData = localStorage.getItem('doba_auth_data')
+      if (authData) {
+        try {
+          const { address: savedAddress } = JSON.parse(authData)
+          setEffectiveAddress(savedAddress)
+        } catch (e) {
+          logger.error('Failed to parse auth data in SongCard', e)
+        }
+      }
+    }
+  }, [address])
 
   const {
     usdc: CURRENT_USDC,
@@ -111,6 +127,10 @@ export default function SongCard({
       logger.error('Error fetching mint data', err)
     }
   }, [activeClient, tokenId])
+
+  React.useEffect(() => {
+    if (is_owned) setHasOwned(true)
+  }, [is_owned])
 
   React.useEffect(() => {
     checkOwnership()
