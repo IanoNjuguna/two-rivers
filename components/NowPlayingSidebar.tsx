@@ -129,8 +129,10 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 	}
 
 	const handleCopyLink = () => {
-		navigator.clipboard.writeText(window.location.href)
-		toast.success("Link copied to clipboard!")
+		const tokenId = track?.id !== undefined ? track.id : track?.token_id
+		const shareUrl = `https://www.doba.world/track/${tokenId}`
+		navigator.clipboard.writeText(shareUrl)
+		toast.success("Track link copied!")
 	}
 
 	React.useEffect(() => {
@@ -207,7 +209,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 								"flex-1 h-12 rounded-none font-bold uppercase tracking-widest text-xs transition-all duration-300",
 								hasOwned
 									? "bg-[#1DB954]/10 border border-[#1DB954]/20 text-[#1DB954] hover:bg-[#1DB954]/20"
-									: "bg-white/[0.03] border border-white/10 text-white hover:bg-white/10"
+									: "bg-cyber-pink hover:bg-cyber-pink/90 text-white"
 							)}
 							onClick={!hasOwned && !isMinting ? handleMint : undefined}
 							disabled={isMinting}
@@ -223,15 +225,8 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 						<Button
 							variant="outline"
 							className="w-12 h-12 p-0 border-white/10 hover:bg-white/5 rounded-none"
-							onClick={handleShare}
-						>
-							<IconShare size={18} className="text-white/60" />
-						</Button>
-
-						<Button
-							variant="outline"
-							className="w-12 h-12 p-0 border-white/10 hover:bg-white/5 rounded-none"
 							onClick={handleCopyLink}
+							title="Copy Link"
 						>
 							<IconCopy size={18} className="text-white/60" />
 						</Button>
@@ -267,7 +262,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 				{/* Actions */}
 				<div className="flex flex-col gap-3 pt-6">
 					<Button
-						className="w-full bg-[#FF1F8A] hover:bg-[#FF1F8A]/90 text-white font-bold py-6 rounded-none transition-all duration-300"
+						className="w-full bg-[#B794F4] hover:bg-[#B794F4]/90 text-white font-bold py-6 rounded-none transition-all duration-300"
 						onClick={() => window.open(audioUrl, '_blank')}
 					>
 						Open Original File
@@ -282,7 +277,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 							}}
 						>
 							<IconExternalLink size={14} className="mr-2" />
-							View Provenance
+							Provenance
 						</Button>
 					)}
 				</div>
