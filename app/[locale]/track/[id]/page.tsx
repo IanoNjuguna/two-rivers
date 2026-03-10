@@ -141,13 +141,13 @@ export default function TrackDetailPage() {
 	const togglePlay = () => {
 		if (!track) return
 		handlePlayTrack({
+			...track,
 			id: track.token_id,
 			title: track.name,
 			creator: track.artist,
 			cover: track.image_url,
 			url: track.streaming_url || track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
-			collaborators: 0,
-			price: track.price
+			collaborators: 0
 		})
 	}
 
