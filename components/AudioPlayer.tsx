@@ -435,8 +435,8 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
             onClick={(!hasOwned && !(mintData.max > 0 && mintData.minted >= mintData.max)) ? handleMint : undefined}
             disabled={isMinting || (mintData.max > 0 && mintData.minted >= mintData.max)}
             className={cn(
-              "p-2 transition-all hover:scale-110 active:scale-95 disabled:opacity-50 flex items-center justify-center flex-shrink-0 group/heart",
-              hasOwned ? "text-cyber-pink" : (mintData.max > 0 && mintData.minted >= mintData.max) ? "text-white/20" : "text-white/40 hover:text-white"
+              "p-2 transition-all hover:scale-110 active:scale-95 flex items-center justify-center flex-shrink-0 group/heart",
+              hasOwned ? "text-cyber-pink" : (mintData.max > 0 && mintData.minted >= mintData.max) ? "text-lavender" : "text-white/40 hover:text-white"
             )}
             title={hasOwned ? "Collected" : (mintData.max > 0 && mintData.minted >= mintData.max) ? "Sold Out" : "Collect"}
           >

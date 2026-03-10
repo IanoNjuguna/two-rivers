@@ -211,7 +211,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 								hasOwned
 									? "bg-[#1DB954]/10 border border-[#1DB954]/20 text-[#1DB954] hover:bg-[#1DB954]/20"
 									: (mintData.max > 0 && mintData.minted >= mintData.max)
-										? "bg-white/5 border border-white/10 text-white/40 cursor-not-allowed"
+										? "bg-white/5 border border-white/10 cursor-not-allowed"
 										: "bg-[#B794F4] hover:bg-[#A080E0] text-black"
 							)}
 							onClick={!hasOwned && !isMinting && !(mintData.max > 0 && mintData.minted >= mintData.max) ? handleMint : undefined}
@@ -224,7 +224,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 							) : (mintData.max > 0 && mintData.minted >= mintData.max) ? (
 								<DobaVisualizer size={16} className="mr-2 text-[#FF1F8A]" />
 							) : null}
-							{hasOwned ? 'Collected' : (mintData.max > 0 && mintData.minted >= mintData.max) ? 'Sold Out' : 'Collect'}
+							{hasOwned ? 'Collected' : (mintData.max > 0 && mintData.minted >= mintData.max) ? <span className="text-lavender">Sold Out</span> : 'Collect'}
 						</Button>
 
 						<Button

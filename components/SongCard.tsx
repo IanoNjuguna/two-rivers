@@ -346,7 +346,7 @@ export default function SongCard({
 
       {/* Genre Tag - top right */}
       <div className="absolute top-0 right-0 z-20">
-        <div className="bg-lavender text-[8px] font-bold px-2 py-0.5 text-white tracking-widest uppercase">
+        <div className="bg-black/60 backdrop-blur-sm border-l border-b border-lavender/30 text-[8px] font-bold px-2 py-0.5 text-lavender tracking-widest uppercase">
           {genre || 'RARE'}
         </div>
       </div>

@@ -370,7 +370,7 @@ export default function TrackDetailPage() {
 								hasOwned
 									? "bg-green-500/10 text-green-400 border border-green-500/20 cursor-default"
 									: (maxSupply > 0 && mintedCount >= maxSupply)
-										? "bg-white/5 text-white/40 border border-white/10 cursor-not-allowed"
+										? "bg-white/5 border border-white/10 cursor-not-allowed"
 										: "bg-[#B794F4] hover:bg-[#B794F4]/80 text-white border border-[#B794F4]/20",
 								isMinting && "opacity-50 cursor-not-allowed"
 							)}
@@ -384,7 +384,7 @@ export default function TrackDetailPage() {
 							) : (
 								<IconHeart size={16} />
 							)}
-							{isMinting ? 'Minting' : hasOwned ? 'Collected' : (maxSupply > 0 && mintedCount >= maxSupply) ? 'Sold Out' : 'Collect'}
+							{isMinting ? 'Minting' : hasOwned ? 'Collected' : (maxSupply > 0 && mintedCount >= maxSupply) ? <span className="text-lavender">Sold Out</span> : 'Collect'}
 						</button>
 
 						<button
