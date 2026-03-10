@@ -28,20 +28,21 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 	const [isMinting, setIsMinting] = React.useState(false)
 
 	const fetchMintData = React.useCallback(async () => {
-		if (!publicClient || !track || track.token_id === undefined) return
+		const tokenId = track?.id !== undefined ? track.id : track?.token_id
+		if (!publicClient || !track || tokenId === undefined) return
 		try {
 			const [minted, collectionInfo] = await Promise.all([
 				publicClient.readContract({
 					address: CONTRACT_ADDRESS as `0x${string}`,
 					abi: CONTRACT_ABI,
 					functionName: 'collectionMinted',
-					args: [BigInt(track.token_id)],
+					args: [BigInt(tokenId)],
 				}),
 				publicClient.readContract({
 					address: CONTRACT_ADDRESS as `0x${string}`,
 					abi: CONTRACT_ABI,
 					functionName: 'collections',
-					args: [BigInt(track.token_id)],
+					args: [BigInt(tokenId)],
 				})
 			])
 			setMintData({ minted: Number(minted), max: Number(collectionInfo[4]) })
@@ -51,7 +52,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 					address: CONTRACT_ADDRESS as `0x${string}`,
 					abi: CONTRACT_ABI,
 					functionName: 'balanceOf',
-					args: [address as `0x${string}`, BigInt(track.token_id)],
+					args: [address as `0x${string}`, BigInt(tokenId)],
 				})
 				setHasOwned(Number(balance) > 0)
 			}
@@ -100,7 +101,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 				address: CONTRACT_ADDRESS as `0x${string}`,
 				abi: CONTRACT_ABI,
 				functionName: 'mint',
-				args: [BigInt(track.token_id)],
+				args: [BigInt(track.id || track.token_id)],
 			})
 			await publicClient.waitForTransactionReceipt({ hash: tx })
 
@@ -186,13 +187,15 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 						<div className="flex items-center justify-between">
 							<span className="text-cyber-pink font-bold text-lg">99¢</span>
 							<span className="text-[10px] text-white/40 font-bold uppercase tracking-widest">
-								{mintData.minted} / {mintData.max} Edition
+								{mintData.max === 0
+									? `${mintData.minted} Collected`
+									: `${mintData.minted} / ${mintData.max} Edition`}
 							</span>
 						</div>
 						<div className="h-[2px] w-full bg-white/5 relative overflow-hidden">
 							<div
 								className="absolute inset-y-0 left-0 bg-cyber-pink transition-all duration-1000"
-								style={{ width: `${(mintData.minted / (mintData.max || 1)) * 100}%` }}
+								style={{ width: mintData.max === 0 ? '100%' : `${(mintData.minted / (mintData.max || 1)) * 100}%` }}
 							/>
 						</div>
 					</div>
