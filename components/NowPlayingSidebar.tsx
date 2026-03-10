@@ -209,7 +209,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 								"flex-1 h-12 rounded-none font-bold uppercase tracking-widest text-xs transition-all duration-300",
 								hasOwned
 									? "bg-[#1DB954]/10 border border-[#1DB954]/20 text-[#1DB954] hover:bg-[#1DB954]/20"
-									: "bg-cyber-pink hover:bg-cyber-pink/90 text-white"
+									: "bg-cyber-pink hover:bg-cyber-pink/90 text-black"
 							)}
 							onClick={!hasOwned && !isMinting ? handleMint : undefined}
 							disabled={isMinting}
@@ -271,7 +271,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 				{/* Actions */}
 				<div className="flex flex-col gap-3 pt-6">
 					<Button
-						className="w-full bg-[#B794F4] hover:bg-[#B794F4]/90 text-white font-bold py-6 rounded-none transition-all duration-300"
+						className="w-full bg-[#B794F4] hover:bg-[#B794F4]/90 text-black font-bold py-6 rounded-none transition-all duration-300"
 						onClick={() => window.open(audioUrl, '_blank')}
 					>
 						Open Original File
