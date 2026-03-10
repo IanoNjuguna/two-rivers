@@ -403,7 +403,7 @@ export default function TrackDetailPage() {
 				{/* Description */}
 				{track.description && (
 					<div className="border-t border-white/5 pt-5">
-						<h2 className="text-xs font-bold uppercase tracking-widest text-white/30 mb-3">About</h2>
+						<h2 className="text-xs font-bold uppercase tracking-widest text-white/30 mb-3">Lyrics</h2>
 						<p className="text-sm text-white/60 leading-relaxed whitespace-pre-line">{track.description}</p>
 					</div>
 				)}
