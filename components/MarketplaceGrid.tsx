@@ -18,7 +18,7 @@ interface Track {
   chain_id?: string
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://doba-api-494043112081.us-central1.run.app'
+const API_URL = '/api-backend'
 
 export default function MarketplaceGrid({
   onPlay,
