@@ -109,6 +109,28 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 			setHasOwned(true)
 			fetchMintData()
 			toast.success(`"${track.name || track.title}" collected!`, { id: mainToast })
+
+			// Record mint in backend
+			try {
+				const authData = localStorage.getItem('doba_auth_data')
+				if (authData) {
+					const { accessToken } = JSON.parse(authData)
+					const tokenId = track.id !== undefined ? track.id : track.token_id
+					await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mints`, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': `Bearer ${accessToken}`
+						},
+						body: JSON.stringify({
+							track_id: tokenId,
+							tx_hash: tx
+						})
+					})
+				}
+			} catch (err) {
+				console.error('Sidebar: Failed to record mint in backend', err)
+			}
 		} catch (error: any) {
 			toast.error(error.message || "Collection failed", { id: mainToast })
 		} finally {

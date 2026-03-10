@@ -27,6 +27,7 @@ interface SongCardProps {
   onPlay?: () => void
   isPlaying?: boolean
   navigateOnClick?: boolean
+  is_owned?: boolean
 }
 
 const CHAIN_BADGE_REMOVED = true; // Placeholder for logic that used to depend on this
@@ -44,6 +45,7 @@ export default function SongCard({
   onPlay,
   isPlaying = false,
   navigateOnClick = false,
+  is_owned = false,
 }: SongCardProps) {
   const chainId = useChainId()
   const router = useRouter()
@@ -63,7 +65,7 @@ export default function SongCard({
   } = getAddressesForChain(chainId || 42161)
 
   const [isMinting, setIsMinting] = React.useState(false)
-  const [hasOwned, setHasOwned] = React.useState(false)
+  const [hasOwned, setHasOwned] = React.useState(is_owned)
   const [mintData, setMintData] = React.useState<{ minted: number, max: number }>({ minted: 0, max: 0 })
 
   // Determine active reader for contracts
@@ -216,6 +218,27 @@ export default function SongCard({
         </div>,
         { id: mainToast }
       )
+
+      // 4. Record mint in backend
+      try {
+        const authData = localStorage.getItem('doba_auth_data')
+        if (authData) {
+          const { accessToken } = JSON.parse(authData)
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mints`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${accessToken}`
+            },
+            body: JSON.stringify({
+              track_id: tokenId,
+              tx_hash: txReceipt
+            })
+          })
+        }
+      } catch (err) {
+        logger.error('Failed to record mint in backend', err)
+      }
     } catch (error: any) {
       logger.error('Mint Error', error)
 

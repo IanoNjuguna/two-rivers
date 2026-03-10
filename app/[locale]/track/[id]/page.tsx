@@ -35,6 +35,7 @@ interface Track {
 	chain_id?: string
 	max_supply?: string
 	uploader_address?: string
+	is_owned?: boolean
 }
 
 export default function TrackDetailPage() {
@@ -76,6 +77,7 @@ export default function TrackDetailPage() {
 				if (res.ok) {
 					const data = await res.json()
 					setTrack(data)
+					if (data.is_owned) setHasOwned(true)
 				}
 			} catch (e) {
 				console.error('Failed to fetch track', e)
@@ -218,6 +220,27 @@ export default function TrackDetailPage() {
 					</div>,
 					{ id: mainToast }
 				)
+
+				// Record mint in backend
+				try {
+					const authData = localStorage.getItem('doba_auth_data')
+					if (authData) {
+						const { accessToken } = JSON.parse(authData)
+						await fetch(`${process.env.NEXT_PUBLIC_API_URL || API_URL}/mints`, {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json',
+								'Authorization': `Bearer ${accessToken}`
+							},
+							body: JSON.stringify({
+								track_id: track.token_id,
+								tx_hash: txReceipt
+							})
+						})
+					}
+				} catch (err) {
+					console.error('TrackPage: Failed to record mint in backend', err)
+				}
 			}
 		} catch (error: any) {
 			let errorMessage = error.message || "Minting failed"

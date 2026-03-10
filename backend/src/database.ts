@@ -60,6 +60,18 @@ async function init() {
   `)
 
   await db.execute(`
+    CREATE TABLE IF NOT EXISTS mints (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_address TEXT NOT NULL,
+      track_id INTEGER NOT NULL,
+      tx_hash TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY(track_id) REFERENCES tracks(token_id),
+      UNIQUE(user_address, track_id)
+    )
+  `)
+
+  await db.execute(`
     CREATE TABLE IF NOT EXISTS refresh_tokens (
       token TEXT PRIMARY KEY,
       user_address TEXT NOT NULL,
@@ -257,6 +269,26 @@ export async function deleteTrack(tokenId: number): Promise<void> {
     sql: 'DELETE FROM tracks WHERE token_id = ?',
     args: [tokenId]
   })
+}
+
+export async function addMint(mint: { user_address: string; track_id: number; tx_hash?: string }): Promise<void> {
+  await db.execute({
+    sql: `
+      INSERT INTO mints (user_address, track_id, tx_hash)
+      VALUES (?, ?, ?)
+      ON CONFLICT(user_address, track_id) DO UPDATE SET
+        tx_hash = excluded.tx_hash
+    `,
+    args: [mint.user_address.toLowerCase(), mint.track_id, mint.tx_hash ?? null]
+  })
+}
+
+export async function getUserMints(userAddress: string): Promise<number[]> {
+  const rs = await db.execute({
+    sql: 'SELECT track_id FROM mints WHERE user_address = ?',
+    args: [userAddress.toLowerCase()]
+  })
+  return rs.rows.map(row => Number(row.track_id))
 }
 
 export async function deleteAllTracks(): Promise<void> {

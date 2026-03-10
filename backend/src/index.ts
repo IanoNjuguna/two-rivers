@@ -1,7 +1,7 @@
 import { logger } from './lib/logger'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import { getTrack, addTrack, getAllTracks, deleteTrack, deleteAllTracks, getUser, addUser, getTrackCollaborators, addCollaborator, isAdmin, type Track, type RefreshToken, addRefreshToken, getRefreshToken, revokeRefreshTokenFamily, getUserByFid, linkFidToUser } from './database'
+import { getTrack, addTrack, getAllTracks, deleteTrack, deleteAllTracks, getUser, addUser, getTrackCollaborators, addCollaborator, isAdmin, type Track, type RefreshToken, addRefreshToken, getRefreshToken, revokeRefreshTokenFamily, getUserByFid, linkFidToUser, addMint, getUserMints } from './database'
 import { verifyWalletSignature, signJWT, verifyJWT, generateRefreshToken, getAccessTokenPayload } from './auth'
 import { createAppClient, viemConnector } from '@farcaster/auth-client'
 import axios from 'axios'
@@ -423,7 +423,24 @@ app.get('/songs', async (c) => {
     limit,
     offset
   })
-  return c.json(tracks)
+
+  // Check ownership if user is authenticated
+  let userMints: number[] = []
+  const authHeader = c.req.header('Authorization')
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.split(' ')[1]
+    const payload = await verifyJWT(token, JWT_SECRET)
+    if (payload && payload.sub) {
+      userMints = await getUserMints(payload.sub as string)
+    }
+  }
+
+  const tracksWithOwnership = tracks.map(track => ({
+    ...track,
+    is_owned: userMints.includes(track.token_id)
+  }))
+
+  return c.json(tracksWithOwnership)
 })
 
 app.get('/songs/:id', async (c) => {
@@ -431,7 +448,20 @@ app.get('/songs/:id', async (c) => {
   if (isNaN(id)) return c.json({ error: 'Invalid track ID' }, 400)
   const track = await getTrack(id)
   if (!track) return c.json({ error: 'Track not found' }, 404)
-  return c.json(track)
+
+  // Check ownership if user is authenticated
+  let isOwned = false
+  const authHeader = c.req.header('Authorization')
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.split(' ')[1]
+    const payload = await verifyJWT(token, JWT_SECRET)
+    if (payload && payload.sub) {
+      const userMints = await getUserMints(payload.sub as string)
+      isOwned = userMints.includes(id)
+    }
+  }
+
+  return c.json({ ...track, is_owned: isOwned })
 })
 
 app.get('/health', async (c) => {
@@ -478,6 +508,22 @@ app.post('/songs', authMiddleware, async (c) => {
   } catch (error: any) {
     logger.error('db addTrack failed', error)
     return c.json({ error: 'Failed to add track' }, 500)
+  }
+})
+
+app.post('/mints', authMiddleware, async (c) => {
+  const { track_id, tx_hash } = await c.req.json()
+  const payload = c.get('jwtPayload')
+  const userAddress = payload.sub
+
+  if (!track_id) return c.json({ error: 'track_id is required' }, 400)
+
+  try {
+    await addMint({ user_address: userAddress, track_id, tx_hash })
+    return c.json({ success: true })
+  } catch (error: any) {
+    logger.error('db addMint failed', error)
+    return c.json({ error: 'Failed to record mint' }, 500)
   }
 })
 

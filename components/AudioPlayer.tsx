@@ -173,6 +173,27 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
 
       setHasOwned(true)
       toast.success(`"${currentTrack.title}" collected!`, { id: mainToast })
+
+      // Record mint in backend
+      try {
+        const authData = localStorage.getItem('doba_auth_data')
+        if (authData) {
+          const { accessToken } = JSON.parse(authData)
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mints`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${accessToken}`
+            },
+            body: JSON.stringify({
+              track_id: currentTrack.id,
+              tx_hash: tx
+            })
+          })
+        }
+      } catch (err) {
+        logger.error('AudioPlayer: Failed to record mint in backend', err)
+      }
     } catch (error: any) {
       logger.error('AudioPlayer: Collection Error', error)
       toast.error(error.message || "Collection failed", { id: mainToast })
