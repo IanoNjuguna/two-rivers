@@ -527,7 +527,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 			// 6. Register in Backend (Discovery Index)
 			try {
-				await fetch(`${API_URL.replace(/\/$/, '')}/tracks`, {
+				await fetch(`${API_URL.replace(/\/$/, '')}/songs`, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
@@ -542,7 +542,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 						genre,
 						image_url: `ipfs://${imageName}`,
 						audio_url: `ipfs://${audioName}`,
-						external_url: `https://doba.world/tracks/${tokenId}`,
+						external_url: `https://doba.world/songs/${tokenId}`,
 						price: price || '0.99',
 						max_supply: supply || '5000',
 						splitter: splitterAddress,

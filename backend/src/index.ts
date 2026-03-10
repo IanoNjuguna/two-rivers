@@ -391,7 +391,7 @@ app.post('/upload-metadata', authMiddleware, async (c) => {
 })
 
 // Remaining endpoints (tracks, health, root)
-app.get('/tracks', async (c) => {
+app.get('/songs', async (c) => {
   const artist = c.req.query('artist')
   const chainId = c.req.query('chain_id')
   const genre = c.req.query('genre')
@@ -410,7 +410,7 @@ app.get('/tracks', async (c) => {
   return c.json(tracks)
 })
 
-app.get('/tracks/:id', async (c) => {
+app.get('/songs/:id', async (c) => {
   const id = parseInt(c.req.param('id'))
   if (isNaN(id)) return c.json({ error: 'Invalid track ID' }, 400)
   const track = await getTrack(id)
@@ -443,7 +443,7 @@ app.post('/api/webhook', async (c) => {
   }
 })
 
-app.post('/tracks', authMiddleware, async (c) => {
+app.post('/songs', authMiddleware, async (c) => {
   const track = await c.req.json();
   const payload = c.get('jwtPayload')
   const requesterAddress = payload.sub
@@ -465,7 +465,7 @@ app.post('/tracks', authMiddleware, async (c) => {
   }
 })
 
-app.delete('/tracks/:id', authMiddleware, async (c) => {
+app.delete('/songs/:id', authMiddleware, async (c) => {
   const id = parseInt(c.req.param('id'))
   if (isNaN(id)) return c.json({ error: 'Invalid ID' }, 400)
 
@@ -484,7 +484,7 @@ app.delete('/tracks/:id', authMiddleware, async (c) => {
   return c.json({ success: true })
 })
 
-app.delete('/tracks', authMiddleware, async (c) => {
+app.delete('/songs', authMiddleware, async (c) => {
   const payload = c.get('jwtPayload')
   const requesterAddress = payload.sub
 
@@ -534,7 +534,7 @@ app.post('/users', authMiddleware, async (c) => {
 })
 
 // Collaborators Endpoints
-app.get('/tracks/:id/collaborators', async (c) => {
+app.get('/songs/:id/collaborators', async (c) => {
   const trackId = parseInt(c.req.param('id'))
   if (isNaN(trackId)) return c.json({ error: 'Invalid ID' }, 400)
   const collaborators = await getTrackCollaborators(trackId)

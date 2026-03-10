@@ -70,7 +70,7 @@ export default function TrackDetailPage() {
 		if (!id) return
 		const fetchTrack = async () => {
 			try {
-				const res = await fetch(`${API_URL.replace(/\/$/, '')}/tracks/${id}`)
+				const res = await fetch(`${API_URL.replace(/\/$/, '')}/songs/${id}`)
 				if (res.ok) {
 					const data = await res.json()
 					setTrack(data)

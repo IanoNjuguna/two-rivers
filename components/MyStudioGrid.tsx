@@ -48,7 +48,7 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
 
       try {
         // 1. Fetch all tracks from indexer
-        const res = await fetch(`${API_URL.replace(/\/$/, '')}/tracks`)
+        const res = await fetch(`${API_URL.replace(/\/$/, '')}/songs`)
         if (!res.ok) throw new Error('Failed to fetch tracks')
         const allTracks: Track[] = await res.json()
 

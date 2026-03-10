@@ -56,7 +56,7 @@ export default function MarketplaceGrid({
       params.append('limit', limit.toString())
       params.append('offset', currentOffset.toString())
 
-      const fetchUrl = `${API_URL.replace(/\/$/, '')}/tracks?${params.toString()}`
+      const fetchUrl = `${API_URL.replace(/\/$/, '')}/songs?${params.toString()}`
       const res = await fetch(fetchUrl)
       if (res.ok) {
         const data = await res.json()
