@@ -63,6 +63,7 @@ export default function SongCard({
 
   const [isMinting, setIsMinting] = React.useState(false)
   const [hasOwned, setHasOwned] = React.useState(false)
+  const [mintData, setMintData] = React.useState<{ minted: number, max: number }>({ minted: 0, max: 0 })
 
   // Determine active reader for contracts
   const activeClient = publicClient
@@ -85,9 +86,33 @@ export default function SongCard({
     }
   }, [client, tokenId])
 
+  const fetchMintData = React.useCallback(async () => {
+    if (!activeClient) return
+    try {
+      const [minted, collectionInfo] = await Promise.all([
+        activeClient.readContract({
+          address: CURRENT_CONTRACT as `0x${string}`,
+          abi: CONTRACT_ABI,
+          functionName: 'collectionMinted',
+          args: [BigInt(tokenId)],
+        }),
+        activeClient.readContract({
+          address: CURRENT_CONTRACT as `0x${string}`,
+          abi: CONTRACT_ABI,
+          functionName: 'collections',
+          args: [BigInt(tokenId)],
+        })
+      ])
+      setMintData({ minted: Number(minted), max: Number(collectionInfo[3]) })
+    } catch (err) {
+      logger.error('Error fetching mint data', err)
+    }
+  }, [activeClient, tokenId])
+
   React.useEffect(() => {
     checkOwnership()
-  }, [checkOwnership])
+    fetchMintData()
+  }, [checkOwnership, fetchMintData])
 
   const handleMint = async (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -100,6 +125,12 @@ export default function SongCard({
     const currentlyOwned = await checkOwnership()
     if (currentlyOwned || hasOwned) {
       toast.info("You already own this track! Check your library.")
+      return
+    }
+
+    // Check if sold out
+    if (mintData.max > 0 && mintData.minted >= mintData.max) {
+      toast.error("This edition is sold out!")
       return
     }
 
@@ -363,11 +394,11 @@ export default function SongCard({
         </p>
       </div>
 
-      {/* Progress/Minting Overlay */}
-      {isMinting && (
-        <div className="absolute inset-0 z-40 bg-black/40 backdrop-blur-[2px] flex flex-col items-center justify-center gap-2">
-          <IconLoader2 size={32} className="text-cyber-pink animate-spin" />
-          <span className="text-[10px] font-bold text-white uppercase tracking-tighter">Collecting...</span>
+      {/* Sold Out Overlay */}
+      {!hasOwned && !isMinting && mintData.max > 0 && mintData.minted >= mintData.max && (
+        <div className="absolute inset-0 z-40 bg-black/60 backdrop-blur-[1px] flex flex-col items-center justify-center gap-2">
+          <IconMusic size={32} className="text-white/40" />
+          <span className="text-[10px] font-bold text-white/60 uppercase tracking-widest">Sold Out</span>
         </div>
       )}
 

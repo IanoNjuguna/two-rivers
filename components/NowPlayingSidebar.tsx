@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { IconX, IconMicrophone, IconExternalLink, IconShare, IconCopy, IconHeart, IconCheck, IconLoader2 } from '@tabler/icons-react'
+import { IconX, IconMicrophone, IconExternalLink, IconShare, IconCopy, IconHeart, IconCheck, IconLoader2, IconMusic } from '@tabler/icons-react'
 import { Button } from '@/components/ui/button'
 import { getAddressesForChain, CONTRACT_ABI, ERC20_ABI, CHAIN_ID } from '@/lib/web3'
 import { useChainId, usePublicClient, useAccount, useWriteContract } from 'wagmi'
@@ -209,17 +209,21 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 								"flex-1 h-12 rounded-none font-bold uppercase tracking-widest text-xs transition-all duration-300",
 								hasOwned
 									? "bg-[#1DB954]/10 border border-[#1DB954]/20 text-[#1DB954] hover:bg-[#1DB954]/20"
-									: "bg-[#B794F4] hover:bg-[#A080E0] text-black"
+									: (mintData.max > 0 && mintData.minted >= mintData.max)
+										? "bg-white/5 border border-white/10 text-white/40 cursor-not-allowed"
+										: "bg-[#B794F4] hover:bg-[#A080E0] text-black"
 							)}
-							onClick={!hasOwned && !isMinting ? handleMint : undefined}
-							disabled={isMinting}
+							onClick={!hasOwned && !isMinting && !(mintData.max > 0 && mintData.minted >= mintData.max) ? handleMint : undefined}
+							disabled={isMinting || (mintData.max > 0 && mintData.minted >= mintData.max)}
 						>
 							{isMinting ? (
 								<IconLoader2 size={16} className="animate-spin mr-2" />
 							) : hasOwned ? (
 								<IconCheck size={16} className="mr-2" />
+							) : (mintData.max > 0 && mintData.minted >= mintData.max) ? (
+								<IconMusic size={16} className="mr-2" />
 							) : null}
-							{hasOwned ? 'Collected' : 'Collect'}
+							{hasOwned ? 'Collected' : (mintData.max > 0 && mintData.minted >= mintData.max) ? 'Sold Out' : 'Collect'}
 						</Button>
 
 						<Button

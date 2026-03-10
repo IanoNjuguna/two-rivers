@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { IconPlayerPlay, IconPlayerPause, IconArrowLeft, IconShare, IconCopy, IconHeart, IconLoader2, IconCheck } from '@tabler/icons-react'
+import { IconPlayerPlay, IconPlayerPause, IconArrowLeft, IconShare, IconCopy, IconHeart, IconLoader2, IconCheck, IconMusic } from '@tabler/icons-react'
 import { cn } from '@/lib/utils'
 import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain } from '@/lib/web3'
 import { useChainId, useWalletClient, usePublicClient, useAccount } from 'wagmi'
@@ -363,12 +363,14 @@ export default function TrackDetailPage() {
 					<div className="flex items-center gap-2 h-11">
 						<button
 							onClick={handleMint}
-							disabled={isMinting || hasOwned}
+							disabled={isMinting || hasOwned || (maxSupply > 0 && mintedCount >= maxSupply)}
 							className={cn(
 								"flex-[2] h-full flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-all rounded-sm",
 								hasOwned
 									? "bg-green-500/10 text-green-400 border border-green-500/20 cursor-default"
-									: "bg-[#B794F4] hover:bg-[#B794F4]/80 text-white border border-[#B794F4]/20",
+									: (maxSupply > 0 && mintedCount >= maxSupply)
+										? "bg-white/5 text-white/40 border border-white/10 cursor-not-allowed"
+										: "bg-[#B794F4] hover:bg-[#B794F4]/80 text-white border border-[#B794F4]/20",
 								isMinting && "opacity-50 cursor-not-allowed"
 							)}
 						>
@@ -376,10 +378,12 @@ export default function TrackDetailPage() {
 								<IconLoader2 size={16} className="animate-spin" />
 							) : hasOwned ? (
 								<IconCheck size={16} />
+							) : (maxSupply > 0 && mintedCount >= maxSupply) ? (
+								<IconMusic size={16} />
 							) : (
 								<IconHeart size={16} />
 							)}
-							{isMinting ? 'Minting' : hasOwned ? 'Collected' : 'Collect'}
+							{isMinting ? 'Minting' : hasOwned ? 'Collected' : (maxSupply > 0 && mintedCount >= maxSupply) ? 'Sold Out' : 'Collect'}
 						</button>
 
 						<button

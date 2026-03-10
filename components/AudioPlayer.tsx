@@ -13,6 +13,7 @@ import {
   IconHeart,
   IconLoader2,
   IconLayoutSidebarRight,
+  IconMusic,
 } from '@tabler/icons-react'
 import { logger } from '@/lib/logger'
 import { useEffect, useState, useRef, useCallback } from 'react'
@@ -65,6 +66,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
   const [repeatMode, setRepeatMode] = useState<'off' | 'all' | 'one'>('off')
   const [isMinting, setIsMinting] = useState(false)
   const [hasOwned, setHasOwned] = useState(false)
+  const [mintData, setMintData] = useState({ minted: 0, max: 0 })
 
   const progressBarRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
@@ -86,9 +88,34 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
     }
   }, [effectiveAddress, currentTrack, publicClient, CURRENT_CONTRACT])
 
+  const fetchMintData = useCallback(async () => {
+    if (!currentTrack || !publicClient) return
+    try {
+      const tokenId = currentTrack.id
+      const [minted, collectionInfo] = await Promise.all([
+        publicClient.readContract({
+          address: CURRENT_CONTRACT as `0x${string}`,
+          abi: CONTRACT_ABI,
+          functionName: 'collectionMinted',
+          args: [BigInt(tokenId)],
+        }),
+        publicClient.readContract({
+          address: CURRENT_CONTRACT as `0x${string}`,
+          abi: CONTRACT_ABI,
+          functionName: 'collections',
+          args: [BigInt(tokenId)],
+        })
+      ])
+      setMintData({ minted: Number(minted), max: Number(collectionInfo[3]) })
+    } catch (err) {
+      logger.error('AudioPlayer: Error fetching mint data', err)
+    }
+  }, [currentTrack, publicClient, CURRENT_CONTRACT])
+
   useEffect(() => {
     checkOwnership()
-  }, [currentTrack?.id, effectiveAddress, checkOwnership])
+    fetchMintData()
+  }, [currentTrack?.id, effectiveAddress, checkOwnership, fetchMintData])
 
   const handleMint = async (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -405,22 +432,27 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
 
         <div className="flex items-center gap-4 w-[25%] justify-end">
           <button
-            onClick={!hasOwned ? handleMint : undefined}
-            disabled={isMinting}
+            onClick={(!hasOwned && !(mintData.max > 0 && mintData.minted >= mintData.max)) ? handleMint : undefined}
+            disabled={isMinting || (mintData.max > 0 && mintData.minted >= mintData.max)}
             className={cn(
               "p-2 transition-all hover:scale-110 active:scale-95 disabled:opacity-50 flex items-center justify-center flex-shrink-0 group/heart",
-              hasOwned ? "text-cyber-pink" : "text-white/40 hover:text-white"
+              hasOwned ? "text-cyber-pink" : (mintData.max > 0 && mintData.minted >= mintData.max) ? "text-white/20" : "text-white/40 hover:text-white"
             )}
+            title={hasOwned ? "Collected" : (mintData.max > 0 && mintData.minted >= mintData.max) ? "Sold Out" : "Collect"}
           >
             {isMinting ? (
               <IconLoader2 size={22} className="animate-spin text-cyber-pink" />
+            ) : hasOwned ? (
+              <IconHeart
+                size={22}
+                className="fill-cyber-pink text-cyber-pink"
+              />
+            ) : (mintData.max > 0 && mintData.minted >= mintData.max) ? (
+              <IconMusic size={22} className="text-white/20" />
             ) : (
               <IconHeart
                 size={22}
-                className={cn(
-                  "transition-colors",
-                  hasOwned ? "fill-cyber-pink text-cyber-pink" : "text-white/40"
-                )}
+                className="text-white/40 group-hover/heart:text-white"
               />
             )}
           </button>
