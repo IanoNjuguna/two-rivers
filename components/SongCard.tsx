@@ -375,7 +375,7 @@ export default function SongCard({
       <div className="absolute top-2 right-2 z-20 mt-5">
         {mintData.max > 0 && mintData.minted >= mintData.max ? (
           <div className="flex items-center justify-center min-w-[24px] min-h-[20px]">
-            <DobaVisualizer size={18} className="text-[#FF1F8A] drop-shadow-[0_0_10px_rgba(255,31,138,0.6)]" />
+            <DobaVisualizer size={18} className="text-[#FF1F8A]" />
           </div>
         ) : (
           <div className="text-[9px] font-bold bg-black/60 backdrop-blur-sm border border-cyber-pink/30 px-1.5 py-0.5 text-white flex items-center justify-center min-h-[20px]">
