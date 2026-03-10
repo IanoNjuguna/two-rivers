@@ -108,7 +108,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
       // Use a safe price calculation
       let priceInUnits: bigint
       try {
-        priceInUnits = currentTrack.price ? parseUnits(currentTrack.price, 6) : 990000n
+        priceInUnits = currentTrack.price ? parseUnits(currentTrack.price, 6) : 500000n
       } catch (err) {
         logger.error('AudioPlayer: Invalid price format', { price: currentTrack.price })
         throw new Error("Invalid track price format")

@@ -71,7 +71,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 			return
 		}
 
-		const priceInUnits = track.price ? parseUnits(track.price, 6) : 990000n
+		const priceInUnits = track.price ? parseUnits(track.price, 6) : 500000n
 		setIsMinting(true)
 		const mainToast = toast.loading(`Collecting "${track.name || track.title}"...`)
 
@@ -187,7 +187,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 					{/* Price & Mint Info */}
 					<div className="space-y-2 pt-2">
 						<div className="flex items-center justify-between">
-							<span className="text-cyber-pink font-bold text-lg">99¢</span>
+							<span className="text-cyber-pink font-bold text-lg">50¢</span>
 							<span className="text-[10px] text-white/40 font-bold uppercase tracking-widest">
 								{mintData.max === 0
 									? `${mintData.minted} Collected`

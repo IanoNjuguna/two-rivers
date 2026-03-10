@@ -103,7 +103,7 @@ export default function SongCard({
       return
     }
 
-    const priceInUnits = price ? parseUnits(price, 6) : 990000n // Default to 0.99 for legacy
+    const priceInUnits = price ? parseUnits(price, 6) : 500000n // Default to 0.50 for legacy
     setIsMinting(true)
     const mainToast = toast.loading(`Collecting "${name}"...`)
 
