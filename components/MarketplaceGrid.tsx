@@ -6,6 +6,8 @@ import React, { useEffect, useState } from 'react'
 import SongCard from './SongCard'
 import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
+import { useAccount } from 'wagmi'
+import { publicClients, CONTRACT_ADDRESS, CONTRACT_ABI } from '@/lib/web3'
 
 interface Track {
   id?: number
@@ -147,15 +149,19 @@ export default function MarketplaceGrid({
 
         // Heal database
         if (discoveredMints.length > 0) {
-          const { accessToken } = JSON.parse(authData)
-          fetch(`${process.env.NEXT_PUBLIC_API_URL || '/api-backend'}/mints/sync`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${accessToken}`
-            },
-            body: JSON.stringify({ mints: discoveredMints })
-          }).catch(err => logger.error('Ownership sync reporting failed', err))
+          try {
+            const { accessToken } = JSON.parse(authData as string)
+            fetch(`${process.env.NEXT_PUBLIC_API_URL || '/api-backend'}/mints/sync`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+              },
+              body: JSON.stringify({ mints: discoveredMints })
+            }).catch(err => logger.error('Ownership sync reporting failed', err))
+          } catch (e) {
+            logger.error('Failed to parse auth data for sync', e)
+          }
         }
       }
     } catch (err) {
