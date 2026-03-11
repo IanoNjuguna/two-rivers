@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.22;
+pragma solidity ^0.8.32;
 
 import { ERC1155 } from "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
@@ -115,6 +115,11 @@ contract Doba is ERC1155, Ownable, ReentrancyGuard, OApp {
             maxSupply: _maxSupply,
             exists: true
         });
+
+        // Auto-mint the first copy to the artist for 0 cents
+        collectionMinted[collectionId]++;
+        _mint(msg.sender, collectionId, 1, "");
+        emit SongMinted(collectionId, collectionId, msg.sender);
 
         emit CollectionPublished(collectionId, msg.sender, splitter, MINT_PRICE);
         emit URI(_baseUri, collectionId);
