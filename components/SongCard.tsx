@@ -242,24 +242,26 @@ export default function SongCard({
       // 4. Record mint in backend
       try {
         const authData = localStorage.getItem('doba_auth_data')
-        if (authData) {
-          const { accessToken } = JSON.parse(authData)
-          await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mints`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${accessToken}`
-            },
-            body: JSON.stringify({
-              track_id: tokenId,
-              tx_hash: txReceipt
+        if (authData && authData !== 'null') {
+          const parsedAuth = JSON.parse(authData)
+          if (parsedAuth && parsedAuth.accessToken) {
+            const { accessToken } = parsedAuth
+            await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mints`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+              },
+              body: JSON.stringify({
+                track_id: tokenId,
+                tx_hash: txReceipt
+              })
             })
-          })
+          }
         }
       } catch (err) {
         logger.error('Failed to record mint in backend', err)
       }
-    } catch (error: any) {
       logger.error('Mint Error', error)
 
       let errorMessage = error.message || "Minting failed"
