@@ -57,7 +57,24 @@ export default function TrackDetailPage() {
 	const { data: walletClient } = useWalletClient()
 	const publicClient = usePublicClient()
 	const { address, isConnected } = useAccount()
-	const effectiveAddress = address
+	// Standardize the active address
+	const [effectiveAddress, setEffectiveAddress] = useState<string | undefined>(address)
+
+	useEffect(() => {
+		if (address) {
+			setEffectiveAddress(address)
+		} else {
+			const authData = localStorage.getItem('doba_auth_data')
+			if (authData) {
+				try {
+					const { address: savedAddress } = JSON.parse(authData)
+					setEffectiveAddress(savedAddress)
+				} catch (e) {
+					console.error('TrackPage: Failed to parse auth data', e)
+				}
+			}
+		}
+	}, [address])
 	const isAuthenticated = isConnected
 
 	const {
@@ -370,7 +387,14 @@ export default function TrackDetailPage() {
 				<div className="mb-6">
 					<div className="space-y-3 mb-4">
 						<div className="flex items-center justify-between">
-							<span className="text-lg font-bold text-cyber-pink">50¢</span>
+							{hasOwned ? (
+								<div className="flex items-center gap-1.5 text-[#1DB954]">
+									<IconCheck size={18} />
+									<span className="text-sm font-bold uppercase tracking-widest">Collected</span>
+								</div>
+							) : (
+								<span className="text-lg font-bold text-cyber-pink">50¢</span>
+							)}
 							<div className="text-right">
 								<div className="text-[10px] font-mono flex items-center gap-1 justify-end">
 									<span className="text-white">{mintedCount.toLocaleString()}</span>

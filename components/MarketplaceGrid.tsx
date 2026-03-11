@@ -100,9 +100,12 @@ export default function MarketplaceGrid({
     }
   }
 
+  const { address } = useAccount()
+
   const syncOwnershipOnChain = async (tracksToSync: Track[]) => {
     const authData = localStorage.getItem('doba_auth_data')
-    const walletAddress = authData ? JSON.parse(authData).address : null
+    const savedAddress = authData ? JSON.parse(authData).address : null
+    const walletAddress = address || savedAddress
 
     if (!walletAddress || !tracksToSync.length) return
 
@@ -176,12 +179,12 @@ export default function MarketplaceGrid({
     })
   }, [searchQuery, genre, chainId])
 
-  // Separate effect to trigger sync after tracks load
+  // Separate effect to trigger sync after tracks load or address changes
   useEffect(() => {
-    if (tracks.length > 0) {
+    if (tracks.length > 0 && (address || localStorage.getItem('doba_auth_data'))) {
       syncOwnershipOnChain(tracks)
     }
-  }, [tracks.length, searchQuery, genre, chainId])
+  }, [tracks.length, address, searchQuery, genre, chainId])
 
   if (loading) {
     return (

@@ -103,7 +103,7 @@ export default function SongCard({
       logger.error('Error checking ownership', e)
       return false
     }
-  }, [client, tokenId])
+  }, [activeClient, effectiveAddress, tokenId, CURRENT_CONTRACT])
 
   const fetchMintData = React.useCallback(async () => {
     if (!activeClient) return

@@ -25,7 +25,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 	const { contract: CONTRACT_ADDRESS, explorer: EXPLORER_URL, usdc: USDC_ADDRESS } = getAddressesForChain(CHAIN_ID)
 
 	const [mintData, setMintData] = React.useState<{ minted: number, max: number }>({ minted: 0, max: 0 })
-	const [hasOwned, setHasOwned] = React.useState(false)
+	const [hasOwned, setHasOwned] = React.useState(track?.is_owned ?? false)
 	const [isMinting, setIsMinting] = React.useState(false)
 
 	const fetchMintData = React.useCallback(async () => {
@@ -210,7 +210,14 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 					{/* Price & Mint Info */}
 					<div className="space-y-2 pt-2">
 						<div className="flex items-center justify-between">
-							<span className="text-cyber-pink font-bold text-lg">50¢</span>
+							{hasOwned ? (
+								<div className="flex items-center gap-1.5 text-[#1DB954]">
+									<IconCheck size={18} />
+									<span className="text-sm font-bold uppercase tracking-widest">Collected</span>
+								</div>
+							) : (
+								<span className="text-cyber-pink font-bold text-lg">50¢</span>
+							)}
 							<span className="text-[10px] text-white/40 font-bold uppercase tracking-widest">
 								{mintData.max === 0
 									? `${mintData.minted} Collected`
