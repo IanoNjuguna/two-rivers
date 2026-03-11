@@ -417,8 +417,8 @@ export default function SongCard({
       {/* Status/Price Badge */}
       <div className="absolute top-2 right-2 z-20 mt-5">
         {hasOwned ? (
-          <div className="flex items-center justify-center min-w-[24px] min-h-[20px] bg-[#1DB954]/20 border border-[#1DB954]/40 px-1.5 rounded-sm">
-            <IconSquareCheckFilled size={16} className="text-[#1DB954]" />
+          <div className="flex items-center justify-center">
+            <IconSquareCheckFilled size={18} className="text-[#1DB954]" />
           </div>
         ) : (mintData.max > 0 && mintData.minted >= mintData.max) ? (
           <div className="flex items-center justify-center min-w-[24px] min-h-[20px]">
