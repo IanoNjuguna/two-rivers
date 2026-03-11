@@ -72,7 +72,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 		} catch (err) {
 			console.error('Sidebar: Error fetching mint data', err)
 		}
-	}, [publicClient, track, CONTRACT_ADDRESS, address])
+	}, [publicClient, track, CONTRACT_ADDRESS, effectiveAddress])
 
 	React.useEffect(() => {
 		fetchMintData()
