@@ -213,7 +213,6 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 							{hasOwned ? (
 								<div className="flex items-center gap-1.5 text-[#1DB954]">
 									<IconSquareCheckFilled size={18} />
-									<span className="text-sm font-bold uppercase tracking-widest">Collected</span>
 								</div>
 							) : (
 								<span className="text-cyber-pink font-bold text-lg">50¢</span>

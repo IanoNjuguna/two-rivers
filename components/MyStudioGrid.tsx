@@ -130,7 +130,7 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
   return (
     <div className="flex flex-col">
       {/* List Header */}
-      <div className="grid grid-cols-[48px_1fr_120px_160px_60px] gap-4 px-4 py-2 border-b border-white/5 text-xs font-medium text-white/40 uppercase tracking-widest mb-2">
+      <div className="hidden md:grid md:grid-cols-[48px_1fr_120px_160px_60px] gap-4 px-4 py-2 border-b border-white/5 text-xs font-medium text-white/40 uppercase tracking-widest mb-2">
         <div className="flex justify-center">#</div>
         <div>Title</div>
         <div className="hidden md:block">Genre</div>
@@ -147,7 +147,7 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
             key={track.token_id}
             onMouseEnter={() => setHoveredTrackId(track.token_id)}
             onMouseLeave={() => setHoveredTrackId(null)}
-            className="grid grid-cols-[48px_1fr_120px_160px_60px] gap-4 px-4 py-2 hover:bg-white/[0.05] transition-colors rounded-md group items-center"
+            className="grid grid-cols-[40px_1fr_auto] md:grid-cols-[48px_1fr_120px_160px_60px] gap-3 md:gap-4 px-3 md:px-4 py-3 md:py-2 hover:bg-white/[0.05] border-b border-white/[0.02] md:border-none transition-colors group items-center"
           >
             {/* Index / Play Button */}
             <div className="flex justify-center items-center">
@@ -162,16 +162,18 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
                     url: track.streaming_url || track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
                     collaborators: 0,
                   }, ownedTracks)}
-                  className="w-6 h-6 flex items-center justify-center bg-white text-black rounded-none shadow-sm transition-all active:scale-95"
+                  className="w-7 h-7 md:w-6 md:h-6 flex items-center justify-center bg-white text-black rounded-none shadow-sm transition-all active:scale-90"
                 >
                   {isPlaying && currentTrackId === track.token_id ? (
-                    <IconPlayerPause size={12} className="fill-black" />
+                    <IconPlayerPause size={14} className="fill-black" />
                   ) : (
-                    <IconPlayerPlay size={12} className="fill-black ml-0.5" />
+                    <IconPlayerPlay size={14} className="fill-black ml-0.5" />
                   )}
                 </button>
               ) : (
-                <span className="text-sm font-medium text-white/40">{index + 1}</span>
+                <span className="text-xs md:text-sm font-medium text-white/20 tabular-nums">
+                  {(index + 1).toString().padStart(2, '0')}
+                </span>
               )}
             </div>
 
@@ -188,19 +190,19 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
                 collaborators: 0,
               }, ownedTracks)}
             >
-              <div className="w-10 h-10 rounded overflow-hidden flex-shrink-0 border border-white/10">
+              <div className="w-12 h-12 md:w-10 md:h-10 rounded-none overflow-hidden flex-shrink-0 border border-white/10 shadow-lg">
                 <img
                   src={(track.image_url || '').replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/')}
                   alt={track.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
               </div>
               <div className="min-w-0">
-                <h4 className="text-sm font-bold text-white truncate group-hover:text-purple-400 transition-colors">
+                <h4 className="text-sm md:text-base font-bold text-white truncate group-hover:text-cyber-pink transition-colors tracking-tight">
                   {track.name}
                 </h4>
-                <p className="text-xs text-white/50 truncate flex items-center gap-1">
-                  <IconMicrophone size={10} className="text-purple-400/50" />
+                <p className="text-[10px] md:text-xs text-white/50 truncate flex items-center gap-1.5 font-medium uppercase tracking-wider mt-0.5">
+                  <IconMicrophone size={10} className="text-cyber-pink/50" />
                   {track.artist}
                 </p>
               </div>
@@ -208,20 +210,20 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
 
             {/* Genre */}
             <div className="hidden md:flex items-center text-xs text-white/50">
-              <span className="bg-white/5 px-2 py-0.5 rounded border border-white/5">{track.genre || 'Ambient'}</span>
+              <span className="bg-white/5 px-2 py-0.5 rounded-none border border-white/5 font-bold uppercase tracking-widest text-[9px]">{track.genre || 'RARE'}</span>
             </div>
 
             {/* Date Added */}
-            <div className="hidden lg:flex items-center text-xs text-white/40">
+            <div className="hidden lg:flex items-center text-xs text-white/40 font-mono">
               {track.created_at ? new Date(track.created_at).toLocaleDateString() : 'N/A'}
             </div>
 
             {/* View Details Button */}
-            <div className="flex justify-center">
+            <div className="flex justify-center pr-1">
               <Button
                 size="sm"
                 variant="ghost"
-                className="h-8 w-8 p-0 hover:bg-purple-500/20 text-white/40 hover:text-purple-400"
+                className="h-9 w-9 md:h-8 md:w-8 p-0 hover:bg-white/10 text-white/30 hover:text-white rounded-none border border-transparent hover:border-white/5"
                 onClick={() => handleOpenSidebar(track)}
               >
                 <IconEye size={18} />

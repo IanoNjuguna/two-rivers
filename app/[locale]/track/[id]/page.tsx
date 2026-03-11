@@ -390,7 +390,6 @@ export default function TrackDetailPage() {
 							{hasOwned ? (
 								<div className="flex items-center gap-1.5 text-[#1DB954]">
 									<IconSquareCheckFilled size={18} />
-									<span className="text-sm font-bold uppercase tracking-widest">Collected</span>
 								</div>
 							) : (
 								<span className="text-lg font-bold text-cyber-pink">50¢</span>
