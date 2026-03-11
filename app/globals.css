@@ -134,6 +134,14 @@
   .tracking-wider {
     letter-spacing: 0.04em;
   }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 
 @keyframes slideUpSpring {
