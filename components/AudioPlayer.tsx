@@ -538,67 +538,65 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
           />
         </div>
 
-        <div className="flex flex-col w-full gap-3 px-4 py-4">
-          {/* Row 1: Artwork, Title & Icon */}
-          <div className="flex items-center gap-4">
-            <div
-              className="w-12 h-12 flex-shrink-0 overflow-hidden bg-white/5 cursor-pointer rounded-none"
-              onClick={() => {
-                handleOpenSidebar({
-                  ...currentTrack,
-                  token_id: currentTrack.id,
-                  name: currentTrack.title,
-                  artist: currentTrack.creator,
-                  image_url: currentTrack.cover
-                })
-              }}
-            >
-              <img
-                src={(currentTrack.cover || '').replace('ipfs://', process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud/ipfs/')}
-                alt={currentTrack.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
+        <div className="flex items-center w-full gap-3 px-3 py-3">
+          {/* Row 1: Artwork */}
+          <div
+            className="w-10 h-10 flex-shrink-0 overflow-hidden bg-white/5 cursor-pointer rounded-none"
+            onClick={() => {
+              handleOpenSidebar({
+                ...currentTrack,
+                token_id: currentTrack.id,
+                name: currentTrack.title,
+                artist: currentTrack.creator,
+                image_url: currentTrack.cover
+              })
+            }}
+          >
+            <img
+              src={(currentTrack.cover || '').replace('ipfs://', process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud/ipfs/')}
+              alt={currentTrack.title}
+              className="w-full h-full object-cover"
+            />
+          </div>
 
-            <div
-              className="flex-1 min-w-0"
-              onClick={() => {
-                handleOpenSidebar({
-                  ...currentTrack,
-                  token_id: currentTrack.id,
-                  name: currentTrack.title,
-                  artist: currentTrack.creator,
-                  image_url: currentTrack.cover
-                })
-              }}
-            >
+          {/* Song Info & Status Icon - All Horizontal */}
+          <div
+            className="flex-1 min-w-0 flex items-center gap-2"
+            onClick={() => {
+              handleOpenSidebar({
+                ...currentTrack,
+                token_id: currentTrack.id,
+                name: currentTrack.title,
+                artist: currentTrack.creator,
+                image_url: currentTrack.cover
+              })
+            }}
+          >
+            <div className="min-w-0 flex-shrink truncate">
               <h4 className="text-sm font-bold text-white truncate">{currentTrack.title}</h4>
-              <p className="text-[10px] text-white/50 truncate uppercase tracking-wider mt-0.5">
-                {currentTrack.creator}
-              </p>
             </div>
 
-            <div className="flex items-center flex-shrink-0">
+            <div className="flex-shrink-0">
               <button
                 onClick={!hasOwned && !(mintData.max > 0 && mintData.minted >= mintData.max) ? handleMint : undefined}
                 disabled={isMinting}
                 className={cn(
-                  "p-2 active:scale-95 transition-transform",
+                  "flex items-center active:scale-95 transition-transform",
                   hasOwned ? "text-cyber-pink" : (mintData.max > 0 && mintData.minted >= mintData.max) ? "text-[#FF1F8A]" : "text-white/40"
                 )}
               >
                 {isMinting ? (
-                  <IconLoader2 size={24} className="animate-spin text-cyber-pink" />
+                  <IconLoader2 size={16} className="animate-spin text-cyber-pink" />
                 ) : hasOwned ? (
                   <IconHeart
-                    size={24}
+                    size={16}
                     className="fill-cyber-pink text-cyber-pink"
                   />
                 ) : (mintData.max > 0 && mintData.minted >= mintData.max) ? (
-                  <DobaVisualizer size={24} className="text-[#FF1F8A]" />
+                  <DobaVisualizer size={16} className="text-[#FF1F8A]" />
                 ) : (
                   <IconHeart
-                    size={24}
+                    size={16}
                     className="text-white/40 fill-none"
                   />
                 )}
@@ -606,33 +604,33 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
             </div>
           </div>
 
-          {/* Row 2: Controls */}
-          <div className="flex items-center justify-center gap-10">
+          {/* Controls - Horizontal */}
+          <div className="flex items-center gap-3">
             <button
               onClick={previous}
-              className="p-2 text-white/70 active:text-white transition-opacity"
+              className="p-1 text-white/70 active:text-white"
               aria-label="Previous"
             >
-              <SkipBack size={26} className="fill-white" />
+              <SkipBack size={20} className="fill-white" />
             </button>
 
             <button
               onClick={togglePlayPause}
-              className="w-12 h-12 flex items-center justify-center transition-all bg-white text-black active:scale-90 active:brightness-90 rounded-none shadow-lg shadow-black/20"
+              className="w-9 h-9 flex items-center justify-center bg-white text-black active:scale-90 rounded-none shadow-md shadow-black/20"
               aria-label={isPlaying ? 'Pause' : 'Play'}
             >
               {isPlaying
-                ? <Pause size={24} className="fill-black" />
-                : <Play size={24} className="fill-black ml-0.5" />
+                ? <Pause size={18} className="fill-black" />
+                : <Play size={18} className="fill-black ml-0.5" />
               }
             </button>
 
             <button
               onClick={next}
-              className="p-2 text-white/70 active:text-white transition-opacity"
+              className="p-1 text-white/70 active:text-white"
               aria-label="Next"
             >
-              <SkipForward size={26} className="fill-white" />
+              <SkipForward size={20} className="fill-white" />
             </button>
           </div>
         </div>
