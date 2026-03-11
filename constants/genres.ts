@@ -8,6 +8,7 @@ export const GENRES = [
 	"Country",
 	"Dancehall",
 	"Disco",
+	"Doba",
 	"Drum & Bass",
 	"Dubstep",
 	"EDM",
