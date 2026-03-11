@@ -421,8 +421,8 @@ export default function SongCard({
             <IconSquareCheckFilled size={18} className="text-[#1DB954]" />
           </div>
         ) : (mintData.max > 0 && mintData.minted >= mintData.max) ? (
-          <div className="flex items-center justify-center min-w-[24px] min-h-[20px]">
-            <DobaVisualizer size={18} className="text-[#FF1F8A]" />
+          <div className="flex items-center justify-center">
+            <IconSquareCheckFilled size={18} className="text-[#FF1F8A]" />
           </div>
         ) : (
           <div className="text-[9px] font-bold bg-black/60 backdrop-blur-sm border border-cyber-pink/30 px-1.5 py-0.5 text-white flex items-center justify-center min-h-[20px]">
