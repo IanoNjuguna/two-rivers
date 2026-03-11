@@ -20,12 +20,11 @@ interface NowPlayingSidebarProps {
 
 export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlayingSidebarProps) {
 	const chainId = useChainId()
-	const { address } = useAccount()
+	const { playerState, effectiveAddress, isAuthenticated } = useAudio()
 	const publicClient = usePublicClient({ chainId: CHAIN_ID })
 	const { writeContractAsync } = useWriteContract()
 	const { contract: CONTRACT_ADDRESS, explorer: EXPLORER_URL, usdc: USDC_ADDRESS } = getAddressesForChain(CHAIN_ID)
 
-	const { playerState } = useAudio()
 	const {
 		isPlaying,
 		duration,
@@ -61,12 +60,12 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 			])
 			setMintData({ minted: Number(minted), max: Number(collectionInfo[3]) })
 
-			if (address) {
+			if (effectiveAddress) {
 				const balance = await publicClient.readContract({
 					address: CONTRACT_ADDRESS as `0x${string}`,
 					abi: CONTRACT_ABI,
 					functionName: 'balanceOf',
-					args: [address as `0x${string}`, BigInt(tokenId)],
+					args: [effectiveAddress as `0x${string}`, BigInt(tokenId)],
 				})
 				setHasOwned(Number(balance) > 0)
 			}
@@ -80,7 +79,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 	}, [fetchMintData])
 
 	const handleMint = async () => {
-		if (!address || !track) {
+		if (!isAuthenticated || !effectiveAddress || !track) {
 			toast.error("Please connect your wallet")
 			return
 		}
@@ -96,7 +95,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 				address: USDC_ADDRESS as `0x${string}`,
 				abi: ERC20_ABI,
 				functionName: 'allowance',
-				args: [address as `0x${string}`, CONTRACT_ADDRESS as `0x${string}`],
+				args: [effectiveAddress as `0x${string}`, CONTRACT_ADDRESS as `0x${string}`],
 			}) as bigint
 
 			if (allowance < priceInUnits) {
@@ -175,7 +174,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 	}
 
 	const handleDownload = async () => {
-		if (!address || !hasOwned) return
+		if (!effectiveAddress || !hasOwned) return
 
 		const mainToast = toast.loading(`Preparing download...`)
 		try {
@@ -188,7 +187,8 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 			const { accessToken } = parsedAuth
 			const tokenId = track.id !== undefined ? track.id : track.token_id
 
-			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/songs/${tokenId}/download`, {
+			// Use proxy URL to avoid CORS and inconsistent API URL env vars
+			const response = await fetch(`/api-backend/songs/${tokenId}/download`, {
 				headers: {
 					'Authorization': `Bearer ${accessToken}`
 				}

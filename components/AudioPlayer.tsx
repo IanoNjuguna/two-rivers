@@ -76,11 +76,12 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
   const checkOwnership = useCallback(async () => {
     if (!effectiveAddress || !currentTrack || !publicClient) return
     try {
+      const tokenId = (currentTrack as any).token_id || currentTrack.id
       const balance = await publicClient.readContract({
         address: CURRENT_CONTRACT as `0x${string}`,
         abi: CONTRACT_ABI,
         functionName: 'balanceOf',
-        args: [effectiveAddress as `0x${string}`, BigInt(currentTrack.id)],
+        args: [effectiveAddress as `0x${string}`, BigInt(tokenId)],
       }) as bigint
       setHasOwned(balance > 0n)
     } catch (e) {
@@ -91,7 +92,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
   const fetchMintData = useCallback(async () => {
     if (!currentTrack || !publicClient) return
     try {
-      const tokenId = currentTrack.id
+      const tokenId = (currentTrack as any).token_id || currentTrack.id
       const [minted, collectionInfo] = await Promise.all([
         publicClient.readContract({
           address: CURRENT_CONTRACT as `0x${string}`,
@@ -115,7 +116,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
   useEffect(() => {
     checkOwnership()
     fetchMintData()
-  }, [currentTrack?.id, effectiveAddress, checkOwnership, fetchMintData])
+  }, [currentTrack?.id, (currentTrack as any)?.token_id, effectiveAddress, checkOwnership, fetchMintData])
 
   const handleMint = async (e: React.MouseEvent) => {
     e.stopPropagation()
