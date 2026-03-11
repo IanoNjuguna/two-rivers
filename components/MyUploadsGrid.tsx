@@ -25,7 +25,7 @@ interface MyUploadsGridProps {
 const API_URL = '/api-backend'
 
 export default function MyUploadsGrid({ address }: MyUploadsGridProps) {
-	const { playerState, handlePlayTrack, client } = useAudio()
+	const { playerState, handlePlayTrack } = useAudio()
 	const [uploads, setUploads] = useState<Track[]>([])
 	const [loading, setLoading] = useState(true)
 

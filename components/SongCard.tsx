@@ -262,6 +262,8 @@ export default function SongCard({
       } catch (err) {
         logger.error('Failed to record mint in backend', err)
       }
+
+    } catch (error: any) {
       logger.error('Mint Error', error)
 
       let errorMessage = error.message || "Minting failed"
