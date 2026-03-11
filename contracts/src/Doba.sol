@@ -109,7 +109,7 @@ contract Doba is ERC1155, Ownable, ReentrancyGuard, OApp {
             block.timestamp,
             msg.sender,
             _songName
-        )));
+        ))) % 9000000000000000; // Cap to 53-bits for JavaScript Number and SQLite safe limits
         
         address splitter = Clones.clone(splitterImplementation);
         DobaSplitter(payable(splitter)).initialize(_collaborators, _shares);
