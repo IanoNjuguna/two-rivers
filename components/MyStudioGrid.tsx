@@ -1,7 +1,8 @@
 import { logger } from '@/lib/logger'
 import React, { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { IconEye, IconMusic, IconMicrophone, IconPlayerPause, IconPlayerPlay } from '@tabler/icons-react'
+import { IconEye, IconMusic, IconMicrophone, IconPlayerPause, IconPlayerPlay, IconSquareCheckFilled } from '@tabler/icons-react'
+import { DobaVisualizer } from '@/components/icons/DobaVisualizer'
 import { CONTRACT_ABI, getAddressesForChain } from '@/lib/web3'
 import { useTranslations } from 'next-intl'
 import { useChainId, usePublicClient } from "wagmi"
@@ -26,6 +27,8 @@ interface Track {
   price?: string
   created_at?: string
   is_owned?: boolean
+  minted_count?: number
+  max_supply?: number
 }
 
 interface MyStudioGridProps {
@@ -66,19 +69,44 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
           return
         }
 
-        // 2. Check balances for all tracks in one batch call
-        const tokenIds = allTracks.map(t => BigInt(t.token_id))
-        const accounts = allTracks.map(() => address as `0x${string}`)
-
-        const balances = await publicClient.readContract({
+        // 3. Fetch supply data for all tracks in parallel
+        const supplyCalls = allTracks.map(t => ({
           address: CONTRACT_ADDRESS as `0x${string}`,
           abi: CONTRACT_ABI,
-          functionName: 'balanceOfBatch',
-          args: [accounts, tokenIds],
-        }) as bigint[]
+          functionName: 'collectionMinted',
+          args: [BigInt(t.token_id)],
+        }))
 
-        // 3. Filter tracks where balance > 0
-        const owned = allTracks.filter((_, index) => balances[index] > 0n).map(t => ({ ...t, is_owned: true }))
+        const collectionCalls = allTracks.map(t => ({
+          address: CONTRACT_ADDRESS as `0x${string}`,
+          abi: CONTRACT_ABI,
+          functionName: 'collections',
+          args: [BigInt(t.token_id)],
+        }))
+
+        const [mintedResults, collectionResults] = await Promise.all([
+          publicClient.multicall({ contracts: supplyCalls }),
+          publicClient.multicall({ contracts: collectionCalls })
+        ])
+
+        // 4. Combine data and filter tracks where balance > 0
+        const owned = allTracks
+          .filter((_, index) => balances[index] > 0n)
+          .map((track) => {
+            // Find the original index in allTracks to map multicall results
+            const originalIndex = allTracks.indexOf(track)
+            const minted = mintedResults[originalIndex]?.result as bigint || 0n
+            const collectionData = collectionResults[originalIndex]?.result as any
+            const max = collectionData ? collectionData[3] : 0n
+
+            return {
+              ...track,
+              is_owned: true,
+              minted_count: Number(minted),
+              max_supply: Number(max)
+            }
+          })
+
         setOwnedTracks(owned)
 
         // 4. Heal database if we found owned tracks
@@ -198,8 +226,16 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
                 />
               </div>
               <div className="min-w-0">
-                <h4 className="text-sm md:text-base font-bold text-white truncate group-hover:text-cyber-pink transition-colors tracking-tight">
+                <h4 className="text-sm md:text-base font-bold text-white truncate group-hover:text-cyber-pink transition-colors tracking-tight flex items-center gap-2">
                   {track.name}
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                    {track.is_owned && (
+                      <IconSquareCheckFilled size={14} className="text-[#1DB954]" title="Collected" />
+                    )}
+                    {track.max_supply && track.max_supply > 0 && track.minted_count !== undefined && track.minted_count >= track.max_supply && (
+                      <DobaVisualizer size={14} className="text-[#FF1F8A]" />
+                    )}
+                  </div>
                 </h4>
                 <p className="text-[10px] md:text-xs text-white/50 truncate flex items-center gap-1.5 font-medium uppercase tracking-wider mt-0.5">
                   <IconMicrophone size={10} className="text-cyber-pink/50" />
