@@ -73,9 +73,15 @@ export default function MarketplaceGrid({
 
       const headers: Record<string, string> = {}
       const authData = localStorage.getItem('doba_auth_data')
-      if (authData) {
-        const { accessToken } = JSON.parse(authData)
-        headers['Authorization'] = `Bearer ${accessToken}`
+      if (authData && authData !== 'null') {
+        try {
+          const parsedAuth = JSON.parse(authData)
+          if (parsedAuth && parsedAuth.accessToken) {
+            headers['Authorization'] = `Bearer ${parsedAuth.accessToken}`
+          }
+        } catch (e) {
+          logger.error('Failed to parse auth data for tracks fetch', e)
+        }
       }
 
       const res = await fetch(fetchUrl, { headers })
@@ -104,7 +110,15 @@ export default function MarketplaceGrid({
 
   const syncOwnershipOnChain = async (tracksToSync: Track[]) => {
     const authData = localStorage.getItem('doba_auth_data')
-    const savedAddress = authData ? JSON.parse(authData).address : null
+    let savedAddress = null
+    if (authData && authData !== 'null') {
+      try {
+        const parsedAuth = JSON.parse(authData)
+        savedAddress = parsedAuth?.address || null
+      } catch (e) {
+        logger.error('Failed to parse auth data for address recovery', e)
+      }
+    }
     const walletAddress = address || savedAddress
 
     if (!walletAddress || !tracksToSync.length) return
@@ -151,17 +165,19 @@ export default function MarketplaceGrid({
         })
 
         // Heal database
-        if (discoveredMints.length > 0) {
+        if (discoveredMints.length > 0 && authData && authData !== 'null') {
           try {
-            const { accessToken } = JSON.parse(authData as string)
-            fetch(`${process.env.NEXT_PUBLIC_API_URL || '/api-backend'}/mints/sync`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken}`
-              },
-              body: JSON.stringify({ mints: discoveredMints })
-            }).catch(err => logger.error('Ownership sync reporting failed', err))
+            const parsedAuth = JSON.parse(authData)
+            if (parsedAuth && parsedAuth.accessToken) {
+              fetch(`${process.env.NEXT_PUBLIC_API_URL || '/api-backend'}/mints/sync`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${parsedAuth.accessToken}`
+                },
+                body: JSON.stringify({ mints: discoveredMints })
+              }).catch(err => logger.error('Ownership sync reporting failed', err))
+            }
           } catch (e) {
             logger.error('Failed to parse auth data for sync', e)
           }

@@ -370,14 +370,14 @@ export function formatEtherShort(wei: string | number): string {
 const ALCHEMY_KEY = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY!;
 
 const getTransport = (chainId: number) => {
-  const alchemyUrl = `https://base-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`;
-  const publicUrl = 'https://rpc.ankr.com/base';
+  const ALCHEMY_KEY = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY!;
 
-  if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
-    return http(publicUrl);
-  }
+  if (chainId === 84532) return http(`https://base-sepolia.g.alchemy.com/v2/${ALCHEMY_KEY}`);
+  if (chainId === 421614) return http(`https://arb-sepolia.g.alchemy.com/v2/${ALCHEMY_KEY}`);
+  if (chainId === 42161) return http(`https://arb-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`);
 
-  return http(alchemyUrl);
+  // Default to Base Mainnet
+  return http(`https://base-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`);
 }
 
 export const publicClients: Record<number, any> = {

@@ -129,10 +129,8 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
 
     try {
       logger.info('AudioPlayer: Starting mint for track', { id: currentTrack.id, price: currentTrack.price })
-
       if (!publicClient) throw new Error("Public client not found")
 
-      // Use a safe price calculation
       let priceInUnits: bigint
       try {
         priceInUnits = currentTrack.price ? parseUnits(currentTrack.price, 6) : 500000n
@@ -141,7 +139,6 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
         throw new Error("Invalid track price format")
       }
 
-      // 1. Check Allowance
       const allowance = await publicClient.readContract({
         address: CURRENT_USDC as `0x${string}`,
         abi: ERC20_ABI,
@@ -149,27 +146,25 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
         args: [effectiveAddress as `0x${string}`, CURRENT_CONTRACT as `0x${string}`],
       }) as bigint
 
-      // 2. Approve if needed
       if (allowance < priceInUnits) {
-        toast.info("Approving USDC for purchase...", { id: mainToast })
-        const tx = await writeContractAsync({
+        toast.info("Approving USDC...", { id: mainToast })
+        const approveTx = await writeContractAsync({
           address: CURRENT_USDC as `0x${string}`,
           abi: ERC20_ABI,
           functionName: 'approve',
           args: [CURRENT_CONTRACT as `0x${string}`, priceInUnits],
         })
-        await publicClient.waitForTransactionReceipt({ hash: tx })
+        await publicClient.waitForTransactionReceipt({ hash: approveTx })
       }
 
-      // 3. Mint
       toast.loading(`Confirming purchase...`, { id: mainToast })
-      const tx = await writeContractAsync({
+      const mintTx = await writeContractAsync({
         address: CURRENT_CONTRACT as `0x${string}`,
         abi: CONTRACT_ABI,
         functionName: 'mint',
         args: [BigInt(currentTrack.id)],
       })
-      await publicClient.waitForTransactionReceipt({ hash: tx })
+      await publicClient.waitForTransactionReceipt({ hash: mintTx })
 
       setHasOwned(true)
       toast.success(`"${currentTrack.title}" collected!`, { id: mainToast })
@@ -177,19 +172,21 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
       // Record mint in backend
       try {
         const authData = localStorage.getItem('doba_auth_data')
-        if (authData) {
-          const { accessToken } = JSON.parse(authData)
-          await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mints`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${accessToken}`
-            },
-            body: JSON.stringify({
-              track_id: currentTrack.id,
-              tx_hash: tx
+        if (authData && authData !== 'null') {
+          const parsedAuth = JSON.parse(authData)
+          if (parsedAuth && parsedAuth.accessToken) {
+            await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mints`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${parsedAuth.accessToken}`
+              },
+              body: JSON.stringify({
+                track_id: currentTrack.id,
+                tx_hash: mintTx
+              })
             })
-          })
+          }
         }
       } catch (err) {
         logger.error('AudioPlayer: Failed to record mint in backend', err)
@@ -201,13 +198,13 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
       setIsMinting(false)
     }
   }
-
   // Sync volume to audio element
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = isMuted ? 0 : volume
     }
   }, [volume, isMuted, audioRef])
+
 
   const handleTimeUpdate = (e: React.SyntheticEvent<HTMLAudioElement>) => {
     setCurrentTime(e.currentTarget.currentTime)
