@@ -81,7 +81,7 @@ export default function TrackDetailPage() {
 		usdc: CURRENT_USDC,
 		contract: CURRENT_CONTRACT,
 		explorer: EXPLORER_URL
-	} = getAddressesForChain(chainId || 42161)
+	} = getAddressesForChain(chainId || 84532)
 
 	const activeClient = publicClient
 
