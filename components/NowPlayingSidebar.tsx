@@ -171,6 +171,44 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 		toast.success("Track link copied!")
 	}
 
+	const handleDownload = async () => {
+		if (!address || !hasOwned) return
+
+		const mainToast = toast.loading(`Preparing download...`)
+		try {
+			const authData = localStorage.getItem('doba_auth_data')
+			if (!authData) throw new Error("Authentication data not found")
+
+			const { accessToken } = JSON.parse(authData)
+			const tokenId = track.id !== undefined ? track.id : track.token_id
+
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/songs/${tokenId}/download`, {
+				headers: {
+					'Authorization': `Bearer ${accessToken}`
+				}
+			})
+
+			if (!response.ok) {
+				const errorData = await response.json()
+				throw new Error(errorData.message || "Failed to get download link")
+			}
+
+			const { downloadUrl, fileName } = await response.json()
+
+			// Create a temporary anchor element to trigger download
+			const a = document.createElement('a')
+			a.href = downloadUrl
+			a.download = fileName || 'track.mp3'
+			document.body.appendChild(a)
+			a.click()
+			document.body.removeChild(a)
+
+			toast.success("Download started!", { id: mainToast })
+		} catch (error: any) {
+			toast.error(error.message || "Download failed", { id: mainToast })
+		}
+	}
+
 	React.useEffect(() => {
 		const handleEsc = (e: KeyboardEvent) => {
 			if (e.key === 'Escape') onClose()
@@ -385,10 +423,16 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 				{/* Actions */}
 				<div className="flex flex-col gap-3 pt-6">
 					<Button
-						className="w-full bg-[#B794F4] hover:bg-[#B794F4]/90 text-black font-bold py-6 rounded-none transition-all duration-300"
-						onClick={() => window.open(audioUrl, '_blank')}
+						className={cn(
+							"w-full font-bold py-6 rounded-none transition-all duration-300",
+							hasOwned
+								? "bg-[#B794F4] hover:bg-[#B794F4]/90 text-black"
+								: "bg-white/5 border border-white/10 text-white/20 cursor-not-allowed"
+						)}
+						onClick={hasOwned ? handleDownload : undefined}
+						disabled={!hasOwned}
 					>
-						Open Original File
+						{hasOwned ? 'Download' : 'Collect to Download'}
 					</Button>
 
 					{(() => {

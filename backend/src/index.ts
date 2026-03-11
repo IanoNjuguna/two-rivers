@@ -464,6 +464,38 @@ app.get('/songs/:id', async (c) => {
   return c.json({ ...track, is_owned: isOwned })
 })
 
+app.get('/songs/:id/download', authMiddleware, async (c) => {
+  const id = parseInt(c.req.param('id'))
+  if (isNaN(id)) return c.json({ error: 'Invalid track ID' }, 400)
+
+  const payload = c.get('jwtPayload')
+  const userAddress = payload.sub as string
+
+  const track = await getTrack(id)
+  if (!track) return c.json({ error: 'Track not found' }, 404)
+
+  const userMints = await getUserMints(userAddress)
+  const isOwned = userMints.includes(id)
+
+  if (!isOwned) {
+    logger.warn(`Unauthorized download attempt for track ${id} by ${userAddress}`)
+    return c.json({ error: 'Forbidden', message: 'You must collect this song to download it.' }, 403)
+  }
+
+  const audioUrl = track.audio_url || track.streaming_url
+  if (!audioUrl) return c.json({ error: 'Audio file not found' }, 404)
+
+  const resolvedUrl = audioUrl.startsWith('ipfs://')
+    ? audioUrl.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/')
+    : audioUrl
+
+  return c.json({
+    success: true,
+    downloadUrl: resolvedUrl,
+    fileName: `${track.artist} - ${track.name}.mp3`
+  })
+})
+
 app.get('/health', async (c) => {
   let pinata = 'unknown'
   try { await axios.get('https://api.pinata.cloud/health', { timeout: 2000 }); pinata = 'ok' } catch { pinata = 'error' }
