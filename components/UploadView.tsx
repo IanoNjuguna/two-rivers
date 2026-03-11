@@ -986,7 +986,6 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 							className="w-full bg-white/5 border border-white/10 rounded-none px-4 py-3 text-white focus:outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400/50 transition-all placeholder:text-white/20"
 							required
 						/>
-						<p className="text-[10px] text-white/40 italic">{t('maxSupplyHint')}</p>
 					</div>
 				</div>
 

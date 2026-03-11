@@ -71,7 +71,6 @@
 		"pricePlaceholder": "0.99",
 		"maxSupplyLabel": "Max Supply",
 		"maxSupplyPlaceholder": "e.g. 5000",
-		"maxSupplyHint": "Set to 0 for unlimited (contract default: 5000)",
 		"media": "Media",
 		"audioLabel": "Audio File",
 		"audioHint": "WAV, FLAC, MP3 (Max 50MB)",
