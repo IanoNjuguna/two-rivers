@@ -78,7 +78,7 @@ export default function SongCard({
     usdc: CURRENT_USDC,
     contract: CURRENT_CONTRACT,
     explorer: EXPLORER_URL
-  } = getAddressesForChain(chainId || 42161)
+  } = getAddressesForChain(chainId || 84532)
 
   const [isMinting, setIsMinting] = React.useState(false)
   const [hasOwned, setHasOwned] = React.useState(is_owned)
