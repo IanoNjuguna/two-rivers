@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { IconX, IconMicrophone, IconExternalLink, IconShare, IconCopy, IconHeart, IconCheck, IconLoader2 } from '@tabler/icons-react'
+import { IconX, IconMicrophone, IconExternalLink, IconShare, IconCopy, IconHeart, IconSquareCheckFilled, IconLoader2 } from '@tabler/icons-react'
 import { DobaVisualizer } from '@/components/icons/DobaVisualizer'
 import { Button } from '@/components/ui/button'
 import { getAddressesForChain, CONTRACT_ABI, ERC20_ABI, CHAIN_ID } from '@/lib/web3'
@@ -212,7 +212,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 						<div className="flex items-center justify-between">
 							{hasOwned ? (
 								<div className="flex items-center gap-1.5 text-[#1DB954]">
-									<IconCheck size={18} />
+									<IconSquareCheckFilled size={18} />
 									<span className="text-sm font-bold uppercase tracking-widest">Collected</span>
 								</div>
 							) : (
@@ -249,7 +249,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 							{isMinting ? (
 								<IconLoader2 size={16} className="animate-spin mr-2" />
 							) : hasOwned ? (
-								<IconCheck size={16} className="mr-2" />
+								<IconSquareCheckFilled size={16} className="mr-2" />
 							) : (mintData.max > 0 && mintData.minted >= mintData.max) ? (
 								<DobaVisualizer size={16} className="mr-2 text-[#FF1F8A]" />
 							) : null}

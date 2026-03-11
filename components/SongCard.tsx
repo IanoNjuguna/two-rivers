@@ -3,7 +3,7 @@
 import { logger } from '@/lib/logger'
 
 import React from 'react'
-import { IconPlayerPlay, IconPlayerPause, IconLoader2, IconHeart, IconCheck, IconShare, IconCopy } from '@tabler/icons-react'
+import { IconPlayerPlay, IconPlayerPause, IconLoader2, IconHeart, IconSquareCheckFilled, IconShare, IconCopy } from '@tabler/icons-react'
 import { DobaVisualizer } from '@/components/icons/DobaVisualizer'
 import { cn } from '@/lib/utils'
 import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain } from '@/lib/web3'
@@ -418,7 +418,7 @@ export default function SongCard({
       <div className="absolute top-2 right-2 z-20 mt-5">
         {hasOwned ? (
           <div className="flex items-center justify-center min-w-[24px] min-h-[20px] bg-[#1DB954]/20 border border-[#1DB954]/40 px-1.5 rounded-sm">
-            <IconCheck size={14} className="text-[#1DB954]" />
+            <IconSquareCheckFilled size={16} className="text-[#1DB954]" />
           </div>
         ) : (mintData.max > 0 && mintData.minted >= mintData.max) ? (
           <div className="flex items-center justify-center min-w-[24px] min-h-[20px]">

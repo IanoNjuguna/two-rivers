@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { IconPlayerPlay, IconPlayerPause, IconArrowLeft, IconShare, IconCopy, IconHeart, IconLoader2, IconCheck } from '@tabler/icons-react'
+import { IconPlayerPlay, IconPlayerPause, IconArrowLeft, IconShare, IconCopy, IconHeart, IconLoader2, IconSquareCheckFilled } from '@tabler/icons-react'
 import { DobaVisualizer } from '@/components/icons/DobaVisualizer'
 import { cn } from '@/lib/utils'
 import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain } from '@/lib/web3'
@@ -389,7 +389,7 @@ export default function TrackDetailPage() {
 						<div className="flex items-center justify-between">
 							{hasOwned ? (
 								<div className="flex items-center gap-1.5 text-[#1DB954]">
-									<IconCheck size={18} />
+									<IconSquareCheckFilled size={18} />
 									<span className="text-sm font-bold uppercase tracking-widest">Collected</span>
 								</div>
 							) : (
@@ -435,7 +435,7 @@ export default function TrackDetailPage() {
 							{isMinting ? (
 								<IconLoader2 size={16} className="animate-spin" />
 							) : hasOwned ? (
-								<IconCheck size={16} />
+								<IconSquareCheckFilled size={16} />
 							) : (maxSupply > 0 && mintedCount >= maxSupply) ? (
 								<DobaVisualizer size={16} className="text-[#FF1F8A]" />
 							) : (
