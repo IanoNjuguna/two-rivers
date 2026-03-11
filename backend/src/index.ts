@@ -383,7 +383,7 @@ app.post('/upload-metadata', authMiddleware, async (c) => {
     const metadata = {
       name: title,
       description,
-      image: finalImageUri,
+      image: finalImageUri.replace('ipfs://', 'https://ipfs.io/ipfs/'),
       animation_url: finalAudioUri,
       attributes: [
         { trait_type: 'Artist', value: artist },
@@ -399,7 +399,7 @@ app.post('/upload-metadata', authMiddleware, async (c) => {
       headers: { Authorization: `Bearer ${pinataJwt}`, "Content-Type": "application/json" }
     })
 
-    return c.json({ success: true, metadataUri: `ipfs://${res.data.IpfsHash}` })
+    return c.json({ success: true, metadataUri: `https://ipfs.io/ipfs/${res.data.IpfsHash}` })
   } catch (error: any) {
     logger.error(`[IPFS] Metadata upload failed`, error.response?.data || error.message)
     return c.json({ error: 'Metadata upload failed' }, 500)

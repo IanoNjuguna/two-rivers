@@ -317,7 +317,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
   const accentActive = 'text-[#FF1F8A]'
 
   return (
-    <div className="h-[90px] bg-[#0D0D12] border-t border-white/10 pb-[env(safe-area-inset-bottom)] flex-shrink-0 z-40">
+    <div className="h-auto md:h-[90px] bg-[#0D0D12] border-t border-white/10 pb-[env(safe-area-inset-bottom)] flex-shrink-0 z-40">
       <audio
         ref={audioRef}
         preload="auto"
@@ -521,11 +521,16 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
       </div>
 
       {/* ─── MOBILE LAYOUT (< md) ─── */}
-      <div className="flex md:hidden flex-col">
+      <div className="flex md:hidden flex-col items-center">
+        {/* Mobile Progress Bar (Stick to top of player) */}
         <div
-          className="h-[3px] w-full cursor-pointer relative bg-white/10"
+          className="h-2 w-full bg-white/10 relative cursor-pointer group"
           onClick={handleProgressClick}
           role="slider"
+          aria-label="Track Progress"
+          aria-valuenow={Math.round(progressPercent)}
+          aria-valuemin={0}
+          aria-valuemax={100}
         >
           <div
             className="h-full bg-cyber-pink"
@@ -533,82 +538,101 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
           />
         </div>
 
-        <div className="flex items-center gap-3 px-4 py-2.5">
-          <div
-            className="w-10 h-10 flex-shrink-0 overflow-hidden bg-white/5 cursor-pointer clip-angular-br-sm"
-            onClick={() => {
-              handleOpenSidebar({
-                ...currentTrack,
-                token_id: currentTrack.id,
-                name: currentTrack.title,
-                artist: currentTrack.creator,
-                image_url: currentTrack.cover
-              })
-            }}
-          >
-            <img
-              src={(currentTrack.cover || '').replace('ipfs://', process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud/ipfs/')}
-              alt={currentTrack.title}
-              className="w-full h-full object-cover"
-            />
-          </div>
-
-          <div
-            className="flex-1 min-w-0 cursor-pointer"
-            onClick={() => {
-              handleOpenSidebar({
-                ...currentTrack,
-                token_id: currentTrack.id,
-                name: currentTrack.title,
-                artist: currentTrack.creator,
-                image_url: currentTrack.cover
-              })
-            }}
-          >
-            <div className="marquee-container">
-              <div className="marquee-content">
-                <span className="text-sm font-semibold text-white pr-8">{currentTrack.title}</span>
-              </div>
-            </div>
-            <p className="text-xs text-white/50 truncate mt-0.5">
-              {currentTrack.creator}
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <button
-              onClick={!hasOwned && !(mintData.max > 0 && mintData.minted >= mintData.max) ? handleMint : undefined}
-              disabled={isMinting}
-              className={cn(
-                "p-2 active:scale-90 transition-transform",
-                hasOwned ? "text-cyber-pink" : "text-white/40"
-              )}
+        <div className="flex flex-col w-full gap-3 px-4 py-4">
+          {/* Row 1: Artwork, Title & Icon */}
+          <div className="flex items-center gap-4">
+            <div
+              className="w-12 h-12 flex-shrink-0 overflow-hidden bg-white/5 cursor-pointer rounded-none"
+              onClick={() => {
+                handleOpenSidebar({
+                  ...currentTrack,
+                  token_id: currentTrack.id,
+                  name: currentTrack.title,
+                  artist: currentTrack.creator,
+                  image_url: currentTrack.cover
+                })
+              }}
             >
-              {isMinting ? (
-                <IconLoader2 size={22} className="animate-spin text-cyber-pink" />
-              ) : hasOwned ? (
-                <IconHeart
-                  size={22}
-                  className="fill-cyber-pink text-cyber-pink"
-                />
-              ) : (mintData.max > 0 && mintData.minted >= mintData.max) ? (
-                <DobaVisualizer size={22} className="text-[#FF1F8A]" />
-              ) : (
-                <IconHeart
-                  size={22}
-                  className="text-white/40 fill-none"
-                />
-              )}
+              <img
+                src={(currentTrack.cover || '').replace('ipfs://', process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud/ipfs/')}
+                alt={currentTrack.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            <div
+              className="flex-1 min-w-0"
+              onClick={() => {
+                handleOpenSidebar({
+                  ...currentTrack,
+                  token_id: currentTrack.id,
+                  name: currentTrack.title,
+                  artist: currentTrack.creator,
+                  image_url: currentTrack.cover
+                })
+              }}
+            >
+              <h4 className="text-sm font-bold text-white truncate">{currentTrack.title}</h4>
+              <p className="text-[10px] text-white/50 truncate uppercase tracking-wider mt-0.5">
+                {currentTrack.creator}
+              </p>
+            </div>
+
+            <div className="flex items-center flex-shrink-0">
+              <button
+                onClick={!hasOwned && !(mintData.max > 0 && mintData.minted >= mintData.max) ? handleMint : undefined}
+                disabled={isMinting}
+                className={cn(
+                  "p-2 active:scale-95 transition-transform",
+                  hasOwned ? "text-cyber-pink" : (mintData.max > 0 && mintData.minted >= mintData.max) ? "text-[#FF1F8A]" : "text-white/40"
+                )}
+              >
+                {isMinting ? (
+                  <IconLoader2 size={24} className="animate-spin text-cyber-pink" />
+                ) : hasOwned ? (
+                  <IconHeart
+                    size={24}
+                    className="fill-cyber-pink text-cyber-pink"
+                  />
+                ) : (mintData.max > 0 && mintData.minted >= mintData.max) ? (
+                  <DobaVisualizer size={24} className="text-[#FF1F8A]" />
+                ) : (
+                  <IconHeart
+                    size={24}
+                    className="text-white/40 fill-none"
+                  />
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Row 2: Controls */}
+          <div className="flex items-center justify-center gap-10">
+            <button
+              onClick={previous}
+              className="p-2 text-white/70 active:text-white transition-opacity"
+              aria-label="Previous"
+            >
+              <SkipBack size={26} className="fill-white" />
             </button>
 
             <button
               onClick={togglePlayPause}
-              className="w-10 h-10 flex items-center justify-center transition-all bg-white text-black active:scale-95 active:brightness-75 rounded-none"
+              className="w-12 h-12 flex items-center justify-center transition-all bg-white text-black active:scale-90 active:brightness-90 rounded-none shadow-lg shadow-black/20"
+              aria-label={isPlaying ? 'Pause' : 'Play'}
             >
               {isPlaying
-                ? <Pause size={18} className="fill-black" />
-                : <Play size={18} className="fill-black ml-0.5" />
+                ? <Pause size={24} className="fill-black" />
+                : <Play size={24} className="fill-black ml-0.5" />
               }
+            </button>
+
+            <button
+              onClick={next}
+              className="p-2 text-white/70 active:text-white transition-opacity"
+              aria-label="Next"
+            >
+              <SkipForward size={26} className="fill-white" />
             </button>
           </div>
         </div>

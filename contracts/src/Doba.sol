@@ -117,6 +117,7 @@ contract Doba is ERC1155, Ownable, ReentrancyGuard, OApp {
         });
 
         emit CollectionPublished(collectionId, msg.sender, splitter, MINT_PRICE);
+        emit URI(_baseUri, collectionId);
         return collectionId;
     }
 

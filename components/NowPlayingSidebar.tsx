@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils'
 import { parseUnits, encodeFunctionData } from 'viem'
 import { toast } from 'sonner'
 import { useAudio } from '@/components/AudioProvider'
+import { IconPlayerPlay as Play, IconPlayerPause as Pause, IconPlayerSkipBack as SkipBack, IconPlayerSkipForward as SkipForward } from '@tabler/icons-react'
 
 interface NowPlayingSidebarProps {
 	track: any | null
@@ -23,6 +24,18 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 	const publicClient = usePublicClient({ chainId: CHAIN_ID })
 	const { writeContractAsync } = useWriteContract()
 	const { contract: CONTRACT_ADDRESS, explorer: EXPLORER_URL, usdc: USDC_ADDRESS } = getAddressesForChain(CHAIN_ID)
+
+	const { playerState } = useAudio()
+	const {
+		isPlaying,
+		duration,
+		currentTime,
+		togglePlayPause,
+		next,
+		previous,
+		seek,
+		audioRef
+	} = playerState
 
 	const [mintData, setMintData] = React.useState<{ minted: number, max: number }>({ minted: 0, max: 0 })
 	const [hasOwned, setHasOwned] = React.useState(track?.is_owned ?? false)
@@ -171,9 +184,27 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 	const imageUrl = (track.image_url || track.cover || '').replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/')
 	const audioUrl = track.streaming_url || (track.audio_url || track.url || '').replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/')
 
+	const formatTime = (time: number) => {
+		if (!time || isNaN(time) || time === Infinity) return '0:00'
+		const minutes = Math.floor(time / 60)
+		const seconds = Math.floor(time % 60)
+		return `${minutes}:${seconds.toString().padStart(2, '0')}`
+	}
+
+	const progressPercent = (duration > 0 && duration !== Infinity) ? (currentTime / duration) * 100 : 0
+
+	const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
+		const rect = e.currentTarget.getBoundingClientRect()
+		const percent = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width))
+		const targetTime = percent * (duration || 0)
+		if (duration && duration !== Infinity) {
+			seek(targetTime)
+		}
+	}
+
 	return (
-		<aside className="fixed inset-0 z-[100] bg-[#0D0D12] lg:static lg:z-0 lg:flex flex-col lg:w-80 border-l border-white/[0.08] overflow-hidden animate-slide-in-right h-full border-t lg:border-t-0 border-white/[0.08]">
-			<div className="flex-1 overflow-y-auto no-scrollbar p-6 space-y-6 relative pb-12">
+		<aside className="fixed inset-0 z-[100] bg-[#0D0D12] lg:static lg:z-0 lg:flex flex-col lg:w-80 border-l border-white/[0.08] overflow-hidden animate-slide-in-right h-[100dvh] lg:h-full border-t lg:border-t-0 border-white/[0.08]">
+			<div className="flex-1 overflow-y-auto no-scrollbar p-6 space-y-6 relative pb-32">
 				{/* Top Label & Close Button */}
 				<div className="flex items-center justify-between mb-2">
 					<p className="text-[10px] uppercase tracking-widest text-white/40 font-bold">Explore</p>
@@ -193,6 +224,56 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 						alt={track.name || track.title}
 						className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
 					/>
+				</div>
+
+				{/* Mobile Audio Controls */}
+				<div className="lg:hidden space-y-6 pt-2">
+					<div className="space-y-2">
+						<div
+							className="h-1.5 w-full bg-white/10 relative cursor-pointer group"
+							onClick={handleProgressClick}
+							role="slider"
+							aria-label="Track Progress"
+							aria-valuenow={Math.round(progressPercent)}
+							aria-valuemin={0}
+							aria-valuemax={100}
+						>
+							<div
+								className="absolute inset-y-0 left-0 bg-cyber-pink transition-all h-full"
+								style={{ width: `${progressPercent}%` }}
+							/>
+						</div>
+						<div className="flex items-center justify-between text-[10px] text-white/40 tabular-nums font-bold uppercase tracking-widest">
+							<span>{formatTime(currentTime)}</span>
+							<span>{formatTime(duration)}</span>
+						</div>
+					</div>
+
+					<div className="flex items-center justify-center gap-10">
+						<button
+							onClick={previous}
+							className="p-2 text-white/60 active:text-white active:scale-95 transition-all"
+							aria-label="Previous"
+						>
+							<SkipBack size={28} className="fill-white" />
+						</button>
+
+						<button
+							onClick={togglePlayPause}
+							className="w-14 h-14 bg-white text-black flex items-center justify-center active:scale-90 active:brightness-90 transition-all shadow-xl shadow-black/40"
+							aria-label={isPlaying ? 'Pause' : 'Play'}
+						>
+							{isPlaying ? <Pause size={28} className="fill-black" /> : <Play size={28} className="fill-black ml-1" />}
+						</button>
+
+						<button
+							onClick={next}
+							className="p-2 text-white/60 active:text-white active:scale-95 transition-all"
+							aria-label="Next"
+						>
+							<SkipForward size={28} className="fill-white" />
+						</button>
+					</div>
 				</div>
 
 				{/* Track Info */}
