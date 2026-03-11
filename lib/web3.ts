@@ -1,6 +1,6 @@
 import { logger } from './logger'
 import { getAddress, createPublicClient, http, fallback } from 'viem'
-import { arbitrum, base, avalanche, baseSepolia } from 'viem/chains'
+import { base, baseSepolia, arbitrumSepolia } from 'wagmi/chains'
 
 /**
  * Web3 Contract Configuration
@@ -22,10 +22,18 @@ const ADDRESSES: Record<number, any> = {
   84532: {
     name: 'Base Sepolia',
     usdc: '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
-    paymaster: '0x2cc0c7981D846b9F2a16276556f6e8cb52BfB633', // Fallback or update if needed
+    paymaster: '0x2cc0c7981D846b9F2a16276556f6e8cb52BfB633',
     lzEid: 40245,
     contract: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
     explorer: 'https://sepolia.basescan.org'
+  },
+  421614: {
+    name: 'Arbitrum Sepolia',
+    usdc: '0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d',
+    paymaster: '0x2cc0c7981D846b9F2a16276556f6e8cb52BfB633',
+    lzEid: 40231,
+    contract: process.env.NEXT_PUBLIC_ARBITRUM_CONTRACT_ADDRESS as `0x${string}`,
+    explorer: 'https://sepolia.arbiscan.io'
   }
 }
 
@@ -49,7 +57,8 @@ export const LZ_EID = currentConfig.lzEid
 
 // Logic to determine destination EID for sync
 export const getDstEid = (chainId: number) => {
-  return 30110 // Default destination
+  if (chainId === 8453 || chainId === 84532) return 40231 // Sync to Arbitrum
+  return 40245 // Sync to Base
 }
 
 export const DST_EID = getDstEid(CHAIN_ID)
@@ -131,6 +140,7 @@ export const CONTRACT_ABI = [
     name: 'publish',
     stateMutability: 'nonpayable',
     inputs: [
+      { name: '_songName', type: 'string' },
       { name: '_baseUri', type: 'string' },
       { name: '_maxSupply', type: 'uint256' },
       { name: '_collaborators', type: 'address[]' },
@@ -383,6 +393,13 @@ export const publicClients: Record<number, any> = {
     transport: fallback([
       http(`https://base-sepolia.g.alchemy.com/v2/${ALCHEMY_KEY}`),
       http('https://sepolia.base.org')
+    ])
+  }),
+  421614: createPublicClient({
+    chain: arbitrumSepolia,
+    transport: fallback([
+      http(`https://arb-sepolia.g.alchemy.com/v2/${ALCHEMY_KEY}`),
+      http('https://sepolia-rollup.arbitrum.io/rpc')
     ])
   }),
 }

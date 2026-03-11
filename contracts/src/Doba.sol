@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.32;
+pragma solidity ^0.8.27;
 
 import { ERC1155 } from "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
@@ -17,7 +17,7 @@ import { MessagingReceipt } from "@layerzerolabs/oapp-evm/contracts/oapp/OAppSen
  */
 contract Doba is ERC1155, Ownable, ReentrancyGuard, OApp {
     using SafeERC20 for IERC20;
-    uint256 public nextCollectionId;
+    // Simplified global ID generation ( hashing timestamp + sender )
     
     IERC20 public usdc;
     address public splitterImplementation;
@@ -91,6 +91,7 @@ contract Doba is ERC1155, Ownable, ReentrancyGuard, OApp {
      * @notice Publishes a new collection
      */
     function publish(
+        string memory _songName,
         string memory _baseUri,
         uint256 _maxSupply,
         address[] memory _collaborators,
@@ -103,7 +104,12 @@ contract Doba is ERC1155, Ownable, ReentrancyGuard, OApp {
             usdc.safeTransferFrom(msg.sender, owner(), botFee);
         }
         
-        uint256 collectionId = nextCollectionId++;
+        uint256 collectionId = uint256(keccak256(abi.encodePacked(
+            block.chainid,
+            block.timestamp,
+            msg.sender,
+            _songName
+        )));
         
         address splitter = Clones.clone(splitterImplementation);
         DobaSplitter(payable(splitter)).initialize(_collaborators, _shares);
@@ -213,23 +219,23 @@ contract Doba is ERC1155, Ownable, ReentrancyGuard, OApp {
         address /*_executor*/,
         bytes calldata /*_extraData*/
     ) internal override {
-        (, address artist, uint256 maxSupply, string memory baseUri) = abi.decode(
+        (uint256 originId, address artist, uint256 maxSupply, string memory baseUri) = abi.decode(
             _message,
             (uint256, address, uint256, string)
         );
 
-        // Use local counter to prevent cross-chain ID collisions (F01)
-        uint256 syncedId = nextCollectionId++;
-
-        collections[syncedId] = Collection({
+        // Ensure cross-chain ID consistency (Option A: Source dictated ID)
+        collections[originId] = Collection({
             artist: artist,
-            splitter: address(0), // No local splitter for remote songs
+            splitter: address(0), 
             baseUri: baseUri,
             maxSupply: maxSupply,
             exists: true
         });
 
-        emit CollectionPublished(syncedId, artist, address(0), MINT_PRICE);
+        // Hashed IDs are globally unique, no need for local counter synchronization
+
+        emit CollectionPublished(originId, artist, address(0), MINT_PRICE);
     }
 
     function uri(uint256 tokenId) public view override returns (string memory) {

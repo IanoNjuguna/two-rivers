@@ -447,15 +447,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 			toast.loading("Preparing one-click publish batch...", { id: mainToast })
 
-			let nextId;
-			if (activePublicClient) {
-				nextId = await activePublicClient.readContract({
-					address: CONTRACT_ADDRESS as `0x${string}`,
-					abi: CONTRACT_ABI,
-					functionName: 'nextCollectionId',
-				})
-			}
-			let tokenId = BigInt(nextId as any)
+			let tokenId = 0n; // Will be correctly set from logs after publish
 
 			// Calculate splits including the uploader
 			let collaboratorsList: `0x${string}`[] = []
@@ -495,19 +487,11 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 				data: encodeFunctionData({
 					abi: CONTRACT_ABI,
 					functionName: 'publish',
-					args: [metadataUri, BigInt(supply || '5000'), collaboratorsList as `0x${string}`[], sharesList],
+					args: [title, metadataUri, BigInt(supply || '5000'), collaboratorsList as `0x${string}`[], sharesList],
 				})
 			})
 
-			// B. Initial Mint Call (Optional but highly recommended for UX)
-			calls.push({
-				target: CONTRACT_ADDRESS as `0x${string}`,
-				data: encodeFunctionData({
-					abi: CONTRACT_ABI,
-					functionName: 'mint',
-					args: [tokenId],
-				})
-			})
+			// Initial Mint is now handled automatically by the publish function
 
 			/* 
 			// C. LayerZero Sync Call (Disabled for now - Base only)
