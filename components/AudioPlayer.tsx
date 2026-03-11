@@ -577,7 +577,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
 
           <div className="flex items-center gap-2 flex-shrink-0">
             <button
-              onClick={!hasOwned ? handleMint : undefined}
+              onClick={!hasOwned && !(mintData.max > 0 && mintData.minted >= mintData.max) ? handleMint : undefined}
               disabled={isMinting}
               className={cn(
                 "p-2 active:scale-90 transition-transform",
@@ -586,10 +586,17 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
             >
               {isMinting ? (
                 <IconLoader2 size={22} className="animate-spin text-cyber-pink" />
+              ) : hasOwned ? (
+                <IconHeart
+                  size={22}
+                  className="fill-cyber-pink text-cyber-pink"
+                />
+              ) : (mintData.max > 0 && mintData.minted >= mintData.max) ? (
+                <DobaVisualizer size={22} className="text-[#FF1F8A]" />
               ) : (
                 <IconHeart
                   size={22}
-                  className={cn(hasOwned ? "fill-cyber-pink text-cyber-pink" : "text-white/40 fill-none")}
+                  className="text-white/40 fill-none"
                 />
               )}
             </button>

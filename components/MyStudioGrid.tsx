@@ -69,6 +69,17 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
           return
         }
 
+        // 2. Check balances for all tracks in one batch call
+        const tokenIds = allTracks.map(t => BigInt(t.token_id))
+        const accounts = allTracks.map(() => address as `0x${string}`)
+
+        const balances = await publicClient.readContract({
+          address: CONTRACT_ADDRESS as `0x${string}`,
+          abi: CONTRACT_ABI,
+          functionName: 'balanceOfBatch',
+          args: [accounts, tokenIds],
+        }) as bigint[]
+
         // 3. Fetch supply data for all tracks in parallel
         const supplyCalls = allTracks.map(t => ({
           address: CONTRACT_ADDRESS as `0x${string}`,
