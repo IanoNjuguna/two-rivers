@@ -489,11 +489,20 @@ app.get('/songs/:id/download', authMiddleware, async (c) => {
     ? audioUrl.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/')
     : audioUrl
 
-  return c.json({
-    success: true,
-    downloadUrl: resolvedUrl,
-    fileName: `${track.artist} - ${track.name}.mp3`
-  })
+  try {
+    logger.info(`[DOWNLOAD] Proxying track ${id} from ${resolvedUrl.substring(0, 30)}...`)
+    const response = await axios.get(resolvedUrl, { responseType: 'stream' })
+
+    // Set headers for file download
+    c.header('Content-Type', response.headers['content-type'] || 'audio/mpeg')
+    c.header('Content-Disposition', `attachment; filename="${track.artist} - ${track.name}.mp3"`)
+
+    // Return the stream directly
+    return c.body(response.data)
+  } catch (error: any) {
+    logger.error(`Failed to proxy download for track ${id}`, error)
+    return c.json({ error: 'Download failed', message: 'Could not fetch file from source.' }, 500)
+  }
 })
 
 app.get('/health', async (c) => {

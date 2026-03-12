@@ -300,6 +300,47 @@ export default function TrackDetailPage() {
 		toast.success('Link copied to clipboard!')
 	}
 
+	const handleDownload = async () => {
+		if (!effectiveAddress || !hasOwned || !track) return
+
+		const mainToast = toast.loading(`Preparing download...`)
+		try {
+			const authData = localStorage.getItem('doba_auth_data')
+			if (!authData || authData === 'null') throw new Error("Authentication data not found")
+
+			const parsedAuth = JSON.parse(authData)
+			if (!parsedAuth || !parsedAuth.accessToken) throw new Error("Invalid authentication data")
+
+			const { accessToken } = parsedAuth
+
+			const response = await fetch(`/api-backend/songs/${track.token_id}/download`, {
+				headers: {
+					'Authorization': `Bearer ${accessToken}`
+				}
+			})
+
+			if (!response.ok) {
+				const errorData = await response.json().catch(() => ({ message: "Download failed" }))
+				throw new Error(errorData.message || "Failed to download file")
+			}
+
+			const blob = await response.blob()
+			const url = window.URL.createObjectURL(blob)
+
+			const a = document.createElement('a')
+			a.href = url
+			a.download = `${track.artist} - ${track.name}.mp3`
+			document.body.appendChild(a)
+			a.click()
+			document.body.removeChild(a)
+			window.URL.revokeObjectURL(url)
+
+			toast.success("Download started!", { id: mainToast })
+		} catch (error: any) {
+			toast.error(error.message || "Download failed", { id: mainToast })
+		}
+	}
+
 	const formatPrice = (p?: string) => {
 		// Hardcoded to 50c to match global standard
 		return '50¢'
@@ -467,6 +508,16 @@ export default function TrackDetailPage() {
 							<IconCopy size={16} />
 						</button>
 					</div>
+
+					{/* Download Button */}
+					{hasOwned && (
+						<button
+							onClick={handleDownload}
+							className="w-full mt-4 h-11 flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-all bg-[#B794F4] hover:bg-[#B794F4]/80 text-black border border-[#B794F4]/20 rounded-sm"
+						>
+							Download Track
+						</button>
+					)}
 				</div>
 
 				{/* Description */}

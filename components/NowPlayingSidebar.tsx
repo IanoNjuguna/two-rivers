@@ -202,19 +202,21 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 			})
 
 			if (!response.ok) {
-				const errorData = await response.json()
-				throw new Error(errorData.message || "Failed to get download link")
+				const errorData = await response.json().catch(() => ({ message: "Download failed" }))
+				throw new Error(errorData.message || "Failed to download file")
 			}
 
-			const { downloadUrl, fileName } = await response.json()
+			const blob = await response.blob()
+			const url = window.URL.createObjectURL(blob)
 
 			// Create a temporary anchor element to trigger download
 			const a = document.createElement('a')
-			a.href = downloadUrl
-			a.download = fileName || 'track.mp3'
+			a.href = url
+			a.download = `${track.artist || track.creator || 'Artist'} - ${track.name || track.title || 'Track'}.mp3`
 			document.body.appendChild(a)
 			a.click()
 			document.body.removeChild(a)
+			window.URL.revokeObjectURL(url)
 
 			toast.success("Download started!", { id: mainToast })
 		} catch (error: any) {
