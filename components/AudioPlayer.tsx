@@ -325,7 +325,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
   const accentActive = 'text-[#FF1F8A]'
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 h-auto md:h-[90px] bg-[#0D0D12] border-t border-white/10 pb-[env(safe-area-inset-bottom)] flex-shrink-0 z-50">
+    <div className="fixed bottom-0 left-0 lg:left-64 right-0 h-auto md:h-[90px] bg-[#0D0D12] border-t border-white/10 pb-[env(safe-area-inset-bottom)] flex-shrink-0 z-50">
       <audio
         ref={audioRef}
         preload="auto"

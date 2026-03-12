@@ -397,7 +397,10 @@ function DashboardLayout() {
         {/* Content Area wrapper */}
         <div className="flex-1 flex flex-row min-w-0 relative lg:min-h-0">
           <main className="flex-1 overflow-y-auto outline-none lg:h-full">
-            <div className="p-6 pb-24 md:pb-6 max-w-7xl mx-auto">
+            <div className={cn(
+              "p-6 max-w-7xl mx-auto",
+              playerState.currentTrack ? "pb-32 md:pb-32" : "pb-24 md:pb-6"
+            )}>
               {currentView === 'home' && (
                 <div className="space-y-6 animate-fade-in">
                   <div>
