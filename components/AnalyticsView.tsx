@@ -106,9 +106,10 @@ export default function AnalyticsView() {
 			{/* Charts Row */}
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 				{/* Plays Over Time */}
-				<div className="bg-white/[0.02] border border-white/[0.08] p-6 rounded-xl">
-					<h3 className="text-lg font-bold mb-6 flex items-center gap-2">
-						<IconTrendingUp size={20} className="text-[#B794F4]" />
+				<div className="bg-white/[0.02] border border-white/[0.08] p-6 rounded-none relative overflow-hidden group">
+					<div className="absolute top-0 right-0 w-16 h-16 bg-[#FF1F8A]/5 -mr-8 -mt-8 rotate-45 pointer-events-none" />
+					<h3 className="text-lg font-bold mb-6 flex items-center gap-2 uppercase tracking-tighter">
+						<IconTrendingUp size={20} className="text-[#FF1F8A]" />
 						Streaming Activity
 					</h3>
 					<div className="h-[300px] w-full">
@@ -128,12 +129,12 @@ export default function AnalyticsView() {
 									labelStyle={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '4px' }}
 								/>
 								<Line
-									type="monotone"
+									type="linear"
 									dataKey="count"
 									stroke="#FF1F8A"
-									strokeWidth={3}
-									dot={{ fill: '#FF1F8A', strokeWidth: 2, r: 4 }}
-									activeDot={{ r: 6, stroke: '#fff', strokeWidth: 2 }}
+									strokeWidth={2}
+									dot={{ fill: '#FF1F8A', r: 3, strokeWidth: 0 }}
+									activeDot={{ r: 5, stroke: '#fff', strokeWidth: 2 }}
 								/>
 							</LineChart>
 						</ResponsiveContainer>
@@ -141,8 +142,9 @@ export default function AnalyticsView() {
 				</div>
 
 				{/* Top Tracks */}
-				<div className="bg-white/[0.02] border border-white/[0.08] p-6 rounded-xl text-white">
-					<h3 className="text-lg font-bold mb-6 flex items-center gap-2">
+				<div className="bg-white/[0.02] border border-white/[0.08] p-6 rounded-none text-white relative overflow-hidden group">
+					<div className="absolute top-0 right-0 w-16 h-16 bg-[#B794F4]/5 -mr-8 -mt-8 rotate-45 pointer-events-none" />
+					<h3 className="text-lg font-bold mb-6 flex items-center gap-2 uppercase tracking-tighter">
 						<IconMusic size={20} className="text-[#B794F4]" />
 						Top Performing Tracks
 					</h3>
@@ -158,8 +160,8 @@ export default function AnalyticsView() {
 										</div>
 									</div>
 									<div className="text-right">
-										<p className="font-bold text-[#B794F4] text-sm">{track.plays} plays</p>
-										<div className="h-1 bg-white/10 w-20 rounded-full mt-1 overflow-hidden">
+										<p className="font-bold text-[#B794F4] text-sm font-mono">{track.plays} plays</p>
+										<div className="h-1 bg-white/10 w-20 rounded-none mt-1 overflow-hidden">
 											<div
 												className="h-full bg-cyber-pink"
 												style={{ width: `${(track.plays / (data.topTracks[0]?.plays || 1)) * 100}%` }}
@@ -182,15 +184,19 @@ export default function AnalyticsView() {
 
 function MetricCard({ label, value, icon, subtext }: { label: string; value: string; icon: React.ReactNode; subtext: string }) {
 	return (
-		<div className="bg-white/[0.02] border border-white/[0.08] p-6 rounded-xl hover:border-[#B794F4]/30 transition-all group">
+		<div className="bg-white/[0.02] border border-white/[0.08] p-6 rounded-none hover:border-[#B794F4]/50 transition-all group relative overflow-hidden">
+			{/* Geometric Accent */}
+			<div className="absolute top-0 left-0 w-1 h-full bg-[#B794F4]/0 group-hover:bg-[#B794F4]/50 transition-all" />
+			<div className="absolute top-0 right-0 w-8 h-8 bg-white/5 -mr-4 -mt-4 rotate-45 transition-transform group-hover:scale-110" />
+
 			<div className="flex items-center justify-between mb-4">
-				<span className="text-white/40 text-xs font-bold uppercase tracking-widest">{label}</span>
-				<div className="p-2 rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors">
+				<span className="text-white/40 text-[10px] font-black uppercase tracking-[0.2em]">{label}</span>
+				<div className="p-2 bg-white/5 group-hover:bg-white/10 transition-colors border border-white/5">
 					{icon}
 				</div>
 			</div>
-			<p className="text-3xl font-bold mb-1 tracking-tight text-white">{value}</p>
-			<p className="text-xs text-white/20">{subtext}</p>
+			<p className="text-4xl font-black mb-1 tracking-tighter text-white font-mono">{value}</p>
+			<p className="text-[10px] text-white/20 uppercase tracking-widest">{subtext}</p>
 		</div>
 	)
 }
