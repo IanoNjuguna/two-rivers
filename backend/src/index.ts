@@ -24,7 +24,7 @@ app.use('/*', cors({
   credentials: true,
 }))
 
-const SERVER_VERSION = '1.2.2-fix-uploads'
+const SERVER_VERSION = '1.2.3-add-download'
 
 // Global Error Handler
 app.onError((err, c) => {
@@ -443,25 +443,11 @@ app.get('/songs', async (c) => {
   return c.json(tracksWithOwnership)
 })
 
-app.get('/songs/:id', async (c) => {
-  const id = parseInt(c.req.param('id'))
-  if (isNaN(id)) return c.json({ error: 'Invalid track ID' }, 400)
-  const track = await getTrack(id)
-  if (!track) return c.json({ error: 'Track not found' }, 404)
-
-  // Check ownership if user is authenticated
-  let isOwned = false
-  const authHeader = c.req.header('Authorization')
-  if (authHeader && authHeader.startsWith('Bearer ')) {
-    const token = authHeader.split(' ')[1]
-    const payload = await verifyJWT(token, JWT_SECRET)
-    if (payload && payload.sub) {
-      const userMints = await getUserMints(payload.sub as string)
-      isOwned = userMints.includes(id)
-    }
-  }
-
-  return c.json({ ...track, is_owned: isOwned })
+// Health Check
+app.get('/health', async (c) => {
+  let pinata = 'unknown'
+  try { await axios.get('https://api.pinata.cloud/health', { timeout: 2000 }); pinata = 'ok' } catch { pinata = 'error' }
+  return c.json({ status: 'ok', version: SERVER_VERSION, pinata })
 })
 
 app.get('/songs/:id/download', authMiddleware, async (c) => {
@@ -505,10 +491,25 @@ app.get('/songs/:id/download', authMiddleware, async (c) => {
   }
 })
 
-app.get('/health', async (c) => {
-  let pinata = 'unknown'
-  try { await axios.get('https://api.pinata.cloud/health', { timeout: 2000 }); pinata = 'ok' } catch { pinata = 'error' }
-  return c.json({ status: 'ok', version: SERVER_VERSION, pinata })
+app.get('/songs/:id', async (c) => {
+  const id = parseInt(c.req.param('id'))
+  if (isNaN(id)) return c.json({ error: 'Invalid track ID' }, 400)
+  const track = await getTrack(id)
+  if (!track) return c.json({ error: 'Track not found' }, 404)
+
+  // Check ownership if user is authenticated
+  let isOwned = false
+  const authHeader = c.req.header('Authorization')
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.split(' ')[1]
+    const payload = await verifyJWT(token, JWT_SECRET)
+    if (payload && payload.sub) {
+      const userMints = await getUserMints(payload.sub as string)
+      isOwned = userMints.includes(id)
+    }
+  }
+
+  return c.json({ ...track, is_owned: isOwned })
 })
 
 app.post('/api/webhook', async (c) => {
