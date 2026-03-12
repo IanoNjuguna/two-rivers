@@ -13,6 +13,7 @@ import Footer from '@/components/Footer'
 import UploadView from '@/components/UploadView'
 import { usePrivy } from '@privy-io/react-auth'
 import { getAddressesForChain, CONTRACT_ADDRESS } from "@/lib/web3"
+import { cn } from '@/lib/utils'
 import { useTranslations } from 'next-intl'
 import { useAudio } from '@/components/AudioProvider'
 import { ProfileEditor } from '@/components/ProfileEditor'
