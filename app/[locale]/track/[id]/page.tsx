@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { IconPlayerPlay, IconPlayerPause, IconArrowLeft, IconShare, IconCopy, IconHeart, IconLoader2, IconSquareCheckFilled } from '@tabler/icons-react'
 import { DobaVisualizer } from '@/components/icons/DobaVisualizer'
 import { cn } from '@/lib/utils'
-import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain } from '@/lib/web3'
+import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain, publicClients, CHAIN_ID } from '@/lib/web3'
 import { useChainId, useWalletClient, usePublicClient, useAccount } from 'wagmi'
 import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
@@ -107,17 +107,18 @@ export default function TrackDetailPage() {
 
 	// Fetch on-chain stats (minted count and max supply)
 	useEffect(() => {
-		if (!activeClient || !track) return
+		const readClient = publicClients[CHAIN_ID] || activeClient
+		if (!readClient || !track) return
 		const fetchOnChainStats = async () => {
 			try {
 				const [minted, collectionInfo] = await Promise.all([
-					activeClient.readContract({
+					readClient.readContract({
 						address: CURRENT_CONTRACT as `0x${string}`,
 						abi: CONTRACT_ABI,
 						functionName: 'collectionMinted',
 						args: [BigInt(track.token_id)],
 					}),
-					activeClient.readContract({
+					readClient.readContract({
 						address: CURRENT_CONTRACT as `0x${string}`,
 						abi: CONTRACT_ABI,
 						functionName: 'collections',
@@ -135,10 +136,11 @@ export default function TrackDetailPage() {
 
 	// Check ownership
 	useEffect(() => {
-		if (!effectiveAddress || !activeClient || !track) return
+		const readClient = publicClients[CHAIN_ID] || activeClient
+		if (!effectiveAddress || !readClient || !track) return
 		const check = async () => {
 			try {
-				const balance = await activeClient.readContract({
+				const balance = await readClient.readContract({
 					address: CURRENT_CONTRACT as `0x${string}`,
 					abi: CONTRACT_ABI,
 					functionName: 'balanceOf',

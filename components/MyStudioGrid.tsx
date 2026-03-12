@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { IconEye, IconMusic, IconMicrophone, IconPlayerPause, IconPlayerPlay, IconSquareCheckFilled } from '@tabler/icons-react'
 import { DobaVisualizer } from '@/components/icons/DobaVisualizer'
-import { CONTRACT_ABI, getAddressesForChain } from '@/lib/web3'
+import { CONTRACT_ABI, getAddressesForChain, publicClients, CHAIN_ID } from '@/lib/web3'
 import { useTranslations } from 'next-intl'
 import { useChainId, usePublicClient } from "wagmi"
 import { useAudio } from './AudioProvider'
@@ -52,7 +52,13 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
 
   useEffect(() => {
     const fetchOwnedTracks = async () => {
-      if (!address || !publicClient) {
+      if (!address) {
+        setLoading(false)
+        return
+      }
+
+      const readClient = publicClients[CHAIN_ID] || publicClient
+      if (!readClient) {
         setLoading(false)
         return
       }
@@ -73,7 +79,7 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
         const tokenIds = allTracks.map(t => BigInt(t.token_id))
         const accounts = allTracks.map(() => address as `0x${string}`)
 
-        const balances = await publicClient.readContract({
+        const balances = await readClient.readContract({
           address: CONTRACT_ADDRESS as `0x${string}`,
           abi: CONTRACT_ABI,
           functionName: 'balanceOfBatch',
@@ -96,8 +102,8 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
         }))
 
         const [mintedResults, collectionResults] = await Promise.all([
-          publicClient.multicall({ contracts: supplyCalls }),
-          publicClient.multicall({ contracts: collectionCalls })
+          readClient.multicall({ contracts: supplyCalls }),
+          readClient.multicall({ contracts: collectionCalls })
         ])
 
         // 4. Combine data and filter tracks where balance > 0

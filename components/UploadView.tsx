@@ -115,8 +115,9 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 			try {
 				let balance;
-				if (publicClient) {
-					balance = await publicClient.readContract({
+				const readClient = publicClients[CHAIN_ID] || publicClient
+				if (readClient) {
+					balance = await readClient.readContract({
 						address: CONTRACT_ADDRESS as `0x${string}`,
 						abi: CONTRACT_ABI,
 						functionName: 'balanceOf',

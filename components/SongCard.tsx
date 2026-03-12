@@ -6,7 +6,7 @@ import React from 'react'
 import { IconPlayerPlay, IconPlayerPause, IconLoader2, IconHeart, IconSquareCheckFilled, IconShare, IconCopy } from '@tabler/icons-react'
 import { DobaVisualizer } from '@/components/icons/DobaVisualizer'
 import { cn } from '@/lib/utils'
-import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain } from '@/lib/web3'
+import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain, publicClients, CHAIN_ID } from '@/lib/web3'
 import { useChainId, useWalletClient, usePublicClient, useAccount } from "wagmi"
 import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
@@ -91,7 +91,9 @@ export default function SongCard({
   const checkOwnership = React.useCallback(async () => {
     if (!effectiveAddress || !activeClient) return
     try {
-      const balance = await activeClient.readContract({
+      const readClient = publicClients[CHAIN_ID] || activeClient
+      if (!readClient) return
+      const balance = await readClient.readContract({
         address: CURRENT_CONTRACT as `0x${string}`,
         abi: CONTRACT_ABI,
         functionName: 'balanceOf',
@@ -106,16 +108,17 @@ export default function SongCard({
   }, [activeClient, effectiveAddress, tokenId, CURRENT_CONTRACT])
 
   const fetchMintData = React.useCallback(async () => {
-    if (!activeClient) return
     try {
+      const readClient = publicClients[CHAIN_ID] || activeClient
+      if (!readClient) return
       const [minted, collectionInfo] = await Promise.all([
-        activeClient.readContract({
+        readClient.readContract({
           address: CURRENT_CONTRACT as `0x${string}`,
           abi: CONTRACT_ABI,
           functionName: 'collectionMinted',
           args: [BigInt(tokenId)],
         }),
-        activeClient.readContract({
+        readClient.readContract({
           address: CURRENT_CONTRACT as `0x${string}`,
           abi: CONTRACT_ABI,
           functionName: 'collections',

@@ -21,7 +21,7 @@ import { useRouter } from 'next/navigation'
 import { useLocale } from 'next-intl'
 import { cn } from '@/lib/utils'
 import type { useAudioPlayer } from '@/hooks/useAudioPlayer'
-import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain } from '@/lib/web3'
+import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain, publicClients } from '@/lib/web3'
 import { useChainId, usePublicClient, useAccount, useWriteContract } from 'wagmi'
 import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
@@ -74,10 +74,11 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
 
   // Real-time ownership checking for current track
   const checkOwnership = useCallback(async () => {
-    if (!effectiveAddress || !currentTrack || !publicClient) return
     try {
+      const readClient = publicClients[chainId || Number(process.env.NEXT_PUBLIC_CHAIN_ID || 84532)] || publicClient
+      if (!readClient) return
       const tokenId = (currentTrack as any).token_id || currentTrack.id
-      const balance = await publicClient.readContract({
+      const balance = await readClient.readContract({
         address: CURRENT_CONTRACT as `0x${string}`,
         abi: CONTRACT_ABI,
         functionName: 'balanceOf',
@@ -90,17 +91,19 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
   }, [effectiveAddress, currentTrack, publicClient, CURRENT_CONTRACT])
 
   const fetchMintData = useCallback(async () => {
-    if (!currentTrack || !publicClient) return
+    if (!currentTrack) return
     try {
+      const readClient = publicClients[chainId || Number(process.env.NEXT_PUBLIC_CHAIN_ID || 84532)] || publicClient
+      if (!readClient) return
       const tokenId = (currentTrack as any).token_id || currentTrack.id
       const [minted, collectionInfo] = await Promise.all([
-        publicClient.readContract({
+        readClient.readContract({
           address: CURRENT_CONTRACT as `0x${string}`,
           abi: CONTRACT_ABI,
           functionName: 'collectionMinted',
           args: [BigInt(tokenId)],
         }),
-        publicClient.readContract({
+        readClient.readContract({
           address: CURRENT_CONTRACT as `0x${string}`,
           abi: CONTRACT_ABI,
           functionName: 'collections',

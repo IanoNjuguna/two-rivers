@@ -4,7 +4,7 @@ import React from 'react'
 import { IconX, IconMicrophone, IconExternalLink, IconShare, IconCopy, IconHeart, IconSquareCheckFilled, IconLoader2 } from '@tabler/icons-react'
 import { DobaVisualizer } from '@/components/icons/DobaVisualizer'
 import { Button } from '@/components/ui/button'
-import { getAddressesForChain, CONTRACT_ABI, ERC20_ABI, CHAIN_ID } from '@/lib/web3'
+import { getAddressesForChain, CONTRACT_ABI, ERC20_ABI, CHAIN_ID, publicClients } from '@/lib/web3'
 import { useChainId, usePublicClient, useAccount, useWriteContract } from 'wagmi'
 import { cn } from '@/lib/utils'
 import { parseUnits, encodeFunctionData } from 'viem'
@@ -42,16 +42,17 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 
 	const fetchMintData = React.useCallback(async () => {
 		const tokenId = track?.id !== undefined ? track.id : track?.token_id
-		if (!publicClient || !track || tokenId === undefined) return
+		const readClient = publicClients[CHAIN_ID] || publicClient
+		if (!readClient || !track || tokenId === undefined) return
 		try {
 			const [minted, collectionInfo] = await Promise.all([
-				publicClient.readContract({
+				readClient.readContract({
 					address: CONTRACT_ADDRESS as `0x${string}`,
 					abi: CONTRACT_ABI,
 					functionName: 'collectionMinted',
 					args: [BigInt(tokenId)],
 				}),
-				publicClient.readContract({
+				readClient.readContract({
 					address: CONTRACT_ADDRESS as `0x${string}`,
 					abi: CONTRACT_ABI,
 					functionName: 'collections',
@@ -61,7 +62,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 			setMintData({ minted: Number(minted), max: Number(collectionInfo[3]) })
 
 			if (effectiveAddress) {
-				const balance = await publicClient.readContract({
+				const balance = await readClient.readContract({
 					address: CONTRACT_ADDRESS as `0x${string}`,
 					abi: CONTRACT_ABI,
 					functionName: 'balanceOf',

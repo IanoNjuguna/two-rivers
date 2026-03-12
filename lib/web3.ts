@@ -1,6 +1,6 @@
 import { logger } from './logger'
 import { getAddress, createPublicClient, http, fallback } from 'viem'
-import { base, baseSepolia, arbitrumSepolia } from 'wagmi/chains'
+import { base, baseSepolia, arbitrumSepolia, arbitrum } from 'wagmi/chains'
 
 /**
  * Web3 Contract Configuration
@@ -400,6 +400,13 @@ export const publicClients: Record<number, any> = {
     transport: fallback([
       http(`https://arb-sepolia.g.alchemy.com/v2/${ALCHEMY_KEY}`),
       http('https://sepolia-rollup.arbitrum.io/rpc')
+    ])
+  }),
+  42161: createPublicClient({
+    chain: arbitrum,
+    transport: fallback([
+      http(`https://arb-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`),
+      http('https://arb1.arbitrum.io/rpc')
     ])
   }),
 }
