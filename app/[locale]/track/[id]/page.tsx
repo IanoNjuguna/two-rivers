@@ -301,7 +301,11 @@ export default function TrackDetailPage() {
 	}
 
 	const handleDownload = async () => {
-		if (!effectiveAddress || !hasOwned || !track) return
+		console.log('Download Debug: Clicked', { effectiveAddress, hasOwned, track: !!track })
+		if (!effectiveAddress || !hasOwned || !track) {
+			console.warn('Download Debug: Missing prerequisites', { effectiveAddress: !!effectiveAddress, hasOwned, track: !!track })
+			return
+		}
 
 		const mainToast = toast.loading(`Preparing download...`)
 		try {

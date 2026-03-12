@@ -181,8 +181,13 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 	}
 
 	const handleDownload = async () => {
-		if (!effectiveAddress || !hasOwned) return
+		console.log('Sidebar Debug: Download Clicked', { effectiveAddress, hasOwned })
+		if (!effectiveAddress || !hasOwned) {
+			console.warn('Sidebar Debug: Missing prerequisites', { effectiveAddress: !!effectiveAddress, hasOwned })
+			return
+		}
 
+		console.log('Sidebar Debug: Proceeding with download...')
 		const mainToast = toast.loading(`Preparing download...`)
 		try {
 			const authData = localStorage.getItem('doba_auth_data')
