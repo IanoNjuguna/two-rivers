@@ -440,6 +440,7 @@ export async function getAnalytics(artistAddress: string): Promise<any> {
     return {
       totalPlays: 0,
       uniqueListeners: 0,
+      totalCollectors: 0,
       playsOverTime: [],
       topTracks: []
     }

@@ -50,23 +50,30 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 		const track = playerState.currentTrack as any
 		if (!track || !playerState.isPlaying) return
 
-		const trackId = track.id ?? track.token_id
+		const trackId = Number(track.id ?? track.token_id)
+		if (isNaN(trackId)) return
+
 		if (recordedTracks.has(trackId)) return
 
-		// If the track has been playing for at least 60 seconds (or if it's shorter and finished, but let's stick to 60s rule as requested)
+		// Check for 1 minute reached
 		if (playerState.currentTime >= 60) {
 			const recordPlay = async () => {
 				try {
 					const token = await getValidToken()
-					await fetch(`/api-backend/songs/${trackId}/play`, {
+					const res = await fetch(`/api-backend/songs/${trackId}/play`, {
 						method: 'POST',
 						headers: {
 							'Authorization': token ? `Bearer ${token}` : ''
 						}
 					})
-					setRecordedTracks(prev => new Set(prev).add(trackId))
+					if (res.ok) {
+						setRecordedTracks(prev => new Set(prev).add(trackId))
+					} else {
+						const errText = await res.text()
+						console.error(`[Analytics] Failed:`, res.status, errText)
+					}
 				} catch (err) {
-					console.error('Failed to record play after 1 minute', err)
+					console.error('[Analytics] Network error:', err)
 				}
 			}
 			recordPlay()
@@ -75,7 +82,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 
 	// Reset recorded tracks when the authenticated user changes or periodically? 
 	// For now, let's just keep track of what's been recorded in this session.
-	// We might want to clear it when the track changes if we want to allow re-recording same track?
+	// We might want to allow re-recording same track?
 	// The requirement is "1 stream equals every stream greater than 1 minute".
 	// If they play for 1 min, stop, and play again, should it count as another stream? 
 	// Usually yes. So let's clear the recorded flag if the track ID changes.

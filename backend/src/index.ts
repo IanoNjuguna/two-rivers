@@ -66,8 +66,9 @@ const authMiddleware = async (c: any, next: any) => {
 // Simple API Key Middleware for mutating routes (POST, DELETE, PUT)
 app.use('*', async (c, next) => {
   if (['POST', 'DELETE', 'PUT', 'PATCH'].includes(c.req.method)) {
-    // Exclude auth routes from API Key requirement
+    // Exclude auth and public play routes from API Key requirement
     if (c.req.path.startsWith('/auth/')) return await next()
+    if (c.req.path.includes('/play')) return await next()
 
     const apiKey = c.req.header('X-API-Key')
     const validKey = process.env.API_SECRET_KEY || process.env.ADMIN_API_KEY
