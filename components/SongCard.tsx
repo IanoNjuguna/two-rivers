@@ -3,7 +3,7 @@
 import { logger } from '@/lib/logger'
 
 import React from 'react'
-import { IconPlayerPlay, IconPlayerPause, IconLoader2, IconHeart, IconSquareCheckFilled, IconShare, IconCopy } from '@tabler/icons-react'
+import { IconPlayerPlay, IconPlayerPause, IconLoader2, IconSquareCheckFilled, IconShare, IconCopy } from '@tabler/icons-react'
 import { DobaVisualizer } from '@/components/icons/DobaVisualizer'
 import { cn } from '@/lib/utils'
 import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain, publicClients, CHAIN_ID } from '@/lib/web3'
@@ -314,37 +314,7 @@ export default function SongCard({
     toast.success('Link copied to clipboard!')
   }
 
-  const [showHeart, setShowHeart] = React.useState(false)
-  const lastTapRef = React.useRef<number>(0)
 
-  const handleDoubleTap = async (e: React.MouseEvent | React.TouchEvent) => {
-    if (hasOwned) {
-      toast('Collected', {
-        position: 'top-center',
-        duration: 1500,
-        style: {
-          background: 'rgba(255, 31, 138, 0.1)',
-          color: '#FF1F8A',
-          border: '1px solid rgba(255, 31, 138, 0.3)',
-          backdropFilter: 'blur(8px)',
-          fontSize: '10px',
-          fontWeight: 'bold',
-          textTransform: 'uppercase',
-          letterSpacing: '0.1em',
-          borderRadius: '4px',
-        }
-      })
-      return
-    }
-    if (isMinting) return
-
-    // Visual feedback
-    setShowHeart(true)
-    setTimeout(() => setShowHeart(false), 800)
-
-    // Trigger Mint
-    handleMint(e as any)
-  }
 
   const handleClick = (e: React.MouseEvent) => {
     // If navigateOnClick is true, we go to details
@@ -356,21 +326,11 @@ export default function SongCard({
     onPlay?.()
   }
 
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    const now = Date.now()
-    const DOUBLE_TAP_DELAY = 300
-    if (now - lastTapRef.current < DOUBLE_TAP_DELAY) {
-      handleDoubleTap(e)
-    }
-    lastTapRef.current = now
-  }
 
   return (
     <div
       className="group relative aspect-square overflow-hidden bg-white/[0.03] border border-white/5 hover:border-cyber-pink/30 transition-all duration-300 cursor-pointer"
-      onDoubleClick={handleDoubleTap}
       onClick={handleClick}
-      onTouchEnd={handleTouchEnd}
     >
       {/* Cover Image - fills entire square */}
       <img
@@ -379,16 +339,6 @@ export default function SongCard({
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
       />
 
-      {/* Heart Pop Animation Overlay */}
-      <div className={cn(
-        "absolute inset-0 flex items-center justify-center z-30 pointer-events-none transition-all duration-500",
-        showHeart ? "opacity-100 scale-125" : "opacity-0 scale-75"
-      )}>
-        <IconHeart
-          size={80}
-          className="text-cyber-pink fill-cyber-pink drop-shadow-[0_0_30px_rgba(255,31,138,0.8)]"
-        />
-      </div>
 
       {/* Play Action - now combined with chain badge at top-left */}
 
