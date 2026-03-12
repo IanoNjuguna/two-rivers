@@ -12,6 +12,12 @@ import { toast } from 'sonner'
 import { useAudio } from '@/components/AudioProvider'
 import { IconPlayerPlay as Play, IconPlayerPause as Pause, IconPlayerSkipBack as SkipBack, IconPlayerSkipForward as SkipForward } from '@tabler/icons-react'
 
+const formatTokenId = (id: string | number) => {
+	const s = String(id)
+	if (s.length <= 10) return s
+	return `${s.slice(0, 4)}...${s.slice(-4)}`
+}
+
 interface NowPlayingSidebarProps {
 	track: any | null
 	isVisible: boolean
@@ -421,7 +427,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 						{track.token_id !== undefined && (
 							<div>
 								<p className="text-[10px] uppercase tracking-widest text-white/40 font-bold">Token ID</p>
-								<p className="text-white text-sm font-mono">#{track.token_id}</p>
+								<p className="text-white text-sm font-mono">#{formatTokenId(track.token_id)}</p>
 							</div>
 						)}
 					</div>

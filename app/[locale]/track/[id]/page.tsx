@@ -20,6 +20,12 @@ const CHAIN_BADGE: Record<string, { logo: string; label: string }> = {
 	'43114': { logo: '/images/avalanche.png', label: 'Avalanche' },
 }
 
+const formatTokenId = (id: string | number) => {
+	const s = String(id)
+	if (s.length <= 10) return s
+	return `${s.slice(0, 4)}...${s.slice(-4)}`
+}
+
 const API_URL = '/api-backend'
 
 interface Track {
@@ -378,7 +384,7 @@ export default function TrackDetailPage() {
 							{track.genre || 'RARE'}
 						</span>
 						<span className="text-[9px] font-bold text-white/30 bg-white/5 border border-white/10 px-2 py-0.5 uppercase tracking-widest rounded-none">
-							#{track.token_id}
+							#{formatTokenId(track.token_id)}
 						</span>
 					</div>
 					<h1 className="text-2xl font-bold mt-2">{track.name}</h1>
