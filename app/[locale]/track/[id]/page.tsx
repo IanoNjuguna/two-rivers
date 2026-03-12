@@ -67,6 +67,14 @@ export default function TrackDetailPage() {
 	const [effectiveAddress, setEffectiveAddress] = useState<string | undefined>(address)
 
 	useEffect(() => {
+		sdk.isInMiniApp().then(res => {
+			if (res) {
+				setTimeout(() => sdk.actions.ready(), 100)
+			}
+		}).catch(() => { })
+	}, [])
+
+	useEffect(() => {
 		if (address) {
 			setEffectiveAddress(address)
 		} else {
