@@ -76,8 +76,13 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
         }
 
         // 2. Check balances for all tracks in one batch call
-        const validTracks = allTracks.filter(t => t.token_id && t.token_id < 1000000)
+        const validTracks = allTracks.filter(t => (t.token_id !== undefined && t.token_id !== null) && t.token_id < 1000000)
+
+        console.log('Library Debug: Tracks from API:', allTracks.length)
+        console.log('Library Debug: Valid On-chain Tracks:', validTracks.length)
+
         if (!validTracks.length) {
+          console.log('Library Debug: No valid on-chain tracks found (filtering might be too aggressive if allTracks is not empty)')
           setOwnedTracks([])
           setLoading(false)
           return
@@ -92,6 +97,8 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
           functionName: 'balanceOfBatch',
           args: [accounts, tokenIds],
         }) as bigint[]
+
+        console.log('Library Debug: Balances retrieved:', balances.length)
 
         const [mintedResults, collectionResults] = await Promise.all([
           readClient.multicall({
@@ -114,7 +121,11 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
 
         // 4. Combine data and filter tracks where balance > 0
         const owned = validTracks
-          .filter((_, index) => balances[index] > 0n)
+          .filter((_, index) => {
+            const hasBalance = balances[index] > 0n
+            if (hasBalance) console.log(`Library Debug: User owns track ${validTracks[index].token_id}`)
+            return hasBalance
+          })
           .map((track) => {
             // Find the original index in validTracks to map multicall results
             const originalIndex = validTracks.indexOf(track)
@@ -130,6 +141,7 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
             }
           })
 
+        console.log('Library Debug: Final owned tracks count:', owned.length)
         setOwnedTracks(owned)
 
         // 4. Heal database if we found owned tracks

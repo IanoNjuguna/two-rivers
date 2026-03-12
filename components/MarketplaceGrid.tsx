@@ -128,7 +128,7 @@ export default function MarketplaceGrid({
       const client = publicClients[chainId]
       if (!client) return
 
-      const validTracks = tracksToSync.filter(t => t.token_id && t.token_id < 1000000)
+      const validTracks = tracksToSync.filter(t => (t.token_id !== undefined && t.token_id !== null) && t.token_id < 1000000)
       if (!validTracks.length) return
 
       const tokenIds = validTracks.map(t => BigInt(t.token_id))
