@@ -182,44 +182,32 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 
 	const handleDownload = async () => {
 		const tokenId = track?.id !== undefined ? track.id : track?.token_id
-		console.log('Sidebar Debug: Download Clicked', { effectiveAddress, hasOwned, tokenId, track: !!track })
 
 		if (!effectiveAddress || !hasOwned) {
-			console.warn('Sidebar Debug: Missing prerequisites', { effectiveAddress: !!effectiveAddress, hasOwned })
 			return
 		}
 
-		console.log('Sidebar Debug: Showing loading toast...')
 		const mainToast = toast.loading(`Preparing download...`)
-		console.log('Sidebar Debug: Toast ID:', mainToast)
 
 		try {
-			console.log('Sidebar Debug: Requesting backend token...')
 			const accessToken = await getValidToken()
-			console.log('Sidebar Debug: Access token received:', !!accessToken)
 
 			if (!accessToken) throw new Error("Authentication failed. Please try logging in again.")
 
-			console.log(`Sidebar Debug: Fetching binary from /api-backend/songs/${tokenId}/download...`)
 			const response = await fetch(`/api-backend/songs/${tokenId}/download`, {
 				headers: {
 					'Authorization': `Bearer ${accessToken}`
 				}
 			})
 
-			console.log('Sidebar Debug: Fetch Response Status:', response.status)
 			if (!response.ok) {
 				const errorData = await response.json().catch(() => ({ message: "Download failed" }))
-				console.error('Sidebar Debug: Fetch Error Data:', errorData)
 				throw new Error(errorData.message || "Failed to download file")
 			}
 
-			console.log('Sidebar Debug: Fetching blob...')
 			const blob = await response.blob()
-			console.log('Sidebar Debug: Blob size:', blob.size)
 
 			const url = window.URL.createObjectURL(blob)
-			console.log('Sidebar Debug: Object URL created')
 
 			// Create a temporary anchor element to trigger download
 			const a = document.createElement('a')
@@ -229,11 +217,9 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 			a.click()
 			document.body.removeChild(a)
 			window.URL.revokeObjectURL(url)
-			console.log('Sidebar Debug: Download triggered locally')
 
 			toast.success("Download started!", { id: mainToast })
 		} catch (error: any) {
-			console.error('Sidebar Debug: Catch Block Error:', error)
 			toast.error(error.message || "Download failed", { id: mainToast })
 		}
 	}

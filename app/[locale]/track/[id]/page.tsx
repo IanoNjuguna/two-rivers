@@ -166,7 +166,6 @@ export default function TrackDetailPage() {
 				if (isOwnedOnChain && !track.is_owned) {
 					const token = await getValidToken()
 					if (token) {
-						console.log('TrackPage: Proactive sync...')
 						fetch(`${API_URL.replace(/\/$/, '')}/mints/sync`, {
 							method: 'POST',
 							headers: {
@@ -327,44 +326,31 @@ export default function TrackDetailPage() {
 	}
 
 	const handleDownload = async () => {
-		console.log('Sidebar Debug: DOWNLOAD CLICK DETECTED')
-		console.log('Sidebar Debug: State:', { effectiveAddress: !!effectiveAddress, hasOwned, track: !!track })
 		if (!effectiveAddress || !hasOwned || !track) {
-			console.warn('TrackPage Debug: Missing prerequisites', { effectiveAddress: !!effectiveAddress, hasOwned, track: !!track })
 			return
 		}
 
-		console.log('TrackPage Debug: Showing loading toast...')
 		const mainToast = toast.loading(`Preparing download...`)
-		console.log('TrackPage Debug: Toast ID:', mainToast)
 
 		try {
-			console.log('TrackPage Debug: Requesting backend token...')
 			const accessToken = await getValidToken()
-			console.log('TrackPage Debug: Access token received:', !!accessToken)
 
 			if (!accessToken) throw new Error("Authentication failed. Please try logging in again.")
 
-			console.log(`TrackPage Debug: Fetching binary from /api-backend/songs/${track.token_id}/download...`)
 			const response = await fetch(`/api-backend/songs/${track.token_id}/download`, {
 				headers: {
 					'Authorization': `Bearer ${accessToken}`
 				}
 			})
 
-			console.log('TrackPage Debug: Fetch Response Status:', response.status)
 			if (!response.ok) {
 				const errorData = await response.json().catch(() => ({ message: "Download failed" }))
-				console.error('TrackPage Debug: Fetch Error Data:', errorData)
 				throw new Error(errorData.message || "Failed to download file")
 			}
 
-			console.log('TrackPage Debug: Fetching blob...')
 			const blob = await response.blob()
-			console.log('TrackPage Debug: Blob size:', blob.size)
 
 			const url = window.URL.createObjectURL(blob)
-			console.log('TrackPage Debug: Object URL created')
 
 			const a = document.createElement('a')
 			a.href = url
@@ -373,11 +359,9 @@ export default function TrackDetailPage() {
 			a.click()
 			document.body.removeChild(a)
 			window.URL.revokeObjectURL(url)
-			console.log('TrackPage Debug: Download triggered locally')
 
 			toast.success("Download started!", { id: mainToast })
 		} catch (error: any) {
-			console.error('TrackPage Debug: Catch Block Error:', error)
 			toast.error(error.message || "Download failed", { id: mainToast })
 		}
 	}
