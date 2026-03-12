@@ -85,7 +85,6 @@ export default function MyUploadsGrid({ address }: MyUploadsGridProps) {
 					genre={track.genre}
 					price={track.price}
 					trackChainId={track.chain_id}
-					client={client}
 					navigateOnClick={true}
 					onPlay={() => handlePlayTrack({
 						id: track.token_id,

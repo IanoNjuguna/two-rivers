@@ -22,7 +22,6 @@ interface SongCardProps {
   audioUrl: string
   genre?: string
   price?: string
-  client?: any
   trackChainId?: string
   onPlay?: () => void
   isPlaying?: boolean
@@ -40,7 +39,6 @@ export default function SongCard({
   audioUrl,
   genre,
   price,
-  client,
   trackChainId,
   onPlay,
   isPlaying = false,
