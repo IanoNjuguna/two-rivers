@@ -9,7 +9,7 @@ import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain, publicClients, CHAIN_ID 
 import { useChainId, useWalletClient, usePublicClient, useAccount } from 'wagmi'
 import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
-import sdk from '@farcaster/miniapp-sdk'
+import { sdk } from '@farcaster/miniapp-sdk'
 import { useAudio } from '@/components/AudioProvider'
 import { type Track as PlayerTrack } from '@/hooks/useAudioPlayer'
 import AudioPlayer from '@/components/AudioPlayer'
@@ -301,7 +301,8 @@ export default function TrackDetailPage() {
 	}
 
 	const handleDownload = async () => {
-		console.log('TrackPage Debug: Download Clicked', { effectiveAddress, hasOwned, track: !!track, tokenId: track?.token_id })
+		console.log('Sidebar Debug: DOWNLOAD CLICK DETECTED')
+		console.log('Sidebar Debug: State:', { effectiveAddress: !!effectiveAddress, hasOwned, track: !!track })
 		if (!effectiveAddress || !hasOwned || !track) {
 			console.warn('TrackPage Debug: Missing prerequisites', { effectiveAddress: !!effectiveAddress, hasOwned, track: !!track })
 			return
