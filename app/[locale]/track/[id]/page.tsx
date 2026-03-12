@@ -391,7 +391,10 @@ export default function TrackDetailPage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-[#0D0D12] text-white">
+		<div className={cn(
+			"min-h-screen bg-[#0D0D12] text-white",
+			playerState.currentTrack ? "pb-32 lg:pb-0" : ""
+		)}>
 
 			{/* Hero Section */}
 			<div className="relative w-full h-[50vh] min-h-[300px] overflow-hidden bg-black/50">
