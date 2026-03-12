@@ -93,7 +93,9 @@ export default function MyUploadsGrid({ address }: MyUploadsGridProps) {
 						cover: track.image_url,
 						url: track.streaming_url || track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
 						collaborators: 0,
-						price: track.price
+						price: track.price,
+						genre: track.genre,
+						description: track.description
 					}, uploads.map(t => ({
 						id: t.token_id,
 						title: t.name,
@@ -101,7 +103,9 @@ export default function MyUploadsGrid({ address }: MyUploadsGridProps) {
 						cover: t.image_url,
 						url: t.streaming_url || t.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
 						collaborators: 0,
-						price: t.price
+						price: t.price,
+						genre: t.genre,
+						description: t.description
 					})))}
 					isPlaying={playerState.isPlaying && playerState.currentTrack?.id === track.token_id}
 				/>

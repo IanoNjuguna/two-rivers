@@ -418,7 +418,9 @@ function DashboardLayout() {
                       cover: track.image_url,
                       url: track.streaming_url || track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
                       collaborators: 0,
-                      price: track.price
+                      price: track.price,
+                      genre: track.genre,
+                      description: track.description
                     }, tracks.map(t => ({
                       id: t.token_id,
                       title: t.name,
@@ -426,7 +428,9 @@ function DashboardLayout() {
                       cover: t.image_url,
                       url: t.streaming_url || t.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
                       collaborators: 0,
-                      price: t.price
+                      price: t.price,
+                      genre: t.genre,
+                      description: t.description
                     })))} />
                 </div>
               )}
@@ -452,7 +456,9 @@ function DashboardLayout() {
                         cover: track.image_url,
                         url: track.streaming_url || track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
                         collaborators: 0,
-                        price: track.price
+                        price: track.price,
+                        genre: track.genre,
+                        description: track.description
                       }, tracks.map(t => ({
                         id: t.token_id,
                         title: t.name,
@@ -460,7 +466,9 @@ function DashboardLayout() {
                         cover: t.image_url,
                         url: t.streaming_url || t.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
                         collaborators: 0,
-                        price: t.price
+                        price: t.price,
+                        genre: t.genre,
+                        description: t.description
                       })))}
                     />
                   ) : (
@@ -526,6 +534,8 @@ function DashboardLayout() {
                       cover: track.image_url,
                       url: track.streaming_url || track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
                       collaborators: 0,
+                      genre: track.genre,
+                      description: track.description
                     }, tracks.map(t => ({
                       ...t,
                       id: t.token_id,
@@ -534,6 +544,8 @@ function DashboardLayout() {
                       cover: t.image_url,
                       url: t.streaming_url || t.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
                       collaborators: 0,
+                      genre: t.genre,
+                      description: t.description
                     })))}
                   />
                 </div>

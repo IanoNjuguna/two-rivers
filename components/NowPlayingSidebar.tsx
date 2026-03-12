@@ -407,7 +407,6 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 							<IconCopy size={18} className="text-white/60" />
 						</Button>
 					</div>
-
 					{/* Lyrics Section */}
 					{(track.description || track.lyrics) && (
 						<div className="space-y-3 pt-6 border-t border-white/5">
@@ -424,7 +423,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 					<div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
 						<div>
 							<p className="text-[10px] uppercase tracking-widest text-white/40 font-bold">Genre</p>
-							<p className="text-white text-sm">{track.genre || 'Ambient'}</p>
+							<p className="text-white text-sm">{track.genre || 'RARE'}</p>
 						</div>
 						{track.token_id !== undefined && (
 							<div>

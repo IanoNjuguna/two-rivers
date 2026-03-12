@@ -197,7 +197,9 @@ export default function TrackDetailPage() {
 			creator: track.artist,
 			cover: track.image_url,
 			url: track.streaming_url || track.audio_url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/'),
-			collaborators: 0
+			collaborators: 0,
+			genre: track.genre,
+			description: track.description
 		})
 	}
 

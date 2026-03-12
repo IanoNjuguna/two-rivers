@@ -10,6 +10,8 @@ export interface Track {
   cover: string
   collaborators: number
   url?: string
+  genre?: string
+  description?: string
 }
 
 interface PlayerState {
