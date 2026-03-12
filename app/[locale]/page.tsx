@@ -161,8 +161,8 @@ function DashboardLayout() {
               address={effectiveAddress || undefined}
               logout={handleLogout}
             />
-            {/* Hamburger Menu - Only show when connected */}
-            {isPlayerConnected && (
+            {/* Hamburger Menu - Only show when authenticated */}
+            {authenticated && (
               <button
                 onClick={() => setHeaderMenuOpen(!headerMenuOpen)}
                 className="p-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"
@@ -397,7 +397,7 @@ function DashboardLayout() {
         {/* Content Area wrapper */}
         <div className="flex-1 flex flex-row min-w-0 relative lg:min-h-0">
           <main className="flex-1 overflow-y-auto outline-none lg:h-full">
-            <div className="p-6 max-w-7xl mx-auto">
+            <div className="p-6 pb-24 md:pb-6 max-w-7xl mx-auto">
               {currentView === 'home' && (
                 <div className="space-y-6 animate-fade-in">
                   <div>
