@@ -27,9 +27,6 @@ export default function MiniAppHeader({ address: propAddress, logout }: { addres
 			const farcasterConnector = connectors.find((c: any) => c.id === 'farcasterMiniApp' || c.name === 'Farcaster')
 			if (farcasterConnector) {
 				connect({ connector: farcasterConnector })
-			} else {
-				// Fallback to the first available connector (which should be farcasterMiniApp anyway)
-				connect({ connector: connectors[0] })
 			}
 		}
 	}, [isConnected, connectors, connect])
