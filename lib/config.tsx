@@ -11,7 +11,7 @@ export const chains = [base, baseSepolia, arbitrumSepolia] as const;
 export const getConfig = () => {
 	return createConfig({
 		chains,
-		multiInjectedProviderDiscovery: true,
+		multiInjectedProviderDiscovery: false,
 		connectors: [
 			coinbaseWallet({
 				appName: 'doba',
