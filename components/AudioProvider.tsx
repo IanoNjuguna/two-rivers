@@ -5,7 +5,7 @@ import AudioPlayer from './AudioPlayer'
 import { toast } from 'sonner'
 import { useAccount } from 'wagmi'
 import { sdk } from '@farcaster/miniapp-sdk'
-import { usePrivy } from '@privy-io/react-auth'
+import { useBackendAuth } from '@/hooks/useBackendAuth'
 
 interface AudioContextType {
 	playerState: ReturnType<typeof useAudioPlayer>
@@ -13,6 +13,8 @@ interface AudioContextType {
 	effectiveAddress: string | undefined
 	isConnected: boolean
 	isAuthenticated: boolean
+	accessToken: string | null
+	getValidToken: () => Promise<string | null>
 	sidebarTrack: any | null
 	isSidebarOpen: boolean
 	handleOpenSidebar: (track: any) => void
@@ -30,12 +32,13 @@ export const useAudio = () => {
 export function AudioProvider({ children }: { children: React.ReactNode }) {
 	const playerState = useAudioPlayer()
 	const { address, isConnected } = useAccount()
-	const { login, authenticated } = usePrivy()
+	const { accessToken, getValidToken, login, isAuthenticated: isAuth } = useBackendAuth()
 
 	const [isMiniApp, setIsMiniApp] = React.useState<boolean | null>(null)
 	const [sidebarTrack, setSidebarTrack] = React.useState<any | null>(null)
 	const [isSidebarOpen, setIsSidebarOpen] = React.useState(false)
 
+	// In AudioProvider.tsx
 	React.useEffect(() => {
 		sdk.isInMiniApp().then(setIsMiniApp).catch(() => setIsMiniApp(false))
 	}, [])
@@ -64,7 +67,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 	}, [])
 
 	const handlePlayTrack = useCallback((track: Track, tracks?: any[]) => {
-		if (!authenticated) {
+		if (!isAuth) {
 			login()
 			return
 		}
@@ -83,19 +86,21 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 		if (isSidebarOpen) {
 			setSidebarTrack(track)
 		}
-	}, [playerState, isConnected, isSidebarOpen])
+	}, [playerState, isAuth, login, isSidebarOpen])
 
 	const value = useMemo(() => ({
 		playerState,
 		handlePlayTrack,
 		effectiveAddress: address,
 		isConnected,
-		isAuthenticated: authenticated || isConnected,
+		isAuthenticated: isAuth || isConnected,
+		accessToken,
+		getValidToken,
 		sidebarTrack,
 		isSidebarOpen,
 		handleOpenSidebar,
 		toggleSidebar
-	}), [playerState, handlePlayTrack, address, isConnected, sidebarTrack, isSidebarOpen, handleOpenSidebar, toggleSidebar])
+	}), [playerState, handlePlayTrack, address, isConnected, isAuth, accessToken, getValidToken, sidebarTrack, isSidebarOpen, handleOpenSidebar, toggleSidebar])
 
 	if (isMiniApp === null) {
 		return <div className="h-screen bg-[#0D0D12]" />

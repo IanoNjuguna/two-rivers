@@ -26,7 +26,7 @@ interface NowPlayingSidebarProps {
 
 export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlayingSidebarProps) {
 	const chainId = useChainId()
-	const { playerState, effectiveAddress, isAuthenticated } = useAudio()
+	const { playerState, effectiveAddress, isAuthenticated, getValidToken } = useAudio()
 	const publicClient = usePublicClient({ chainId: CHAIN_ID })
 	const { writeContractAsync } = useWriteContract()
 	const { contract: CONTRACT_ADDRESS, explorer: EXPLORER_URL, usdc: USDC_ADDRESS } = getAddressesForChain(CHAIN_ID)
@@ -194,14 +194,11 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 		console.log('Sidebar Debug: Toast ID:', mainToast)
 
 		try {
-			const authData = localStorage.getItem('doba_auth_data')
-			console.log('Sidebar Debug: Auth data found:', !!authData)
-			if (!authData || authData === 'null') throw new Error("Authentication data not found")
+			console.log('Sidebar Debug: Requesting backend token...')
+			const accessToken = await getValidToken()
+			console.log('Sidebar Debug: Access token received:', !!accessToken)
 
-			const parsedAuth = JSON.parse(authData)
-			if (!parsedAuth || !parsedAuth.accessToken) throw new Error("Invalid authentication data")
-
-			const { accessToken } = parsedAuth
+			if (!accessToken) throw new Error("Authentication failed. Please try logging in again.")
 
 			console.log(`Sidebar Debug: Fetching binary from /api-backend/songs/${tokenId}/download...`)
 			const response = await fetch(`/api-backend/songs/${tokenId}/download`, {

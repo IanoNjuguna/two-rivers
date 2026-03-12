@@ -56,7 +56,7 @@ export default function TrackDetailPage() {
 	const [mintedCount, setMintedCount] = useState<number>(0)
 	const [maxSupply, setMaxSupply] = useState<number>(0)
 
-	const { playerState, handlePlayTrack } = useAudio()
+	const { playerState, handlePlayTrack, getValidToken } = useAudio()
 	const isPlaying = playerState.currentTrack?.id === track?.token_id && playerState.isPlaying
 
 	const chainId = useChainId()
@@ -321,14 +321,11 @@ export default function TrackDetailPage() {
 		console.log('TrackPage Debug: Toast ID:', mainToast)
 
 		try {
-			const authData = localStorage.getItem('doba_auth_data')
-			console.log('TrackPage Debug: Auth data found:', !!authData)
-			if (!authData || authData === 'null') throw new Error("Authentication data not found")
+			console.log('TrackPage Debug: Requesting backend token...')
+			const accessToken = await getValidToken()
+			console.log('TrackPage Debug: Access token received:', !!accessToken)
 
-			const parsedAuth = JSON.parse(authData)
-			if (!parsedAuth || !parsedAuth.accessToken) throw new Error("Invalid authentication data")
-
-			const { accessToken } = parsedAuth
+			if (!accessToken) throw new Error("Authentication failed. Please try logging in again.")
 
 			console.log(`TrackPage Debug: Fetching binary from /api-backend/songs/${track.token_id}/download...`)
 			const response = await fetch(`/api-backend/songs/${track.token_id}/download`, {
