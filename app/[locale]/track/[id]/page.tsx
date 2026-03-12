@@ -159,13 +159,32 @@ export default function TrackDetailPage() {
 					functionName: 'balanceOf',
 					args: [effectiveAddress as `0x${string}`, BigInt(track.token_id)],
 				}) as bigint
-				setHasOwned(balance > 0n)
+				const isOwnedOnChain = balance > 0n
+				setHasOwned(isOwnedOnChain)
+
+				// Proactive sync to backend if owned on-chain but not in backend response
+				if (isOwnedOnChain && !track.is_owned) {
+					const token = await getValidToken()
+					if (token) {
+						console.log('TrackPage: Proactive sync...')
+						fetch(`${API_URL.replace(/\/$/, '')}/mints/sync`, {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json',
+								'Authorization': `Bearer ${token}`
+							},
+							body: JSON.stringify({
+								mints: [{ track_id: track.token_id }]
+							})
+						}).catch(err => console.error('TrackPage: Sync failed', err))
+					}
+				}
 			} catch (e) {
 				console.error('Error checking ownership', e)
 			}
 		}
 		check()
-	}, [effectiveAddress, activeClient, track, CURRENT_CONTRACT])
+	}, [effectiveAddress, activeClient, track, CURRENT_CONTRACT, getValidToken])
 
 	const resolveIpfs = (url: string) =>
 		(url || '').replace('ipfs://', process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://gateway.pinata.cloud/ipfs/')
