@@ -76,8 +76,15 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
         }
 
         // 2. Check balances for all tracks in one batch call
-        const tokenIds = allTracks.map(t => BigInt(t.token_id))
-        const accounts = allTracks.map(() => address as `0x${string}`)
+        const validTracks = allTracks.filter(t => t.token_id && t.token_id < 1000000)
+        if (!validTracks.length) {
+          setOwnedTracks([])
+          setLoading(false)
+          return
+        }
+
+        const tokenIds = validTracks.map(t => BigInt(t.token_id))
+        const accounts = validTracks.map(() => address as `0x${string}`)
 
         const balances = await readClient.readContract({
           address: CONTRACT_ADDRESS as `0x${string}`,
@@ -86,32 +93,31 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
           args: [accounts, tokenIds],
         }) as bigint[]
 
-        // 3. Fetch supply data for all tracks in parallel
-        const supplyCalls = allTracks.map(t => ({
-          address: CONTRACT_ADDRESS as `0x${string}`,
-          abi: CONTRACT_ABI,
-          functionName: 'collectionMinted',
-          args: [BigInt(t.token_id)],
-        }))
-
-        const collectionCalls = allTracks.map(t => ({
-          address: CONTRACT_ADDRESS as `0x${string}`,
-          abi: CONTRACT_ABI,
-          functionName: 'collections',
-          args: [BigInt(t.token_id)],
-        }))
-
         const [mintedResults, collectionResults] = await Promise.all([
-          readClient.multicall({ contracts: supplyCalls }),
-          readClient.multicall({ contracts: collectionCalls })
+          readClient.multicall({
+            contracts: validTracks.map(t => ({
+              address: CONTRACT_ADDRESS as `0x${string}`,
+              abi: CONTRACT_ABI,
+              functionName: 'collectionMinted',
+              args: [BigInt(t.token_id)],
+            }))
+          }),
+          readClient.multicall({
+            contracts: validTracks.map(t => ({
+              address: CONTRACT_ADDRESS as `0x${string}`,
+              abi: CONTRACT_ABI,
+              functionName: 'collections',
+              args: [BigInt(t.token_id)],
+            }))
+          })
         ])
 
         // 4. Combine data and filter tracks where balance > 0
-        const owned = allTracks
+        const owned = validTracks
           .filter((_, index) => balances[index] > 0n)
           .map((track) => {
-            // Find the original index in allTracks to map multicall results
-            const originalIndex = allTracks.indexOf(track)
+            // Find the original index in validTracks to map multicall results
+            const originalIndex = validTracks.indexOf(track)
             const minted = mintedResults[originalIndex]?.result as bigint || 0n
             const collectionData = collectionResults[originalIndex]?.result as any
             const max = collectionData ? collectionData[3] : 0n

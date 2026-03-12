@@ -142,8 +142,9 @@ export default function MiniAppHeader({ address: propAddress, logout }: { addres
 				<Button
 					onClick={() => {
 						const farcasterConnector = connectors.find((c: any) => c.id === 'farcasterMiniApp' || c.name === 'Farcaster')
-						if (farcasterConnector) connect({ connector: farcasterConnector })
-						else if (connectors.length > 0) connect({ connector: connectors[0] })
+						if (farcasterConnector) {
+							connect({ connector: farcasterConnector })
+						}
 					}}
 					disabled={isPending}
 					className="bg-blue-600 hover:bg-blue-700 text-white font-semibold"

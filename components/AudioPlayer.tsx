@@ -76,8 +76,9 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
   const checkOwnership = useCallback(async () => {
     try {
       const readClient = publicClients[chainId || Number(process.env.NEXT_PUBLIC_CHAIN_ID || 84532)] || publicClient
-      if (!readClient) return
+      if (!readClient || !effectiveAddress || !currentTrack) return
       const tokenId = (currentTrack as any).token_id || currentTrack.id
+      if (!tokenId || tokenId > 1000000) return // Guard against DB IDs
       const balance = await readClient.readContract({
         address: CURRENT_CONTRACT as `0x${string}`,
         abi: CONTRACT_ABI,
@@ -96,6 +97,10 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
       const readClient = publicClients[chainId || Number(process.env.NEXT_PUBLIC_CHAIN_ID || 84532)] || publicClient
       if (!readClient) return
       const tokenId = (currentTrack as any).token_id || currentTrack.id
+      if (!tokenId || tokenId > 1000000) {
+        setMintData({ minted: 0, max: 0 })
+        return
+      }
       const [minted, collectionInfo] = await Promise.all([
         readClient.readContract({
           address: CURRENT_CONTRACT as `0x${string}`,
@@ -142,6 +147,8 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
         logger.error('AudioPlayer: Invalid price format', { price: currentTrack.price })
         throw new Error("Invalid track price format")
       }
+
+      if (!effectiveAddress) throw new Error("Wallet not connected")
 
       const allowance = await publicClient.readContract({
         address: CURRENT_USDC as `0x${string}`,
