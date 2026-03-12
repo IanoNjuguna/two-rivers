@@ -25,7 +25,7 @@ app.use('/*', cors({
   credentials: true,
 }))
 
-const SERVER_VERSION = '1.2.4-onchain-fallback'
+const SERVER_VERSION = '1.2.5-fix-download-proxy'
 
 // Global Error Handler
 app.onError((err, c) => {
@@ -480,12 +480,16 @@ app.get('/songs/:id/download', authMiddleware, async (c) => {
     return c.json({ error: 'Forbidden', message: 'You must collect this song to download it.' }, 403)
   }
 
-  const audioUrl = track.audio_url || track.streaming_url
+  let audioUrl = track.streaming_url || track.audio_url
   if (!audioUrl) return c.json({ error: 'Audio file not found' }, 404)
 
-  const resolvedUrl = audioUrl.startsWith('ipfs://')
-    ? audioUrl.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/')
-    : audioUrl
+  let resolvedUrl = audioUrl
+  if (audioUrl.startsWith('ipfs://')) {
+    resolvedUrl = audioUrl.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/')
+  } else if (audioUrl.includes('/ipfs/')) {
+    const cid = audioUrl.split('/ipfs/')[1]
+    resolvedUrl = `https://gateway.pinata.cloud/ipfs/${cid}`
+  }
 
   try {
     logger.info(`[DOWNLOAD] Proxying track ${id} from ${resolvedUrl.substring(0, 30)}...`)
