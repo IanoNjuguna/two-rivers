@@ -162,7 +162,7 @@ function DashboardLayout() {
               logout={handleLogout}
             />
             {/* Hamburger Menu - Only show when authenticated */}
-            {authenticated && (
+            {isAuthenticated && (
               <button
                 onClick={() => setHeaderMenuOpen(!headerMenuOpen)}
                 className="p-2 rounded-lg transition text-white/70 hover:text-white hover:bg-white/[0.05]"

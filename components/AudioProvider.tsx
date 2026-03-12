@@ -90,7 +90,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 		handlePlayTrack,
 		effectiveAddress: address,
 		isConnected,
-		isAuthenticated: authenticated,
+		isAuthenticated: authenticated || isConnected,
 		sidebarTrack,
 		isSidebarOpen,
 		handleOpenSidebar,
