@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils'
 interface AnalyticsData {
 	totalPlays: number
 	uniqueListeners: number
+	totalCollectors: number
 	playsOverTime: { date: string; count: number }[]
 	topTracks: { tokenId: number; name: string; plays: number }[]
 }
@@ -75,18 +76,24 @@ export default function AnalyticsView() {
 	return (
 		<div className="space-y-8 animate-fade-in">
 			{/* Metrics Row */}
-			<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 				<MetricCard
 					label="Total Plays"
 					value={data.totalPlays.toLocaleString()}
 					icon={<IconHeadphones className="text-cyber-pink" size={24} />}
-					subtext="Lifetime streams"
+					subtext="> 1 minute streams"
 				/>
 				<MetricCard
 					label="Unique Listeners"
 					value={data.uniqueListeners.toLocaleString()}
 					icon={<IconUsers className="text-[#B794F4]" size={24} />}
 					subtext="Audience reach"
+				/>
+				<MetricCard
+					label="Total Collectors"
+					value={data.totalCollectors.toLocaleString()}
+					icon={<IconMusic className="text-blue-400" size={24} />}
+					subtext="Owners of your work"
 				/>
 				<MetricCard
 					label="Growth"

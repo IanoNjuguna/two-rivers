@@ -43,6 +43,51 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 		sdk.isInMiniApp().then(setIsMiniApp).catch(() => setIsMiniApp(false))
 	}, [])
 
+	const [recordedTracks, setRecordedTracks] = React.useState<Set<number>>(new Set())
+
+	// 1-minute stream rule implementation
+	React.useEffect(() => {
+		const track = playerState.currentTrack as any
+		if (!track || !playerState.isPlaying) return
+
+		const trackId = track.id ?? track.token_id
+		if (recordedTracks.has(trackId)) return
+
+		// If the track has been playing for at least 60 seconds (or if it's shorter and finished, but let's stick to 60s rule as requested)
+		if (playerState.currentTime >= 60) {
+			const recordPlay = async () => {
+				try {
+					const token = await getValidToken()
+					await fetch(`/api-backend/songs/${trackId}/play`, {
+						method: 'POST',
+						headers: {
+							'Authorization': token ? `Bearer ${token}` : ''
+						}
+					})
+					setRecordedTracks(prev => new Set(prev).add(trackId))
+				} catch (err) {
+					console.error('Failed to record play after 1 minute', err)
+				}
+			}
+			recordPlay()
+		}
+	}, [playerState.currentTime, playerState.isPlaying, playerState.currentTrack, recordedTracks, getValidToken])
+
+	// Reset recorded tracks when the authenticated user changes or periodically? 
+	// For now, let's just keep track of what's been recorded in this session.
+	// We might want to clear it when the track changes if we want to allow re-recording same track?
+	// The requirement is "1 stream equals every stream greater than 1 minute".
+	// If they play for 1 min, stop, and play again, should it count as another stream? 
+	// Usually yes. So let's clear the recorded flag if the track ID changes.
+	const [lastTrackId, setLastTrackId] = React.useState<number | null>(null)
+	React.useEffect(() => {
+		const track = playerState.currentTrack as any
+		const currentId = track?.id ?? track?.token_id
+		if (currentId !== lastTrackId) {
+			setLastTrackId(currentId)
+		}
+	}, [playerState.currentTrack, lastTrackId])
+
 	// Sync sidebar track with current player track if sidebar is open
 	React.useEffect(() => {
 		if (playerState.currentTrack && isSidebarOpen) {
@@ -77,26 +122,23 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 			return
 		}
 
-		playerState.play(track, tracks)
-
-		// Record play event
-		try {
-			const token = await getValidToken()
-			fetch(`/api-backend/songs/${track.id}/play`, {
-				method: 'POST',
-				headers: {
-					'Authorization': token ? `Bearer ${token}` : ''
-				}
-			}).catch(err => console.error('Failed to record play', err))
-		} catch (e) {
-			// Ignore play tracking errors to not disrupt user experience
+		// Clear recorded flag if playing a different track
+		const trackId = track.id
+		if (trackId !== lastTrackId) {
+			setRecordedTracks(prev => {
+				const next = new Set(prev)
+				next.delete(trackId)
+				return next
+			})
 		}
+
+		playerState.play(track, tracks)
 
 		// If sidebar is open, update it to the track being played
 		if (isSidebarOpen) {
 			setSidebarTrack(track)
 		}
-	}, [playerState, isAuth, login, isSidebarOpen, getValidToken])
+	}, [playerState, isAuth, login, isSidebarOpen, lastTrackId])
 
 	const value = useMemo(() => ({
 		playerState,

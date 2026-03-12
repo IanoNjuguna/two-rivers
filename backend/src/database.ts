@@ -461,6 +461,13 @@ export async function getAnalytics(artistAddress: string): Promise<any> {
   })
   const uniqueListeners = Number(listenersRs.rows[0].count)
 
+  // Total Collectors
+  const collectorsRs = await db.execute({
+    sql: `SELECT COUNT(DISTINCT user_address) as count FROM mints WHERE track_id IN (${idsPlaceholder})`,
+    args: trackIds
+  })
+  const totalCollectors = Number(collectorsRs.rows[0].count)
+
   // Plays Over Time (Last 30 days)
   const overTimeRs = await db.execute({
     sql: `
@@ -505,6 +512,7 @@ export async function getAnalytics(artistAddress: string): Promise<any> {
   return {
     totalPlays,
     uniqueListeners,
+    totalCollectors,
     playsOverTime,
     topTracks
   }
