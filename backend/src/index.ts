@@ -2,6 +2,7 @@ import { logger } from './lib/logger'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { getTrack, addTrack, getAllTracks, deleteTrack, deleteAllTracks, getUser, addUser, getTrackCollaborators, addCollaborator, isAdmin, type Track, type RefreshToken, addRefreshToken, getRefreshToken, revokeRefreshTokenFamily, getUserByFid, linkFidToUser, addMint, getUserMints } from './database'
+import { verifyOwnershipOnChain } from './web3'
 import { verifyWalletSignature, signJWT, verifyJWT, generateRefreshToken, getAccessTokenPayload } from './auth'
 import { createAppClient, viemConnector } from '@farcaster/auth-client'
 import axios from 'axios'
@@ -24,7 +25,7 @@ app.use('/*', cors({
   credentials: true,
 }))
 
-const SERVER_VERSION = '1.2.3-add-download'
+const SERVER_VERSION = '1.2.4-onchain-fallback'
 
 // Global Error Handler
 app.onError((err, c) => {
@@ -461,7 +462,18 @@ app.get('/songs/:id/download', authMiddleware, async (c) => {
   if (!track) return c.json({ error: 'Track not found' }, 404)
 
   const userMints = await getUserMints(userAddress)
-  const isOwned = userMints.includes(id)
+  let isOwned = userMints.includes(id)
+
+  if (!isOwned) {
+    logger.info(`[DOWNLOAD] DB check failed for ${userAddress} on track ${id}. Checking on-chain...`)
+    const chainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || '84532')
+    isOwned = await verifyOwnershipOnChain(userAddress, id, chainId)
+
+    if (isOwned) {
+      logger.info(`[DOWNLOAD] On-chain verification success. Syncing to DB.`)
+      await addMint({ user_address: userAddress, track_id: id })
+    }
+  }
 
   if (!isOwned) {
     logger.warn(`Unauthorized download attempt for track ${id} by ${userAddress}`)
@@ -504,8 +516,17 @@ app.get('/songs/:id', async (c) => {
     const token = authHeader.split(' ')[1]
     const payload = await verifyJWT(token, JWT_SECRET)
     if (payload && payload.sub) {
-      const userMints = await getUserMints(payload.sub as string)
+      const userAddress = payload.sub as string
+      const userMints = await getUserMints(userAddress)
       isOwned = userMints.includes(id)
+
+      if (!isOwned) {
+        const chainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || '84532')
+        isOwned = await verifyOwnershipOnChain(userAddress, id, chainId)
+        if (isOwned) {
+          await addMint({ user_address: userAddress, track_id: id })
+        }
+      }
     }
   }
 
