@@ -244,23 +244,44 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
     }
   }
 
+  const pendingPlayPromise = useRef<Promise<void> | null>(null)
   useEffect(() => {
     const audio = audioRef.current
     if (!audio || !currentTrack) return
 
-    // Sync source if changed
-    if (currentTrack.url && audio.src !== currentTrack.url) {
-      audio.src = currentTrack.url
-      audio.load()
-      setCurrentTime(0)
-      setDuration(0)
+    const syncSourceAndPlay = async () => {
+      // Sync source if changed
+      const trackUrl = currentTrack.url || ''
+      if (trackUrl && audio.src !== trackUrl) {
+        // If we have a pending play promise, we should wait or handle it
+        // However, changing .src automatically aborts previous requests.
+        audio.src = trackUrl
+        audio.load()
+        setCurrentTime(0)
+        setDuration(0)
+      }
+
+      if (isPlaying) {
+        try {
+          // If already playing or loading, don't start a new request if unnecessary
+          // but browser handles .play() calls gracefully if already pending.
+          pendingPlayPromise.current = audio.play()
+          await pendingPlayPromise.current
+        } catch (e: any) {
+          if (e.name !== 'AbortError') {
+            logger.warn('[AudioPlayer] Play failed:', e)
+          }
+        } finally {
+          pendingPlayPromise.current = null
+        }
+      } else {
+        // If we are pausing, wait for any pending play to settle if possible
+        // or just pause. pausing an aborted/settled play is safe.
+        audio.pause()
+      }
     }
 
-    if (isPlaying) {
-      audio.play().catch((e) => logger.warn('[AudioPlayer] Play failed:', e))
-    } else {
-      audio.pause()
-    }
+    syncSourceAndPlay()
   }, [isPlaying, currentTrack, audioRef, setCurrentTime, setDuration])
 
   // Global Spacebar shortcut

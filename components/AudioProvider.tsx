@@ -77,9 +77,6 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 			return
 		}
 
-		if (playerState.audioRef.current) {
-			playerState.audioRef.current.src = track.url || ''
-		}
 		playerState.play(track, tracks)
 
 		// If sidebar is open, update it to the track being played

@@ -58,7 +58,11 @@ export const useAudioPlayer = () => {
   const resume = useCallback(() => {
     setPlayerState((prev) => ({ ...prev, isPlaying: true }))
     if (audioRef.current) {
-      audioRef.current.play()
+      audioRef.current.play().catch((e) => {
+        if (e.name !== 'AbortError') {
+          console.error('[AudioPlayer] Resume failed:', e)
+        }
+      })
     }
   }, [])
 
