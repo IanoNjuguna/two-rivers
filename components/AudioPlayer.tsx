@@ -78,7 +78,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
       const readClient = publicClients[chainId || Number(process.env.NEXT_PUBLIC_CHAIN_ID || 84532)] || publicClient
       if (!readClient || !effectiveAddress || !currentTrack) return
       const tokenId = (currentTrack as any).token_id ?? currentTrack.id
-      if (tokenId === undefined || tokenId === null || tokenId > 1000000) return // Guard against DB IDs
+      if (tokenId === undefined || tokenId === null) return // Guard against missing IDs
       const balance = await readClient.readContract({
         address: CURRENT_CONTRACT as `0x${string}`,
         abi: CONTRACT_ABI,
@@ -97,7 +97,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
       const readClient = publicClients[chainId || Number(process.env.NEXT_PUBLIC_CHAIN_ID || 84532)] || publicClient
       if (!readClient) return
       const tokenId = (currentTrack as any).token_id ?? currentTrack.id
-      if (tokenId === undefined || tokenId === null || tokenId > 1000000) {
+      if (tokenId === undefined || tokenId === null) {
         setMintData({ minted: 0, max: 0 })
         return
       }

@@ -76,7 +76,7 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
         }
 
         // 2. Check balances for all tracks in one batch call
-        const validTracks = allTracks.filter(t => (t.token_id !== undefined && t.token_id !== null) && t.token_id < 1000000)
+        const validTracks = allTracks.filter(t => (t.token_id !== undefined && t.token_id !== null))
 
         console.log('Library Debug: Tracks from API:', allTracks.length)
         console.log('Library Debug: Valid On-chain Tracks:', validTracks.length)
