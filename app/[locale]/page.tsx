@@ -11,6 +11,7 @@ import AudioPlayer from '@/components/AudioPlayer'
 import NowPlayingSidebar from '@/components/NowPlayingSidebar'
 import Footer from '@/components/Footer'
 import UploadView from '@/components/UploadView'
+import AnalyticsView from '@/components/AnalyticsView'
 import { usePrivy } from '@privy-io/react-auth'
 import { getAddressesForChain, CONTRACT_ADDRESS } from "@/lib/web3"
 import { cn } from '@/lib/utils'
@@ -591,19 +592,7 @@ function DashboardLayout() {
                       {tAnalytics('subtitle')}
                     </p>
                   </div>
-                  <div className="border border-white/[0.08] rounded-xl p-12 text-center bg-[rgba(13,13,18,0.3)]">
-                    <div className="w-16 h-16 rounded-full mx-auto mb-4 bg-[rgba(183,148,244,0.1)]">
-                      <div className="w-full h-full flex items-center justify-center text-[#B794F4]">
-                        <Music size={32} />
-                      </div>
-                    </div>
-                    <h3 className="text-xl font-semibold mb-2">
-                      {tAnalytics('comingSoon')}
-                    </h3>
-                    <p className="text-white/60">
-                      {tAnalytics('comingSoonDesc')}
-                    </p>
-                  </div>
+                  <AnalyticsView />
                 </div>
               )}
 

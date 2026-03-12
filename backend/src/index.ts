@@ -1,7 +1,7 @@
 import { logger } from './lib/logger'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import { getTrack, addTrack, getAllTracks, deleteTrack, deleteAllTracks, getUser, addUser, getTrackCollaborators, addCollaborator, isAdmin, type Track, type RefreshToken, addRefreshToken, getRefreshToken, revokeRefreshTokenFamily, getUserByFid, linkFidToUser, addMint, getUserMints } from './database'
+import { getTrack, addTrack, getAllTracks, deleteTrack, deleteAllTracks, getUser, addUser, getTrackCollaborators, addCollaborator, isAdmin, type Track, type RefreshToken, addRefreshToken, getRefreshToken, revokeRefreshTokenFamily, getUserByFid, linkFidToUser, addMint, getUserMints, addPlay, getAnalytics } from './database'
 import { verifyOwnershipOnChain } from './web3'
 import { verifyWalletSignature, signJWT, verifyJWT, generateRefreshToken, getAccessTokenPayload } from './auth'
 import { createAppClient, viemConnector } from '@farcaster/auth-client'
@@ -504,6 +504,47 @@ app.get('/songs/:id/download', authMiddleware, async (c) => {
   } catch (error: any) {
     logger.error(`Failed to proxy download for track ${id}`, error)
     return c.json({ error: 'Download failed', message: 'Could not fetch file from source.' }, 500)
+  }
+})
+
+app.post('/songs/:id/play', async (c) => {
+  const id = parseInt(c.req.param('id'))
+  if (isNaN(id)) return c.json({ error: 'Invalid track ID' }, 400)
+
+  // Track is optional, we check it for validity if it's there
+  const track = await getTrack(id)
+  if (!track) return c.json({ error: 'Track not found' }, 404)
+
+  // Get listener address from JWT if available
+  let listenerAddress: string | undefined
+  const authHeader = c.req.header('Authorization')
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.split(' ')[1]
+    const payload = await verifyJWT(token, JWT_SECRET)
+    if (payload && payload.sub) {
+      listenerAddress = payload.sub as string
+    }
+  }
+
+  try {
+    await addPlay(id, listenerAddress)
+    return c.json({ success: true })
+  } catch (error: any) {
+    logger.error(`Failed to record play for track ${id}`, error)
+    return c.json({ error: 'Failed to record play' }, 500)
+  }
+})
+
+app.get('/analytics', authMiddleware, async (c) => {
+  const payload = c.get('jwtPayload')
+  const artistAddress = payload.sub as string
+
+  try {
+    const analytics = await getAnalytics(artistAddress)
+    return c.json(analytics)
+  } catch (error: any) {
+    logger.error(`Failed to fetch analytics for ${artistAddress}`, error)
+    return c.json({ error: 'Failed to fetch analytics' }, 500)
   }
 })
 

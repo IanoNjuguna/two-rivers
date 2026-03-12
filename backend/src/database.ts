@@ -83,6 +83,16 @@ async function init() {
     )
   `)
 
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS plays (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      track_id INTEGER NOT NULL,
+      listener_address TEXT,
+      timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY(track_id) REFERENCES tracks(token_id)
+    )
+  `)
+
   // Simple migrations
   const trackColumns = ['price', 'max_supply', 'splitter', 'tx_hash', 'uploader_address', 'chain_id', 'streaming_url']
   for (const col of trackColumns) {
@@ -411,6 +421,93 @@ export async function revokeRefreshTokenFamily(family: string): Promise<void> {
     sql: 'UPDATE refresh_tokens SET revoked = 1 WHERE family = ?',
     args: [family]
   })
+}
+
+// Analytics Methods
+export async function addPlay(trackId: number, listenerAddress?: string): Promise<void> {
+  await db.execute({
+    sql: 'INSERT INTO plays (track_id, listener_address) VALUES (?, ?)',
+    args: [trackId, listenerAddress?.toLowerCase() ?? null]
+  })
+}
+
+export async function getAnalytics(artistAddress: string): Promise<any> {
+  // Get all tracks for this artist
+  const tracks = await getAllTracks({ artist: artistAddress })
+  const trackIds = tracks.map(t => t.token_id)
+
+  if (trackIds.length === 0) {
+    return {
+      totalPlays: 0,
+      uniqueListeners: 0,
+      playsOverTime: [],
+      topTracks: []
+    }
+  }
+
+  const idsPlaceholder = trackIds.map(() => '?').join(',')
+
+  // Total Plays
+  const playsRs = await db.execute({
+    sql: `SELECT COUNT(*) as count FROM plays WHERE track_id IN (${idsPlaceholder})`,
+    args: trackIds
+  })
+  const totalPlays = Number(playsRs.rows[0].count)
+
+  // Unique Listeners
+  const listenersRs = await db.execute({
+    sql: `SELECT COUNT(DISTINCT listener_address) as count FROM plays WHERE track_id IN (${idsPlaceholder}) AND listener_address IS NOT NULL`,
+    args: trackIds
+  })
+  const uniqueListeners = Number(listenersRs.rows[0].count)
+
+  // Plays Over Time (Last 30 days)
+  const overTimeRs = await db.execute({
+    sql: `
+      SELECT 
+        DATE(timestamp) as date,
+        COUNT(*) as count
+      FROM plays 
+      WHERE track_id IN (${idsPlaceholder})
+      AND timestamp >= DATE('now', '-30 days')
+      GROUP BY DATE(timestamp)
+      ORDER BY date ASC
+    `,
+    args: trackIds
+  })
+  const playsOverTime = overTimeRs.rows.map(row => ({
+    date: row.date,
+    count: Number(row.count)
+  }))
+
+  // Top Tracks
+  const topTracksRs = await db.execute({
+    sql: `
+      SELECT 
+        t.token_id,
+        t.name,
+        COUNT(p.id) as plays
+      FROM tracks t
+      JOIN plays p ON t.token_id = p.track_id
+      WHERE t.token_id IN (${idsPlaceholder})
+      GROUP BY t.token_id
+      ORDER BY plays DESC
+      LIMIT 5
+    `,
+    args: trackIds
+  })
+  const topTracks = topTracksRs.rows.map(row => ({
+    tokenId: Number(row.token_id),
+    name: row.name,
+    plays: Number(row.plays)
+  }))
+
+  return {
+    totalPlays,
+    uniqueListeners,
+    playsOverTime,
+    topTracks
+  }
 }
 
 export default db

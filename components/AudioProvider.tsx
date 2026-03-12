@@ -66,7 +66,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 		setIsSidebarOpen(prev => !prev)
 	}, [])
 
-	const handlePlayTrack = useCallback((track: Track, tracks?: any[]) => {
+	const handlePlayTrack = useCallback(async (track: Track, tracks?: any[]) => {
 		if (!isAuth) {
 			login()
 			return
@@ -79,11 +79,24 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 
 		playerState.play(track, tracks)
 
+		// Record play event
+		try {
+			const token = await getValidToken()
+			fetch(`/api-backend/songs/${track.id}/play`, {
+				method: 'POST',
+				headers: {
+					'Authorization': token ? `Bearer ${token}` : ''
+				}
+			}).catch(err => console.error('Failed to record play', err))
+		} catch (e) {
+			// Ignore play tracking errors to not disrupt user experience
+		}
+
 		// If sidebar is open, update it to the track being played
 		if (isSidebarOpen) {
 			setSidebarTrack(track)
 		}
-	}, [playerState, isAuth, login, isSidebarOpen])
+	}, [playerState, isAuth, login, isSidebarOpen, getValidToken])
 
 	const value = useMemo(() => ({
 		playerState,
