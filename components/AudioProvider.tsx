@@ -5,6 +5,7 @@ import AudioPlayer from './AudioPlayer'
 import { toast } from 'sonner'
 import { useAccount } from 'wagmi'
 import { sdk } from '@farcaster/miniapp-sdk'
+import { usePrivy } from '@privy-io/react-auth'
 
 interface AudioContextType {
 	playerState: ReturnType<typeof useAudioPlayer>
@@ -29,6 +30,7 @@ export const useAudio = () => {
 export function AudioProvider({ children }: { children: React.ReactNode }) {
 	const playerState = useAudioPlayer()
 	const { address, isConnected } = useAccount()
+	const { login, authenticated } = usePrivy()
 
 	const [isMiniApp, setIsMiniApp] = React.useState<boolean | null>(null)
 	const [sidebarTrack, setSidebarTrack] = React.useState<any | null>(null)
@@ -62,8 +64,8 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 	}, [])
 
 	const handlePlayTrack = useCallback((track: Track, tracks?: any[]) => {
-		if (!isConnected) {
-			toast.error("Please connect your wallet to stream music")
+		if (!authenticated) {
+			login()
 			return
 		}
 
@@ -88,7 +90,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 		handlePlayTrack,
 		effectiveAddress: address,
 		isConnected,
-		isAuthenticated: isConnected,
+		isAuthenticated: authenticated,
 		sidebarTrack,
 		isSidebarOpen,
 		handleOpenSidebar,
