@@ -56,9 +56,9 @@ export default function AnalyticsView() {
 
 	if (loading) {
 		return (
-			<div className="flex flex-col items-center justify-center p-24 space-y-4">
+			<div className="flex flex-col items-center justify-center p-12 md:p-24 space-y-4">
 				<div className="w-8 h-8 border-2 border-[#FF1F8A] border-t-transparent rounded-full animate-spin" />
-				<p className="text-white/40 italic">Aggregating artist data...</p>
+				<p className="text-white/40 italic text-sm">Aggregating artist data...</p>
 			</div>
 		)
 	}
@@ -112,21 +112,22 @@ export default function AnalyticsView() {
 						<IconTrendingUp size={20} className="text-[#FF1F8A]" />
 						Streaming Activity
 					</h3>
-					<div className="h-[300px] w-full">
+					<div className="h-[250px] sm:h-[300px] w-full">
 						<ResponsiveContainer width="100%" height="100%">
-							<LineChart data={data.playsOverTime}>
+							<LineChart data={data.playsOverTime} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
 								<CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
 								<XAxis
 									dataKey="date"
 									stroke="rgba(255,255,255,0.3)"
-									fontSize={10}
+									fontSize={9}
 									tickFormatter={(val) => new Date(val).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+									tick={{ dy: 5 }}
 								/>
-								<YAxis stroke="rgba(255,255,255,0.3)" fontSize={10} />
+								<YAxis stroke="rgba(255,255,255,0.3)" fontSize={9} />
 								<Tooltip
-									contentStyle={{ backgroundColor: '#1A1A22', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px' }}
-									itemStyle={{ color: '#FF1F8A' }}
-									labelStyle={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', marginBottom: '4px' }}
+									contentStyle={{ backgroundColor: '#1A1A22', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '0' }}
+									itemStyle={{ color: '#FF1F8A', fontSize: '12px' }}
+									labelStyle={{ color: 'rgba(255,255,255,0.5)', fontSize: '10px', marginBottom: '4px' }}
 								/>
 								<Line
 									type="linear"
@@ -151,17 +152,17 @@ export default function AnalyticsView() {
 					<div className="space-y-4">
 						{data.topTracks.length > 0 ? (
 							data.topTracks.map((track, idx) => (
-								<div key={track.tokenId} className="flex items-center justify-between p-3 rounded-lg hover:bg-white/[0.05] transition-colors group">
-									<div className="flex items-center gap-4">
-										<span className="text-white/20 font-bold italic w-4">{idx + 1}</span>
-										<div>
-											<p className="font-semibold text-sm group-hover:text-cyber-pink transition-colors">{track.name}</p>
-											<p className="text-[10px] text-white/40 uppercase tracking-widest">Token ID #{track.tokenId}</p>
+								<div key={track.tokenId} className="flex items-center justify-between p-2 sm:p-3 rounded-none hover:bg-white/[0.05] transition-colors group">
+									<div className="flex items-center gap-3 sm:gap-4 min-w-0">
+										<span className="text-white/20 font-bold italic w-4 flex-shrink-0 text-xs sm:text-sm">{idx + 1}</span>
+										<div className="min-w-0">
+											<p className="font-semibold text-xs sm:text-sm group-hover:text-cyber-pink transition-colors truncate">{track.name}</p>
+											<p className="text-[9px] sm:text-[10px] text-white/40 uppercase tracking-widest truncate">ID #{track.tokenId}</p>
 										</div>
 									</div>
-									<div className="text-right">
-										<p className="font-bold text-[#B794F4] text-sm font-mono">{track.plays} plays</p>
-										<div className="h-1 bg-white/10 w-20 rounded-none mt-1 overflow-hidden">
+									<div className="text-right flex-shrink-0 ml-4">
+										<p className="font-bold text-[#B794F4] text-xs sm:text-sm font-mono whitespace-nowrap">{track.plays} plays</p>
+										<div className="h-1 bg-white/10 w-12 sm:w-20 rounded-none mt-1 overflow-hidden">
 											<div
 												className="h-full bg-cyber-pink"
 												style={{ width: `${(track.plays / (data.topTracks[0]?.plays || 1)) * 100}%` }}
@@ -195,8 +196,8 @@ function MetricCard({ label, value, icon, subtext }: { label: string; value: str
 					{icon}
 				</div>
 			</div>
-			<p className="text-4xl font-black mb-1 tracking-tighter text-white font-mono">{value}</p>
-			<p className="text-[10px] text-white/20 uppercase tracking-widest">{subtext}</p>
+			<p className="text-3xl sm:text-4xl font-black mb-1 tracking-tighter text-white font-mono">{value}</p>
+			<p className="text-[9px] sm:text-[10px] text-white/20 uppercase tracking-widest">{subtext}</p>
 		</div>
 	)
 }

@@ -93,6 +93,9 @@ async function init() {
     )
   `)
 
+  await db.execute(`CREATE INDEX IF NOT EXISTS idx_plays_track_id ON plays(track_id)`)
+  await db.execute(`CREATE INDEX IF NOT EXISTS idx_mints_track_id ON mints(track_id)`)
+
   // Simple migrations
   const trackColumns = ['price', 'max_supply', 'splitter', 'tx_hash', 'uploader_address', 'chain_id', 'streaming_url']
   for (const col of trackColumns) {

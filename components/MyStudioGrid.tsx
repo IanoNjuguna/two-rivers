@@ -255,21 +255,21 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
               </div>
-              <div className="min-w-0">
-                <h4 className="text-sm md:text-base font-bold text-white truncate group-hover:text-cyber-pink transition-colors tracking-tight flex items-center gap-2">
-                  {track.name}
-                  <div className="flex items-center gap-1.5 flex-shrink-0">
+              <div className="min-w-0 flex-1">
+                <h4 className="text-sm md:text-base font-bold text-white truncate group-hover:text-cyber-pink transition-colors tracking-tight flex items-center gap-1.5 min-w-0">
+                  <span className="truncate">{track.name}</span>
+                  <div className="flex items-center gap-1 flex-shrink-0">
                     {track.is_owned && (
-                      <IconSquareCheckFilled size={14} className="text-[#1DB954]" title="Collected" />
+                      <IconSquareCheckFilled size={12} className="text-[#1DB954] flex-shrink-0" title="Collected" />
                     )}
                     {track.max_supply && track.max_supply > 0 && track.minted_count !== undefined && track.minted_count >= track.max_supply && (
-                      <DobaVisualizer size={14} className="text-[#FF1F8A]" />
+                      <DobaVisualizer size={12} className="text-[#FF1F8A] flex-shrink-0" />
                     )}
                   </div>
                 </h4>
-                <p className="text-[10px] md:text-xs text-white/50 truncate flex items-center gap-1.5 font-medium uppercase tracking-wider mt-0.5">
-                  <IconMicrophone size={10} className="text-cyber-pink/50" />
-                  {track.artist}
+                <p className="text-[9px] md:text-xs text-white/50 truncate flex items-center gap-1 font-medium uppercase tracking-wider mt-0.5">
+                  <IconMicrophone size={10} className="text-cyber-pink/50 flex-shrink-0" />
+                  <span className="truncate">{track.artist}</span>
                 </p>
               </div>
             </div>

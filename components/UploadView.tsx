@@ -299,6 +299,20 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 		const mainToast = toast.loading("Initiating upload process...")
 
 		try {
+			// Check Native Balance for initial publish
+			const activePublicClient = publicClients[chainId || CHAIN_ID];
+			if (!activePublicClient) throw new Error("No web3 client available");
+
+			const nativeBalance = await activePublicClient.getBalance({ address: effectiveAddress as `0x${string}` })
+			if (nativeBalance < parseUnits("0.0001", 18)) {
+				toast.error(
+					`Insufficient native balance for gas. Please fund your Smart Account: ${effectiveAddress}`,
+					{ id: mainToast, duration: 8000 }
+				)
+				setIsUploading(false)
+				return
+			}
+
 			let currentAudioHash = audioHash || ''
 			let currentImageHash = imageHash || ''
 			let currentAudioName = audioFilename || (audioHash ? `audio_${audioHash}.mp3` : '')
@@ -742,6 +756,20 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 		const mintToast = toast.loading("Collecting your first copy...")
 
 		try {
+			// Check Native Balance
+			const activePublicClient = publicClients[chainId || CHAIN_ID];
+			if (!activePublicClient) throw new Error("No web3 client available");
+
+			const nativeBalance = await activePublicClient.getBalance({ address: effectiveAddress as `0x${string}` })
+			if (nativeBalance < parseUnits("0.0001", 18)) {
+				toast.error(
+					`Insufficient native balance for gas. Please fund your Smart Account: ${effectiveAddress}`,
+					{ id: mintToast, duration: 8000 }
+				)
+				setIsMinting(false)
+				return
+			}
+
 			const mintData = encodeFunctionData({
 				abi: CONTRACT_ABI,
 				functionName: 'mint',

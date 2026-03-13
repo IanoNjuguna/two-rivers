@@ -98,6 +98,17 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 		try {
 			if (!publicClient) throw new Error("Public client not found")
 
+			// Check Native Balance for Gas
+			const nativeBalance = await publicClient.getBalance({ address: effectiveAddress as `0x${string}` })
+			if (nativeBalance < parseUnits("0.0001", 18)) {
+				toast.error(
+					`Insufficient native balance for gas. Please fund your Wallet: ${effectiveAddress}`,
+					{ id: mainToast, duration: 8000 }
+				)
+				setIsMinting(false)
+				return
+			}
+
 			const allowance = await publicClient.readContract({
 				address: USDC_ADDRESS as `0x${string}`,
 				abi: ERC20_ABI,
