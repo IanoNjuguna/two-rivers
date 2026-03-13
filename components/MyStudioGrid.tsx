@@ -29,6 +29,7 @@ interface Track {
   is_owned?: boolean
   minted_count?: number
   max_supply?: number
+  play_count?: number
 }
 
 interface MyStudioGridProps {
@@ -186,10 +187,11 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
   return (
     <div className="flex flex-col">
       {/* List Header */}
-      <div className="hidden md:grid md:grid-cols-[48px_1fr_120px_160px_60px] gap-4 px-4 py-2 border-b border-white/5 text-xs font-medium text-white/40 uppercase tracking-widest mb-2">
+      <div className="hidden md:grid md:grid-cols-[48px_1fr_120px_100px_160px_60px] gap-4 px-4 py-2 border-b border-white/5 text-xs font-medium text-white/40 uppercase tracking-widest mb-2">
         <div className="flex justify-center">#</div>
         <div>Title</div>
         <div className="hidden md:block">Genre</div>
+        <div className="hidden md:block">Streams</div>
         <div className="hidden lg:block">Date Added</div>
         <div className="flex justify-center">
           <IconEye size={14} className="opacity-40" />
@@ -203,7 +205,7 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
             key={track.token_id}
             onMouseEnter={() => setHoveredTrackId(track.token_id)}
             onMouseLeave={() => setHoveredTrackId(null)}
-            className="grid grid-cols-[40px_1fr_auto] md:grid-cols-[48px_1fr_120px_160px_60px] gap-3 md:gap-4 px-3 md:px-4 py-3 md:py-2 hover:bg-white/[0.05] border-b border-white/[0.02] md:border-none transition-colors group items-center"
+            className="grid grid-cols-[40px_1fr_auto] md:grid-cols-[48px_1fr_120px_100px_160px_60px] gap-3 md:gap-4 px-3 md:px-4 py-3 md:py-2 hover:bg-white/[0.05] border-b border-white/[0.02] md:border-none transition-colors group items-center"
           >
             {/* Index / Play Button */}
             <div className="flex justify-center items-center">
@@ -272,9 +274,14 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
               </div>
             </div>
 
-            {/* Genre */}
             <div className="hidden md:flex items-center text-xs text-white/50">
               <span className="bg-white/5 px-2 py-0.5 rounded-none border border-white/5 font-bold uppercase tracking-widest text-[9px]">{track.genre || 'RARE'}</span>
+            </div>
+
+            {/* Streams */}
+            <div className="hidden md:flex items-center text-[10px] text-white/60 font-mono">
+              <IconPlayerPlay size={10} className="mr-1 text-cyber-pink/40" />
+              {track.play_count || 0}
             </div>
 
             {/* Date Added */}

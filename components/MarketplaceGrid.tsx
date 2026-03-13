@@ -26,6 +26,7 @@ interface Track {
   price?: string
   chain_id?: string
   is_owned?: boolean
+  play_count?: number
 }
 
 const API_URL = '/api-backend'
@@ -250,6 +251,7 @@ export default function MarketplaceGrid({
             onPlay={onPlay ? () => onPlay(track, tracks) : undefined}
             isPlaying={isPlaying && currentTrackId === track.token_id}
             is_owned={track.is_owned}
+            playCount={track.play_count}
           />
         ))}
       </div>

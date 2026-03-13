@@ -143,6 +143,7 @@ export interface Track {
   tx_hash?: string
   uploader_address?: string
   chain_id?: string
+  play_count?: number
 }
 
 export interface User {
@@ -172,7 +173,11 @@ export interface RefreshToken {
 
 export async function getTrack(tokenId: number): Promise<Track | null> {
   const rs = await db.execute({
-    sql: 'SELECT * FROM tracks WHERE token_id = ?',
+    sql: `
+      SELECT *, (SELECT COUNT(*) FROM plays p WHERE p.track_id = token_id) as play_count 
+      FROM tracks 
+      WHERE token_id = ?
+    `,
     args: [tokenId]
   })
   return rs.rows[0] as unknown as Track | null
@@ -259,7 +264,12 @@ export async function getAllTracks(filters: TrackFilters = {}): Promise<Track[]>
   }
 
   const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : ''
-  let sql = `SELECT * FROM tracks ${where} ORDER BY token_id DESC`
+  let sql = `
+    SELECT *, (SELECT COUNT(*) FROM plays p WHERE p.track_id = token_id) as play_count 
+    FROM tracks 
+    ${where} 
+    ORDER BY token_id DESC
+  `
 
   if (limit !== undefined) {
     sql += ` LIMIT ?`

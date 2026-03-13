@@ -27,6 +27,7 @@ interface SongCardProps {
   isPlaying?: boolean
   navigateOnClick?: boolean
   is_owned?: boolean
+  playCount?: number
 }
 
 const CHAIN_BADGE_REMOVED = true; // Placeholder for logic that used to depend on this
@@ -44,6 +45,7 @@ export default function SongCard({
   isPlaying = false,
   navigateOnClick = false,
   is_owned = false,
+  playCount,
 }: SongCardProps) {
   const chainId = useChainId()
   const router = useRouter()
@@ -391,12 +393,24 @@ export default function SongCard({
 
       {/* Title & Artist - always visible at bottom */}
       <div className="absolute bottom-0 left-0 right-0 z-10 p-3">
-        <h3 className="font-bold text-sm text-white truncate drop-shadow-lg">
-          {name}
-        </h3>
-        <p className="text-[10px] text-white/60 font-medium truncate uppercase tracking-wider mt-0.5">
-          {artist}
-        </p>
+        <div className="flex items-center justify-between gap-2">
+          <div className="min-w-0">
+            <h3 className="font-bold text-sm text-white truncate drop-shadow-lg leading-tight">
+              {name}
+            </h3>
+            <p className="text-[10px] text-white/60 font-medium truncate uppercase tracking-wider mt-0.5">
+              {artist}
+            </p>
+          </div>
+          {playCount !== undefined && playCount > 0 && (
+            <div className="flex items-center gap-1 bg-black/40 backdrop-blur-md px-1.5 py-0.5 border border-white/5 flex-shrink-0">
+              <IconPlayerPlay size={8} className="fill-white text-white" />
+              <span className="text-[9px] font-mono font-bold text-white/80">
+                {playCount >= 1000 ? `${(playCount / 1000).toFixed(1)}k` : playCount}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
 
