@@ -125,7 +125,7 @@ export default function MarketplaceGrid({
     if (!walletAddress || !tracksToSync.length) return
 
     try {
-      const chainId = Number(process.env.NEXT_PUBLIC_CHAIN_ID || 84532)
+      const chainId = Number(process.env.NEXT_PUBLIC_CHAIN_ID || 8453)
       const client = publicClients[chainId]
       if (!client) return
 

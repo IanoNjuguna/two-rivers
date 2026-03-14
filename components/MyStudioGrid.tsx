@@ -45,7 +45,7 @@ export default function MyStudioGrid({ address, onPlay, currentTrackId, isPlayin
   const t = useTranslations('library')
   const chainId = useChainId()
   const publicClient = usePublicClient()
-  const { contract: CONTRACT_ADDRESS, explorer: EXPLORER_URL } = getAddressesForChain(chainId || 84532)
+  const { contract: CONTRACT_ADDRESS, explorer: EXPLORER_URL } = getAddressesForChain(chainId || 8453)
   const [ownedTracks, setOwnedTracks] = useState<Track[]>([])
   const [loading, setLoading] = useState(true)
   const [hoveredTrackId, setHoveredTrackId] = useState<number | null>(null)

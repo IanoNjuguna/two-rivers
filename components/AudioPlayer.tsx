@@ -57,7 +57,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
     usdc: CURRENT_USDC,
     contract: CURRENT_CONTRACT,
     explorer: EXPLORER_URL
-  } = getAddressesForChain(chainId || Number(process.env.NEXT_PUBLIC_CHAIN_ID || 84532))
+  } = getAddressesForChain(chainId || Number(process.env.NEXT_PUBLIC_CHAIN_ID || 8453))
 
   // Local UI & Web3 state
   const [volume, setVolume] = useState(0.8)
@@ -75,7 +75,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
   // Real-time ownership checking for current track
   const checkOwnership = useCallback(async () => {
     try {
-      const readClient = publicClients[chainId || Number(process.env.NEXT_PUBLIC_CHAIN_ID || 84532)] || publicClient
+      const readClient = publicClients[chainId || Number(process.env.NEXT_PUBLIC_CHAIN_ID || 8453)] || publicClient
       if (!readClient || !effectiveAddress || !currentTrack) return
       const tokenId = (currentTrack as any).token_id ?? currentTrack.id
       if (tokenId === undefined || tokenId === null) return // Guard against missing IDs
@@ -94,7 +94,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
   const fetchMintData = useCallback(async () => {
     if (!currentTrack) return
     try {
-      const readClient = publicClients[chainId || Number(process.env.NEXT_PUBLIC_CHAIN_ID || 84532)] || publicClient
+      const readClient = publicClients[chainId || Number(process.env.NEXT_PUBLIC_CHAIN_ID || 8453)] || publicClient
       if (!readClient) return
       const tokenId = (currentTrack as any).token_id ?? currentTrack.id
       if (tokenId === undefined || tokenId === null) {

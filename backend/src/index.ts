@@ -467,7 +467,7 @@ app.get('/songs/:id/download', authMiddleware, async (c) => {
 
   if (!isOwned) {
     logger.info(`[DOWNLOAD] DB check failed for ${userAddress} on track ${id}. Checking on-chain...`)
-    const chainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || '84532')
+    const chainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || '8453')
     isOwned = await verifyOwnershipOnChain(userAddress, id, chainId)
 
     if (isOwned) {
@@ -567,7 +567,7 @@ app.get('/songs/:id', async (c) => {
       isOwned = userMints.includes(id)
 
       if (!isOwned) {
-        const chainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || '84532')
+        const chainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || '8453')
         isOwned = await verifyOwnershipOnChain(userAddress, id, chainId)
         if (isOwned) {
           await addMint({ user_address: userAddress, track_id: id })

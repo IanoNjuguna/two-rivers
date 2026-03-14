@@ -22,7 +22,7 @@ const ADDRESSES: Record<number, any> = {
     explorer: 'https://basescan.org'
   },
   84532: {
-    name: 'Base Sepolia',
+    name: 'Base',
     usdc: '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
     paymaster: '0x2cc0c7981D846b9F2a16276556f6e8cb52BfB633',
     lzEid: 40245,
