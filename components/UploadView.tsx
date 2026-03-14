@@ -379,8 +379,6 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 			toast.loading("Checking permissions...", { id: mainToast })
 
-			const activePublicClient = publicClients[chainId || CHAIN_ID];
-			if (!activePublicClient) throw new Error("No web3 client available for the target chain");
 
 			const [platformAllowance, contractOwner, botFee, mintPrice] = await Promise.all([
 				activePublicClient.readContract({
