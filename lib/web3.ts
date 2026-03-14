@@ -39,10 +39,10 @@ const ADDRESSES: Record<number, any> = {
   }
 }
 
-export const CHAIN_ID = Number(process.env.NEXT_PUBLIC_CHAIN_ID || 84532)
+export const CHAIN_ID = Number(process.env.NEXT_PUBLIC_CHAIN_ID || 8453)
 
 export const getAddressesForChain = (chainId: number) => {
-  return ADDRESSES[chainId] || ADDRESSES[84532]
+  return ADDRESSES[chainId] || ADDRESSES[8453]
 }
 
 const currentConfig = getAddressesForChain(CHAIN_ID)

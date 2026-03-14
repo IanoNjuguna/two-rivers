@@ -31,7 +31,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 
 	const { usdc: USDC_ADDRESS, contract: CONTRACT_ADDRESS, paymaster: PAYMASTER_ADDRESS, explorer: EXPLORER_URL } = getAddressesForChain(chainId || CHAIN_ID)
-	const MathChain = { id: chainId || CHAIN_ID, name: chainId === (CHAIN_ID === 8453 ? 8453 : 84532) ? CHAIN_NAME : (CHAIN_ID === 8453 ? 'Base' : 'Base Sepolia') }
+	const MathChain = { id: chainId || CHAIN_ID, name: chainId === CHAIN_ID ? CHAIN_NAME : (chainId === 8453 ? 'Base' : 'Base Sepolia') }
 	const DST_EID = getDstEid(MathChain.id)
 
 	const client = propClient

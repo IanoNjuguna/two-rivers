@@ -50,7 +50,7 @@ export const publicClients: Record<number, any> = {
 }
 
 export async function verifyOwnershipOnChain(userAddress: string, tokenId: number, chainId: number): Promise<boolean> {
-	const client = publicClients[chainId] || publicClients[84532]
+	const client = publicClients[chainId] || publicClients[8453]
 	const contractAddress = (chainId === 421614 || chainId === 42161)
 		? process.env.NEXT_PUBLIC_ARBITRUM_CONTRACT_ADDRESS
 		: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS
