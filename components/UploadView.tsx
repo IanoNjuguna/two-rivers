@@ -25,7 +25,7 @@ const API_URL = '/api-backend'
 export default function UploadView({ client: propClient }: { client?: any }) {
 	const t = useTranslations('upload')
 	const chainId = useChainId()
-	const { address: wagmiAddress, isConnected } = useAccount()
+	const { address: wagmiAddress, isConnected, connector } = useAccount()
 	const { data: walletClient } = useWalletClient()
 	const publicClient = usePublicClient()
 
@@ -38,6 +38,10 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 	const { accessToken, getValidToken } = useBackendAuth()
 	const isAuthenticated = isConnected
 	const effectiveAddress = wagmiAddress
+
+	// Check if this is a Coinbase Smart Wallet (supports sponsorship)
+	const isSmartWallet = connector?.id === 'coinbaseWalletSDK' || connector?.name?.toLowerCase().includes('smart wallet')
+	const canSponsorGas = isSmartWallet && (chainId === 8453 || chainId === 84532)
 
 	const [isSending, setIsSending] = useState(false)
 	const [open, setOpen] = useState(false)
@@ -812,9 +816,10 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
 					</div>
 					<div className="flex-1">
-						<h4 className="text-sm font-bold text-amber-500 uppercase tracking-tight mb-1">USDC Balance Required</h4>
+						<h4 className="text-sm font-bold text-amber-500 uppercase tracking-tight mb-1">USDC Protocol Fee Required</h4>
 						<p className="text-xs text-white/70 leading-relaxed mb-3">
 							To publish on <strong>Doba</strong>, you need <strong>1 USDC</strong>.
+							This is a protocol fee for the artist and platform, not a gas fee.
 							Your balance: <strong>{usdcBalance !== null ? `${(Number(usdcBalance) / 1e6).toFixed(2)} USDC` : 'Loading...'}</strong>.
 						</p>
 						<p className="text-[10px] text-white/40 italic">
@@ -824,7 +829,19 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 				</div>
 			)}
 
-			{nativeBalance !== null && nativeBalance < 1000000000000000n && (
+			{canSponsorGas && (
+				<div className="bg-green-500/10 border border-green-500/50 p-4 flex items-center gap-3 animate-fade-in mb-4">
+					<div className="text-green-500">
+						<div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+					</div>
+					<div className="flex-1 flex items-center justify-between">
+						<span className="text-[10px] font-bold text-green-500 uppercase tracking-widest">Gas Sponsoring Active</span>
+						<span className="text-[10px] text-white/40 uppercase">Zero Network Fees</span>
+					</div>
+				</div>
+			)}
+
+			{nativeBalance !== null && nativeBalance < 1000000000000000n && !canSponsorGas && (
 				<div className="bg-blue-500/10 border border-blue-500/50 p-6 flex items-start gap-4 animate-fade-in group mb-4">
 					<div className="text-blue-500 mt-1">
 						<IconMusic size={24} />
@@ -832,7 +849,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 					<div className="flex-1">
 						<h4 className="text-sm font-bold text-blue-500 uppercase tracking-tight mb-1">Native Gas Required</h4>
 						<p className="text-xs text-white/70 leading-relaxed mb-3">
-							You need a small amount of <strong>{MathChain.name.includes('Arbitrum') ? 'ETH' : (MathChain.name.includes('Base') ? 'ETH' : 'AVAX')}</strong> for gas fees.
+							You need a small amount of <strong>{MathChain.name.includes('Arbitrum') ? 'ETH' : (MathChain.name.includes('Base') ? 'ETH' : 'Native Token')}</strong> for gas fees.
 							Recommended: <strong>$1 - $2</strong>.
 						</p>
 						<p className="text-[10px] text-white/40 italic">
