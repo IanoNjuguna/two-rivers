@@ -21,7 +21,7 @@ import { useRouter } from 'next/navigation'
 import { useLocale } from 'next-intl'
 import { cn } from '@/lib/utils'
 import type { useAudioPlayer } from '@/hooks/useAudioPlayer'
-import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain, publicClients } from '@/lib/web3'
+import { CONTRACT_ABI, ERC20_ABI, getAddressesForChain, publicClients, PAYMASTER_SERVICE_URL } from '@/lib/web3'
 import { useChainId, usePublicClient, useAccount, useWriteContract } from 'wagmi'
 import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
@@ -150,6 +150,12 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
 
       if (!effectiveAddress) throw new Error("Wallet not connected")
 
+      // Gas awareness check for Mainnet - refined for paymaster
+      const nativeBalance = await publicClient.getBalance({ address: effectiveAddress as `0x${string}` })
+      if (nativeBalance === 0n) {
+        toast.info("You have 0 ETH for gas. We'll attempt to sponsor this transaction with our paymaster.")
+      }
+
       const allowance = await publicClient.readContract({
         address: CURRENT_USDC as `0x${string}`,
         abi: ERC20_ABI,
@@ -164,7 +170,12 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
           abi: ERC20_ABI,
           functionName: 'approve',
           args: [CURRENT_CONTRACT as `0x${string}`, priceInUnits],
-        })
+          capabilities: {
+            paymasterService: {
+              url: PAYMASTER_SERVICE_URL,
+            },
+          },
+        } as any)
         await publicClient.waitForTransactionReceipt({ hash: approveTx })
       }
 
@@ -174,7 +185,28 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
         abi: CONTRACT_ABI,
         functionName: 'mint',
         args: [BigInt(currentTrack.id)],
-      })
+        capabilities: {
+          paymasterService: {
+            url: PAYMASTER_SERVICE_URL,
+          },
+        },
+      } as any)
+
+      toast.loading(
+        <div className="flex flex-col gap-1">
+          <span>Confirming transaction...</span>
+          <a
+            href={`${EXPLORER_URL}/tx/${mintTx}`}
+            target="_blank"
+            rel="noreferrer"
+            className="text-xs text-blue-400 hover:text-blue-300 underline underline-offset-2"
+          >
+            View on Explorer
+          </a>
+        </div>,
+        { id: mainToast }
+      )
+
       await publicClient.waitForTransactionReceipt({ hash: mintTx })
 
       setHasOwned(true)

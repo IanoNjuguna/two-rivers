@@ -4,7 +4,7 @@ import React from 'react'
 import { IconX, IconMicrophone, IconExternalLink, IconShare, IconCopy, IconHeart, IconSquareCheckFilled, IconLoader2 } from '@tabler/icons-react'
 import { DobaVisualizer } from '@/components/icons/DobaVisualizer'
 import { Button } from '@/components/ui/button'
-import { getAddressesForChain, CONTRACT_ABI, ERC20_ABI, CHAIN_ID, publicClients } from '@/lib/web3'
+import { getAddressesForChain, CONTRACT_ABI, ERC20_ABI, CHAIN_ID, publicClients, PAYMASTER_SERVICE_URL } from '@/lib/web3'
 import { useChainId, usePublicClient, useAccount, useWriteContract } from 'wagmi'
 import { cn } from '@/lib/utils'
 import { parseUnits, encodeFunctionData } from 'viem'
@@ -98,15 +98,10 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 		try {
 			if (!publicClient) throw new Error("Public client not found")
 
-			// Check Native Balance for Gas
+			// Gas awareness check for Mainnet - refined for paymaster
 			const nativeBalance = await publicClient.getBalance({ address: effectiveAddress as `0x${string}` })
-			if (nativeBalance < parseUnits("0.0001", 18)) {
-				toast.error(
-					`Insufficient native balance for gas. Please fund your Wallet: ${effectiveAddress}`,
-					{ id: mainToast, duration: 8000 }
-				)
-				setIsMinting(false)
-				return
+			if (nativeBalance === 0n) {
+				toast.info("You have 0 ETH for gas. We'll attempt to sponsor this transaction with our paymaster.")
 			}
 
 			const allowance = await publicClient.readContract({
@@ -123,7 +118,12 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 					abi: ERC20_ABI,
 					functionName: 'approve',
 					args: [CONTRACT_ADDRESS as `0x${string}`, priceInUnits],
-				})
+					capabilities: {
+						paymasterService: {
+							url: PAYMASTER_SERVICE_URL,
+						},
+					},
+				} as any)
 				await publicClient.waitForTransactionReceipt({ hash: tx })
 			}
 
@@ -133,7 +133,28 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 				abi: CONTRACT_ABI,
 				functionName: 'mint',
 				args: [BigInt(track.id || track.token_id)],
-			})
+				capabilities: {
+					paymasterService: {
+						url: PAYMASTER_SERVICE_URL,
+					},
+				},
+			} as any)
+
+			toast.loading(
+				<div className="flex flex-col gap-1">
+					<span>Confirming transaction...</span>
+					<a
+						href={`${EXPLORER_URL}/tx/${tx}`}
+						target="_blank"
+						rel="noreferrer"
+						className="text-xs text-blue-400 hover:text-blue-300 underline underline-offset-2"
+					>
+						View on Explorer
+					</a>
+				</div>,
+				{ id: mainToast }
+			)
+
 			await publicClient.waitForTransactionReceipt({ hash: tx })
 
 			setHasOwned(true)

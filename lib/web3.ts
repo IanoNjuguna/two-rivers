@@ -10,6 +10,8 @@ import { base, baseSepolia, arbitrumSepolia, arbitrum } from 'wagmi/chains'
  * Chain: Multi-chain (On-chain)
  */
 
+export const PAYMASTER_SERVICE_URL = `https://api.coinbase.com/rpc/v1/base/${process.env.NEXT_PUBLIC_CDP_API_KEY}`
+
 const ADDRESSES: Record<number, any> = {
   8453: {
     name: 'Base',

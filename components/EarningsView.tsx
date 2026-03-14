@@ -4,7 +4,7 @@ import { Calendar } from "@/components/ui/calendar"
 import { IconTrendingUp, IconCalendar, IconCurrencyDollar as DollarSign, IconCheck, IconExternalLink } from '@tabler/icons-react'
 import { useTranslations } from 'next-intl'
 import { useChainId, useAccount, useWalletClient, usePublicClient } from "wagmi"
-import { SPLITTER_ABI, ERC20_ABI, formatAddress, fetchAllBalances, ChainBalances, getAddressesForChain, publicClients } from '@/lib/web3'
+import { SPLITTER_ABI, ERC20_ABI, formatAddress, fetchAllBalances, ChainBalances, getAddressesForChain, CONTRACT_ABI, CHAIN_ID, publicClients, PAYMASTER_SERVICE_URL } from '@/lib/web3'
 import { parseUnits, formatUnits, encodeFunctionData } from 'viem'
 import { toast } from 'sonner'
 
@@ -27,6 +27,7 @@ interface RoyaltyEntry {
   pending: string
   shares: number
   chainId: number
+  explorerUrl: string
 }
 
 const API_URL = '/api-backend'
@@ -120,7 +121,8 @@ export default function EarningsView({ }: EarningsViewProps) {
                 splitter: track.splitter,
                 pending: formatUnits(pending, 6),
                 shares: Number(userShares) / 100,
-                chainId: trackChainId
+                chainId: trackChainId,
+                explorerUrl: getAddressesForChain(trackChainId).explorer
               })
               total += pending
             }
@@ -160,14 +162,37 @@ export default function EarningsView({ }: EarningsViewProps) {
       // Sequential claiming as fallback for smart wallet batching
       for (const t of pendingTracks) {
         toast.loading(`Claiming from ${t.track}...`, { id: claimToast })
+
+        // Gas awareness check - refined for paymaster
+        const nativeBalance = await publicClient.getBalance({ address: address as `0x${string}` })
+        if (nativeBalance === 0n) {
+          toast.info("You have 0 ETH for gas. We'll attempt to sponsor this transaction with our paymaster.", { id: claimToast })
+        }
+
         const tx = await walletClient.sendTransaction({
           to: t.splitter as `0x${string}`,
           data: encodeFunctionData({
             abi: SPLITTER_ABI,
             functionName: 'releaseERC20',
             args: [getAddressesForChain(t.chainId).usdc as `0x${string}`, address as `0x${string}`]
-          })
-        })
+          }),
+          capabilities: {
+            paymasterService: {
+              url: PAYMASTER_SERVICE_URL,
+            },
+          },
+        } as any)
+
+        toast.loading(
+          <div className="flex flex-col gap-1">
+            <span>Claiming from {t.track}...</span>
+            <a href={`${t.explorerUrl}/tx/${tx}`} target="_blank" rel="noreferrer" className="text-xs text-blue-400 hover:text-blue-300 underline underline-offset-2">
+              View on Explorer
+            </a>
+          </div>,
+          { id: claimToast }
+        )
+
         await publicClient.waitForTransactionReceipt({ hash: tx })
       }
       toast.success("All royalties claimed successfully!", { id: claimToast })
@@ -272,7 +297,7 @@ export default function EarningsView({ }: EarningsViewProps) {
                   </p>
                   <p className="text-xs text-white/40 truncate flex items-center gap-1">
                     Splitter: {formatAddress(entry.splitter)}
-                    <a href={`https://arbiscan.io/address/${entry.splitter}`} target="_blank" className="hover:text-white" title="View on Explorer"><IconExternalLink size={10} /></a>
+                    <a href={`${entry.explorerUrl}/address/${entry.splitter}`} target="_blank" className="hover:text-white" title="View on Explorer"><IconExternalLink size={10} /></a>
                   </p>
                 </div>
                 <div className="text-right">

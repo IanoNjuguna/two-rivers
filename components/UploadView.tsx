@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils"
 import { GENRES } from '@/constants/genres'
 
 import { useChainId, useAccount, useWalletClient, usePublicClient, useSignMessage } from "wagmi"
-import { getAddressesForChain, getDstEid, CONTRACT_ABI, ERC20_ABI, LZ_SYNC_OPTIONS, CHAIN_ID, CHAIN_NAME, publicClients } from '@/lib/web3'
+import { getAddressesForChain, getDstEid, CONTRACT_ABI, ERC20_ABI, LZ_SYNC_OPTIONS, CHAIN_ID, CHAIN_NAME, publicClients, PAYMASTER_SERVICE_URL } from '@/lib/web3'
 // switchChain is done via walletClient.switchChain directly
 import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
@@ -30,7 +30,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 	const publicClient = usePublicClient()
 
 
-	const { usdc: USDC_ADDRESS, contract: CONTRACT_ADDRESS, paymaster: PAYMASTER_ADDRESS } = getAddressesForChain(chainId || CHAIN_ID)
+	const { usdc: USDC_ADDRESS, contract: CONTRACT_ADDRESS, paymaster: PAYMASTER_ADDRESS, explorer: EXPLORER_URL } = getAddressesForChain(chainId || CHAIN_ID)
 	const MathChain = { id: chainId || CHAIN_ID, name: chainId === (CHAIN_ID === 8453 ? 8453 : 84532) ? CHAIN_NAME : (CHAIN_ID === 8453 ? 'Base' : 'Base Sepolia') }
 	const DST_EID = getDstEid(MathChain.id)
 
@@ -197,15 +197,20 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 				const hash = await walletClient.sendTransaction({
 					to: tx.target as `0x${string}`,
 					data: tx.data as `0x${string}`,
-					value: tx.value || 0n
-				})
+					value: tx.value || 0n,
+					capabilities: {
+						paymasterService: {
+							url: PAYMASTER_SERVICE_URL,
+						},
+					},
+				} as any)
 				setLastUserOpHash(hash)
 				if (uoList.length > 1) {
 					toast.success(
 						<div className="flex flex-col gap-1">
 							<span>Transaction {i + 1}/{uoList.length} submitted</span>
-							<a href={`https://sepolia.basescan.org/tx/${hash}`} target="_blank" rel="noreferrer" className="text-xs text-blue-400 hover:text-blue-300 underline underline-offset-2">
-								View on Basescan
+							<a href={`${EXPLORER_URL}/tx/${hash}`} target="_blank" rel="noreferrer" className="text-xs text-blue-400 hover:text-blue-300 underline underline-offset-2">
+								View on Explorer
 							</a>
 						</div>
 					)
@@ -213,8 +218,8 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 					toast.success(
 						<div className="flex flex-col gap-1">
 							<span>{t('txSubmitted')}</span>
-							<a href={`https://sepolia.basescan.org/tx/${hash}`} target="_blank" rel="noreferrer" className="text-xs text-blue-400 hover:text-blue-300 underline underline-offset-2">
-								View on Basescan
+							<a href={`${EXPLORER_URL}/tx/${hash}`} target="_blank" rel="noreferrer" className="text-xs text-blue-400 hover:text-blue-300 underline underline-offset-2">
+								View on Explorer
 							</a>
 						</div>
 					)
@@ -228,7 +233,7 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 				toast.success(
 					<div className="flex flex-col gap-1">
 						<span>{t('uploadSuccess')}</span>
-						<a href={`https://sepolia.basescan.org/tx/${lastReceipt.transactionHash}`} target="_blank" rel="noreferrer" className="text-xs text-blue-400 hover:text-blue-300 underline underline-offset-2">
+						<a href={`${EXPLORER_URL}/tx/${lastReceipt.transactionHash}`} target="_blank" rel="noreferrer" className="text-xs text-blue-400 hover:text-blue-300 underline underline-offset-2">
 							View final transaction
 						</a>
 					</div>
@@ -305,12 +310,10 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 
 			const nativeBalance = await activePublicClient.getBalance({ address: effectiveAddress as `0x${string}` })
 			if (nativeBalance < parseUnits("0.0001", 18)) {
-				toast.error(
-					`Insufficient native balance for gas. Please fund your Smart Account: ${effectiveAddress}`,
+				toast.info(
+					"You have low ETH for gas. We'll attempt to sponsor this transaction with our paymaster.",
 					{ id: mainToast, duration: 8000 }
 				)
-				setIsUploading(false)
-				return
 			}
 
 			let currentAudioHash = audioHash || ''
