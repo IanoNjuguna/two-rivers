@@ -9,6 +9,7 @@ import { useAccount, useDisconnect, useBalance, useReadContract, useConnect } fr
 import { getAddressesForChain, ERC20_ABI } from "@/lib/web3"
 import { sdk } from '@farcaster/miniapp-sdk'
 import { formatUnits } from "viem"
+import { ChainSwitcher } from './ChainSwitcher'
 
 export default function MiniAppHeader({ address: propAddress, logout }: { address?: string, logout?: () => void }) {
 	const t = useTranslations('header')
@@ -89,7 +90,8 @@ export default function MiniAppHeader({ address: propAddress, logout }: { addres
 				</Button>
 			) : isConnected ? (
 				<div className="flex items-center gap-2">
-					<div className="hidden lg:flex items-center gap-4 glass px-4 py-2 rounded-lg">
+					<ChainSwitcher />
+					<div className="flex items-center gap-2 sm:gap-4 glass px-3 py-2 rounded-lg">
 						<div className="flex items-center gap-3 pr-3 border-r border-white/10">
 							<div className="flex flex-col items-end">
 								<span className="text-[10px] text-white/40 font-bold uppercase leading-none mb-1">Native</span>

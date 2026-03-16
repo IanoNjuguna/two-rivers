@@ -18,15 +18,15 @@ const ADDRESSES: Record<number, any> = {
     usdc: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
     paymaster: '0x2cc0c7981D846b9F2a16276556f6e8cb52BfB633',
     lzEid: 30184,
-    contract: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+    contract: (process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || '0xFE8475bA6527adb21460158852CfF2DdF25d603f') as `0x${string}`,
     explorer: 'https://basescan.org'
   },
   84532: {
-    name: 'Base',
+    name: 'Base Sepolia',
     usdc: '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
     paymaster: '0x2cc0c7981D846b9F2a16276556f6e8cb52BfB633',
     lzEid: 40245,
-    contract: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+    contract: '0x9085DAEf74d3fBF233FCbf599d417E94E762b952' as `0x${string}`,
     explorer: 'https://sepolia.basescan.org'
   },
   421614: {

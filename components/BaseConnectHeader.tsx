@@ -25,6 +25,8 @@ import { usePrivy } from '@privy-io/react-auth'
 import { Button } from './ui/button'
 import { IconCopy, IconCheck, IconExternalLink } from '@tabler/icons-react'
 
+import { ChainSwitcher } from './ChainSwitcher'
+
 const formatAddress = (address: string, startChars: number = 10, endChars: number = 9): string => {
   if (!address || address.length <= startChars + endChars) {
     return address
@@ -85,9 +87,7 @@ export default function BaseConnectHeader({ address: propAddress, logout }: { ad
           {t('signIn') || 'Sign In'}
         </Button>
       ) : (
-        <div className="flex items-center justify-center h-9 w-9 bg-white/5 border border-white/10 rounded-lg overflow-hidden cursor-pointer hover:bg-white/10 transition-colors">
-          <img src="/images/base.png" alt="Base" className="w-6 h-6 object-contain" title="Base Network" />
-        </div>
+        <ChainSwitcher />
       )}
     </div>
   )
