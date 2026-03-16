@@ -289,8 +289,8 @@ export default function UploadView({ client: propClient }: { client?: any }) {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
 		if (!isAuthenticated) {
-			toast.error("Please connect your wallet to upload music")
-			return
+			const token = await login()
+			if (!token) return
 		}
 
 		const token = await getValidToken()

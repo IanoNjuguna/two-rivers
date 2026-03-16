@@ -8,8 +8,10 @@ import { logger } from '@/lib/logger'
 const API_URL = '/api-backend'
 
 import { sdk } from '@farcaster/miniapp-sdk'
+import { usePrivy } from '@privy-io/react-auth'
 
 export function useBackendAuth() {
+	const { login: privyLogin } = usePrivy()
 	const [isMiniApp, setIsMiniApp] = useState<boolean | null>(null)
 
 	// Safely detect environment
@@ -48,7 +50,7 @@ export function useBackendAuth() {
 
 	const login = useCallback(async () => {
 		if (!effectiveAddress) {
-			toast.error("Please connect your wallet first")
+			privyLogin()
 			return null
 		}
 

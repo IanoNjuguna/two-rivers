@@ -55,7 +55,7 @@ export default function TrackDetailPage() {
 	const [mintedCount, setMintedCount] = useState<number>(0)
 	const [maxSupply, setMaxSupply] = useState<number>(0)
 
-	const { playerState, handlePlayTrack, getValidToken } = useAudio()
+	const { playerState, handlePlayTrack, getValidToken, login } = useAudio()
 	const isPlaying = playerState.currentTrack?.id === track?.token_id && playerState.isPlaying
 
 	const chainId = useChainId()
@@ -205,7 +205,7 @@ export default function TrackDetailPage() {
 
 	const handleMint = async () => {
 		if (!isAuthenticated) {
-			toast.error("Please connect your wallet to collect this track")
+			login()
 			return
 		}
 		if (!effectiveAddress) {

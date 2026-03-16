@@ -33,7 +33,7 @@ interface AudioPlayerProps {
 }
 
 export default function AudioPlayer({ playerState }: AudioPlayerProps) {
-  const { effectiveAddress, isConnected: isAuthenticated, toggleSidebar, isSidebarOpen, handleOpenSidebar } = useAudio()
+  const { effectiveAddress, isConnected: isAuthenticated, login, toggleSidebar, isSidebarOpen, handleOpenSidebar } = useAudio()
   const {
     currentTrack,
     isPlaying,
@@ -129,7 +129,7 @@ export default function AudioPlayer({ playerState }: AudioPlayerProps) {
   const handleMint = async (e: React.MouseEvent) => {
     e.stopPropagation()
     if (!isAuthenticated || !currentTrack) {
-      toast.error("Please connect your wallet to collect this track")
+      login()
       return
     }
 

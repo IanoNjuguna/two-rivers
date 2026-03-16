@@ -19,6 +19,7 @@ interface AudioContextType {
 	isSidebarOpen: boolean
 	handleOpenSidebar: (track: any) => void
 	toggleSidebar: () => void
+	login: () => void
 }
 
 const AudioContext = createContext<AudioContextType | null>(null)
@@ -158,8 +159,9 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 		sidebarTrack,
 		isSidebarOpen,
 		handleOpenSidebar,
-		toggleSidebar
-	}), [playerState, handlePlayTrack, address, isConnected, isAuth, accessToken, getValidToken, sidebarTrack, isSidebarOpen, handleOpenSidebar, toggleSidebar])
+		toggleSidebar,
+		login
+	}), [playerState, handlePlayTrack, address, isConnected, isAuth, accessToken, getValidToken, sidebarTrack, isSidebarOpen, handleOpenSidebar, toggleSidebar, login])
 
 	if (isMiniApp === null) {
 		return <div className="h-screen bg-[#0D0D12]" />

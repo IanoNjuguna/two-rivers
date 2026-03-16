@@ -13,6 +13,7 @@ import { toast } from 'sonner'
 import sdk from '@farcaster/miniapp-sdk'
 import { useRouter } from 'next/navigation'
 import { useLocale } from 'next-intl'
+import { useAudio } from './AudioProvider'
 
 interface SongCardProps {
   tokenId: number
@@ -53,7 +54,7 @@ export default function SongCard({
   const { data: walletClient } = useWalletClient()
   const publicClient = usePublicClient()
   const { address, isConnected } = useAccount()
-  const isAuthenticated = isConnected
+  const { isAuthenticated, login } = useAudio()
 
   // Standardize the active address
   const [effectiveAddress, setEffectiveAddress] = React.useState<string | undefined>(address)
@@ -143,7 +144,7 @@ export default function SongCard({
   const handleMint = async (e: React.MouseEvent) => {
     e.stopPropagation()
     if (!isAuthenticated) {
-      toast.error("Please connect your wallet to collect this track")
+      login()
       return
     }
 
@@ -325,6 +326,10 @@ export default function SongCard({
       return
     }
     // Otherwise single tap/click -> Play
+    if (!isAuthenticated) {
+      login()
+      return
+    }
     onPlay?.()
   }
 

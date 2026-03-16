@@ -87,7 +87,7 @@ export default function NowPlayingSidebar({ track, isVisible, onClose }: NowPlay
 
 	const handleMint = async () => {
 		if (!isAuthenticated || !effectiveAddress || !track) {
-			toast.error("Please connect your wallet")
+			login()
 			return
 		}
 
