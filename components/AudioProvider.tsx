@@ -60,11 +60,13 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 		if (playerState.currentTime >= 60) {
 			const recordPlay = async () => {
 				try {
-					const token = await getValidToken()
+					// SILENT analytics: Only record if we already have a valid token
+					if (!accessToken) return
+
 					const res = await fetch(`/api-backend/songs/${trackId}/play`, {
 						method: 'POST',
 						headers: {
-							'Authorization': token ? `Bearer ${token}` : ''
+							'Authorization': `Bearer ${accessToken}`
 						}
 					})
 					if (res.ok) {
@@ -120,8 +122,8 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 	}, [])
 
 	const handlePlayTrack = useCallback(async (track: Track, tracks?: any[]) => {
-		if (!isAuth) {
-			login()
+		if (!isConnected) {
+			login() // Only trigger login if NOT EVEN CONNECTED
 			return
 		}
 

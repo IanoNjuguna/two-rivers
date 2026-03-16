@@ -12,7 +12,6 @@ import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
 import sdk from '@farcaster/miniapp-sdk'
 import { useRouter } from 'next/navigation'
-import { useLocale } from 'next-intl'
 import { useAudio } from './AudioProvider'
 
 interface SongCardProps {
@@ -54,7 +53,7 @@ export default function SongCard({
   const { data: walletClient } = useWalletClient()
   const publicClient = usePublicClient()
   const { address, isConnected } = useAccount()
-  const { isAuthenticated, login } = useAudio()
+  const { isAuthenticated, login, accessToken } = useAudio()
 
   // Standardize the active address
   const [effectiveAddress, setEffectiveAddress] = React.useState<string | undefined>(address)
@@ -62,16 +61,6 @@ export default function SongCard({
   React.useEffect(() => {
     if (address) {
       setEffectiveAddress(address)
-    } else {
-      const authData = localStorage.getItem('doba_auth_data')
-      if (authData) {
-        try {
-          const { address: savedAddress } = JSON.parse(authData)
-          setEffectiveAddress(savedAddress)
-        } catch (e) {
-          logger.error('Failed to parse auth data in SongCard', e)
-        }
-      }
     }
   }, [address])
 
@@ -245,23 +234,18 @@ export default function SongCard({
 
       // 4. Record mint in backend
       try {
-        const authData = localStorage.getItem('doba_auth_data')
-        if (authData && authData !== 'null') {
-          const parsedAuth = JSON.parse(authData)
-          if (parsedAuth && parsedAuth.accessToken) {
-            const { accessToken } = parsedAuth
-            await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mints`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken}`
-              },
-              body: JSON.stringify({
-                track_id: tokenId,
-                tx_hash: txReceipt
-              })
+        if (isAuthenticated && accessToken) {
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mints`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${accessToken}`
+            },
+            body: JSON.stringify({
+              track_id: tokenId,
+              tx_hash: txReceipt
             })
-          }
+          })
         }
       } catch (err) {
         logger.error('Failed to record mint in backend', err)
@@ -326,8 +310,8 @@ export default function SongCard({
       return
     }
     // Otherwise single tap/click -> Play
-    if (!isAuthenticated) {
-      login()
+    if (!isConnected) {
+      login() // Only force login if NO WALLET is connected
       return
     }
     onPlay?.()

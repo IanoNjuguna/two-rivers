@@ -56,8 +56,7 @@ export function useBackendAuth() {
 
 		setIsLoading(true)
 		try {
-			const nonce = Math.random().toString(36).substring(2)
-			const message = `Login to Doba\n\nAddress: ${effectiveAddress}\nNonce: ${nonce}\nTimestamp: ${Date.now()}`
+			const message = `Login to Doba\n\nAddress: ${effectiveAddress.toLowerCase()}\nTimestamp: ${Date.now()}`
 
 			const signature = await signMessageAsync({ message })
 

@@ -20,10 +20,8 @@ import { useTranslations } from 'next-intl'
 import { useAccount } from 'wagmi'
 import { getAddressesForChain, ERC20_ABI, publicClients } from "@/lib/web3"
 import { formatUnits } from "viem"
-import { logger } from '@/lib/logger'
-import { usePrivy } from '@privy-io/react-auth'
-import { Button } from './ui/button'
 import { IconCopy, IconCheck, IconExternalLink } from '@tabler/icons-react'
+import { useAudio } from './AudioProvider'
 
 import { ChainSwitcher } from './ChainSwitcher'
 
@@ -36,7 +34,8 @@ const formatAddress = (address: string, startChars: number = 10, endChars: numbe
 
 export default function BaseConnectHeader({ address: propAddress, logout }: { address?: string, logout?: () => void }) {
   const t = useTranslations('header')
-  const { login, logout: privyLogout, authenticated, user } = usePrivy()
+  const { login: privyLogin, logout: privyLogout, authenticated, user } = usePrivy()
+  const { login: dobaLogin, isAuthenticated } = useAudio()
   const { address: wagmiAddress, chainId, isConnected } = useAccount()
   const address = propAddress || wagmiAddress || user?.wallet?.address
 
@@ -81,10 +80,17 @@ export default function BaseConnectHeader({ address: propAddress, logout }: { ad
     <div className="flex items-center gap-3 relative">
       {!authenticated ? (
         <Button
-          onClick={login}
+          onClick={privyLogin}
           className="bg-lavender hover:bg-lavender/90 text-midnight font-bold h-10 px-6 transition-all rounded-lg"
         >
           {t('signIn') || 'Sign In'}
+        </Button>
+      ) : !isAuthenticated ? (
+        <Button
+          onClick={dobaLogin}
+          className="bg-lavender/20 hover:bg-lavender/30 text-lavender font-bold h-10 px-6 transition-all rounded-lg border border-lavender/30"
+        >
+          Complete Sign-In
         </Button>
       ) : (
         <ChainSwitcher />
