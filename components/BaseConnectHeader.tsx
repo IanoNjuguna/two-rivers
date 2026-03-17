@@ -24,6 +24,9 @@ import { IconCopy, IconCheck, IconExternalLink } from '@tabler/icons-react'
 import { useAudio } from './AudioProvider'
 
 import { ChainSwitcher } from './ChainSwitcher'
+import { usePrivy } from '@privy-io/react-auth'
+import { Button } from '@/components/ui/button'
+import { logger } from '@/lib/logger'
 
 const formatAddress = (address: string, startChars: number = 10, endChars: number = 9): string => {
   if (!address || address.length <= startChars + endChars) {
