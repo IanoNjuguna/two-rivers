@@ -12,6 +12,7 @@ import { encodeFunctionData, parseUnits } from 'viem'
 import { toast } from 'sonner'
 import sdk from '@farcaster/miniapp-sdk'
 import { useRouter } from 'next/navigation'
+import { useLocale } from 'next-intl'
 import { useAudio } from './AudioProvider'
 
 interface SongCardProps {
