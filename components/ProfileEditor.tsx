@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react'
 import { IconCopy, IconEdit, IconCheck, IconX, IconLogout, IconExternalLink } from '@tabler/icons-react'
 import { toast } from 'sonner'
 import MyUploadsGrid from '@/components/MyUploadsGrid'
+import MonthlyBillboard from '@/components/MonthlyBillboard'
 import { useBackendAuth } from '@/hooks/useBackendAuth'
 
 const API_URL = '/api-backend'
@@ -283,6 +284,16 @@ export function ProfileEditor({ address, tProfile, logout }: any) {
 					My Uploads
 				</h4>
 				<MyUploadsGrid address={address} />
+			</div>
+
+			{/* Monthly Billboard Section */}
+			<div className="pt-8 border-t border-white/10 relative z-10 mb-12">
+				<h4 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+					<span className="w-1 h-6 bg-cyber-pink rounded-none inline-block"></span>
+					Monthly Billboard
+					<span className="text-[10px] uppercase tracking-widest text-white/30 font-bold ml-2">Top 7 • 30 Days</span>
+				</h4>
+				<MonthlyBillboard address={address} />
 			</div>
 
 			{/* Sign Out Section - Bottom of Profile */}

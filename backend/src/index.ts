@@ -1,7 +1,7 @@
 import { logger } from './lib/logger'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import { getTrack, addTrack, getAllTracks, deleteTrack, deleteAllTracks, getUser, addUser, getTrackCollaborators, addCollaborator, isAdmin, type Track, type RefreshToken, addRefreshToken, getRefreshToken, revokeRefreshTokenFamily, getUserByFid, linkFidToUser, addMint, getUserMints, addPlay, getAnalytics } from './database'
+import { getTrack, addTrack, getAllTracks, deleteTrack, deleteAllTracks, getUser, addUser, getTrackCollaborators, addCollaborator, isAdmin, type Track, type RefreshToken, addRefreshToken, getRefreshToken, revokeRefreshTokenFamily, getUserByFid, linkFidToUser, addMint, getUserMints, addPlay, getAnalytics, getMonthlyBillboard } from './database'
 import { verifyOwnershipOnChain } from './web3'
 import { verifyWalletSignature, signJWT, verifyJWT, generateRefreshToken, getAccessTokenPayload } from './auth'
 import { getAddressFromPrivyToken } from './privy'
@@ -551,6 +551,17 @@ app.post('/songs/:id/play', async (c) => {
   } catch (error: any) {
     logger.error(`Failed to record play for track ${id}`, error)
     return c.json({ error: 'Failed to record play' }, 500)
+  }
+})
+
+app.get('/analytics/billboard/:address', async (c) => {
+  const address = c.req.param('address')
+  try {
+    const billboard = await getMonthlyBillboard(address)
+    return c.json(billboard)
+  } catch (error: any) {
+    logger.error(`Failed to fetch billboard for ${address}`, error)
+    return c.json({ error: 'Failed to fetch billboard' }, 500)
   }
 })
 
