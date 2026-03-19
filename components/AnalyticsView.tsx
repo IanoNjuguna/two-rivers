@@ -38,7 +38,10 @@ export default function AnalyticsView() {
 				}
 			})
 
-			if (!res.ok) throw new Error('Failed to fetch analytics')
+			if (!res.ok) {
+				const errorData = await res.json().catch(() => ({}))
+				throw new Error(errorData.message || errorData.error || 'Failed to fetch analytics')
+			}
 			const result = await res.json()
 			setData(result)
 		} catch (err: any) {

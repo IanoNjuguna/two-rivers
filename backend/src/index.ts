@@ -60,6 +60,10 @@ const authMiddleware = async (c: any, next: any) => {
 
   if (!payload) {
     // 2. Try Privy JWT
+    if (!process.env.PRIVY_APP_SECRET) {
+      logger.error('[Auth] PRIVY_APP_SECRET is missing! Privy tokens cannot be verified.')
+    }
+
     const address = await getAddressFromPrivyToken(token)
     if (address) {
       payload = { sub: address }
@@ -70,6 +74,8 @@ const authMiddleware = async (c: any, next: any) => {
         logger.info(`[Auth] New user detected from Privy token: ${address}. Adding to DB.`)
         await addUser({ address, role: 'user' })
       }
+    } else {
+      logger.warn('[Auth] Privy token verification failed (returned null address)')
     }
   }
 
