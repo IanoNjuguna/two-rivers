@@ -26,7 +26,7 @@ const ADDRESSES: Record<number, any> = {
     usdc: '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
     paymaster: '0x2cc0c7981D846b9F2a16276556f6e8cb52BfB633',
     lzEid: 40245,
-    contract: '0x9085DaEF74D3FBF233FcBF599D417E94E762b952' as `0x${string}`,
+    contract: '0x974d30658B377375dFda357Cef20A8E6CF189d5e' as `0x${string}`,
     explorer: 'https://sepolia.basescan.org'
   },
   421614: {
