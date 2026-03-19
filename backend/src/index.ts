@@ -58,10 +58,13 @@ const authMiddleware = async (c: any, next: any) => {
   // 1. Try Doba JWT first (backward compatibility)
   let payload = await verifyJWT(token, JWT_SECRET)
 
+  let authReason = 'Invalid or expired access token'
+
   if (!payload) {
     // 2. Try Privy JWT
     if (!process.env.PRIVY_APP_SECRET) {
       logger.error('[Auth] PRIVY_APP_SECRET is missing! Privy tokens cannot be verified.')
+      authReason = 'Server configuration error (missing secret)'
     }
 
     const address = await getAddressFromPrivyToken(token)
@@ -76,11 +79,14 @@ const authMiddleware = async (c: any, next: any) => {
       }
     } else {
       logger.warn('[Auth] Privy token verification failed (returned null address)')
+      if (process.env.PRIVY_APP_SECRET) {
+        authReason = 'Privy token verification failed. Please try signing in again.'
+      }
     }
   }
 
   if (!payload) {
-    return c.json({ error: 'Unauthorized', message: 'Invalid or expired access token' }, 401)
+    return c.json({ error: 'Unauthorized', message: authReason }, 401)
   }
 
   c.set('jwtPayload', payload)
