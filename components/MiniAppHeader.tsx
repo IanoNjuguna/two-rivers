@@ -117,15 +117,7 @@ export default function MiniAppHeader({ address: propAddress, logout }: { addres
 								<div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
 							)}
 							<span className="text-sm font-semibold text-white/90">{displayName}</span>
-							{!isAuthenticated && (
-								<Button
-									size="sm"
-									onClick={dobaLogin}
-									className="ml-2 h-7 bg-cyber-pink hover:bg-cyber-pink/90 text-[10px] font-bold uppercase rounded-md px-2"
-								>
-									Sign In
-								</Button>
-							)}
+
 							<button
 								onClick={() => navigator.clipboard.writeText(address || '')}
 								className="p-1 hover:bg-white/[0.1] rounded transition ml-2"

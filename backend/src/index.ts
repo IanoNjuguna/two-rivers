@@ -4,6 +4,7 @@ import { cors } from 'hono/cors'
 import { getTrack, addTrack, getAllTracks, deleteTrack, deleteAllTracks, getUser, addUser, getTrackCollaborators, addCollaborator, isAdmin, type Track, type RefreshToken, addRefreshToken, getRefreshToken, revokeRefreshTokenFamily, getUserByFid, linkFidToUser, addMint, getUserMints, addPlay, getAnalytics } from './database'
 import { verifyOwnershipOnChain } from './web3'
 import { verifyWalletSignature, signJWT, verifyJWT, generateRefreshToken, getAccessTokenPayload } from './auth'
+import { getAddressFromPrivyToken } from './privy'
 import { createAppClient, viemConnector } from '@farcaster/auth-client'
 import axios from 'axios'
 import FormData from 'form-data'
@@ -53,7 +54,24 @@ const authMiddleware = async (c: any, next: any) => {
   }
 
   const token = authHeader.split(' ')[1]
-  const payload = await verifyJWT(token, JWT_SECRET)
+
+  // 1. Try Doba JWT first (backward compatibility)
+  let payload = await verifyJWT(token, JWT_SECRET)
+
+  if (!payload) {
+    // 2. Try Privy JWT
+    const address = await getAddressFromPrivyToken(token)
+    if (address) {
+      payload = { sub: address }
+
+      // Ensure user exists in our DB
+      const existingUser = await getUser(address)
+      if (!existingUser) {
+        logger.info(`[Auth] New user detected from Privy token: ${address}. Adding to DB.`)
+        await addUser({ address, role: 'user' })
+      }
+    }
+  }
 
   if (!payload) {
     return c.json({ error: 'Unauthorized', message: 'Invalid or expired access token' }, 401)

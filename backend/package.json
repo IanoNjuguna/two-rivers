@@ -12,6 +12,7 @@
     "@farcaster/auth-client": "^0.7.1",
     "@google-cloud/storage": "^7.19.0",
     "@libsql/client": "^0.17.0",
+    "@privy-io/server-auth": "^1.32.5",
     "axios": "^1.13.5",
     "form-data": "^4.0.5",
     "hono": "^4.0.0",

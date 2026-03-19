@@ -155,7 +155,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 		handlePlayTrack,
 		effectiveAddress: address,
 		isConnected,
-		isAuthenticated: isAuth || isConnected,
+		isAuthenticated: isAuth,
 		accessToken,
 		getValidToken,
 		sidebarTrack,

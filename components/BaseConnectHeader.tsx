@@ -88,13 +88,6 @@ export default function BaseConnectHeader({ address: propAddress, logout }: { ad
         >
           {t('signIn') || 'Sign In'}
         </Button>
-      ) : !isAuthenticated ? (
-        <Button
-          onClick={dobaLogin}
-          className="bg-lavender/20 hover:bg-lavender/30 text-lavender font-bold h-10 px-6 transition-all rounded-lg border border-lavender/30"
-        >
-          Complete Sign-In
-        </Button>
       ) : (
         <ChainSwitcher />
       )}

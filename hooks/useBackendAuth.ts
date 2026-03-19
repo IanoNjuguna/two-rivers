@@ -11,7 +11,7 @@ import { sdk } from '@farcaster/miniapp-sdk'
 import { usePrivy } from '@privy-io/react-auth'
 
 export function useBackendAuth() {
-	const { login: privyLogin } = usePrivy()
+	const { login: privyLogin, getAccessToken, authenticated, user } = usePrivy()
 	const [isMiniApp, setIsMiniApp] = useState<boolean | null>(null)
 
 	// Safely detect environment
@@ -22,92 +22,52 @@ export function useBackendAuth() {
 	}, [])
 
 	const { address: wagmiAddress } = useAccount()
-	const { signMessageAsync } = useSignMessage()
-
 	const [accessToken, setAccessToken] = useState<string | null>(null)
 	const [isLoading, setIsLoading] = useState(false)
 
-	const effectiveAddress = wagmiAddress as string | undefined
+	const effectiveAddress = (wagmiAddress || user?.wallet?.address) as string | undefined
 
-	// Load from localStorage on mount or address change
+	// Handle token synchronization
 	useEffect(() => {
-		if (effectiveAddress) {
-			try {
-				const stored = localStorage.getItem(`doba_jwt_${effectiveAddress.toLowerCase()}`)
-				if (stored) {
-					setAccessToken(stored)
-				} else {
-					setAccessToken(null)
-				}
-			} catch (e) {
-				logger.warn('localStorage access blocked in this environment', e)
+		async function syncToken() {
+			if (authenticated) {
+				const token = await getAccessToken()
+				setAccessToken(token)
+			} else {
 				setAccessToken(null)
 			}
-		} else {
-			setAccessToken(null)
 		}
-	}, [effectiveAddress])
+		syncToken()
+	}, [authenticated, getAccessToken])
 
 	const login = useCallback(async () => {
-		if (!effectiveAddress) {
+		if (!authenticated) {
 			privyLogin()
 			return null
 		}
 
 		setIsLoading(true)
 		try {
-			const message = `Login to Doba\n\nAddress: ${effectiveAddress.toLowerCase()}\nTimestamp: ${Date.now()}`
-
-			const signature = await signMessageAsync({ message })
-
-			const res = await fetch(`${API_URL.replace(/\/$/, '')}/auth/login`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ address: effectiveAddress, signature, message })
-			})
-
-			if (!res.ok) {
-				const errorData = await res.json()
-				throw new Error(errorData.message || errorData.error || 'Backend login failed')
-			}
-
-			const data = await res.json()
-			try {
-				localStorage.setItem(`doba_jwt_${effectiveAddress.toLowerCase()}`, data.accessToken)
-			} catch (e) {
-				logger.warn('Failed to save JWT to localStorage', e)
-			}
-			setAccessToken(data.accessToken)
-
-			logger.info(`Backend login successful for ${effectiveAddress}`)
-			return data.accessToken as string
+			const token = await getAccessToken()
+			setAccessToken(token)
+			return token
 		} catch (e: any) {
-			logger.error('Backend login error', e)
-			toast.error('Authentication failed: ' + (e.message || 'Unknown error'))
+			logger.error('Failed to get Privy access token', e)
 			return null
 		} finally {
 			setIsLoading(false)
 		}
-	}, [effectiveAddress, signMessageAsync])
+	}, [authenticated, privyLogin, getAccessToken])
 
 	const getValidToken = useCallback(async () => {
-		// If we have a token, return it
-		if (accessToken) return accessToken
-
-		// Otherwise, attempt login
-		return await login()
-	}, [accessToken, login])
+		if (!authenticated) return null
+		return await getAccessToken()
+	}, [authenticated, getAccessToken])
 
 	const logout = useCallback(() => {
-		if (effectiveAddress) {
-			try {
-				localStorage.removeItem(`doba_jwt_${effectiveAddress.toLowerCase()}`)
-			} catch (e) {
-				// ignore
-			}
-		}
+		// Privy logout is handled by usePrivy().logout() at the component level or via its own side effects
 		setAccessToken(null)
-	}, [effectiveAddress])
+	}, [])
 
 	return {
 		accessToken,
@@ -115,7 +75,7 @@ export function useBackendAuth() {
 		getValidToken,
 		logout,
 		isLoading,
-		isAuthenticated: !!accessToken,
+		isAuthenticated: authenticated,
 		effectiveAddress
 	}
 }
