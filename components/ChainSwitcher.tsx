@@ -38,11 +38,8 @@ export function ChainSwitcher() {
 	return (
 		<div className="flex items-center gap-2">
 			<Select value={chainId?.toString()} onValueChange={handleSwitch}>
-				<SelectTrigger className="w-[140px] h-9 bg-white/5 border-white/10 text-white/90 hover:bg-white/10 transition-colors rounded-lg">
-					<div className="flex items-center gap-2">
-						<img src={currentChain.icon} alt={currentChain.name} className="w-4 h-4 object-contain" />
-						<SelectValue placeholder="Select Network" />
-					</div>
+				<SelectTrigger className="w-[145px] h-9 bg-white/5 border-white/10 text-white/90 hover:bg-white/10 transition-colors rounded-lg">
+					<SelectValue placeholder="Select Network" />
 				</SelectTrigger>
 				<SelectContent className="bg-[#16161D] border-white/10 text-white">
 					{supportedChains.map((chain) => (
